@@ -71,7 +71,8 @@ services:
 
   Mollie\Service\CartLinesService:
     arguments:
-      - '@mollie'
+      - '@Mollie\Service\LanguageService'
+      - '@Mollie\Adapter\ToolsAdapter'
 
   Mollie\Service\CustomerService:
     arguments:

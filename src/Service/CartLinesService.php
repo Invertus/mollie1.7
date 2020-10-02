@@ -36,9 +36,7 @@
 namespace Mollie\Service;
 
 use Cart;
-use Configuration;
-use Currency;
-use Mollie;
+use Mollie\Adapter\ToolsAdapter;
 use Mollie\Config\Config;
 use Mollie\DTO\Line;
 use Mollie\DTO\Object\Amount;
@@ -46,19 +44,23 @@ use Mollie\Utility\CalculationUtility;
 use Mollie\Utility\CartPriceUtility;
 use Mollie\Utility\NumberUtility;
 use Mollie\Utility\TextFormatUtility;
-use Tools;
 
 class CartLinesService
 {
+    /**
+     * @var LanguageService
+     */
+    private $languageService;
 
     /**
-     * @var Mollie
+     * @var ToolsAdapter
      */
-    private $module;
+    private $tools;
 
-    public function __construct(Mollie $module)
+    public function __construct(LanguageService $languageService, ToolsAdapter $tools)
     {
-        $this->module = $module;
+        $this->languageService = $languageService;
+        $this->tools = $tools;
     }
 
     /**
@@ -68,24 +70,28 @@ class CartLinesService
      * @param Cart $cart
      * @return array
      */
-    public function getCartLines($amount, $paymentFee, Cart $cart)
+    public function getCartLines(
+        $amount,
+        $paymentFee,
+        $currencyIsoCode,
+        $cartSummary,
+        $shippingCost,
+        $cartItems,
+        $psGiftWrapping
+    )
     {
-        $oCurrency = new Currency($cart->id_currency);
-        $apiRoundingPrecision = Mollie\Config\Config::API_ROUNDING_PRECISION;
-        $vatRatePrecision = Mollie\Config\Config::VAT_RATE_ROUNDING_PRECISION;
+        $apiRoundingPrecision = Config::API_ROUNDING_PRECISION;
+        $vatRatePrecision = Config::VAT_RATE_ROUNDING_PRECISION;
 
         $totalPrice = round($amount, $apiRoundingPrecision);
-        $cartSummary = $cart->getSummaryDetails();
-        $shipping = round($cart->getTotalShippingCost(null, true), $apiRoundingPrecision);
+        $shipping = round($shippingCost, $apiRoundingPrecision);
         foreach ($cartSummary['discounts'] as $discount) {
             if ($discount['free_shipping']) {
                 $shipping = 0;
             }
         }
 
-        $cartItems = $cart->getProducts();
-        $wrapping = Configuration::get('PS_GIFT_WRAPPING') ? round($cartSummary['total_wrapping'], $apiRoundingPrecision) : 0;
-//        $totalDiscounts = isset($cartSummary['total_discounts']) ? round($cartSummary['total_discounts'], $apiRoundingPrecision) : 0;
+        $wrapping = $psGiftWrapping ? round($cartSummary['total_wrapping'], $apiRoundingPrecision) : 0;
         $totalDiscounts = 0;
         $remaining = round(
             CalculationUtility::getCartRemainingPrice($totalPrice, $shipping, $wrapping),
@@ -105,19 +111,16 @@ class CartLinesService
             }
 
             // Generate the product hash
-            $idProduct = number_format($cartItem['id_product']);
-            $idProductAttribute = number_format($cartItem['id_product_attribute']);
-            $idCustomization = number_format($cartItem['id_customization']);
+            $idProduct = TextFormatUtility::formatNumber($cartItem['id_product'], 0);
+            $idProductAttribute = TextFormatUtility::formatNumber($cartItem['id_product_attribute'], 0);
+            $idCustomization = TextFormatUtility::formatNumber($cartItem['id_customization'], 0);
 
             $productHash = "{$idProduct}¤{$idProductAttribute}¤{$idCustomization}";
             $aItems[$productHash] = [];
 
             foreach ($cartSummary['gift_products'] as $gift_product) {
                 if ($gift_product['id_product'] === $cartItem['id_product']) {
-                    $roundedTotalWithTax = NumberUtility::minus(
-                        $roundedTotalWithTax,
-                        NumberUtility::times($gift_product['cart_quantity'], $gift_product['price_with_reduction'])
-                    );
+
                     $quantity = NumberUtility::minus($quantity, $gift_product['cart_quantity']);
 
                     $productHashGift = "{$idProduct}¤{$idProductAttribute}¤{$idCustomization}gift";
@@ -178,6 +181,7 @@ class CartLinesService
                 }
 
                 // Otherwise spread the cart line again with the updated total
+                //TODO: check why remaining comes -100 when testing and new total becomes different
                 $aItems[$hash] = static::spreadCartLineGroup($items, $totalAmount - $remaining);
                 break;
             }
@@ -241,7 +245,7 @@ class CartLinesService
 
             $aItems['shipping'] = [
                 [
-                    'name' => $this->module->l('Shipping'),
+                    'name' => $this->languageService->lang('Shipping'),
                     'quantity' => 1,
                     'unitPrice' => round($shipping, $apiRoundingPrecision),
                     'totalAmount' => round($shipping, $apiRoundingPrecision),
@@ -263,7 +267,7 @@ class CartLinesService
 
             $aItems['wrapping'] = [
                 [
-                    'name' => $this->module->l('Gift wrapping'),
+                    'name' => $this->languageService->lang('Gift wrapping'),
                     'quantity' => 1,
                     'unitPrice' => round($wrapping, $apiRoundingPrecision),
                     'totalAmount' => round($wrapping, $apiRoundingPrecision),
@@ -277,7 +281,7 @@ class CartLinesService
         if ($paymentFee) {
             $aItems['surcharge'] = [
                 [
-                    'name' => $this->module->l('Payment Fee'),
+                    'name' => $this->languageService->lang('Payment Fee'),
                     'quantity' => 1,
                     'unitPrice' => round($paymentFee, $apiRoundingPrecision),
                     'totalAmount' => round($paymentFee, $apiRoundingPrecision),
@@ -302,7 +306,7 @@ class CartLinesService
             $line->setQuantity((int)$item['quantity']);
             $line->setSku(isset($item['sku']) ? $item['sku'] : '');
 
-            $currency = Tools::strtoupper($oCurrency->iso_code);
+            $currency = $this->tools->strtoupper($currencyIsoCode);
 
             if (isset($item['discount'])) {
                 $line->setDiscountAmount(new Amount(
@@ -327,6 +331,7 @@ class CartLinesService
                 TextFormatUtility::formatNumber($item['vatAmount'], $apiRoundingPrecision, '.', '')
             ));
 
+
             $line->setVatRate(TextFormatUtility::formatNumber($item['vatRate'], $apiRoundingPrecision, '.', ''));
 
             $newItems[$index] = $line;
@@ -350,7 +355,7 @@ class CartLinesService
      */
     public static function spreadCartLineGroup($cartLineGroup, $newTotal)
     {
-        $apiRoundingPrecision = Mollie\Config\Config::API_ROUNDING_PRECISION;
+        $apiRoundingPrecision = Config::API_ROUNDING_PRECISION;
         $newTotal = round($newTotal, $apiRoundingPrecision);
         $quantity = array_sum(array_column($cartLineGroup, 'quantity'));
         $newCartLineGroup = [];
