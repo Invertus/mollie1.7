@@ -372,7 +372,17 @@ class PaymentMethodService
             $orderData->setMethod($molPaymentMethod->id_method);
             $orderData->setMetadata($metaData);
 
-            $orderData->setLines($this->cartLinesService->getCartLines($amount, $paymentFee, $cart));
+            $currency = new \Currency($cart->id_currency);
+            $orderData->setLines(
+                $this->cartLinesService->getCartLines(
+                    $amount,
+                    $paymentFee,
+                    $currency->iso_code,
+                    $cart->getSummaryDetails(),
+                    $cart->getTotalShippingCost(null, true),
+                    $cart->getProducts(),
+                    Configuration::get('PS_GIFT_WRAPPING')
+                ));
             $payment = [];
             if ($cardToken) {
                 $payment['cardToken'] = $cardToken;

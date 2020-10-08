@@ -1,11 +1,12 @@
 <?php
 
+namespace Service;
+
 use Mollie\Service\UpgradeNoticeService;
 use PHPUnit\Framework\TestCase;
 
 class UpgradeNoticeServiceTest extends TestCase
 {
-
     /**
      * @dataProvider dataProvider
      * @param $currentTimeStamp
