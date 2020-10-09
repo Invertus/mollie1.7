@@ -31,11 +31,42 @@
  * @link       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
+
+
+
+
 $(document).ready(function () {
     var $mollieContainers = $('.mollie-iframe-container');
     if (!$mollieContainers.length) {
         return;
     }
+
+    var overridePrestaShopsAdditionalInformationHideFunctionality = function ($mollieContainer) {
+      var $additionalInformationContainer = $mollieContainer.closest('.additional-information');
+
+      // this allows for us to have our custom hide functionality
+      $additionalInformationContainer.addClass('mollie-credit-card-container__hide')
+
+      // making the container visible
+      $additionalInformationContainer.css('display', 'block')
+      // removing any additional classes that might also set element to be hidden
+      $additionalInformationContainer.removeClass('ps-hidden')
+    }
+
+    var showAdditionalInformation = function ($additionalInformation) {
+      $additionalInformation.removeClass('mollie-credit-card-container__hide')
+      $additionalInformation.addClass('mollie-credit-card-container__show')
+    }
+
+    var hideAdditionalInformation = function ($additionalInformation) {
+      $additionalInformation.addClass('mollie-credit-card-container__hide')
+      $additionalInformation.removeClass('mollie-credit-card-container__show')
+    }
+
+    overridePrestaShopsAdditionalInformationHideFunctionality($mollieContainers)
+
+
+
     var options = {
         styles: {
             base: {
@@ -66,10 +97,13 @@ $(document).ready(function () {
     var methodId = $(this).find('input[name="method-id"]').val();
     mountMollieComponents(methodId);
 
-    $('input[data-module-name="mollie"]').on('change', function () {
+    $(document).on('change', 'input[data-module-name="mollie"]', function () {
         var paymentOption = $(this).attr('id');
         var $additionalInformation = $('#' + paymentOption + '-additional-information');
         $additionalInformation.addClass('mollie-addition-info');
+
+        showAdditionalInformation($additionalInformation)
+
         var methodId = $additionalInformation.find('input[name="method-id"]').val();
         if (!methodId) {
             return;
@@ -83,6 +117,18 @@ $(document).ready(function () {
         $('.mollie-input').removeClass('is-invalid');
         mountMollieComponents(methodId);
     });
+
+    $(document).on('change', 'input[name="payment-option"]', function () {
+      var isMollie = $(this).attr('data-module-name') === 'mollie'
+
+      if (isMollie) {
+        return;
+      }
+
+      var $additionalInformation = $mollieContainers.closest('.additional-information')
+
+      hideAdditionalInformation($additionalInformation)
+    })
 
     function mountMollieComponents(methodId) {
         cardHolderInput = mountMollieField(this, '#card-holder', methodId, cardHolder, 'card-holder');
