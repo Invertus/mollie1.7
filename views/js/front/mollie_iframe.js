@@ -176,7 +176,16 @@ $(document).ready(function () {
         });
 
         inputHolder.addEventListener("focus", function () {
-            $('.form-group-' + methodName + '.' + methodId).toggleClass('is-focused', true);
+            var $formGroup =   $('.form-group-' + methodName + '.' + methodId)
+
+            var $additionalInformation = $formGroup.closest('.additional-information')
+
+            if ($additionalInformation.hasClass('mollie-credit-card-container__hide')) {
+              // if mollie is hidden do nothing with focus
+              return
+            }
+
+            $formGroup.toggleClass('is-focused', true);
         });
 
         inputHolder.addEventListener("blur", function () {
