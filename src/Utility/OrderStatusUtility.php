@@ -36,11 +36,12 @@
 namespace Mollie\Utility;
 
 use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Order as MollieOrderAlias;
+use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment;
 use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment as MolliePaymentAlias;
+use _PhpScoper5eddef0da618a\Mollie\Api\Resources\PaymentCollection;
 use _PhpScoper5eddef0da618a\Mollie\Api\Types\PaymentStatus;
 use _PhpScoper5eddef0da618a\Mollie\Api\Types\RefundStatus;
 use Mollie\Config\Config;
-
 
 class OrderStatusUtility
 {
@@ -51,7 +52,7 @@ class OrderStatusUtility
      */
     public static function transformPaymentStatusToPaid($status, $comparedStatus)
     {
-        if($status === $comparedStatus) {
+        if ($status === $comparedStatus) {
             return PaymentStatus::STATUS_PAID;
         }
 
@@ -68,14 +69,30 @@ class OrderStatusUtility
             return $transaction->status;
         }
 
+        $isVoucher = $transaction->method === Config::MOLLIE_VOUCHER_METHOD_ID;
+        $remainingAmount = 0;
+        if ($isVoucher) {
+            /** @var PaymentCollection $payments */
+            $payments = $transaction->payments();
+            /** @var Payment $payment */
+            foreach ($payments as $payment) {
+                $remainingAmount = $payment->getAmountRemaining();
+            }
+        }
         $amountRefunded = $transaction->amountRefunded->value;
         $amountPayed = $transaction->amountCaptured->value;
         $isPartiallyRefunded = NumberUtility::isLowerThan($amountRefunded, $amountPayed);
         $isFullyRefunded = NumberUtility::isEqual($amountRefunded, $amountPayed);
 
         if ($isPartiallyRefunded) {
+            if ($isVoucher && NumberUtility::isEqual(0, $remainingAmount)) {
+                return RefundStatus::STATUS_REFUNDED;
+            }
+
             return Config::PARTIAL_REFUND_CODE;
-        } elseif ($isFullyRefunded) {
+        }
+
+        if ($isFullyRefunded) {
             return RefundStatus::STATUS_REFUNDED;
         }
 
