@@ -115,7 +115,9 @@
                 refundsAreCurrentlyUnavailable: '{l s='Refunds are currently unavailable' mod='mollie' js=1}',
                 refundWarning: '{l s='Refund was made successfully!' mod='mollie' js=1}',
                 shipmentWarning: '{l s='Shipment was made successfully!' mod='mollie' js=1}',
-                cancelWarning: '{l s='Order was canceled successfully!' mod='mollie' js=1}'
+                cancelWarning: '{l s='Order was canceled successfully!' mod='mollie' js=1}',
+                remainderMethod: '{l s='Remainder method' mod='mollie' js=1}',
+                issuer: '{l s='Issuer' mod='mollie' js=1}'
               },
               {$currencies|json_encode}
       );
