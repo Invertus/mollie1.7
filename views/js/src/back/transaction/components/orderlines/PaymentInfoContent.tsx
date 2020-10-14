@@ -49,7 +49,9 @@ export default function PaymentInfoContent(): ReactElement<{}> {
     <>
       {legacy && <h3>{translations.transactionInfo}</h3>}
       {!legacy && <h4>{translations.transactionInfo}</h4>}
-      <strong>{translations.transactionId}</strong>: <span>{order.id}</span><br/>
+        <strong>{translations.transactionId}</strong>: <span>{order.id}</span><br/>
+        {order.details.remainderMethod && <span><strong>{translations.remainderMethod}</strong>: <span>{order.details.remainderMethod}</span><br/></span>}
+        {order.details.issuer && <span><strong>{translations.issuer}</strong>: <span>{order.details.issuer}</span><br/></span>}
       <strong>{translations.date}</strong>: <span>{moment(order.createdAt).format('YYYY-MM-DD HH:mm:ss')}</span><br/>
       <strong>{translations.amount}</strong>: <span>{formatCurrency(parseFloat(order.amount.value), get(currencies, order.amount.currency))}</span><br/>
       <strong>{translations.remaining}</strong>: <span>{formatCurrency(parseFloat(order.availableRefundAmount.value), get(currencies, order.availableRefundAmount.currency))}</span><br/>

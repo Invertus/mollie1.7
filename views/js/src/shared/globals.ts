@@ -144,6 +144,7 @@ export interface IMollieApiOrder {
   lines: Array<IMollieOrderLine>;
   refunds: Array<IMollieApiRefund>;
   availableRefundAmount: IMollieAmount;
+  details: IMollieOrderDetails;
 }
 
 export interface IMollieOrderLine {
@@ -224,4 +225,9 @@ export enum QrStatus {
   pending = 1,
   success = 2,
   refresh = 3,
+}
+
+export interface IMollieOrderDetails {
+  issuer: string;
+  remainderMethod: string;
 }
