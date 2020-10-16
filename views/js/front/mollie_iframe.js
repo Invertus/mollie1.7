@@ -65,6 +65,20 @@ $(document).ready(function () {
 
     overridePrestaShopsAdditionalInformationHideFunctionality($mollieContainers)
 
+    // if credit card is somehow preselected its hidden content will be displayed
+    var isMollieCreditCardPreselected = function ($iframeContainer) {
+      var $additionalInformation = $iframeContainer.closest('.additional-information')
+      var id = $additionalInformation.attr('id')
+
+      var paymentOptionPrefix = id.replace('-additional-information', '')
+      var $paymentOption = $('#' + paymentOptionPrefix)
+
+      return $paymentOption.is(':checked')
+    }
+
+    if (isMollieCreditCardPreselected($mollieContainers)) {
+      showAdditionalInformation($mollieContainers.closest('.additional-information'))
+    }
 
 
     var options = {
