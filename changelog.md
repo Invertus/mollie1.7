@@ -2,7 +2,7 @@
 
 # Changelog #
 ## Changes in release 4.1.0 ##
-+ Credit card components are now indexed with tabbable feature meaning that clicking TAB in keyboard will point to next credit card input option.
++ PS1.7 - Credit card components are now indexed with tabbable feature meaning that clicking TAB in keyboard will point to next credit card input option.
 
 ## Changes in release 4.0.9 ##
 + Improved payment settings UI. Now test and live API has separated payment settings so that you can more easily swap between test and live API.
