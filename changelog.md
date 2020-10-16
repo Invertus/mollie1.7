@@ -2,6 +2,9 @@
 
 # Changelog #
 
+## Changes in release 4.1.0 ##
++ PS1.7 - Credit card components are now indexed with tabbable feature meaning that clicking TAB in keyboard will point to next credit card input option.
+
 ## Changes in release 4.0.9 Hotfix-1 ##
 + In PS1.6 prevents double click payment method to create multiple orders
 
