@@ -32,9 +32,6 @@
  * @codingStandardsIgnoreStart
  */
 
-
-
-
 $(document).ready(function () {
     var $mollieContainers = $('.mollie-iframe-container');
     if (!$mollieContainers.length) {
