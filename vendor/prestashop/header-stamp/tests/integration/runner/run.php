@@ -9,7 +9,7 @@ use MolliePrefix\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand;
 use MolliePrefix\Symfony\Component\Console\Input\ArrayInput;
 use MolliePrefix\Symfony\Component\Console\Output\BufferedOutput;
 use MolliePrefix\Symfony\Component\Filesystem\Filesystem;
-$modulesToTest = ['gsitemap', 'dashproducts'];
+$modulesToTest = ['gsitemap', 'dashproducts', 'fakemodule'];
 $workspaceID = 100;
 $filesystem = new \MolliePrefix\Symfony\Component\Filesystem\Filesystem();
 $folderComparator = new \MolliePrefix\FolderComparator();

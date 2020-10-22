@@ -813,4 +813,4 @@ class PHPUnit_Framework_MockObject_Generator
  *
  * @since Class available since Release 1.0.0
  */
-\class_alias('MolliePrefix\\PHPUnit_Framework_MockObject_Generator', 'PHPUnit_Framework_MockObject_Generator', \false);
+\class_alias('MolliePrefix\\PHPUnit_Framework_MockObject_Generator', 'MolliePrefix\\PHPUnit_Framework_MockObject_Generator', \false);
