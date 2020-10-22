@@ -25,45 +25,45 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'M' => 
         array (
             'Mollie\\' => 7,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 49,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 49,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 52,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 59,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 52,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 49,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 48,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 49,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 54,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 52,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 60,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 51,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 55,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 63,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 60,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 64,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 50,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 52,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 51,
-            'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 50,
-            'MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 42,
-            'MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 34,
-            'MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 43,
-            'MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 40,
-            'MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 36,
-            'MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 49,
-            'MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 45,
-            'MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 53,
-            'MolliePrefix\\MolliePrefix\\PhpParser\\' => 36,
-            'MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 37,
-            'MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 37,
-            'MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 42,
-            'MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 45,
-            'MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 37,
-            'MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 48,
-            'MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 54,
-            'MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 49,
-            'MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 42,
-            'MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 44,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 104,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 111,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 104,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 100,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 106,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 104,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 112,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 103,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 107,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 115,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 112,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 116,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 102,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 104,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 103,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 102,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 94,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 86,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 95,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 92,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 88,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 97,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 105,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 88,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 89,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 89,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 94,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 97,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 89,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 100,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 106,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 94,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 96,
         ),
     );
 
@@ -72,159 +72,159 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php70',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-apcu',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/stopwatch',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/expression-language',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/dependency-injection',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/debug',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
-        'MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/cache',
         ),
-        'MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-        'MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 
         array (
             0 => __DIR__ . '/..' . '/prestashop/header-stamp/src',
         ),
-        'MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 
         array (
             0 => __DIR__ . '/..' . '/prestashop/decimal/src',
         ),
-        'MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 
         array (
             0 => __DIR__ . '/..' . '/prestashop/php-dev-tools/src',
         ),
-        'MolliePrefix\\MolliePrefix\\PhpParser\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 
         array (
             0 => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 
         array (
             0 => __DIR__ . '/..' . '/mollie/mollie-api-php/src',
         ),
-        'MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
         ),
-        'MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
-        'MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/xdebug-handler/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/semver/src',
         ),
-        'MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
@@ -289,6 +289,9 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'CommentedOutCodeAtStartOfClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CommentedOutCodeAtStartOfClassNoBlankLine' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CompletelyWrongClassName' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
+        'ComposerAutoloaderInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_real.php',
+        'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
+        'Composer\\Autoload\\ComposerStaticInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Controller' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'CorrectClassDeclaration' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
         'CorrectClassDeclarationWithExtends' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
@@ -360,9 +363,6 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\APCuIterator' => __DIR__ . '/..' . '/symfony/polyfill-apcu/bootstrap.php',
         'MolliePrefix\\ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
         'MolliePrefix\\AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
-        'MolliePrefix\\ComposerAutoloaderInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_real.php',
-        'MolliePrefix\\Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'MolliePrefix\\Composer\\Autoload\\ComposerStaticInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'MolliePrefix\\Composer\\CaBundle\\CaBundle' => __DIR__ . '/..' . '/composer/ca-bundle/src/CaBundle.php',
         'MolliePrefix\\Composer\\Semver\\Comparator' => __DIR__ . '/..' . '/composer/semver/src/Comparator.php',
         'MolliePrefix\\Composer\\Semver\\Constraint\\AbstractConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/AbstractConstraint.php',

@@ -18,7 +18,7 @@ class ComposerResourceTest extends \MolliePrefix\PHPUnit\Framework\TestCase
     public function testGetVendor()
     {
         $res = new \MolliePrefix\Symfony\Component\Config\Resource\ComposerResource();
-        $r = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
+        $r = new \ReflectionClass(\MolliePrefix\Composer\Autoload\ClassLoader::class);
         $found = \false;
         foreach ($res->getVendors() as $vendor) {
             if ($vendor && 0 === \strpos($r->getFileName(), $vendor)) {

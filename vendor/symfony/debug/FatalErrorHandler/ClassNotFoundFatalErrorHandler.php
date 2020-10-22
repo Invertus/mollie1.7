@@ -81,14 +81,14 @@ class ClassNotFoundFatalErrorHandler implements \MolliePrefix\Symfony\Component\
                     continue;
                 }
             }
-            if ($function[0] instanceof \Composer\Autoload\ClassLoader || $function[0] instanceof \MolliePrefix\Symfony\Component\ClassLoader\ClassLoader) {
+            if ($function[0] instanceof \MolliePrefix\Composer\Autoload\ClassLoader || $function[0] instanceof \MolliePrefix\Symfony\Component\ClassLoader\ClassLoader) {
                 foreach ($function[0]->getPrefixes() as $prefix => $paths) {
                     foreach ($paths as $path) {
                         $classes = \array_merge($classes, $this->findClassInPath($path, $class, $prefix));
                     }
                 }
             }
-            if ($function[0] instanceof \Composer\Autoload\ClassLoader) {
+            if ($function[0] instanceof \MolliePrefix\Composer\Autoload\ClassLoader) {
                 foreach ($function[0]->getPrefixesPsr4() as $prefix => $paths) {
                     foreach ($paths as $path) {
                         $classes = \array_merge($classes, $this->findClassInPath($path, $class, $prefix));

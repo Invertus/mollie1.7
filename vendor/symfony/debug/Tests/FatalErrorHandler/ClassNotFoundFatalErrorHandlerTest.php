@@ -30,7 +30,7 @@ class ClassNotFoundFatalErrorHandlerTest extends \MolliePrefix\PHPUnit\Framework
                     continue;
                 }
             }
-            if ($function[0] instanceof \Composer\Autoload\ClassLoader) {
+            if ($function[0] instanceof \MolliePrefix\Composer\Autoload\ClassLoader) {
                 $function[0]->add('Symfony_Component_Debug_Tests_Fixtures', \dirname(\dirname(\dirname(\dirname(\dirname(__DIR__))))));
                 break;
             }
@@ -62,7 +62,7 @@ class ClassNotFoundFatalErrorHandlerTest extends \MolliePrefix\PHPUnit\Framework
     }
     public function provideClassNotFoundData()
     {
-        $autoloader = new \Composer\Autoload\ClassLoader();
+        $autoloader = new \MolliePrefix\Composer\Autoload\ClassLoader();
         $autoloader->add('Symfony\\Component\\Debug\\Exception\\', \realpath(__DIR__ . '/../../Exception'));
         $autoloader->add('Symfony_Component_Debug_Tests_Fixtures', \realpath(__DIR__ . '/../../Tests/Fixtures'));
         $debugClassLoader = new \MolliePrefix\Symfony\Component\Debug\DebugClassLoader([$autoloader, 'loadClass']);

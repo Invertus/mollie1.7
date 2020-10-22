@@ -30,6 +30,7 @@ return [
             ->in('vendor'),
         Finder::create()->append([
             'composer.json',
+            'vendor/bin',
         ]),
     ],
 
