@@ -24,16 +24,16 @@ final class Versions
   'psr/container' => '1.0.0@b7ce3b176482dbbc1245ebf52b181af44c2cf55f',
   'roave/better-reflection' => '3.3.0@df78b556a7280c4145d4ed5edd2ca6a7e7e22716',
   'roave/signature' => '1.1.0@c4e8a59946bad694ab5682a76e7884a9157a8a2c',
-  'symfony/console' => 'v4.4.14@90933b39c7b312fc3ceaa1ddeac7eb48cb953124',
-  'symfony/filesystem' => 'v4.4.14@0d386979828c15d37ff936bf9bae2ecbfa36d7dc',
-  'symfony/finder' => 'v4.4.14@5ef0f6c609c1a36f723880dfe78301199bc96868',
+  'symfony/console' => 'v4.4.15@90933b39c7b312fc3ceaa1ddeac7eb48cb953124',
+  'symfony/filesystem' => 'v4.4.15@ebc51494739d3b081ea543ed7c462fa73a4f74db',
+  'symfony/finder' => 'v4.4.15@60d08560f9aa72997c44077c40d47aa28a963230',
   'symfony/polyfill-ctype' => 'v1.18.1@1c302646f6efc070cd46856e600e5e0684d6b454',
   'symfony/polyfill-mbstring' => 'v1.18.1@a6977d63bf9a0ad4c65cd352709e230876f9904a',
   'symfony/polyfill-php73' => 'v1.18.1@fffa1a52a023e782cdcc221d781fe1ec8f87fcca',
   'symfony/polyfill-php80' => 'v1.18.1@d87d5766cbf48d72388a9f6b85f280c8ad51f981',
   'symfony/service-contracts' => 'v1.1.9@b776d18b303a39f56c63747bcb977ad4b27aca26',
   'webmozart/assert' => '1.9.1@bafc69caeb4d49c39fd0779086c03a3738cbb389',
-  'marius/prefix' => 'dev-4.0.9-phpstan@dd673996009b9204d8aaa27b5ca9045600457c94',
+  'marius/prefix' => 'dev-4.1.0-phpstan@96ce8badaa9dd2674ff46a5672cc9f059402fddc',
 );
 
     private function __construct()
