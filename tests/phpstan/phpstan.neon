@@ -6,6 +6,8 @@ parameters:
     - ../../src
     - ../../controllers
     - ../../mollie.php
+  excludes_analyse:
+    - ../../vendor
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   ignoreErrors:
