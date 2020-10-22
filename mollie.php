@@ -541,6 +541,7 @@ class Mollie extends PaymentModule
         return $html;
     }
 
+
     /**
      * @param array $params Hook parameters
      *
