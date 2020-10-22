@@ -8,6 +8,7 @@ parameters:
     - ../../mollie.php
   excludes_analyse:
     - ../../vendor
+    - ../../vendorBuilder
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   ignoreErrors:
