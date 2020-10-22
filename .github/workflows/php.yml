@@ -40,7 +40,6 @@ jobs:
         with:
           path: ~/.composer/cache
           key: php-composer-cache
-      - run: make bv
       - name: Pull PrestaShop files (Tag ${{ matrix.presta-versions }})
         run: docker run -tid --rm -v ps-volume:/var/www/html --name temp-ps prestashop/prestashop:${{ matrix.presta-versions }}
       - name : Run PHPStan
