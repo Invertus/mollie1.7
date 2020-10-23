@@ -3,3 +3,11 @@
   /* giving some room for drag action */
   padding-bottom: 40px;
 }
+
+.payment-methods-sortable .payment-method {
+  display: flex;
+}
+
+.payment-method__text {
+  padding-left: 10px;
+}

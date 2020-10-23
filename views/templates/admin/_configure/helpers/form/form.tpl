@@ -78,8 +78,10 @@
           {assign var = 'methodObj' value=$paymentMethod.obj}
           {if $paymentMethod.id === 'voucher'}{continue}{/if}
           <li class="payment-method border border-bottom ui-sortable-handle">
+            <input type="hidden" name="payment_option_position[{$paymentMethod.id}]" class="js-payment-option-position">
+
             <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
-            <a class="text collapsed" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id}"
+            <a class="text collapsed payment-method__text" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id}"
                role="button"
                aria-expanded="true" aria-controls="#payment-method-form-{$paymentMethod.id}">
               <svg class="bi bi-chevron-compact-up mollie-svg" width="1em" height="1em" viewBox="0 0 16 16"
