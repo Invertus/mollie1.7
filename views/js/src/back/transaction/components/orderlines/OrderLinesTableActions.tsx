@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCircleNotch, faTimes, faTruck, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {useMappedState} from 'redux-react-hook';
 
-import {IMollieOrderLine} from '@shared/globals';
+import { IMollieAmount, IMollieOrderLine } from '@shared/globals';
 
 interface IProps {
     line: IMollieOrderLine;
@@ -12,22 +12,16 @@ interface IProps {
     shipLine: Function;
     cancelLine: Function;
     refundLine: Function;
+    availableRefundAmount: IMollieAmount;
 }
 
-export default function OrderLinesTableActions({line, loading, shipLine, cancelLine, refundLine}: IProps): ReactElement<{}> {
-    const {config: {legacy}, translations, order}: Partial<IMollieOrderState> = useCallback(useMappedState((state: IMollieOrderState): any => ({
+export default function OrderLinesTableActions({line, loading, shipLine, cancelLine, refundLine, availableRefundAmount }: IProps): ReactElement<{}> {
+    const {config: {legacy}, translations }: Partial<IMollieOrderState> = useCallback(useMappedState((state: IMollieOrderState): any => ({
         translations: state.translations,
-        config: state.config,
-        order: state.order,
+        config: state.config
     })), []);
 
-    function isRefundable(): boolean {
-        if (line.refundableQuantity >= 1 && parseFloat(order.availableRefundAmount.value) > 0.0) {
-            return true;
-        }
-
-        return false;
-    }
+    const isRefundable = (): boolean => line.refundableQuantity >= 1 && parseFloat(availableRefundAmount.value) > 0.0
 
     let shipButton = (
         <button
