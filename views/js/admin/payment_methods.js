@@ -7,9 +7,6 @@ $(document).ready(function() {
   });
 
   $sortableElement.bind( "sortupdate", function(event, ui) {
-    var $item = ui.item
-    var position = ui.end_index
-
     $('.js-payment-option-position').each(function (index) {
       $(this).val(index)
     })
