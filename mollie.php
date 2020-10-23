@@ -738,7 +738,7 @@ class Mollie extends PaymentModule
         $issuerList = [];
         foreach ($methods as $method) {
             $methodObj = new MolPaymentMethod($method['id_payment_method']);
-            if ($methodObj->id_method === Mollie\Api\Types\PaymentMethod::IDEAL) {
+            if ($methodObj->id_method === \MolliePrefix\Mollie\Api\Types\PaymentMethod::IDEAL) {
                 $issuerList = $issuerService->getIdealIssuers();
             }
         }
@@ -747,8 +747,8 @@ class Mollie extends PaymentModule
         $cart = $context->cart;
 
         $context->smarty->assign([
-            'idealIssuers' => isset($issuerList[Mollie\Api\Types\PaymentMethod::IDEAL])
-                ? $issuerList[Mollie\Api\Types\PaymentMethod::IDEAL]
+            'idealIssuers' => isset($issuerList[\MolliePrefix\Mollie\Api\Types\PaymentMethod::IDEAL])
+                ? $issuerList[\MolliePrefix\Mollie\Api\Types\PaymentMethod::IDEAL]
                 : [],
             'link' => $this->context->link,
             'qrCodeEnabled' => Configuration::get(Mollie\Config\Config::MOLLIE_QRENABLED),
@@ -775,9 +775,9 @@ class Mollie extends PaymentModule
             }
             $paymentFee = \Mollie\Utility\PaymentFeeUtility::getPaymentFee($methodObj, $cart->getOrderTotal());
 
-            $isIdealMethod = $methodObj->id_method === Mollie\Api\Types\PaymentMethod::IDEAL;
+            $isIdealMethod = $methodObj->id_method === \MolliePrefix\Mollie\Api\Types\PaymentMethod::IDEAL;
             $isIssuersOnClick = Configuration::get(Mollie\Config\Config::MOLLIE_ISSUERS) === Mollie\Config\Config::ISSUERS_ON_CLICK;
-            $isCreditCardMethod = $methodObj->id_method === Mollie\Api\Types\PaymentMethod::CREDITCARD;
+            $isCreditCardMethod = $methodObj->id_method === \MolliePrefix\Mollie\Api\Types\PaymentMethod::CREDITCARD;
 
             if ($isIdealMethod && $isIssuersOnClick) {
                 $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
@@ -939,7 +939,7 @@ class Mollie extends PaymentModule
         /** @var \Mollie\Repository\PaymentMethodRepository $paymentMethodRepo */
         $paymentMethodRepo = $this->getContainer(\Mollie\Repository\PaymentMethodRepository::class);
         $payment = $paymentMethodRepo->getPaymentBy('cart_id', (int)Tools::getValue('id_cart'));
-        if ($payment && $payment['bank_status'] == Mollie\Api\Types\PaymentStatus::STATUS_PAID) {
+        if ($payment && $payment['bank_status'] == \MolliePrefix\Mollie\Api\Types\PaymentStatus::STATUS_PAID) {
             $this->context->smarty->assign('okMessage', $this->l('Thank you. Your payment has been received.'));
 
             return $this->display(__FILE__, 'ok.tpl');
