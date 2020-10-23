@@ -73,234 +73,237 @@
                 window.MollieModule.debug = {if $input.displayErrors}true{else}false{/if};
             }());
         </script>
+      <ul id="js-payment-methods-sortable" class="ui-sortable payment-methods-sortable" data-tab-id="general_settings">
         {foreach $input.paymentMethods as $paymentMethod}
-            {assign var = 'methodObj' value=$paymentMethod.obj}
-            <div data-tab-id="general_settings" class="payment-method border border-bottom">
-                <a class="text collapsed" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id}"
-                   role="button"
-                   aria-expanded="true" aria-controls="#payment-method-form-{$paymentMethod.id}">
-                    <svg class="bi bi-chevron-compact-up mollie-svg" width="1em" height="1em" viewBox="0 0 16 16"
-                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                              d="M7.776 5.553a.5.5 0 01.448 0l6 3a.5.5 0 11-.448.894L8 6.56 2.224 9.447a.5.5 0 11-.448-.894l6-3z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    {l s=$paymentMethod.name mod='mollie'}
+          {assign var = 'methodObj' value=$paymentMethod.obj}
+          {if $paymentMethod.id === 'voucher'}{continue}{/if}
+          <li class="payment-method border border-bottom ui-sortable-handle">
+            <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+            <a class="text collapsed" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id}"
+               role="button"
+               aria-expanded="true" aria-controls="#payment-method-form-{$paymentMethod.id}">
+              <svg class="bi bi-chevron-compact-up mollie-svg" width="1em" height="1em" viewBox="0 0 16 16"
+                   fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M7.776 5.553a.5.5 0 01.448 0l6 3a.5.5 0 11-.448.894L8 6.56 2.224 9.447a.5.5 0 11-.448-.894l6-3z"
+                      clip-rule="evenodd"/>
+              </svg>
+              {l s=$paymentMethod.name mod='mollie'}
+            </a>
+            <td class="text-center">
+              {if $methodObj->enabled}
+                <a href="#" class="payment-check-link"
+                   data-action="deactivate"
+                   onclick="togglePaymentMethod(this, '{$paymentMethod.id}'); return false;">
+                  <i class="icon-check text-success"></i>
                 </a>
-                <td class="text-center">
-                    {if $methodObj->enabled}
-                        <a href="#" class="payment-check-link"
-                           data-action="deactivate"
-                           onclick="togglePaymentMethod(this, '{$paymentMethod.id}'); return false;">
-                            <i class="icon-check text-success"></i>
-                        </a>
-                    {else}
-                        <a href="#" class="payment-check-link"
-                           data-action="activate"
-                           onclick="togglePaymentMethod(this, '{$paymentMethod.id}'); return false;">
-                            <i class="icon-remove text-danger"></i>
-                        </a>
+              {else}
+                <a href="#" class="payment-check-link"
+                   data-action="activate"
+                   onclick="togglePaymentMethod(this, '{$paymentMethod.id}'); return false;">
+                  <i class="icon-remove text-danger"></i>
+                </a>
+              {/if}
+            </td>
+            <div class="collapse multi-collapse" id="payment-method-form-{$paymentMethod.id}">
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Enabled' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_ENABLED_{$paymentMethod.id}" class="fixed-width-xl">
+                    <option value="0" {if $methodObj->enabled === '0'} selected {/if}>{l s='No' mod='mollie'}</option>
+                    <option value="1" {if $methodObj->enabled === '1'} selected {/if}>{l s='Yes' mod='mollie'}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Title' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <input type="text" name="MOLLIE_METHOD_TITLE_{$paymentMethod.id}" class="fixed-width-xl"
+                         value="{$methodObj->title}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Method' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_API_{$paymentMethod.id}" class="fixed-width-xl">
+                    {if !in_array($paymentMethod.id, $input.onlyOrderMethods)}
+                      <option value="payments" {if $methodObj->method === 'payments'} selected {/if}>{l s='Payments API' mod='mollie'}</option>
                     {/if}
-                </td>
-                <div class="collapse multi-collapse" id="payment-method-form-{$paymentMethod.id}">
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Enabled' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_ENABLED_{$paymentMethod.id}" class="fixed-width-xl">
-                                <option value="0" {if $methodObj->enabled === '0'} selected {/if}>{l s='No' mod='mollie'}</option>
-                                <option value="1" {if $methodObj->enabled === '1'} selected {/if}>{l s='Yes' mod='mollie'}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Title' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <input type="text" name="MOLLIE_METHOD_TITLE_{$paymentMethod.id}" class="fixed-width-xl"
-                                   value="{$methodObj->title}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Method' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_API_{$paymentMethod.id}" class="fixed-width-xl">
-                                {if !in_array($paymentMethod.id, $input.onlyOrderMethods)}
-                                    <option value="payments" {if $methodObj->method === 'payments'} selected {/if}>{l s='Payments API' mod='mollie'}</option>
-                                {/if}
-                                <option value="orders" {if $methodObj->method === 'orders'} selected {/if}>{l s='Orders API' mod='mollie'}</option>
-                            </select>
-                            <p class="help-block">
-                                {$input.methodDescription}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="form-group payment-api-description">
-                        <label class="control-label col-lg-3 required">
-                            {l s='Description' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <input type="text" name="MOLLIE_METHOD_DESCRIPTION_{$paymentMethod.id}"
-                                   class="fixed-width-xl"
-                                    {if !empty($methodObj->description)}
-                                        value="{$methodObj->description}"
-                                    {else}
-                                        value='{literal}{orderNumber}{/literal}'
-                                    {/if}
-                                   required="required">
-                            <p class="help-block">
-                                {l s='The description to be used for this transaction. These variables are available:' mod='mollie'}
-                            </p>
-                            <p class="help-block">
-                                <b>{l s='{orderNumber}' mod='mollie'}</b>,
-                                <b>{l s='{storeName}' mod='mollie'}</b>,
-                                <b>{l s='{cart.id}' mod='mollie'}</b>,
-                                <b>{l s='{order.reference}' mod='mollie'}</b>,
-                                <b>{l s='{customer.firstname}' mod='mollie'}</b>,
-                                <b>{l s='{customer.lastname}' mod='mollie'}</b>,
-                                <b>{l s='{customer.company}' mod='mollie'}</b>,
-                            </p>
-                            <p class="help-block">
-                                {l s='(Note: This only works when the method is set to Payments API)' mod='mollie'}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Payment allowed from:' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_APPLICABLE_COUNTRIES_{$paymentMethod.id}"
-                                    class="fixed-width-xl">
-                                <option value="0" {if $methodObj->is_countries_applicable === '0'} selected {/if}>{l s='All countries' mod='mollie'}</option>
-                                <option value="1" {if $methodObj->is_countries_applicable === '1'} selected {/if}>{l s='Selected Countries' mod='mollie'}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Allow payment from specific countries:' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_CERTAIN_COUNTRIES_{$paymentMethod.id}[]"
-                                    class="fixed-width-xl chosen mollie-chosen" multiple="multiple">
-                                {foreach $input.countries as $country}
-                                    <option value="{$country.id}"
-                                            {if {$country.id|in_array:$paymentMethod.countries}}selected{/if}>{$country.name}</option>
-                                {/foreach}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Exclude payment from specific countries:' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_EXCLUDE_CERTAIN_COUNTRIES_{$paymentMethod.id}[]"
-                                    class="fixed-width-xl chosen mollie-chosen" multiple="multiple">
-                                {foreach $input.countries as $excludedCountry}
-                                    <option value="{$excludedCountry.id}"
-                                            {if {$excludedCountry.id|in_array:$paymentMethod.excludedCountries}}selected{/if}>{$excludedCountry.name}</option>
-                                {/foreach}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Payment Surcharge' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <select name="MOLLIE_METHOD_SURCHARGE_TYPE_{$paymentMethod.id}"
-                                    class="fixed-width-xl">
-                                <option value="0" {if $methodObj->surcharge === '0'} selected {/if}>
-                                    {l s='No fee' mod='mollie'}
-                                </option>
-                                <option value="1" {if $methodObj->surcharge === '1'} selected {/if}>
-                                    {l s='Fixed Fee' mod='mollie'}
-                                </option>
-                                <option value="2" {if $methodObj->surcharge === '2'} selected {/if}>
-                                    {l s='Percentage' mod='mollie'}
-                                </option>
-                                <option value="3" {if $methodObj->surcharge === '3'} selected {/if}>
-                                    {l s='Fixed Fee and Percentage' mod='mollie'}
-                                </option>
-                            </select>
-                            <p class="help-block">
-                                {l s='You can display payment fee in your email template by adding "{payment_fee}" in email translations. For more information visit: ' mod='mollie'}
-                                <a href='http://doc.prestashop.com/display/PS17/Translations#Translations-Emailtemplates'
-                                   target="_blank">{l s='Translations.' mod='mollie'}</a>
-                            </p>
-                            <p class="help-block">
-                                {l s="The total surcharge fee should have taxes included." mod='mollie'}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Payment Surcharge Fixed Amount' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <input type="text" name="MOLLIE_METHOD_SURCHARGE_FIXED_AMOUNT_{$paymentMethod.id}"
-                                   class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_fixed_amount}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Payment Surcharge percentage' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <input type="text" name="MOLLIE_METHOD_SURCHARGE_PERCENTAGE_{$paymentMethod.id}"
-                                   class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_percentage}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-3">
-                            {l s='Payment Surcharge limit' mod='mollie'}
-                        </label>
-                        <div class="col-lg-9">
-                            <input type="text" name="MOLLIE_METHOD_SURCHARGE_LIMIT_{$paymentMethod.id}"
-                                   class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_limit}">
-                        </div>
-                    </div>
-                    {if $paymentMethod.id === 'creditcard'}
-                        <div class="form-group">
-                            <label class="control-label col-lg-3">
-                                {l s='Use Custom Logo' mod='mollie'}
-                            </label>
-                            <div class="col-lg-9">
-                                <select name="MOLLIE_SHOW_CUSTOM_LOGO"
-                                        class="fixed-width-xl">
-                                    <option value="0" {if $input.showCustomLogo === '0'} selected {/if}>
-                                        {l s='No' mod='mollie'}
-                                    </option>
-                                    <option value="1" {if $input.showCustomLogo === '1'} selected {/if}>
-                                        {l s='Yes, Upload custom logo' mod='mollie'}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group js-form-group-custom-logo">
-                            <label class="control-label col-lg-3">
-                            </label>
-                            <div class="col-lg-4">
-                                <input id="MOLLIE_CUSTOM_LOGO"
-                                       type="file"
-                                       name="MOLLIE_CUSTOM_LOGO"
-                                       class="hide"
-                                       accept=".png, .jpg"
-                                >
-                                <div class="dummyfile input-group">
-                                    <span class="input-group-addon"><i class="icon-file"></i></span>
-                                    <input id="MOLLIE_CUSTOM_LOGO-name"
-                                           type="text"
-                                           name="MOLLIE_CUSTOM_LOGO"
-                                           readonly=""
-                                    >
-                                    <span class="input-group-btn">
+                    <option value="orders" {if $methodObj->method === 'orders'} selected {/if}>{l s='Orders API' mod='mollie'}</option>
+                  </select>
+                  <p class="help-block">
+                    {$input.methodDescription}
+                  </p>
+                </div>
+              </div>
+              <div class="form-group payment-api-description">
+                <label class="control-label col-lg-3 required">
+                  {l s='Description' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <input type="text" name="MOLLIE_METHOD_DESCRIPTION_{$paymentMethod.id}"
+                         class="fixed-width-xl"
+                          {if !empty($methodObj->description)}
+                            value="{$methodObj->description}"
+                          {else}
+                            value='{literal}{orderNumber}{/literal}'
+                          {/if}
+                         required="required">
+                  <p class="help-block">
+                    {l s='The description to be used for this transaction. These variables are available:' mod='mollie'}
+                  </p>
+                  <p class="help-block">
+                    <b>{l s='{orderNumber}' mod='mollie'}</b>,
+                    <b>{l s='{storeName}' mod='mollie'}</b>,
+                    <b>{l s='{cart.id}' mod='mollie'}</b>,
+                    <b>{l s='{order.reference}' mod='mollie'}</b>,
+                    <b>{l s='{customer.firstname}' mod='mollie'}</b>,
+                    <b>{l s='{customer.lastname}' mod='mollie'}</b>,
+                    <b>{l s='{customer.company}' mod='mollie'}</b>,
+                  </p>
+                  <p class="help-block">
+                    {l s='(Note: This only works when the method is set to Payments API)' mod='mollie'}
+                  </p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Payment allowed from:' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_APPLICABLE_COUNTRIES_{$paymentMethod.id}"
+                          class="fixed-width-xl">
+                    <option value="0" {if $methodObj->is_countries_applicable === '0'} selected {/if}>{l s='All countries' mod='mollie'}</option>
+                    <option value="1" {if $methodObj->is_countries_applicable === '1'} selected {/if}>{l s='Selected Countries' mod='mollie'}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Allow payment from specific countries:' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_CERTAIN_COUNTRIES_{$paymentMethod.id}[]"
+                          class="fixed-width-xl chosen mollie-chosen" multiple="multiple">
+                    {foreach $input.countries as $country}
+                      <option value="{$country.id}"
+                              {if {$country.id|in_array:$paymentMethod.countries}}selected{/if}>{$country.name}</option>
+                    {/foreach}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Exclude payment from specific countries:' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_EXCLUDE_CERTAIN_COUNTRIES_{$paymentMethod.id}[]"
+                          class="fixed-width-xl chosen mollie-chosen" multiple="multiple">
+                    {foreach $input.countries as $excludedCountry}
+                      <option value="{$excludedCountry.id}"
+                              {if {$excludedCountry.id|in_array:$paymentMethod.excludedCountries}}selected{/if}>{$excludedCountry.name}</option>
+                    {/foreach}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Payment Surcharge' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <select name="MOLLIE_METHOD_SURCHARGE_TYPE_{$paymentMethod.id}"
+                          class="fixed-width-xl">
+                    <option value="0" {if $methodObj->surcharge === '0'} selected {/if}>
+                      {l s='No fee' mod='mollie'}
+                    </option>
+                    <option value="1" {if $methodObj->surcharge === '1'} selected {/if}>
+                      {l s='Fixed Fee' mod='mollie'}
+                    </option>
+                    <option value="2" {if $methodObj->surcharge === '2'} selected {/if}>
+                      {l s='Percentage' mod='mollie'}
+                    </option>
+                    <option value="3" {if $methodObj->surcharge === '3'} selected {/if}>
+                      {l s='Fixed Fee and Percentage' mod='mollie'}
+                    </option>
+                  </select>
+                  <p class="help-block">
+                    {l s='You can display payment fee in your email template by adding "{payment_fee}" in email translations. For more information visit: ' mod='mollie'}
+                    <a href='http://doc.prestashop.com/display/PS17/Translations#Translations-Emailtemplates'
+                       target="_blank">{l s='Translations.' mod='mollie'}</a>
+                  </p>
+                  <p class="help-block">
+                    {l s="The total surcharge fee should have taxes included." mod='mollie'}
+                  </p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Payment Surcharge Fixed Amount' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <input type="text" name="MOLLIE_METHOD_SURCHARGE_FIXED_AMOUNT_{$paymentMethod.id}"
+                         class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_fixed_amount}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Payment Surcharge percentage' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <input type="text" name="MOLLIE_METHOD_SURCHARGE_PERCENTAGE_{$paymentMethod.id}"
+                         class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_percentage}">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-lg-3">
+                  {l s='Payment Surcharge limit' mod='mollie'}
+                </label>
+                <div class="col-lg-9">
+                  <input type="text" name="MOLLIE_METHOD_SURCHARGE_LIMIT_{$paymentMethod.id}"
+                         class="fixed-width-xl js-mollie-amount" value="{$methodObj->surcharge_limit}">
+                </div>
+              </div>
+              {if $paymentMethod.id === 'creditcard'}
+                <div class="form-group">
+                  <label class="control-label col-lg-3">
+                    {l s='Use Custom Logo' mod='mollie'}
+                  </label>
+                  <div class="col-lg-9">
+                    <select name="MOLLIE_SHOW_CUSTOM_LOGO"
+                            class="fixed-width-xl">
+                      <option value="0" {if $input.showCustomLogo === '0'} selected {/if}>
+                        {l s='No' mod='mollie'}
+                      </option>
+                      <option value="1" {if $input.showCustomLogo === '1'} selected {/if}>
+                        {l s='Yes, Upload custom logo' mod='mollie'}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group js-form-group-custom-logo">
+                  <label class="control-label col-lg-3">
+                  </label>
+                  <div class="col-lg-4">
+                    <input id="MOLLIE_CUSTOM_LOGO"
+                           type="file"
+                           name="MOLLIE_CUSTOM_LOGO"
+                           class="hide"
+                           accept=".png, .jpg"
+                    >
+                    <div class="dummyfile input-group">
+                      <span class="input-group-addon"><i class="icon-file"></i></span>
+                      <input id="MOLLIE_CUSTOM_LOGO-name"
+                             type="text"
+                             name="MOLLIE_CUSTOM_LOGO"
+                             readonly=""
+                      >
+                      <span class="input-group-btn">
                                         <button id="MOLLIE_CUSTOM_LOGO-selectbutton" type="button"
                                                 name="submitAddAttachments"
                                                 class="btn btn-default">
@@ -308,54 +311,56 @@
                                             {l s='Add file' mod='mollie'}
                                         </button>
 						        	</span>
-                                </div>
-                                <p class="help-block">
-                                    {l s='Please use .png/.jpg logo with max size of 256x64.' mod='mollie'}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="form-group js-form-group-custom-logo">
-                            <label class="control-label col-lg-3">
-                                {l s='Your custom logo' mod='mollie'}
-                            </label>
-                            <div class="col-lg-9">
-                                <img src="{$input.customLogoUrl}"
-                                     class="js-mollie-credit-card-custom-logo
+                    </div>
+                    <p class="help-block">
+                      {l s='Please use .png/.jpg logo with max size of 256x64.' mod='mollie'}
+                    </p>
+                  </div>
+                </div>
+                <div class="form-group js-form-group-custom-logo">
+                  <label class="control-label col-lg-3">
+                    {l s='Your custom logo' mod='mollie'}
+                  </label>
+                  <div class="col-lg-9">
+                    <img src="{$input.customLogoUrl}"
+                         class="js-mollie-credit-card-custom-logo
                                      {if $input.customLogoExist === false}hidden{/if}
                                 ">
-                            </div>
-                        </div>
-                    {/if}
-                    {if $paymentMethod.id === 'voucher'}
-                        <div class="form-group">
-                            <label class="control-label col-lg-3">
-                                {l s='Category' mod='mollie'}
-                            </label>
-                            <div class="col-lg-9">
-                                <select name="MOLLIE_VOUCHER_CATEGORY"
-                                        class="fixed-width-xl">
-                                    <option value="null" {if $input.voucherCategory === 'null'} selected {/if}>
-                                        {l s='None' mod='mollie'}
-                                    </option>
-                                    <option value="meal" {if $input.voucherCategory === 'meal'} selected {/if}>
-                                        {l s='meal' mod='mollie'}
-                                    </option>
-                                    <option value="gift" {if $input.voucherCategory === 'gift'} selected {/if}>
-                                        {l s='gift' mod='mollie'}
-                                    </option>
-                                    <option value="eco" {if $input.voucherCategory === 'eco'} selected {/if}>
-                                        {l s='eco' mod='mollie'}
-                                    </option>
-                                </select>
-                                <p class="help-block">
-                                    {l s="The category selected here will be used for all products in your webshop." mod='mollie'}
-                                </p>
-                            </div>
-                        </div>
-                    {/if}
+                  </div>
                 </div>
+              {/if}
+              {if $paymentMethod.id === 'voucher'}
+                <div class="form-group">
+                  <label class="control-label col-lg-3">
+                    {l s='Category' mod='mollie'}
+                  </label>
+                  <div class="col-lg-9">
+                    <select name="MOLLIE_VOUCHER_CATEGORY"
+                            class="fixed-width-xl">
+                      <option value="null" {if $input.voucherCategory === 'null'} selected {/if}>
+                        {l s='None' mod='mollie'}
+                      </option>
+                      <option value="meal" {if $input.voucherCategory === 'meal'} selected {/if}>
+                        {l s='meal' mod='mollie'}
+                      </option>
+                      <option value="gift" {if $input.voucherCategory === 'gift'} selected {/if}>
+                        {l s='gift' mod='mollie'}
+                      </option>
+                      <option value="eco" {if $input.voucherCategory === 'eco'} selected {/if}>
+                        {l s='eco' mod='mollie'}
+                      </option>
+                    </select>
+                    <p class="help-block">
+                      {l s="The category selected here will be used for all products in your webshop." mod='mollie'}
+                    </p>
+                  </div>
+                </div>
+              {/if}
             </div>
+          </li>
         {/foreach}
+      </ul>
+
         {foreach $webpack_urls as $webpack_url}
             <script type="text/javascript" src={$webpack_url}></script>
         {/foreach}

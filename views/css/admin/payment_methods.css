@@ -1,0 +1,5 @@
+.payment-methods-sortable {
+  list-style-type: none;
+  /* giving some room for drag action */
+  padding-bottom: 40px;
+}
