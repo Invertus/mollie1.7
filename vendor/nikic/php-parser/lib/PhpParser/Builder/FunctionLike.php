@@ -1,29 +1,25 @@
 <?php
 
-namespace PhpParser\Builder;
+namespace MolliePrefix\PhpParser\Builder;
 
-use PhpParser;
-use PhpParser\Node;
-
-abstract class FunctionLike extends Declaration
+use MolliePrefix\PhpParser;
+use MolliePrefix\PhpParser\Node;
+abstract class FunctionLike extends \MolliePrefix\PhpParser\Builder\Declaration
 {
-    protected $returnByRef = false;
+    protected $returnByRef = \false;
     protected $params = array();
-
     /** @var string|Node\Name|Node\NullableType|null */
     protected $returnType = null;
-
     /**
      * Make the function return by reference.
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function makeReturnByRef() {
-        $this->returnByRef = true;
-
+    public function makeReturnByRef()
+    {
+        $this->returnByRef = \true;
         return $this;
     }
-
     /**
      * Adds a parameter.
      *
@@ -31,18 +27,15 @@ abstract class FunctionLike extends Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function addParam($param) {
+    public function addParam($param)
+    {
         $param = $this->normalizeNode($param);
-
-        if (!$param instanceof Node\Param) {
-            throw new \LogicException(sprintf('Expected parameter node, got "%s"', $param->getType()));
+        if (!$param instanceof \MolliePrefix\PhpParser\Node\Param) {
+            throw new \LogicException(\sprintf('Expected parameter node, got "%s"', $param->getType()));
         }
-
         $this->params[] = $param;
-
         return $this;
     }
-
     /**
      * Adds multiple parameters.
      *
@@ -50,14 +43,13 @@ abstract class FunctionLike extends Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function addParams(array $params) {
+    public function addParams(array $params)
+    {
         foreach ($params as $param) {
             $this->addParam($param);
         }
-
         return $this;
     }
-
     /**
      * Sets the return type for PHP 7.
      *
@@ -69,7 +61,6 @@ abstract class FunctionLike extends Declaration
     public function setReturnType($type)
     {
         $this->returnType = $this->normalizeType($type);
-
         return $this;
     }
 }

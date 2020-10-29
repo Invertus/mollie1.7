@@ -9,97 +9,76 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tests\Test;
 
-namespace PhpCsFixer\Tests\Test;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\AbstractProxyFixer;
-use PhpCsFixer\Linter\CachingLinter;
-use PhpCsFixer\Linter\Linter;
-use PhpCsFixer\Linter\LinterInterface;
-use PhpCsFixer\Tests\Test\Assert\AssertTokensTrait;
-use PhpCsFixer\Tests\TestCase;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-use Prophecy\Argument;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
+use MolliePrefix\PhpCsFixer\Linter\CachingLinter;
+use MolliePrefix\PhpCsFixer\Linter\Linter;
+use MolliePrefix\PhpCsFixer\Linter\LinterInterface;
+use MolliePrefix\PhpCsFixer\Tests\Test\Assert\AssertTokensTrait;
+use MolliePrefix\PhpCsFixer\Tests\TestCase;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+use MolliePrefix\Prophecy\Argument;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-abstract class AbstractFixerTestCase extends TestCase
+abstract class AbstractFixerTestCase extends \MolliePrefix\PhpCsFixer\Tests\TestCase
 {
     use AssertTokensTrait;
     use IsIdenticalConstraint;
-
     /**
      * @var null|LinterInterface
      */
     protected $linter;
-
     /**
      * @var null|AbstractFixer
      */
     protected $fixer;
-
     protected function setUp()
     {
         parent::setUp();
-
         $this->linter = $this->getLinter();
         $this->fixer = $this->createFixer();
-
         // @todo remove at 3.0 together with env var itself
-        if (getenv('PHP_CS_FIXER_TEST_USE_LEGACY_TOKENIZER')) {
-            Tokens::setLegacyMode(true);
+        if (\getenv('PHP_CS_FIXER_TEST_USE_LEGACY_TOKENIZER')) {
+            \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::setLegacyMode(\true);
         }
     }
-
     protected function tearDown()
     {
         parent::tearDown();
-
         $this->linter = null;
         $this->fixer = null;
-
         // @todo remove at 3.0
-        Tokens::setLegacyMode(false);
+        \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::setLegacyMode(\false);
     }
-
-    final public function testIsRisky()
+    public final function testIsRisky()
     {
-        static::assertInternalType('bool', $this->fixer->isRisky(), sprintf('Return type for ::isRisky of "%s" is invalid.', $this->fixer->getName()));
-
+        static::assertInternalType('bool', $this->fixer->isRisky(), \sprintf('Return type for ::isRisky of "%s" is invalid.', $this->fixer->getName()));
         if ($this->fixer->isRisky()) {
             self::assertValidDescription($this->fixer->getName(), 'risky description', $this->fixer->getDefinition()->getRiskyDescription());
         } else {
-            static::assertNull($this->fixer->getDefinition()->getRiskyDescription(), sprintf('[%s] Fixer is not risky so no description of it expected.', $this->fixer->getName()));
+            static::assertNull($this->fixer->getDefinition()->getRiskyDescription(), \sprintf('[%s] Fixer is not risky so no description of it expected.', $this->fixer->getName()));
         }
-
-        if ($this->fixer instanceof AbstractProxyFixer) {
+        if ($this->fixer instanceof \MolliePrefix\PhpCsFixer\AbstractProxyFixer) {
             return;
         }
-
         $reflection = new \ReflectionMethod($this->fixer, 'isRisky');
-
         // If fixer is not risky then the method `isRisky` from `AbstractFixer` must be used
-        static::assertSame(
-            !$this->fixer->isRisky(),
-            AbstractFixer::class === $reflection->getDeclaringClass()->getName()
-        );
+        static::assertSame(!$this->fixer->isRisky(), \MolliePrefix\PhpCsFixer\AbstractFixer::class === $reflection->getDeclaringClass()->getName());
     }
-
     /**
      * @return AbstractFixer
      */
     protected function createFixer()
     {
-        $fixerClassName = preg_replace('/^(PhpCsFixer)\\\\Tests(\\\\.+)Test$/', '$1$2', static::class);
-
+        $fixerClassName = \preg_replace('/^(PhpCsFixer)\\\\Tests(\\\\.+)Test$/', '$1$2', static::class);
         return new $fixerClassName();
     }
-
     /**
      * @param string $filename
      *
@@ -108,14 +87,11 @@ abstract class AbstractFixerTestCase extends TestCase
     protected function getTestFile($filename = __FILE__)
     {
         static $files = [];
-
         if (!isset($files[$filename])) {
             $files[$filename] = new \SplFileInfo($filename);
         }
-
         return $files[$filename];
     }
-
     /**
      * Tests if a fixer fixes a given string to match the expected result.
      *
@@ -135,63 +111,38 @@ abstract class AbstractFixerTestCase extends TestCase
         if ($expected === $input) {
             throw new \InvalidArgumentException('Input parameter must not be equal to expected parameter.');
         }
-
         $file = $file ?: $this->getTestFile();
         $fileIsSupported = $this->fixer->supports($file);
-
         if (null !== $input) {
             static::assertNull($this->lintSource($input));
-
-            Tokens::clearCache();
-            $tokens = Tokens::fromCode($input);
-
+            \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::clearCache();
+            $tokens = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::fromCode($input);
             if ($fileIsSupported) {
                 static::assertTrue($this->fixer->isCandidate($tokens), 'Fixer must be a candidate for input code.');
                 static::assertFalse($tokens->isChanged(), 'Fixer must not touch Tokens on candidate check.');
                 $fixResult = $this->fixer->fix($file, $tokens);
                 static::assertNull($fixResult, '->fix method must return null.');
             }
-
-            static::assertThat(
-                $tokens->generateCode(),
-                self::createIsIdenticalStringConstraint($expected),
-                'Code build on input code must match expected code.'
-            );
+            static::assertThat($tokens->generateCode(), self::createIsIdenticalStringConstraint($expected), 'Code build on input code must match expected code.');
             static::assertTrue($tokens->isChanged(), 'Tokens collection built on input code must be marked as changed after fixing.');
-
             $tokens->clearEmptyTokens();
-
-            static::assertSame(
-                \count($tokens),
-                \count(array_unique(array_map(static function (Token $token) {
-                    return spl_object_hash($token);
-                }, $tokens->toArray()))),
-                'Token items inside Tokens collection must be unique.'
-            );
-
-            Tokens::clearCache();
-            $expectedTokens = Tokens::fromCode($expected);
+            static::assertSame(\count($tokens), \count(\array_unique(\array_map(static function (\MolliePrefix\PhpCsFixer\Tokenizer\Token $token) {
+                return \spl_object_hash($token);
+            }, $tokens->toArray()))), 'Token items inside Tokens collection must be unique.');
+            \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::clearCache();
+            $expectedTokens = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::fromCode($expected);
             static::assertTokens($expectedTokens, $tokens);
         }
-
         static::assertNull($this->lintSource($expected));
-
-        Tokens::clearCache();
-        $tokens = Tokens::fromCode($expected);
-
+        \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::clearCache();
+        $tokens = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::fromCode($expected);
         if ($fileIsSupported) {
             $fixResult = $this->fixer->fix($file, $tokens);
             static::assertNull($fixResult, '->fix method must return null.');
         }
-
-        static::assertThat(
-            $tokens->generateCode(),
-            self::createIsIdenticalStringConstraint($expected),
-            'Code build on expected code must not change.'
-        );
+        static::assertThat($tokens->generateCode(), self::createIsIdenticalStringConstraint($expected), 'Code build on expected code must not change.');
         static::assertFalse($tokens->isChanged(), 'Tokens collection built on expected code must not be marked as changed after fixing.');
     }
-
     /**
      * @param string $source
      *
@@ -202,36 +153,27 @@ abstract class AbstractFixerTestCase extends TestCase
         try {
             $this->linter->lintSource($source)->check();
         } catch (\Exception $e) {
-            return $e->getMessage()."\n\nSource:\n{$source}";
+            return $e->getMessage() . "\n\nSource:\n{$source}";
         }
-
         return null;
     }
-
     /**
      * @return LinterInterface
      */
     private function getLinter()
     {
         static $linter = null;
-
         if (null === $linter) {
-            if (getenv('SKIP_LINT_TEST_CASES')) {
-                $linterProphecy = $this->prophesize(\PhpCsFixer\Linter\LinterInterface::class);
-                $linterProphecy
-                    ->lintSource(Argument::type('string'))
-                    ->willReturn($this->prophesize(\PhpCsFixer\Linter\LintingResultInterface::class)->reveal())
-                ;
-
+            if (\getenv('SKIP_LINT_TEST_CASES')) {
+                $linterProphecy = $this->prophesize(\MolliePrefix\PhpCsFixer\Linter\LinterInterface::class);
+                $linterProphecy->lintSource(\MolliePrefix\Prophecy\Argument::type('string'))->willReturn($this->prophesize(\MolliePrefix\PhpCsFixer\Linter\LintingResultInterface::class)->reveal());
                 $linter = $linterProphecy->reveal();
             } else {
-                $linter = new CachingLinter(new Linter());
+                $linter = new \MolliePrefix\PhpCsFixer\Linter\CachingLinter(new \MolliePrefix\PhpCsFixer\Linter\Linter());
             }
         }
-
         return $linter;
     }
-
     /**
      * @param string $fixerName
      * @param string $descriptionType
@@ -240,13 +182,12 @@ abstract class AbstractFixerTestCase extends TestCase
     private static function assertValidDescription($fixerName, $descriptionType, $description)
     {
         static::assertInternalType('string', $description);
-        static::assertRegExp('/^[A-Z`][^"]+\.$/', $description, sprintf('[%s] The %s must start with capital letter or a ` and end with dot.', $fixerName, $descriptionType));
-        static::assertNotContains('phpdocs', $description, sprintf('[%s] `PHPDoc` must not be in the plural in %s.', $fixerName, $descriptionType), true);
-        static::assertCorrectCasing($description, 'PHPDoc', sprintf('[%s] `PHPDoc` must be in correct casing in %s.', $fixerName, $descriptionType));
-        static::assertCorrectCasing($description, 'PHPUnit', sprintf('[%s] `PHPUnit` must be in correct casing in %s.', $fixerName, $descriptionType));
-        static::assertFalse(strpos($descriptionType, '``'), sprintf('[%s] The %s must no contain sequential backticks.', $fixerName, $descriptionType));
+        static::assertRegExp('/^[A-Z`][^"]+\\.$/', $description, \sprintf('[%s] The %s must start with capital letter or a ` and end with dot.', $fixerName, $descriptionType));
+        static::assertNotContains('phpdocs', $description, \sprintf('[%s] `PHPDoc` must not be in the plural in %s.', $fixerName, $descriptionType), \true);
+        static::assertCorrectCasing($description, 'PHPDoc', \sprintf('[%s] `PHPDoc` must be in correct casing in %s.', $fixerName, $descriptionType));
+        static::assertCorrectCasing($description, 'PHPUnit', \sprintf('[%s] `PHPUnit` must be in correct casing in %s.', $fixerName, $descriptionType));
+        static::assertFalse(\strpos($descriptionType, '``'), \sprintf('[%s] The %s must no contain sequential backticks.', $fixerName, $descriptionType));
     }
-
     /**
      * @param string $needle
      * @param string $haystack
@@ -254,6 +195,6 @@ abstract class AbstractFixerTestCase extends TestCase
      */
     private static function assertCorrectCasing($needle, $haystack, $message)
     {
-        static::assertSame(substr_count(strtolower($haystack), strtolower($needle)), substr_count($haystack, $needle), $message);
+        static::assertSame(\substr_count(\strtolower($haystack), \strtolower($needle)), \substr_count($haystack, $needle), $message);
     }
 }

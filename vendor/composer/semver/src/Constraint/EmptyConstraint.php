@@ -8,27 +8,24 @@
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
  */
-
-namespace Composer\Semver\Constraint;
+namespace MolliePrefix\Composer\Semver\Constraint;
 
 /**
  * Defines the absence of a constraint.
  */
-class EmptyConstraint implements ConstraintInterface
+class EmptyConstraint implements \MolliePrefix\Composer\Semver\Constraint\ConstraintInterface
 {
     /** @var string */
     protected $prettyString;
-
     /**
      * @param ConstraintInterface $provider
      *
      * @return bool
      */
-    public function matches(ConstraintInterface $provider)
+    public function matches(\MolliePrefix\Composer\Semver\Constraint\ConstraintInterface $provider)
     {
-        return true;
+        return \true;
     }
-
     /**
      * @param string $prettyString
      */
@@ -36,7 +33,6 @@ class EmptyConstraint implements ConstraintInterface
     {
         $this->prettyString = $prettyString;
     }
-
     /**
      * @return string
      */
@@ -45,10 +41,8 @@ class EmptyConstraint implements ConstraintInterface
         if ($this->prettyString) {
             return $this->prettyString;
         }
-
         return (string) $this;
     }
-
     /**
      * @return string
      */

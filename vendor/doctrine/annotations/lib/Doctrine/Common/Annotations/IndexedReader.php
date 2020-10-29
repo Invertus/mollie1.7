@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,31 +17,28 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-namespace Doctrine\Common\Annotations;
+namespace MolliePrefix\Doctrine\Common\Annotations;
 
 /**
  * Allows the reader to be used in-place of Doctrine's reader.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class IndexedReader implements Reader
+class IndexedReader implements \MolliePrefix\Doctrine\Common\Annotations\Reader
 {
     /**
      * @var Reader
      */
     private $delegate;
-
     /**
      * Constructor.
      *
      * @param Reader $reader
      */
-    public function __construct(Reader $reader)
+    public function __construct(\MolliePrefix\Doctrine\Common\Annotations\Reader $reader)
     {
         $this->delegate = $reader;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -48,12 +46,10 @@ class IndexedReader implements Reader
     {
         $annotations = array();
         foreach ($this->delegate->getClassAnnotations($class) as $annot) {
-            $annotations[get_class($annot)] = $annot;
+            $annotations[\get_class($annot)] = $annot;
         }
-
         return $annotations;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -61,7 +57,6 @@ class IndexedReader implements Reader
     {
         return $this->delegate->getClassAnnotation($class, $annotation);
     }
-
     /**
      * {@inheritDoc}
      */
@@ -69,12 +64,10 @@ class IndexedReader implements Reader
     {
         $annotations = array();
         foreach ($this->delegate->getMethodAnnotations($method) as $annot) {
-            $annotations[get_class($annot)] = $annot;
+            $annotations[\get_class($annot)] = $annot;
         }
-
         return $annotations;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -82,7 +75,6 @@ class IndexedReader implements Reader
     {
         return $this->delegate->getMethodAnnotation($method, $annotation);
     }
-
     /**
      * {@inheritDoc}
      */
@@ -90,12 +82,10 @@ class IndexedReader implements Reader
     {
         $annotations = array();
         foreach ($this->delegate->getPropertyAnnotations($property) as $annot) {
-            $annotations[get_class($annot)] = $annot;
+            $annotations[\get_class($annot)] = $annot;
         }
-
         return $annotations;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -103,7 +93,6 @@ class IndexedReader implements Reader
     {
         return $this->delegate->getPropertyAnnotation($property, $annotation);
     }
-
     /**
      * Proxies all methods to the delegate.
      *
@@ -114,6 +103,6 @@ class IndexedReader implements Reader
      */
     public function __call($method, $args)
     {
-        return call_user_func_array(array($this->delegate, $method), $args);
+        return \call_user_func_array(array($this->delegate, $method), $args);
     }
 }

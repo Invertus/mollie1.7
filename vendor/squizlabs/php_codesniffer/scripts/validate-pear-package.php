@@ -1,5 +1,7 @@
 #!/usr/bin/env php
-<?php
+<?php 
+namespace MolliePrefix;
+
 /**
  * Validate the PHP_CodeSniffer PEAR package.xml file.
  *
@@ -11,9 +13,7 @@
  * @copyright 2019 Juliette Reinders Folmer. All rights reserved.
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-
-require_once dirname(__DIR__).'/tests/FileList.php';
-require_once __DIR__.'/ValidatePEAR/ValidatePEARPackageXML.php';
-
-$validate = new ValidatePEARPackageXML();
+require_once \dirname(__DIR__) . '/tests/FileList.php';
+require_once __DIR__ . '/ValidatePEAR/ValidatePEARPackageXML.php';
+$validate = new \MolliePrefix\ValidatePEARPackageXML();
 $validate->validate();

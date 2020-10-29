@@ -1,16 +1,14 @@
 <?php
 
-namespace PhpParser\Node\Expr;
+namespace MolliePrefix\PhpParser\Node\Expr;
 
-use PhpParser\Node\Expr;
-
-class AssignRef extends Expr
+use MolliePrefix\PhpParser\Node\Expr;
+class AssignRef extends \MolliePrefix\PhpParser\Node\Expr
 {
     /** @var Expr Variable reference is assigned to */
     public $var;
     /** @var Expr Variable which is referenced */
     public $expr;
-
     /**
      * Constructs an assignment node.
      *
@@ -18,13 +16,14 @@ class AssignRef extends Expr
      * @param Expr  $expr       Expression
      * @param array $attributes Additional attributes
      */
-    public function __construct(Expr $var, Expr $expr, array $attributes = array()) {
+    public function __construct(\MolliePrefix\PhpParser\Node\Expr $var, \MolliePrefix\PhpParser\Node\Expr $expr, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->var = $var;
         $this->expr = $expr;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('var', 'expr');
     }
 }

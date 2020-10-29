@@ -1,9 +1,8 @@
 <?php
 
-namespace PhpParser\Node\Expr\BinaryOp;
+namespace MolliePrefix\PhpParser\Node\Expr\BinaryOp;
 
-use PhpParser\Node\Expr\BinaryOp;
-
-class BitwiseAnd extends BinaryOp
+use MolliePrefix\PhpParser\Node\Expr\BinaryOp;
+class BitwiseAnd extends \MolliePrefix\PhpParser\Node\Expr\BinaryOp
 {
 }

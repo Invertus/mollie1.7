@@ -9,11 +9,9 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer;
 
-namespace PhpCsFixer;
-
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Carlos Cirello <carlos.cirello.nl@gmail.com>
  *
@@ -26,8 +24,7 @@ abstract class AbstractAlignFixerHelper
     /**
      * @const Placeholder used as anchor for right alignment.
      */
-    const ALIGNABLE_PLACEHOLDER = "\x2 ALIGNABLE%d \x3";
-
+    const ALIGNABLE_PLACEHOLDER = "\2 ALIGNABLE%d \3";
     /**
      * Keep track of the deepest level ever achieved while
      * parsing the code. Used later to replace alignment
@@ -36,8 +33,7 @@ abstract class AbstractAlignFixerHelper
      * @var int
      */
     protected $deepestLevel = 0;
-
-    public function fix(Tokens $tokens)
+    public function fix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         // This fixer works partially on Tokens and partially on string representation of code.
         // During the process of fixing internal state of single Token may be affected by injecting ALIGNABLE_PLACEHOLDER to its content.
@@ -46,77 +42,62 @@ abstract class AbstractAlignFixerHelper
         // still be injected and removed, which will cause the `changed` flag to be set.
         // To handle that unwanted behavior we work on clone of Tokens collection and then override original collection with fixed collection.
         $tokensClone = clone $tokens;
-
         $this->injectAlignmentPlaceholders($tokensClone, 0, \count($tokens));
         $content = $this->replacePlaceholder($tokensClone);
-
         $tokens->setCode($content);
     }
-
     /**
      * Inject into the text placeholders of candidates of vertical alignment.
      *
      * @param int $startAt
      * @param int $endAt
      */
-    abstract protected function injectAlignmentPlaceholders(Tokens $tokens, $startAt, $endAt);
-
+    protected abstract function injectAlignmentPlaceholders(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startAt, $endAt);
     /**
      * Look for group of placeholders, and provide vertical alignment.
      *
      * @return string
      */
-    protected function replacePlaceholder(Tokens $tokens)
+    protected function replacePlaceholder(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         $tmpCode = $tokens->generateCode();
-
         for ($j = 0; $j <= $this->deepestLevel; ++$j) {
-            $placeholder = sprintf(self::ALIGNABLE_PLACEHOLDER, $j);
-
-            if (false === strpos($tmpCode, $placeholder)) {
+            $placeholder = \sprintf(self::ALIGNABLE_PLACEHOLDER, $j);
+            if (\false === \strpos($tmpCode, $placeholder)) {
                 continue;
             }
-
-            $lines = explode("\n", $tmpCode);
+            $lines = \explode("\n", $tmpCode);
             $linesWithPlaceholder = [];
             $blockSize = 0;
-
             $linesWithPlaceholder[$blockSize] = [];
-
             foreach ($lines as $index => $line) {
-                if (substr_count($line, $placeholder) > 0) {
+                if (\substr_count($line, $placeholder) > 0) {
                     $linesWithPlaceholder[$blockSize][] = $index;
                 } else {
                     ++$blockSize;
                     $linesWithPlaceholder[$blockSize] = [];
                 }
             }
-
             foreach ($linesWithPlaceholder as $group) {
                 if (\count($group) < 1) {
                     continue;
                 }
-
                 $rightmostSymbol = 0;
                 foreach ($group as $index) {
-                    $rightmostSymbol = max($rightmostSymbol, strpos(utf8_decode($lines[$index]), $placeholder));
+                    $rightmostSymbol = \max($rightmostSymbol, \strpos(\utf8_decode($lines[$index]), $placeholder));
                 }
-
                 foreach ($group as $index) {
                     $line = $lines[$index];
-                    $currentSymbol = strpos(utf8_decode($line), $placeholder);
-                    $delta = abs($rightmostSymbol - $currentSymbol);
-
+                    $currentSymbol = \strpos(\utf8_decode($line), $placeholder);
+                    $delta = \abs($rightmostSymbol - $currentSymbol);
                     if ($delta > 0) {
-                        $line = str_replace($placeholder, str_repeat(' ', $delta).$placeholder, $line);
+                        $line = \str_replace($placeholder, \str_repeat(' ', $delta) . $placeholder, $line);
                         $lines[$index] = $line;
                     }
                 }
             }
-
-            $tmpCode = str_replace($placeholder, '', implode("\n", $lines));
+            $tmpCode = \str_replace($placeholder, '', \implode("\n", $lines));
         }
-
         return $tmpCode;
     }
 }

@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Finder\Iterator;
+namespace MolliePrefix\Symfony\Component\Finder\Iterator;
 
 /**
  * SortableIterator applies a sort on a given Iterator.
@@ -23,10 +22,8 @@ class SortableIterator implements \IteratorAggregate
     const SORT_BY_ACCESSED_TIME = 3;
     const SORT_BY_CHANGED_TIME = 4;
     const SORT_BY_MODIFIED_TIME = 5;
-
     private $iterator;
     private $sort;
-
     /**
      * @param \Traversable $iterator The Iterator to filter
      * @param int|callable $sort     The sort type (SORT_BY_NAME, SORT_BY_TYPE, or a PHP callback)
@@ -36,10 +33,9 @@ class SortableIterator implements \IteratorAggregate
     public function __construct(\Traversable $iterator, $sort)
     {
         $this->iterator = $iterator;
-
         if (self::SORT_BY_NAME === $sort) {
             $this->sort = static function ($a, $b) {
-                return strcmp($a->getRealPath() ?: $a->getPathname(), $b->getRealPath() ?: $b->getPathname());
+                return \strcmp($a->getRealPath() ?: $a->getPathname(), $b->getRealPath() ?: $b->getPathname());
             };
         } elseif (self::SORT_BY_TYPE === $sort) {
             $this->sort = static function ($a, $b) {
@@ -48,8 +44,7 @@ class SortableIterator implements \IteratorAggregate
                 } elseif ($a->isFile() && $b->isDir()) {
                     return 1;
                 }
-
-                return strcmp($a->getRealPath() ?: $a->getPathname(), $b->getRealPath() ?: $b->getPathname());
+                return \strcmp($a->getRealPath() ?: $a->getPathname(), $b->getRealPath() ?: $b->getPathname());
             };
         } elseif (self::SORT_BY_ACCESSED_TIME === $sort) {
             $this->sort = static function ($a, $b) {
@@ -69,12 +64,10 @@ class SortableIterator implements \IteratorAggregate
             throw new \InvalidArgumentException('The SortableIterator takes a PHP callable or a valid built-in sort algorithm as an argument.');
         }
     }
-
     public function getIterator()
     {
-        $array = iterator_to_array($this->iterator, true);
-        uasort($array, $this->sort);
-
+        $array = \iterator_to_array($this->iterator, \true);
+        \uasort($array, $this->sort);
         return new \ArrayIterator($array);
     }
 }

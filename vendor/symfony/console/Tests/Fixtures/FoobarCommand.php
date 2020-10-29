@@ -1,25 +1,22 @@
 <?php
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace MolliePrefix;
 
-class FoobarCommand extends Command
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+class FoobarCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
 {
     public $input;
     public $output;
-
     protected function configure()
     {
-        $this
-            ->setName('foobar:foo')
-            ->setDescription('The foobar:foo command')
-        ;
+        $this->setName('foobar:foo')->setDescription('The foobar:foo command');
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
     }
 }
+\class_alias('MolliePrefix\\FoobarCommand', 'MolliePrefix\\FoobarCommand', \false);

@@ -9,12 +9,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Analyzer;
 
-namespace PhpCsFixer\Tokenizer\Analyzer;
-
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Kuba Werłos <werlos@gmail.com>
  *
@@ -28,40 +26,33 @@ final class BlocksAnalyzer
      *
      * @return bool
      */
-    public function isBlock(Tokens $tokens, $openIndex, $closeIndex)
+    public function isBlock(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $openIndex, $closeIndex)
     {
         if (null === $openIndex || null === $closeIndex) {
-            return false;
+            return \false;
         }
-
         if (!$tokens->offsetExists($openIndex)) {
-            return false;
+            return \false;
         }
-
         if (!$tokens->offsetExists($closeIndex)) {
-            return false;
+            return \false;
         }
-
         $blockType = $this->getBlockType($tokens[$openIndex]);
-
         if (null === $blockType) {
-            return false;
+            return \false;
         }
-
         return $closeIndex === $tokens->findBlockEnd($blockType, $openIndex);
     }
-
     /**
      * @return null|int
      */
-    private function getBlockType(Token $token)
+    private function getBlockType(\MolliePrefix\PhpCsFixer\Tokenizer\Token $token)
     {
-        foreach (Tokens::getBlockEdgeDefinitions() as $blockType => $definition) {
+        foreach (\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::getBlockEdgeDefinitions() as $blockType => $definition) {
             if ($token->equals($definition['start'])) {
                 return $blockType;
             }
         }
-
         return null;
     }
 }

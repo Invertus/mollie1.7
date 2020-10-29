@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Finder\Comparator;
+namespace MolliePrefix\Symfony\Component\Finder\Comparator;
 
 /**
  * Comparator.
@@ -20,7 +19,6 @@ class Comparator
 {
     private $target;
     private $operator = '==';
-
     /**
      * Gets the target value.
      *
@@ -30,7 +28,6 @@ class Comparator
     {
         return $this->target;
     }
-
     /**
      * Sets the target value.
      *
@@ -40,7 +37,6 @@ class Comparator
     {
         $this->target = $target;
     }
-
     /**
      * Gets the comparison operator.
      *
@@ -50,7 +46,6 @@ class Comparator
     {
         return $this->operator;
     }
-
     /**
      * Sets the comparison operator.
      *
@@ -63,14 +58,11 @@ class Comparator
         if (!$operator) {
             $operator = '==';
         }
-
         if (!\in_array($operator, ['>', '<', '>=', '<=', '==', '!='])) {
-            throw new \InvalidArgumentException(sprintf('Invalid operator "%s".', $operator));
+            throw new \InvalidArgumentException(\sprintf('Invalid operator "%s".', $operator));
         }
-
         $this->operator = $operator;
     }
-
     /**
      * Tests against the target.
      *
@@ -92,7 +84,6 @@ class Comparator
             case '!=':
                 return $test != $this->target;
         }
-
         return $test == $this->target;
     }
 }

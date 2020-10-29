@@ -8,33 +8,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Event;
 
-namespace Symfony\Component\Console\Event;
-
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\Event;
-
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+use MolliePrefix\Symfony\Component\EventDispatcher\Event;
 /**
  * Allows to inspect input and output of a command.
  *
  * @author Francesco Levorato <git@flevour.net>
  */
-class ConsoleEvent extends Event
+class ConsoleEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
 {
     protected $command;
-
     private $input;
     private $output;
-
-    public function __construct(Command $command = null, InputInterface $input, OutputInterface $output)
+    public function __construct(\MolliePrefix\Symfony\Component\Console\Command\Command $command = null, \MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
         $this->command = $command;
         $this->input = $input;
         $this->output = $output;
     }
-
     /**
      * Gets the command that is executed.
      *
@@ -44,7 +39,6 @@ class ConsoleEvent extends Event
     {
         return $this->command;
     }
-
     /**
      * Gets the input instance.
      *
@@ -54,7 +48,6 @@ class ConsoleEvent extends Event
     {
         return $this->input;
     }
-
     /**
      * Gets the output instance.
      *

@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Finder\Iterator;
+namespace MolliePrefix\Symfony\Component\Finder\Iterator;
 
 /**
  * CustomFilterIterator filters files by applying anonymous functions.
@@ -19,10 +18,9 @@ namespace Symfony\Component\Finder\Iterator;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class CustomFilterIterator extends FilterIterator
+class CustomFilterIterator extends \MolliePrefix\Symfony\Component\Finder\Iterator\FilterIterator
 {
     private $filters = [];
-
     /**
      * @param \Iterator  $iterator The Iterator to filter
      * @param callable[] $filters  An array of PHP callbacks
@@ -37,10 +35,8 @@ class CustomFilterIterator extends FilterIterator
             }
         }
         $this->filters = $filters;
-
         parent::__construct($iterator);
     }
-
     /**
      * Filters the iterator values.
      *
@@ -49,13 +45,11 @@ class CustomFilterIterator extends FilterIterator
     public function accept()
     {
         $fileinfo = $this->current();
-
         foreach ($this->filters as $filter) {
-            if (false === \call_user_func($filter, $fileinfo)) {
-                return false;
+            if (\false === \call_user_func($filter, $fileinfo)) {
+                return \false;
             }
         }
-
-        return true;
+        return \true;
     }
 }

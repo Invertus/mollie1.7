@@ -1,10 +1,9 @@
 <?php
 
-namespace PhpParser\Node;
+namespace MolliePrefix\PhpParser\Node;
 
-use PhpParser\NodeAbstract;
-
-class Arg extends NodeAbstract
+use MolliePrefix\PhpParser\NodeAbstract;
+class Arg extends \MolliePrefix\PhpParser\NodeAbstract
 {
     /** @var Expr Value to pass */
     public $value;
@@ -12,7 +11,6 @@ class Arg extends NodeAbstract
     public $byRef;
     /** @var bool Whether to unpack the argument */
     public $unpack;
-
     /**
      * Constructs a function call argument node.
      *
@@ -21,14 +19,15 @@ class Arg extends NodeAbstract
      * @param bool  $unpack     Whether to unpack the argument
      * @param array $attributes Additional attributes
      */
-    public function __construct(Expr $value, $byRef = false, $unpack = false, array $attributes = array()) {
+    public function __construct(\MolliePrefix\PhpParser\Node\Expr $value, $byRef = \false, $unpack = \false, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->value = $value;
         $this->byRef = $byRef;
         $this->unpack = $unpack;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('value', 'byRef', 'unpack');
     }
 }

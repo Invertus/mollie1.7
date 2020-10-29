@@ -9,67 +9,55 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Console\SelfUpdate;
 
-namespace PhpCsFixer\Console\SelfUpdate;
-
-use Composer\Semver\Comparator;
-use Composer\Semver\Semver;
-use Composer\Semver\VersionParser;
-
+use MolliePrefix\Composer\Semver\Comparator;
+use MolliePrefix\Composer\Semver\Semver;
+use MolliePrefix\Composer\Semver\VersionParser;
 /**
  * @internal
  */
-final class NewVersionChecker implements NewVersionCheckerInterface
+final class NewVersionChecker implements \MolliePrefix\PhpCsFixer\Console\SelfUpdate\NewVersionCheckerInterface
 {
     /**
      * @var GithubClientInterface
      */
     private $githubClient;
-
     /**
      * @var VersionParser
      */
     private $versionParser;
-
     /**
      * @var null|string[]
      */
     private $availableVersions;
-
-    public function __construct(GithubClientInterface $githubClient)
+    public function __construct(\MolliePrefix\PhpCsFixer\Console\SelfUpdate\GithubClientInterface $githubClient)
     {
         $this->githubClient = $githubClient;
-        $this->versionParser = new VersionParser();
+        $this->versionParser = new \MolliePrefix\Composer\Semver\VersionParser();
     }
-
     /**
      * {@inheritdoc}
      */
     public function getLatestVersion()
     {
         $this->retrieveAvailableVersions();
-
         return $this->availableVersions[0];
     }
-
     /**
      * {@inheritdoc}
      */
     public function getLatestVersionOfMajor($majorVersion)
     {
         $this->retrieveAvailableVersions();
-
-        $semverConstraint = '^'.$majorVersion;
-
+        $semverConstraint = '^' . $majorVersion;
         foreach ($this->availableVersions as $availableVersion) {
-            if (Semver::satisfies($availableVersion, $semverConstraint)) {
+            if (\MolliePrefix\Composer\Semver\Semver::satisfies($availableVersion, $semverConstraint)) {
                 return $availableVersion;
             }
         }
-
         return null;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -77,38 +65,30 @@ final class NewVersionChecker implements NewVersionCheckerInterface
     {
         $versionA = $this->versionParser->normalize($versionA);
         $versionB = $this->versionParser->normalize($versionB);
-
-        if (Comparator::lessThan($versionA, $versionB)) {
+        if (\MolliePrefix\Composer\Semver\Comparator::lessThan($versionA, $versionB)) {
             return -1;
         }
-
-        if (Comparator::greaterThan($versionA, $versionB)) {
+        if (\MolliePrefix\Composer\Semver\Comparator::greaterThan($versionA, $versionB)) {
             return 1;
         }
-
         return 0;
     }
-
     private function retrieveAvailableVersions()
     {
         if (null !== $this->availableVersions) {
             return;
         }
-
         foreach ($this->githubClient->getTags() as $tag) {
             $version = $tag['name'];
-
             try {
                 $this->versionParser->normalize($version);
-
-                if ('stable' === VersionParser::parseStability($version)) {
+                if ('stable' === \MolliePrefix\Composer\Semver\VersionParser::parseStability($version)) {
                     $this->availableVersions[] = $version;
                 }
             } catch (\UnexpectedValueException $exception) {
                 // not a valid version tag
             }
         }
-
-        $this->availableVersions = Semver::rsort($this->availableVersions);
+        $this->availableVersions = \MolliePrefix\Composer\Semver\Semver::rsort($this->availableVersions);
     }
 }

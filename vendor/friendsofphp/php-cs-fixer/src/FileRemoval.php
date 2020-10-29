@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer;
+namespace MolliePrefix\PhpCsFixer;
 
 /**
  * Handles files removal with possibility to remove them on shutdown.
@@ -28,17 +27,14 @@ final class FileRemoval
      * @var array
      */
     private $files = [];
-
     public function __construct()
     {
-        register_shutdown_function([$this, 'clean']);
+        \register_shutdown_function([$this, 'clean']);
     }
-
     public function __destruct()
     {
         $this->clean();
     }
-
     /**
      * Adds a file to be removed.
      *
@@ -46,9 +42,8 @@ final class FileRemoval
      */
     public function observe($path)
     {
-        $this->files[$path] = true;
+        $this->files[$path] = \true;
     }
-
     /**
      * Removes a file from shutdown removal.
      *
@@ -61,7 +56,6 @@ final class FileRemoval
         }
         $this->unlink($path);
     }
-
     /**
      * Removes attached files.
      */
@@ -72,9 +66,8 @@ final class FileRemoval
         }
         $this->files = [];
     }
-
     private function unlink($path)
     {
-        @unlink($path);
+        @\unlink($path);
     }
 }

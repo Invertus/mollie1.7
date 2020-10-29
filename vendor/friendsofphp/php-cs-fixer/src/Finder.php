@@ -9,27 +9,18 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer;
 
-namespace PhpCsFixer;
-
-use Symfony\Component\Finder\Finder as BaseFinder;
-
+use MolliePrefix\Symfony\Component\Finder\Finder as BaseFinder;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-class Finder extends BaseFinder
+class Finder extends \MolliePrefix\Symfony\Component\Finder\Finder
 {
     public function __construct()
     {
         parent::__construct();
-
-        $this
-            ->files()
-            ->name('*.php')
-            ->ignoreDotFiles(true)
-            ->ignoreVCS(true)
-            ->exclude('vendor')
-        ;
+        $this->files()->name('*.php')->ignoreDotFiles(\true)->ignoreVCS(\true)->exclude('vendor');
     }
 }

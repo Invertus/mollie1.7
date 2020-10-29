@@ -9,14 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-namespace PhpCsFixer\Tokenizer\Transformer;
-
-use PhpCsFixer\Tokenizer\AbstractTransformer;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * Transform `&` operator into CT::T_RETURN_REF in `function & foo() {}`.
  *
@@ -24,16 +22,15 @@ use PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ReturnRefTransformer extends AbstractTransformer
+final class ReturnRefTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getCustomTokens()
     {
-        return [CT::T_RETURN_REF];
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -41,22 +38,17 @@ final class ReturnRefTransformer extends AbstractTransformer
     {
         return 50000;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function process(Tokens $tokens, Token $token, $index)
+    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
     {
-        $prevKinds = [T_FUNCTION];
+        $prevKinds = [\T_FUNCTION];
         if (\PHP_VERSION_ID >= 70400) {
-            $prevKinds[] = T_FN;
+            $prevKinds[] = \T_FN;
         }
-
-        if (
-            $token->equals('&')
-            && $tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind($prevKinds)
-        ) {
-            $tokens[$index] = new Token([CT::T_RETURN_REF, '&']);
+        if ($token->equals('&') && $tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind($prevKinds)) {
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF, '&']);
         }
     }
 }

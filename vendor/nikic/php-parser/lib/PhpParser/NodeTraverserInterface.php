@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpParser;
+namespace MolliePrefix\PhpParser;
 
 interface NodeTraverserInterface
 {
@@ -9,15 +9,13 @@ interface NodeTraverserInterface
      *
      * @param NodeVisitor $visitor Visitor to add
      */
-    function addVisitor(NodeVisitor $visitor);
-
+    function addVisitor(\MolliePrefix\PhpParser\NodeVisitor $visitor);
     /**
      * Removes an added visitor.
      *
      * @param NodeVisitor $visitor
      */
-    function removeVisitor(NodeVisitor $visitor);
-
+    function removeVisitor(\MolliePrefix\PhpParser\NodeVisitor $visitor);
     /**
      * Traverses an array of nodes using the registered visitors.
      *
@@ -27,4 +25,3 @@ interface NodeTraverserInterface
      */
     function traverse(array $nodes);
 }
-

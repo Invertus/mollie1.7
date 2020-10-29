@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Debug\Exception;
+namespace MolliePrefix\Symfony\Component\Debug\Exception;
 
 /**
  * Data Object that represents a Silenced Error.
@@ -19,12 +18,10 @@ namespace Symfony\Component\Debug\Exception;
 class SilencedErrorContext implements \JsonSerializable
 {
     public $count = 1;
-
     private $severity;
     private $file;
     private $line;
     private $trace;
-
     public function __construct($severity, $file, $line, array $trace = [], $count = 1)
     {
         $this->severity = $severity;
@@ -33,35 +30,24 @@ class SilencedErrorContext implements \JsonSerializable
         $this->trace = $trace;
         $this->count = $count;
     }
-
     public function getSeverity()
     {
         return $this->severity;
     }
-
     public function getFile()
     {
         return $this->file;
     }
-
     public function getLine()
     {
         return $this->line;
     }
-
     public function getTrace()
     {
         return $this->trace;
     }
-
     public function jsonSerialize()
     {
-        return [
-            'severity' => $this->severity,
-            'file' => $this->file,
-            'line' => $this->line,
-            'trace' => $this->trace,
-            'count' => $this->count,
-        ];
+        return ['severity' => $this->severity, 'file' => $this->file, 'line' => $this->line, 'trace' => $this->trace, 'count' => $this->count];
     }
 }

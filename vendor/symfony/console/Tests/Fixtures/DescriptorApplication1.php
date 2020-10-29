@@ -8,11 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Tests\Fixtures;
 
-namespace Symfony\Component\Console\Tests\Fixtures;
-
-use Symfony\Component\Console\Application;
-
-class DescriptorApplication1 extends Application
+use MolliePrefix\Symfony\Component\Console\Application;
+class DescriptorApplication1 extends \MolliePrefix\Symfony\Component\Console\Application
 {
 }

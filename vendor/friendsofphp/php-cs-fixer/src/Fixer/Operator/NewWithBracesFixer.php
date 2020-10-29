@@ -9,142 +9,81 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-namespace PhpCsFixer\Fixer\Operator;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class NewWithBracesFixer extends AbstractFixer
+final class NewWithBracesFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'All instances created with new keyword must be followed by braces.',
-            [new CodeSample("<?php \$x = new X;\n")]
-        );
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('All instances created with new keyword must be followed by braces.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php \$x = new X;\n")]);
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(T_NEW);
+        return $tokens->isTokenKindFound(\T_NEW);
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         static $nextTokenKinds = null;
-
         if (null === $nextTokenKinds) {
-            $nextTokenKinds = [
-                '?',
-                ';',
-                ',',
-                '(',
-                ')',
-                '[',
-                ']',
-                ':',
-                '<',
-                '>',
-                '+',
-                '-',
-                '*',
-                '/',
-                '%',
-                '&',
-                '^',
-                '|',
-                [T_CLASS],
-                [T_IS_SMALLER_OR_EQUAL],
-                [T_IS_GREATER_OR_EQUAL],
-                [T_IS_EQUAL],
-                [T_IS_NOT_EQUAL],
-                [T_IS_IDENTICAL],
-                [T_IS_NOT_IDENTICAL],
-                [T_CLOSE_TAG],
-                [T_LOGICAL_AND],
-                [T_LOGICAL_OR],
-                [T_LOGICAL_XOR],
-                [T_BOOLEAN_AND],
-                [T_BOOLEAN_OR],
-                [T_SL],
-                [T_SR],
-                [T_INSTANCEOF],
-                [T_AS],
-                [T_DOUBLE_ARROW],
-                [T_POW],
-                [CT::T_ARRAY_SQUARE_BRACE_OPEN],
-                [CT::T_ARRAY_SQUARE_BRACE_CLOSE],
-                [CT::T_BRACE_CLASS_INSTANTIATION_OPEN],
-                [CT::T_BRACE_CLASS_INSTANTIATION_CLOSE],
-            ];
-
+            $nextTokenKinds = ['?', ';', ',', '(', ')', '[', ']', ':', '<', '>', '+', '-', '*', '/', '%', '&', '^', '|', [\T_CLASS], [\T_IS_SMALLER_OR_EQUAL], [\T_IS_GREATER_OR_EQUAL], [\T_IS_EQUAL], [\T_IS_NOT_EQUAL], [\T_IS_IDENTICAL], [\T_IS_NOT_IDENTICAL], [\T_CLOSE_TAG], [\T_LOGICAL_AND], [\T_LOGICAL_OR], [\T_LOGICAL_XOR], [\T_BOOLEAN_AND], [\T_BOOLEAN_OR], [\T_SL], [\T_SR], [\T_INSTANCEOF], [\T_AS], [\T_DOUBLE_ARROW], [\T_POW], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_SQUARE_BRACE_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_SQUARE_BRACE_CLOSE], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_CLOSE]];
             if (\defined('T_SPACESHIP')) {
-                $nextTokenKinds[] = [T_SPACESHIP];
+                $nextTokenKinds[] = [\T_SPACESHIP];
             }
         }
-
         for ($index = $tokens->count() - 3; $index > 0; --$index) {
             $token = $tokens[$index];
-
-            if (!$token->isGivenKind(T_NEW)) {
+            if (!$token->isGivenKind(\T_NEW)) {
                 continue;
             }
-
             $nextIndex = $tokens->getNextTokenOfKind($index, $nextTokenKinds);
             $nextToken = $tokens[$nextIndex];
-
             // new anonymous class definition
-            if ($nextToken->isGivenKind(T_CLASS)) {
+            if ($nextToken->isGivenKind(\T_CLASS)) {
                 if (!$tokens[$tokens->getNextMeaningfulToken($nextIndex)]->equals('(')) {
                     $this->insertBracesAfter($tokens, $nextIndex);
                 }
-
                 continue;
             }
-
             // entrance into array index syntax - need to look for exit
-            while ($nextToken->equals('[') || $nextToken->isGivenKind(CT::T_ARRAY_INDEX_CURLY_BRACE_OPEN)) {
+            while ($nextToken->equals('[') || $nextToken->isGivenKind(\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_INDEX_CURLY_BRACE_OPEN)) {
                 $nextIndex = $tokens->findBlockEnd($tokens->detectBlockType($nextToken)['type'], $nextIndex) + 1;
                 $nextToken = $tokens[$nextIndex];
             }
-
             // new statement has a gap in it - advance to the next token
             if ($nextToken->isWhitespace()) {
                 $nextIndex = $tokens->getNextNonWhitespace($nextIndex);
                 $nextToken = $tokens[$nextIndex];
             }
-
             // new statement with () - nothing to do
-            if ($nextToken->equals('(') || $nextToken->isGivenKind(T_OBJECT_OPERATOR)) {
+            if ($nextToken->equals('(') || $nextToken->isGivenKind(\T_OBJECT_OPERATOR)) {
                 continue;
             }
-
             $this->insertBracesAfter($tokens, $tokens->getPrevMeaningfulToken($nextIndex));
         }
     }
-
     /**
      * @param int $index
      */
-    private function insertBracesAfter(Tokens $tokens, $index)
+    private function insertBracesAfter(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
     {
-        $tokens->insertAt(++$index, [new Token('('), new Token(')')]);
+        $tokens->insertAt(++$index, [new \MolliePrefix\PhpCsFixer\Tokenizer\Token('('), new \MolliePrefix\PhpCsFixer\Tokenizer\Token(')')]);
     }
 }

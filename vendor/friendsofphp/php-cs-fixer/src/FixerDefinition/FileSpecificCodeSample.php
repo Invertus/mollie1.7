@@ -9,38 +9,31 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\FixerDefinition;
+namespace MolliePrefix\PhpCsFixer\FixerDefinition;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-final class FileSpecificCodeSample implements FileSpecificCodeSampleInterface
+final class FileSpecificCodeSample implements \MolliePrefix\PhpCsFixer\FixerDefinition\FileSpecificCodeSampleInterface
 {
     /**
      * @var CodeSampleInterface
      */
     private $codeSample;
-
     /**
      * @var \SplFileInfo
      */
     private $splFileInfo;
-
     /**
      * @param string $code
      */
-    public function __construct(
-        $code,
-        \SplFileInfo $splFileInfo,
-        array $configuration = null
-    ) {
-        $this->codeSample = new CodeSample($code, $configuration);
+    public function __construct($code, \SplFileInfo $splFileInfo, array $configuration = null)
+    {
+        $this->codeSample = new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample($code, $configuration);
         $this->splFileInfo = $splFileInfo;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -48,7 +41,6 @@ final class FileSpecificCodeSample implements FileSpecificCodeSampleInterface
     {
         return $this->codeSample->getCode();
     }
-
     /**
      * {@inheritdoc}
      */
@@ -56,7 +48,6 @@ final class FileSpecificCodeSample implements FileSpecificCodeSampleInterface
     {
         return $this->codeSample->getConfiguration();
     }
-
     /**
      * {@inheritdoc}
      */

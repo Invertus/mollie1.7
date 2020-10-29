@@ -1,17 +1,15 @@
 <?php
 
-namespace PhpParser\Node\Expr;
+namespace MolliePrefix\PhpParser\Node\Expr;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Name;
-
-class StaticPropertyFetch extends Expr
+use MolliePrefix\PhpParser\Node\Expr;
+use MolliePrefix\PhpParser\Node\Name;
+class StaticPropertyFetch extends \MolliePrefix\PhpParser\Node\Expr
 {
     /** @var Name|Expr Class name */
     public $class;
     /** @var string|Expr Property name */
     public $name;
-
     /**
      * Constructs a static property fetch node.
      *
@@ -19,13 +17,14 @@ class StaticPropertyFetch extends Expr
      * @param string|Expr $name       Property name
      * @param array       $attributes Additional attributes
      */
-    public function __construct($class, $name, array $attributes = array()) {
+    public function __construct($class, $name, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->class = $class;
         $this->name = $name;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('class', 'name');
     }
 }

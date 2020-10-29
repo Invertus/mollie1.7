@@ -8,15 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Tester;
 
-namespace Symfony\Component\Console\Tester;
-
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\StreamOutput;
-
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+use MolliePrefix\Symfony\Component\Console\Input\ArrayInput;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\StreamOutput;
 /**
  * Eases the testing of console commands.
  *
@@ -30,12 +28,10 @@ class CommandTester
     private $output;
     private $inputs = [];
     private $statusCode;
-
-    public function __construct(Command $command)
+    public function __construct(\MolliePrefix\Symfony\Component\Console\Command\Command $command)
     {
         $this->command = $command;
     }
-
     /**
      * Executes the command.
      *
@@ -54,30 +50,22 @@ class CommandTester
     {
         // set the command name automatically if the application requires
         // this argument and no command name was passed
-        if (!isset($input['command'])
-            && (null !== $application = $this->command->getApplication())
-            && $application->getDefinition()->hasArgument('command')
-        ) {
-            $input = array_merge(['command' => $this->command->getName()], $input);
+        if (!isset($input['command']) && null !== ($application = $this->command->getApplication()) && $application->getDefinition()->hasArgument('command')) {
+            $input = \array_merge(['command' => $this->command->getName()], $input);
         }
-
-        $this->input = new ArrayInput($input);
+        $this->input = new \MolliePrefix\Symfony\Component\Console\Input\ArrayInput($input);
         // Use an in-memory input stream even if no inputs are set so that QuestionHelper::ask() does not rely on the blocking STDIN.
         $this->input->setStream(self::createStream($this->inputs));
-
         if (isset($options['interactive'])) {
             $this->input->setInteractive($options['interactive']);
         }
-
-        $this->output = new StreamOutput(fopen('php://memory', 'w', false));
-        $this->output->setDecorated(isset($options['decorated']) ? $options['decorated'] : false);
+        $this->output = new \MolliePrefix\Symfony\Component\Console\Output\StreamOutput(\fopen('php://memory', 'w', \false));
+        $this->output->setDecorated(isset($options['decorated']) ? $options['decorated'] : \false);
         if (isset($options['verbosity'])) {
             $this->output->setVerbosity($options['verbosity']);
         }
-
         return $this->statusCode = $this->command->run($this->input, $this->output);
     }
-
     /**
      * Gets the display returned by the last execution of the command.
      *
@@ -85,23 +73,18 @@ class CommandTester
      *
      * @return string The display
      */
-    public function getDisplay($normalize = false)
+    public function getDisplay($normalize = \false)
     {
         if (null === $this->output) {
             throw new \RuntimeException('Output not initialized, did you execute the command before requesting the display?');
         }
-
-        rewind($this->output->getStream());
-
-        $display = stream_get_contents($this->output->getStream());
-
+        \rewind($this->output->getStream());
+        $display = \stream_get_contents($this->output->getStream());
         if ($normalize) {
-            $display = str_replace(\PHP_EOL, "\n", $display);
+            $display = \str_replace(\PHP_EOL, "\n", $display);
         }
-
         return $display;
     }
-
     /**
      * Gets the input instance used by the last execution of the command.
      *
@@ -111,7 +94,6 @@ class CommandTester
     {
         return $this->input;
     }
-
     /**
      * Gets the output instance used by the last execution of the command.
      *
@@ -121,7 +103,6 @@ class CommandTester
     {
         return $this->output;
     }
-
     /**
      * Gets the status code returned by the last execution of the application.
      *
@@ -131,7 +112,6 @@ class CommandTester
     {
         return $this->statusCode;
     }
-
     /**
      * Sets the user inputs.
      *
@@ -143,20 +123,15 @@ class CommandTester
     public function setInputs(array $inputs)
     {
         $this->inputs = $inputs;
-
         return $this;
     }
-
     private static function createStream(array $inputs)
     {
-        $stream = fopen('php://memory', 'r+', false);
-
+        $stream = \fopen('php://memory', 'r+', \false);
         foreach ($inputs as $input) {
-            fwrite($stream, $input.\PHP_EOL);
+            \fwrite($stream, $input . \PHP_EOL);
         }
-
-        rewind($stream);
-
+        \rewind($stream);
         return $stream;
     }
 }

@@ -1,11 +1,10 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt;
-
-class GroupUse extends Stmt
+use MolliePrefix\PhpParser\Node\Name;
+use MolliePrefix\PhpParser\Node\Stmt;
+class GroupUse extends \MolliePrefix\PhpParser\Node\Stmt
 {
     /** @var int Type of group use */
     public $type;
@@ -13,7 +12,6 @@ class GroupUse extends Stmt
     public $prefix;
     /** @var UseUse[] Uses */
     public $uses;
-
     /**
      * Constructs a group use node.
      *
@@ -22,14 +20,15 @@ class GroupUse extends Stmt
      * @param int      $type       Type of group use
      * @param array    $attributes Additional attributes
      */
-    public function __construct(Name $prefix, array $uses, $type = Use_::TYPE_NORMAL, array $attributes = array()) {
+    public function __construct(\MolliePrefix\PhpParser\Node\Name $prefix, array $uses, $type = \MolliePrefix\PhpParser\Node\Stmt\Use_::TYPE_NORMAL, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->type = $type;
         $this->prefix = $prefix;
         $this->uses = $uses;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('type', 'prefix', 'uses');
     }
 }

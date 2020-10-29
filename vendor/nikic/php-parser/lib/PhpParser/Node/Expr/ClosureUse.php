@@ -1,16 +1,14 @@
 <?php
 
-namespace PhpParser\Node\Expr;
+namespace MolliePrefix\PhpParser\Node\Expr;
 
-use PhpParser\Node\Expr;
-
-class ClosureUse extends Expr
+use MolliePrefix\PhpParser\Node\Expr;
+class ClosureUse extends \MolliePrefix\PhpParser\Node\Expr
 {
     /** @var string Name of variable */
     public $var;
     /** @var bool Whether to use by reference */
     public $byRef;
-
     /**
      * Constructs a closure use node.
      *
@@ -18,13 +16,14 @@ class ClosureUse extends Expr
      * @param bool        $byRef      Whether to use by reference
      * @param array       $attributes Additional attributes
      */
-    public function __construct($var, $byRef = false, array $attributes = array()) {
+    public function __construct($var, $byRef = \false, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->var = $var;
         $this->byRef = $byRef;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('var', 'byRef');
     }
 }

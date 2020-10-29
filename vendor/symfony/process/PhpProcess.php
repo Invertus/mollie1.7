@@ -8,11 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Process;
 
-namespace Symfony\Component\Process;
-
-use Symfony\Component\Process\Exception\RuntimeException;
-
+use MolliePrefix\Symfony\Component\Process\Exception\RuntimeException;
 /**
  * PhpProcess runs a PHP script in an independent process.
  *
@@ -22,7 +20,7 @@ use Symfony\Component\Process\Exception\RuntimeException;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class PhpProcess extends Process
+class PhpProcess extends \MolliePrefix\Symfony\Component\Process\Process
 {
     /**
      * @param string      $script  The PHP script to run (as a string)
@@ -33,26 +31,24 @@ class PhpProcess extends Process
      */
     public function __construct($script, $cwd = null, array $env = null, $timeout = 60, array $options = null)
     {
-        $executableFinder = new PhpExecutableFinder();
-        if (false === $php = $executableFinder->find(false)) {
+        $executableFinder = new \MolliePrefix\Symfony\Component\Process\PhpExecutableFinder();
+        if (\false === ($php = $executableFinder->find(\false))) {
             $php = null;
         } else {
-            $php = array_merge([$php], $executableFinder->findArguments());
+            $php = \array_merge([$php], $executableFinder->findArguments());
         }
         if ('phpdbg' === \PHP_SAPI) {
-            $file = tempnam(sys_get_temp_dir(), 'dbg');
-            file_put_contents($file, $script);
-            register_shutdown_function('unlink', $file);
+            $file = \tempnam(\sys_get_temp_dir(), 'dbg');
+            \file_put_contents($file, $script);
+            \register_shutdown_function('unlink', $file);
             $php[] = $file;
             $script = null;
         }
         if (null !== $options) {
-            @trigger_error(sprintf('The $options parameter of the %s constructor is deprecated since Symfony 3.3 and will be removed in 4.0.', __CLASS__), \E_USER_DEPRECATED);
+            @\trigger_error(\sprintf('The $options parameter of the %s constructor is deprecated since Symfony 3.3 and will be removed in 4.0.', __CLASS__), \E_USER_DEPRECATED);
         }
-
         parent::__construct($php, $cwd, $env, $script, $timeout, $options);
     }
-
     /**
      * Sets the path to the PHP binary to use.
      */
@@ -60,17 +56,15 @@ class PhpProcess extends Process
     {
         $this->setCommandLine($php);
     }
-
     /**
      * {@inheritdoc}
      */
-    public function start(callable $callback = null/*, array $env = []*/)
+    public function start(callable $callback = null)
     {
         if (null === $this->getCommandLine()) {
-            throw new RuntimeException('Unable to find the PHP executable.');
+            throw new \MolliePrefix\Symfony\Component\Process\Exception\RuntimeException('Unable to find the PHP executable.');
         }
-        $env = 1 < \func_num_args() ? func_get_arg(1) : null;
-
+        $env = 1 < \func_num_args() ? \func_get_arg(1) : null;
         parent::start($callback, $env);
     }
 }

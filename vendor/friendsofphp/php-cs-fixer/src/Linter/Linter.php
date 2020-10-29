@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\Linter;
+namespace MolliePrefix\PhpCsFixer\Linter;
 
 /**
  * Handle PHP code linting process.
@@ -19,25 +18,23 @@ namespace PhpCsFixer\Linter;
  *
  * @internal
  */
-final class Linter implements LinterInterface
+final class Linter implements \MolliePrefix\PhpCsFixer\Linter\LinterInterface
 {
     /**
      * @var LinterInterface
      */
     private $sublinter;
-
     /**
      * @param null|string $executable PHP executable, null for autodetection
      */
     public function __construct($executable = null)
     {
         try {
-            $this->sublinter = new TokenizerLinter();
-        } catch (UnavailableLinterException $e) {
-            $this->sublinter = new ProcessLinter($executable);
+            $this->sublinter = new \MolliePrefix\PhpCsFixer\Linter\TokenizerLinter();
+        } catch (\MolliePrefix\PhpCsFixer\Linter\UnavailableLinterException $e) {
+            $this->sublinter = new \MolliePrefix\PhpCsFixer\Linter\ProcessLinter($executable);
         }
     }
-
     /**
      * {@inheritdoc}
      */
@@ -45,7 +42,6 @@ final class Linter implements LinterInterface
     {
         return $this->sublinter->isAsync();
     }
-
     /**
      * {@inheritdoc}
      */
@@ -53,7 +49,6 @@ final class Linter implements LinterInterface
     {
         return $this->sublinter->lintFile($path);
     }
-
     /**
      * {@inheritdoc}
      */

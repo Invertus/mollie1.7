@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\FixerConfiguration;
+namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
 interface FixerConfigurationResolverInterface
 {
@@ -18,7 +17,6 @@ interface FixerConfigurationResolverInterface
      * @return FixerOptionInterface[]
      */
     public function getOptions();
-
     /**
      * @param array<string, mixed> $configuration
      *

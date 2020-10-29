@@ -9,14 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-namespace PhpCsFixer\Tokenizer\Transformer;
-
-use PhpCsFixer\Tokenizer\AbstractTransformer;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * Transform `array` typehint from T_ARRAY into CT::T_ARRAY_TYPEHINT.
  *
@@ -24,16 +22,15 @@ use PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ArrayTypehintTransformer extends AbstractTransformer
+final class ArrayTypehintTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getCustomTokens()
     {
-        return [CT::T_ARRAY_TYPEHINT];
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -41,21 +38,18 @@ final class ArrayTypehintTransformer extends AbstractTransformer
     {
         return 50000;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function process(Tokens $tokens, Token $token, $index)
+    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
     {
-        if (!$token->isGivenKind(T_ARRAY)) {
+        if (!$token->isGivenKind(\T_ARRAY)) {
             return;
         }
-
         $nextIndex = $tokens->getNextMeaningfulToken($index);
         $nextToken = $tokens[$nextIndex];
-
         if (!$nextToken->equals('(')) {
-            $tokens[$index] = new Token([CT::T_ARRAY_TYPEHINT, $token->getContent()]);
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT, $token->getContent()]);
         }
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,8 +17,7 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-namespace Doctrine\Common\Annotations;
+namespace MolliePrefix\Doctrine\Common\Annotations;
 
 /**
  * Interface for annotation readers.
@@ -35,7 +35,6 @@ interface Reader
      * @return array An array of Annotations.
      */
     function getClassAnnotations(\ReflectionClass $class);
-
     /**
      * Gets a class annotation.
      *
@@ -46,7 +45,6 @@ interface Reader
      * @return object|null The Annotation or NULL, if the requested annotation does not exist.
      */
     function getClassAnnotation(\ReflectionClass $class, $annotationName);
-
     /**
      * Gets the annotations applied to a method.
      *
@@ -56,7 +54,6 @@ interface Reader
      * @return array An array of Annotations.
      */
     function getMethodAnnotations(\ReflectionMethod $method);
-
     /**
      * Gets a method annotation.
      *
@@ -66,7 +63,6 @@ interface Reader
      * @return object|null The Annotation or NULL, if the requested annotation does not exist.
      */
     function getMethodAnnotation(\ReflectionMethod $method, $annotationName);
-
     /**
      * Gets the annotations applied to a property.
      *
@@ -76,7 +72,6 @@ interface Reader
      * @return array An array of Annotations.
      */
     function getPropertyAnnotations(\ReflectionProperty $property);
-
     /**
      * Gets a property annotation.
      *

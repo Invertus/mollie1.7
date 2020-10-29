@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of sebastian/diff.
  *
@@ -7,9 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\PhpCsFixer\Diff\v2_0;
 
-namespace PhpCsFixer\Diff\v2_0;
-
-class InvalidArgumentException extends \InvalidArgumentException implements Exception
+class InvalidArgumentException extends \InvalidArgumentException implements \MolliePrefix\PhpCsFixer\Diff\v2_0\Exception
 {
 }

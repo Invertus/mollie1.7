@@ -9,44 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-namespace PhpCsFixer\Fixer\PhpUnit;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use PhpCsFixer\FixerConfiguration\AllowedValueSubset;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Analyzer\ArgumentsAnalyzer;
-use PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\ArgumentsAnalyzer;
+use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpUnitStrictFixer extends AbstractFixer implements ConfigurationDefinitionFixerInterface
+final class PhpUnitStrictFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
-    private static $assertionMap = [
-        'assertAttributeEquals' => 'assertAttributeSame',
-        'assertAttributeNotEquals' => 'assertAttributeNotSame',
-        'assertEquals' => 'assertSame',
-        'assertNotEquals' => 'assertNotSame',
-    ];
-
+    private static $assertionMap = ['assertAttributeEquals' => 'assertAttributeSame', 'assertAttributeNotEquals' => 'assertAttributeNotSame', 'assertEquals' => 'assertSame', 'assertNotEquals' => 'assertNotSame'];
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'PHPUnit methods like `assertSame` should be used instead of `assertEquals`.',
-            [
-                new CodeSample(
-                    '<?php
-final class MyTest extends \PHPUnit_Framework_TestCase
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('PHPUnit methods like `assertSame` should be used instead of `assertEquals`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+final class MyTest extends \\PHPUnit_Framework_TestCase
 {
     public function testSomeTest()
     {
@@ -56,11 +44,8 @@ final class MyTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals(a(), b());
     }
 }
-'
-                ),
-                new CodeSample(
-                    '<?php
-final class MyTest extends \PHPUnit_Framework_TestCase
+'), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+final class MyTest extends \\PHPUnit_Framework_TestCase
 {
     public function testSomeTest()
     {
@@ -70,85 +55,53 @@ final class MyTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals(a(), b());
     }
 }
-',
-                    ['assertions' => ['assertEquals']]
-                ),
-            ],
-            null,
-            'Risky when any of the functions are overridden or when testing object equality.'
-        );
+', ['assertions' => ['assertEquals']])], null, 'Risky when any of the functions are overridden or when testing object equality.');
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(T_STRING);
+        return $tokens->isTokenKindFound(\T_STRING);
     }
-
     /**
      * {@inheritdoc}
      */
     public function isRisky()
     {
-        return true;
+        return \true;
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        $argumentsAnalyzer = new ArgumentsAnalyzer();
-        $functionsAnalyzer = new FunctionsAnalyzer();
-
+        $argumentsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\ArgumentsAnalyzer();
+        $functionsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer();
         foreach ($this->configuration['assertions'] as $methodBefore) {
             $methodAfter = self::$assertionMap[$methodBefore];
-
             for ($index = 0, $limit = $tokens->count(); $index < $limit; ++$index) {
-                $methodIndex = $tokens->getNextTokenOfKind($index, [[T_STRING, $methodBefore]]);
-
+                $methodIndex = $tokens->getNextTokenOfKind($index, [[\T_STRING, $methodBefore]]);
                 if (null === $methodIndex) {
                     break;
                 }
-
                 if (!$functionsAnalyzer->isTheSameClassCall($tokens, $methodIndex)) {
                     continue;
                 }
-
                 $openingParenthesisIndex = $tokens->getNextMeaningfulToken($methodIndex);
-                $argumentsCount = $argumentsAnalyzer->countArguments(
-                    $tokens,
-                    $openingParenthesisIndex,
-                    $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openingParenthesisIndex)
-                );
-
+                $argumentsCount = $argumentsAnalyzer->countArguments($tokens, $openingParenthesisIndex, $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openingParenthesisIndex));
                 if (2 === $argumentsCount || 3 === $argumentsCount) {
-                    $tokens[$methodIndex] = new Token([T_STRING, $methodAfter]);
+                    $tokens[$methodIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $methodAfter]);
                 }
-
                 $index = $methodIndex;
             }
         }
     }
-
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        return new FixerConfigurationResolverRootless('assertions', [
-            (new FixerOptionBuilder('assertions', 'List of assertion methods to fix.'))
-                ->setAllowedTypes(['array'])
-                ->setAllowedValues([new AllowedValueSubset(array_keys(self::$assertionMap))])
-                ->setDefault([
-                    'assertAttributeEquals',
-                    'assertAttributeNotEquals',
-                    'assertEquals',
-                    'assertNotEquals',
-                ])
-                ->getOption(),
-        ], $this->getName());
+        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless('assertions', [(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('assertions', 'List of assertion methods to fix.'))->setAllowedTypes(['array'])->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset(\array_keys(self::$assertionMap))])->setDefault(['assertAttributeEquals', 'assertAttributeNotEquals', 'assertEquals', 'assertNotEquals'])->getOption()], $this->getName());
     }
 }

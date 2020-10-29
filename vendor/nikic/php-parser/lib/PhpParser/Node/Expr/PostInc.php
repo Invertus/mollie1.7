@@ -1,26 +1,25 @@
 <?php
 
-namespace PhpParser\Node\Expr;
+namespace MolliePrefix\PhpParser\Node\Expr;
 
-use PhpParser\Node\Expr;
-
-class PostInc extends Expr
+use MolliePrefix\PhpParser\Node\Expr;
+class PostInc extends \MolliePrefix\PhpParser\Node\Expr
 {
     /** @var Expr Variable */
     public $var;
-
     /**
      * Constructs a post increment node.
      *
      * @param Expr  $var        Variable
      * @param array $attributes Additional attributes
      */
-    public function __construct(Expr $var, array $attributes = array()) {
+    public function __construct(\MolliePrefix\PhpParser\Node\Expr $var, array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->var = $var;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('var');
     }
 }

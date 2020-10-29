@@ -9,45 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-namespace PhpCsFixer\Fixer\Phpdoc;
-
-use PhpCsFixer\AbstractPhpdocTypesFixer;
-use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use PhpCsFixer\FixerConfiguration\AllowedValueSubset;
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-
+use MolliePrefix\PhpCsFixer\AbstractPhpdocTypesFixer;
+use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
+use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 /**
  * @author Graham Campbell <graham@alt-three.com>
  */
-final class PhpdocScalarFixer extends AbstractPhpdocTypesFixer implements ConfigurationDefinitionFixerInterface
+final class PhpdocScalarFixer extends \MolliePrefix\PhpCsFixer\AbstractPhpdocTypesFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * The types to fix.
      *
      * @var array
      */
-    private static $types = [
-        'boolean' => 'bool',
-        'callback' => 'callable',
-        'double' => 'float',
-        'integer' => 'int',
-        'real' => 'float',
-        'str' => 'string',
-    ];
-
+    private static $types = ['boolean' => 'bool', 'callback' => 'callable', 'double' => 'float', 'integer' => 'int', 'real' => 'float', 'str' => 'string'];
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Scalar types should always be written in the same form. `int` not `integer`, `bool` not `boolean`, `float` not `real` or `double`.',
-            [
-                new CodeSample('<?php
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Scalar types should always be written in the same form. `int` not `integer`, `bool` not `boolean`, `float` not `real` or `double`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 /**
  * @param integer $a
  * @param boolean $b
@@ -59,9 +46,7 @@ function sample($a, $b, $c)
 {
     return sample2($a, $b, $c);
 }
-'),
-                new CodeSample(
-                    '<?php
+'), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 /**
  * @param integer $a
  * @param boolean $b
@@ -71,13 +56,8 @@ function sample($a, $b, $c)
 {
     return sample2($a, $b, $c);
 }
-',
-                    ['types' => ['boolean']]
-                ),
-            ]
-        );
+', ['types' => ['boolean']])]);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -97,29 +77,21 @@ function sample($a, $b, $c)
          */
         return 15;
     }
-
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('types', 'A map of types to fix.'))
-                ->setAllowedValues([new AllowedValueSubset(array_keys(self::$types))])
-                ->setDefault(['boolean', 'double', 'integer', 'real', 'str']) // TODO 3.0 add "callback"
-                ->getOption(),
-        ]);
+        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('types', 'A map of types to fix.'))->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset(\array_keys(self::$types))])->setDefault(['boolean', 'double', 'integer', 'real', 'str'])->getOption()]);
     }
-
     /**
      * {@inheritdoc}
      */
     protected function normalize($type)
     {
-        if (\in_array($type, $this->configuration['types'], true)) {
+        if (\in_array($type, $this->configuration['types'], \true)) {
             return self::$types[$type];
         }
-
         return $type;
     }
 }

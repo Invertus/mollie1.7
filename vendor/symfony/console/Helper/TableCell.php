@@ -8,41 +8,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Helper;
 
-namespace Symfony\Component\Console\Helper;
-
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-
+use MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException;
 /**
  * @author Abdellatif Ait boudad <a.aitboudad@gmail.com>
  */
 class TableCell
 {
     private $value;
-    private $options = [
-        'rowspan' => 1,
-        'colspan' => 1,
-    ];
-
+    private $options = ['rowspan' => 1, 'colspan' => 1];
     /**
      * @param string $value
      */
     public function __construct($value = '', array $options = [])
     {
-        if (is_numeric($value) && !\is_string($value)) {
+        if (\is_numeric($value) && !\is_string($value)) {
             $value = (string) $value;
         }
-
         $this->value = $value;
-
         // check option names
-        if ($diff = array_diff(array_keys($options), array_keys($this->options))) {
-            throw new InvalidArgumentException(sprintf('The TableCell does not support the following options: \'%s\'.', implode('\', \'', $diff)));
+        if ($diff = \array_diff(\array_keys($options), \array_keys($this->options))) {
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException(\sprintf('The TableCell does not support the following options: \'%s\'.', \implode('\', \'', $diff)));
         }
-
-        $this->options = array_merge($this->options, $options);
+        $this->options = \array_merge($this->options, $options);
     }
-
     /**
      * Returns the cell value.
      *
@@ -52,7 +42,6 @@ class TableCell
     {
         return $this->value;
     }
-
     /**
      * Gets number of colspan.
      *
@@ -62,7 +51,6 @@ class TableCell
     {
         return (int) $this->options['colspan'];
     }
-
     /**
      * Gets number of rowspan.
      *

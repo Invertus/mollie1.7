@@ -9,15 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\FixerDefinition;
+namespace MolliePrefix\PhpCsFixer\FixerDefinition;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-interface FileSpecificCodeSampleInterface extends CodeSampleInterface
+interface FileSpecificCodeSampleInterface extends \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSampleInterface
 {
     /**
      * @return \SplFileInfo

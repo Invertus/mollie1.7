@@ -1,28 +1,27 @@
 <?php
 
-namespace PhpParser\Node\Scalar;
+namespace MolliePrefix\PhpParser\Node\Scalar;
 
-use PhpParser\Node\Scalar;
-
-abstract class MagicConst extends Scalar
+use MolliePrefix\PhpParser\Node\Scalar;
+abstract class MagicConst extends \MolliePrefix\PhpParser\Node\Scalar
 {
     /**
      * Constructs a magic constant node.
      *
      * @param array $attributes Additional attributes
      */
-    public function __construct(array $attributes = array()) {
+    public function __construct(array $attributes = array())
+    {
         parent::__construct($attributes);
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array();
     }
-
     /**
      * Get name of magic constant.
      *
      * @return string Name of magic constant
      */
-    abstract public function getName();
+    public abstract function getName();
 }

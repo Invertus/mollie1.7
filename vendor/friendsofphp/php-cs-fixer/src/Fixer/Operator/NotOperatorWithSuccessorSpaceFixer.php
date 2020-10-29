@@ -9,38 +9,30 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-namespace PhpCsFixer\Fixer\Operator;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Javier Spagnoletti <phansys@gmail.com>
  */
-final class NotOperatorWithSuccessorSpaceFixer extends AbstractFixer
+final class NotOperatorWithSuccessorSpaceFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Logical NOT operators (`!`) should have one trailing whitespace.',
-            [new CodeSample(
-                '<?php
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Logical NOT operators (`!`) should have one trailing whitespace.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 
 if (!$bar) {
     echo "Help!";
 }
-'
-            )]
-        );
+')]);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -50,28 +42,25 @@ if (!$bar) {
     {
         return -10;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         return $tokens->isTokenKindFound('!');
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         for ($index = $tokens->count() - 1; $index >= 0; --$index) {
             $token = $tokens[$index];
-
             if ($token->equals('!')) {
                 if (!$tokens[$index + 1]->isWhitespace()) {
-                    $tokens->insertAt($index + 1, new Token([T_WHITESPACE, ' ']));
+                    $tokens->insertAt($index + 1, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']));
                 } else {
-                    $tokens[$index + 1] = new Token([T_WHITESPACE, ' ']);
+                    $tokens[$index + 1] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']);
                 }
             }
         }

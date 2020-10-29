@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\FixerConfiguration;
+namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
 final class FixerOptionBuilder
 {
@@ -18,42 +17,34 @@ final class FixerOptionBuilder
      * @var string
      */
     private $name;
-
     /**
      * @var string
      */
     private $description;
-
     /**
      * @var mixed
      */
     private $default;
-
     /**
      * @var bool
      */
-    private $isRequired = true;
-
+    private $isRequired = \true;
     /**
      * @var null|string[]
      */
     private $allowedTypes;
-
     /**
      * @var null|array
      */
     private $allowedValues;
-
     /**
      * @var null|\Closure
      */
     private $normalizer;
-
     /**
      * @var null|string
      */
     private $deprecationMessage;
-
     /**
      * @param string $name
      * @param string $description
@@ -63,7 +54,6 @@ final class FixerOptionBuilder
         $this->name = $name;
         $this->description = $description;
     }
-
     /**
      * @param mixed $default
      *
@@ -72,11 +62,9 @@ final class FixerOptionBuilder
     public function setDefault($default)
     {
         $this->default = $default;
-        $this->isRequired = false;
-
+        $this->isRequired = \false;
         return $this;
     }
-
     /**
      * @param string[] $allowedTypes
      *
@@ -85,30 +73,24 @@ final class FixerOptionBuilder
     public function setAllowedTypes(array $allowedTypes)
     {
         $this->allowedTypes = $allowedTypes;
-
         return $this;
     }
-
     /**
      * @return $this
      */
     public function setAllowedValues(array $allowedValues)
     {
         $this->allowedValues = $allowedValues;
-
         return $this;
     }
-
     /**
      * @return $this
      */
     public function setNormalizer(\Closure $normalizer)
     {
         $this->normalizer = $normalizer;
-
         return $this;
     }
-
     /**
      * @param null|string $deprecationMessage
      *
@@ -117,29 +99,17 @@ final class FixerOptionBuilder
     public function setDeprecationMessage($deprecationMessage)
     {
         $this->deprecationMessage = $deprecationMessage;
-
         return $this;
     }
-
     /**
      * @return FixerOptionInterface
      */
     public function getOption()
     {
-        $option = new FixerOption(
-            $this->name,
-            $this->description,
-            $this->isRequired,
-            $this->default,
-            $this->allowedTypes,
-            $this->allowedValues,
-            $this->normalizer
-        );
-
+        $option = new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOption($this->name, $this->description, $this->isRequired, $this->default, $this->allowedTypes, $this->allowedValues, $this->normalizer);
         if (null !== $this->deprecationMessage) {
-            $option = new DeprecatedFixerOption($option, $this->deprecationMessage);
+            $option = new \MolliePrefix\PhpCsFixer\FixerConfiguration\DeprecatedFixerOption($option, $this->deprecationMessage);
         }
-
         return $option;
     }
 }

@@ -1,9 +1,13 @@
 {
-    "name": "symfony/options-resolver",
+    "name": "symfony\/options-resolver",
     "type": "library",
     "description": "Symfony OptionsResolver Component",
-    "keywords": ["options", "config", "configuration"],
-    "homepage": "https://symfony.com",
+    "keywords": [
+        "options",
+        "config",
+        "configuration"
+    ],
+    "homepage": "https:\/\/symfony.com",
     "license": "MIT",
     "authors": [
         {
@@ -12,16 +16,18 @@
         },
         {
             "name": "Symfony Community",
-            "homepage": "https://symfony.com/contributors"
+            "homepage": "https:\/\/symfony.com\/contributors"
         }
     ],
     "require": {
         "php": "^5.5.9|>=7.0.8"
     },
     "autoload": {
-        "psr-4": { "Symfony\\Component\\OptionsResolver\\": "" },
+        "psr-4": {
+            "MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\": ""
+        },
         "exclude-from-classmap": [
-            "/Tests/"
+            "\/Tests\/"
         ]
     },
     "minimum-stability": "dev",

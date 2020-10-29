@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpParser\Node\Scalar\MagicConst;
+namespace MolliePrefix\PhpParser\Node\Scalar\MagicConst;
 
-use PhpParser\Node\Scalar\MagicConst;
-
-class Function_ extends MagicConst
+use MolliePrefix\PhpParser\Node\Scalar\MagicConst;
+class Function_ extends \MolliePrefix\PhpParser\Node\Scalar\MagicConst
 {
-    public function getName() {
+    public function getName()
+    {
         return '__FUNCTION__';
     }
 }

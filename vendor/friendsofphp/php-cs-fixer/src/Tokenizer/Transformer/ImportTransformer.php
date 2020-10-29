@@ -9,14 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-namespace PhpCsFixer\Tokenizer\Transformer;
-
-use PhpCsFixer\Tokenizer\AbstractTransformer;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * Transform const/function import tokens.
  *
@@ -28,16 +26,15 @@ use PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ImportTransformer extends AbstractTransformer
+final class ImportTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
 {
     /**
      * {@inheritdoc}
      */
     public function getCustomTokens()
     {
-        return [CT::T_CONST_IMPORT, CT::T_FUNCTION_IMPORT];
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -45,23 +42,17 @@ final class ImportTransformer extends AbstractTransformer
     {
         return 50600;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function process(Tokens $tokens, Token $token, $index)
+    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
     {
-        if (!$token->isGivenKind([T_CONST, T_FUNCTION])) {
+        if (!$token->isGivenKind([\T_CONST, \T_FUNCTION])) {
             return;
         }
-
         $prevToken = $tokens[$tokens->getPrevMeaningfulToken($index)];
-
-        if ($prevToken->isGivenKind(T_USE)) {
-            $tokens[$index] = new Token([
-                $token->isGivenKind(T_FUNCTION) ? CT::T_FUNCTION_IMPORT : CT::T_CONST_IMPORT,
-                $token->getContent(),
-            ]);
+        if ($prevToken->isGivenKind(\T_USE)) {
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->isGivenKind(\T_FUNCTION) ? \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT : \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT, $token->getContent()]);
         }
     }
 }

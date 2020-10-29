@@ -9,15 +9,13 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Semicolon;
 
-namespace PhpCsFixer\Fixer\Semicolon;
-
-use PhpCsFixer\AbstractProxyFixer;
-use PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-
+use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
+use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 /**
  * @deprecated since 2.9.1, replaced by MultilineWhitespaceBeforeSemicolonsFixer
  *
@@ -25,44 +23,34 @@ use PhpCsFixer\FixerDefinition\FixerDefinition;
  *
  * @author Graham Campbell <graham@alt-three.com>
  */
-final class NoMultilineWhitespaceBeforeSemicolonsFixer extends AbstractProxyFixer implements DeprecatedFixerInterface, WhitespacesAwareFixerInterface
+final class NoMultilineWhitespaceBeforeSemicolonsFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Multi-line whitespace before closing semicolon are prohibited.',
-            [
-                new CodeSample(
-                    '<?php
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Multi-line whitespace before closing semicolon are prohibited.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 function foo () {
     return 1 + 2
         ;
 }
-'
-                ),
-            ]
-        );
+')]);
     }
-
     /**
      * {@inheritdoc}
      */
     public function getSuccessorsNames()
     {
-        return array_keys($this->proxyFixers);
+        return \array_keys($this->proxyFixers);
     }
-
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        $fixer = new MultilineWhitespaceBeforeSemicolonsFixer();
-        $fixer->configure(['strategy' => MultilineWhitespaceBeforeSemicolonsFixer::STRATEGY_NO_MULTI_LINE]);
-
+        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\Semicolon\MultilineWhitespaceBeforeSemicolonsFixer();
+        $fixer->configure(['strategy' => \MolliePrefix\PhpCsFixer\Fixer\Semicolon\MultilineWhitespaceBeforeSemicolonsFixer::STRATEGY_NO_MULTI_LINE]);
         return [$fixer];
     }
 }

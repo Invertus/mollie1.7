@@ -9,24 +9,21 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Console\Command;
 
-namespace PhpCsFixer\Console\Command;
-
-use PhpCsFixer\Preg;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use MolliePrefix\PhpCsFixer\Preg;
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-final class ReadmeCommand extends Command
+final class ReadmeCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
 {
     protected static $defaultName = 'readme';
-
     /**
      * {@inheritdoc}
      */
@@ -34,11 +31,10 @@ final class ReadmeCommand extends Command
     {
         $this->setDescription('Generates the README content, based on the fix command help.');
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
         $header = <<<EOF
 {$this->header('PHP Coding Standards Fixer', '=')}
@@ -78,26 +74,26 @@ your system:
 
 .. code-block:: bash
 
-    $ wget %download.url% -O php-cs-fixer
+    \$ wget %download.url% -O php-cs-fixer
 
 or with specified version:
 
 .. code-block:: bash
 
-    $ wget %download.version_url% -O php-cs-fixer
+    \$ wget %download.version_url% -O php-cs-fixer
 
 or with curl:
 
 .. code-block:: bash
 
-    $ curl -L %download.url% -o php-cs-fixer
+    \$ curl -L %download.url% -o php-cs-fixer
 
 then:
 
 .. code-block:: bash
 
-    $ sudo chmod a+x php-cs-fixer
-    $ sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
+    \$ sudo chmod a+x php-cs-fixer
+    \$ sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
 
 Then, just run ``php-cs-fixer``.
 
@@ -107,19 +103,19 @@ To install PHP CS Fixer, `install Composer <https://getcomposer.org/download/>`_
 
 .. code-block:: bash
 
-    $ composer global require friendsofphp/php-cs-fixer
+    \$ composer global require friendsofphp/php-cs-fixer
 
 Then make sure you have the global Composer binaries directory in your ``PATH``. This directory is platform-dependent, see `Composer documentation <https://getcomposer.org/doc/03-cli.md#composer-home>`_ for details. Example for some Unix systems:
 
 .. code-block:: bash
 
-    $ export PATH="\$PATH:\$HOME/.composer/vendor/bin"
+    \$ export PATH="\$PATH:\$HOME/.composer/vendor/bin"
 
 {$this->header('Globally (homebrew)', '~')}
 
 .. code-block:: bash
 
-    $ brew install php-cs-fixer
+    \$ brew install php-cs-fixer
 
 {$this->header('Locally (PHIVE)', '~')}
 
@@ -127,7 +123,7 @@ Install `PHIVE <https://phar.io>`_ and issue the following command:
 
 .. code-block:: bash
 
-    $ phive install php-cs-fixer # use `--global` for global install
+    \$ phive install php-cs-fixer # use `--global` for global install
 
 {$this->header('Update', '-')}
 
@@ -137,7 +133,7 @@ The ``self-update`` command tries to update ``php-cs-fixer`` itself:
 
 .. code-block:: bash
 
-    $ php php-cs-fixer.phar self-update
+    \$ php php-cs-fixer.phar self-update
 
 {$this->header('Globally (manual)', '~')}
 
@@ -145,7 +141,7 @@ You can update ``php-cs-fixer`` through this command:
 
 .. code-block:: bash
 
-    $ sudo php-cs-fixer self-update
+    \$ sudo php-cs-fixer self-update
 
 {$this->header('Globally (Composer)', '~')}
 
@@ -153,7 +149,7 @@ You can update ``php-cs-fixer`` through this command:
 
 .. code-block:: bash
 
-    $ ./composer.phar global update friendsofphp/php-cs-fixer
+    \$ ./composer.phar global update friendsofphp/php-cs-fixer
 
 {$this->header('Globally (homebrew)', '~')}
 
@@ -161,18 +157,17 @@ You can update ``php-cs-fixer`` through this command:
 
 .. code-block:: bash
 
-    $ brew upgrade php-cs-fixer
+    \$ brew upgrade php-cs-fixer
 
 {$this->header('Locally (PHIVE)', '~')}
 
 .. code-block:: bash
 
-    $ phive update php-cs-fixer
+    \$ phive update php-cs-fixer
 
 {$this->header('Usage', '-')}
 
 EOF;
-
         $footer = <<<EOF
 
 {$this->header('Helpers', '-')}
@@ -213,67 +208,48 @@ projects for instance).
 .. _contribute:        https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/master/CONTRIBUTING.md
 
 EOF;
-
         $command = $this->getApplication()->get('fix');
         $help = $command->getHelp();
-        $help = str_replace('%command.full_name%', 'php-cs-fixer.phar '.$command->getName(), $help);
-        $help = str_replace('%command.name%', $command->getName(), $help);
-        $help = Preg::replace('#</?(comment|info)>#', '``', $help);
-        $help = Preg::replace('#`(``.+?``)`#', '$1', $help);
-        $help = Preg::replace('#^(\s+)``(.+)``$#m', '$1$2', $help);
-        $help = Preg::replace('#^ \* ``(.+)``(.*?\n)#m', "* **$1**$2\n", $help);
-        $help = Preg::replace('#^   \\| #m', '  ', $help);
-        $help = Preg::replace('#^   \\|#m', '', $help);
-        $help = Preg::replace('#^(?=  \\*Risky rule: )#m', "\n", $help);
-        $help = Preg::replace("#^(  Configuration options:\n)(  - )#m", "$1\n$2", $help);
-        $help = Preg::replace("#^\n( +\\$ )#m", "\n.. code-block:: bash\n\n$1", $help);
-        $help = Preg::replace("#^\n( +<\\?php)#m", "\n.. code-block:: php\n\n$1", $help);
-        $help = Preg::replaceCallback(
-            '#^\s*<\?(\w+).*?\?>#ms',
-            static function ($matches) {
-                $result = Preg::replace("#^\\.\\. code-block:: bash\n\n#m", '', $matches[0]);
-
-                if ('php' !== $matches[1]) {
-                    $result = Preg::replace("#<\\?{$matches[1]}\\s*#", '', $result);
-                }
-
-                return Preg::replace("#\n\n +\\?>#", '', $result);
-            },
-            $help
-        );
-
+        $help = \str_replace('%command.full_name%', 'php-cs-fixer.phar ' . $command->getName(), $help);
+        $help = \str_replace('%command.name%', $command->getName(), $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#</?(comment|info)>#', '``', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#`(``.+?``)`#', '$1', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^(\\s+)``(.+)``$#m', '$1$2', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^ \\* ``(.+)``(.*?\\n)#m', "* **\$1**\$2\n", $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^   \\| #m', '  ', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^   \\|#m', '', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^(?=  \\*Risky rule: )#m', "\n", $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace("#^(  Configuration options:\n)(  - )#m", "\$1\n\$2", $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace("#^\n( +\\\$ )#m", "\n.. code-block:: bash\n\n\$1", $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace("#^\n( +<\\?php)#m", "\n.. code-block:: php\n\n\$1", $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replaceCallback('#^\\s*<\\?(\\w+).*?\\?>#ms', static function ($matches) {
+            $result = \MolliePrefix\PhpCsFixer\Preg::replace("#^\\.\\. code-block:: bash\n\n#m", '', $matches[0]);
+            if ('php' !== $matches[1]) {
+                $result = \MolliePrefix\PhpCsFixer\Preg::replace("#<\\?{$matches[1]}\\s*#", '', $result);
+            }
+            return \MolliePrefix\PhpCsFixer\Preg::replace("#\n\n +\\?>#", '', $result);
+        }, $help);
         // Transform links
         // In the console output these have the form
         //      `description` (<url>http://...</url>)
         // Make to RST http://www.sphinx-doc.org/en/stable/rest.html#hyperlinks
         //      `description <http://...>`_
-
-        $help = Preg::replaceCallback(
-            '#`(.+)`\s?\(<url>(.+)<\/url>\)#',
-            static function (array $matches) {
-                return sprintf('`%s <%s>`_', str_replace('\\', '\\\\', $matches[1]), $matches[2]);
-            },
-            $help
-        );
-
-        $help = Preg::replace('#^                        #m', '  ', $help);
-        $help = Preg::replace('#\*\* +\[#', '** [', $help);
-
-        $downloadLatestUrl = sprintf('https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v%s/php-cs-fixer.phar', HelpCommand::getLatestReleaseVersionFromChangeLog());
+        $help = \MolliePrefix\PhpCsFixer\Preg::replaceCallback('#`(.+)`\\s?\\(<url>(.+)<\\/url>\\)#', static function (array $matches) {
+            return \sprintf('`%s <%s>`_', \str_replace('\\', '\\\\', $matches[1]), $matches[2]);
+        }, $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#^                        #m', '  ', $help);
+        $help = \MolliePrefix\PhpCsFixer\Preg::replace('#\\*\\* +\\[#', '** [', $help);
+        $downloadLatestUrl = \sprintf('https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v%s/php-cs-fixer.phar', \MolliePrefix\PhpCsFixer\Console\Command\HelpCommand::getLatestReleaseVersionFromChangeLog());
         $downloadUrl = 'https://cs.symfony.com/download/php-cs-fixer-v2.phar';
-
-        $header = str_replace('%download.version_url%', $downloadLatestUrl, $header);
-        $header = str_replace('%download.url%', $downloadUrl, $header);
-        $footer = str_replace('%download.version_url%', $downloadLatestUrl, $footer);
-        $footer = str_replace('%download.url%', $downloadUrl, $footer);
-
-        $output->write($header."\n".$help."\n".$footer);
-
+        $header = \str_replace('%download.version_url%', $downloadLatestUrl, $header);
+        $header = \str_replace('%download.url%', $downloadUrl, $header);
+        $footer = \str_replace('%download.version_url%', $downloadLatestUrl, $footer);
+        $footer = \str_replace('%download.url%', $downloadUrl, $footer);
+        $output->write($header . "\n" . $help . "\n" . $footer);
         return 0;
     }
-
     private function header($name, $underline)
     {
-        return $name."\n".str_repeat($underline, \strlen($name));
+        return $name . "\n" . \str_repeat($underline, \strlen($name));
     }
 }

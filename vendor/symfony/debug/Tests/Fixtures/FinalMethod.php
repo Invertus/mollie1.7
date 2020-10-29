@@ -1,6 +1,6 @@
 <?php
 
-namespace Symfony\Component\Debug\Tests\Fixtures;
+namespace MolliePrefix\Symfony\Component\Debug\Tests\Fixtures;
 
 class FinalMethod
 {
@@ -10,7 +10,6 @@ class FinalMethod
     public function finalMethod()
     {
     }
-
     /**
      * @final
      *
@@ -19,7 +18,6 @@ class FinalMethod
     public function finalMethod2()
     {
     }
-
     public function anotherMethod()
     {
     }

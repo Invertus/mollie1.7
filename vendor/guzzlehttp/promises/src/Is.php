@@ -1,6 +1,6 @@
 <?php
 
-namespace GuzzleHttp\Promise;
+namespace MolliePrefix\GuzzleHttp\Promise;
 
 final class Is
 {
@@ -9,38 +9,35 @@ final class Is
      *
      * @return bool
      */
-    public static function pending(PromiseInterface $promise)
+    public static function pending(\MolliePrefix\GuzzleHttp\Promise\PromiseInterface $promise)
     {
-        return $promise->getState() === PromiseInterface::PENDING;
+        return $promise->getState() === \MolliePrefix\GuzzleHttp\Promise\PromiseInterface::PENDING;
     }
-
     /**
      * Returns true if a promise is fulfilled or rejected.
      *
      * @return bool
      */
-    public static function settled(PromiseInterface $promise)
+    public static function settled(\MolliePrefix\GuzzleHttp\Promise\PromiseInterface $promise)
     {
-        return $promise->getState() !== PromiseInterface::PENDING;
+        return $promise->getState() !== \MolliePrefix\GuzzleHttp\Promise\PromiseInterface::PENDING;
     }
-
     /**
      * Returns true if a promise is fulfilled.
      *
      * @return bool
      */
-    public static function fulfilled(PromiseInterface $promise)
+    public static function fulfilled(\MolliePrefix\GuzzleHttp\Promise\PromiseInterface $promise)
     {
-        return $promise->getState() === PromiseInterface::FULFILLED;
+        return $promise->getState() === \MolliePrefix\GuzzleHttp\Promise\PromiseInterface::FULFILLED;
     }
-
     /**
      * Returns true if a promise is rejected.
      *
      * @return bool
      */
-    public static function rejected(PromiseInterface $promise)
+    public static function rejected(\MolliePrefix\GuzzleHttp\Promise\PromiseInterface $promise)
     {
-        return $promise->getState() === PromiseInterface::REJECTED;
+        return $promise->getState() === \MolliePrefix\GuzzleHttp\Promise\PromiseInterface::REJECTED;
     }
 }

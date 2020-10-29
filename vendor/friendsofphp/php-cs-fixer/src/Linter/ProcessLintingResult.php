@@ -9,33 +9,28 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Linter;
 
-namespace PhpCsFixer\Linter;
-
-use Symfony\Component\Process\Process;
-
+use MolliePrefix\Symfony\Component\Process\Process;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-final class ProcessLintingResult implements LintingResultInterface
+final class ProcessLintingResult implements \MolliePrefix\PhpCsFixer\Linter\LintingResultInterface
 {
     /**
      * @var bool
      */
     private $isSuccessful;
-
     /**
      * @var Process
      */
     private $process;
-
-    public function __construct(Process $process)
+    public function __construct(\MolliePrefix\Symfony\Component\Process\Process $process)
     {
         $this->process = $process;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -43,17 +38,15 @@ final class ProcessLintingResult implements LintingResultInterface
     {
         if (!$this->isSuccessful()) {
             // on some systems stderr is used, but on others, it's not
-            throw new LintingException($this->process->getErrorOutput() ?: $this->process->getOutput(), $this->process->getExitCode());
+            throw new \MolliePrefix\PhpCsFixer\Linter\LintingException($this->process->getErrorOutput() ?: $this->process->getOutput(), $this->process->getExitCode());
         }
     }
-
     private function isSuccessful()
     {
         if (null === $this->isSuccessful) {
             $this->process->wait();
             $this->isSuccessful = $this->process->isSuccessful();
         }
-
         return $this->isSuccessful;
     }
 }

@@ -9,15 +9,13 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer;
 
-namespace PhpCsFixer\Fixer;
-
-use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverInterface;
-
+use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverInterface;
 /**
  * @deprecated Will be incorporated into `ConfigurableFixerInterface` in 3.0
  */
-interface ConfigurationDefinitionFixerInterface extends ConfigurableFixerInterface
+interface ConfigurationDefinitionFixerInterface extends \MolliePrefix\PhpCsFixer\Fixer\ConfigurableFixerInterface
 {
     /**
      * Defines the available configuration options of the fixer.

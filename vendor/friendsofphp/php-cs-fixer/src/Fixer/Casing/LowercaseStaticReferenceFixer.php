@@ -9,31 +9,26 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Casing;
 
-namespace PhpCsFixer\Fixer\Casing;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\FixerDefinition\VersionSpecification;
-use PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification;
+use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Kuba Werłos <werlos@gmail.com>
  */
-final class LowercaseStaticReferenceFixer extends AbstractFixer
+final class LowercaseStaticReferenceFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Class static references `self`, `static` and `parent` MUST be in lower case.',
-            [
-                new CodeSample('<?php
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Class static references `self`, `static` and `parent` MUST be in lower case.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 class Foo extends Bar
 {
     public function baz1()
@@ -51,9 +46,7 @@ class Foo extends Bar
         return true;
     }
 }
-'),
-                new VersionSpecificCodeSample(
-                    '<?php
+'), new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample('<?php
 class Foo extends Bar
 {
     public function baz(?self $x) : SELF
@@ -61,45 +54,35 @@ class Foo extends Bar
         return false;
     }
 }
-',
-                    new VersionSpecification(70100)
-                ),
-            ]
-        );
+', new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification(70100))]);
     }
-
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isAnyTokenKindsFound([T_STATIC, T_STRING]);
+        return $tokens->isAnyTokenKindsFound([\T_STATIC, \T_STRING]);
     }
-
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         foreach ($tokens as $index => $token) {
-            if (!$token->equalsAny([[T_STRING, 'self'], [T_STATIC, 'static'], [T_STRING, 'parent']], false)) {
+            if (!$token->equalsAny([[\T_STRING, 'self'], [\T_STATIC, 'static'], [\T_STRING, 'parent']], \false)) {
                 continue;
             }
-
-            $newContent = strtolower($token->getContent());
+            $newContent = \strtolower($token->getContent());
             if ($token->getContent() === $newContent) {
-                continue; // case is already correct
+                continue;
+                // case is already correct
             }
-
             $prevIndex = $tokens->getPrevMeaningfulToken($index);
-            if ($tokens[$prevIndex]->isGivenKind([T_CONST, T_DOUBLE_COLON, T_FUNCTION, T_NAMESPACE, T_NS_SEPARATOR, T_OBJECT_OPERATOR, T_PRIVATE, T_PROTECTED, T_PUBLIC])) {
+            if ($tokens[$prevIndex]->isGivenKind([\T_CONST, \T_DOUBLE_COLON, \T_FUNCTION, \T_NAMESPACE, \T_NS_SEPARATOR, \T_OBJECT_OPERATOR, \T_PRIVATE, \T_PROTECTED, \T_PUBLIC])) {
                 continue;
             }
-
             $nextIndex = $tokens->getNextMeaningfulToken($index);
-            if ($tokens[$nextIndex]->isGivenKind([T_FUNCTION, T_NS_SEPARATOR, T_PRIVATE, T_PROTECTED, T_PUBLIC])) {
+            if ($tokens[$nextIndex]->isGivenKind([\T_FUNCTION, \T_NS_SEPARATOR, \T_PRIVATE, \T_PROTECTED, \T_PUBLIC])) {
                 continue;
             }
-
-            if ('static' === $newContent && $tokens[$nextIndex]->isGivenKind(T_VARIABLE)) {
+            if ('static' === $newContent && $tokens[$nextIndex]->isGivenKind(\T_VARIABLE)) {
                 continue;
             }
-
-            $tokens[$index] = new Token([$token->getId(), $newContent]);
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->getId(), $newContent]);
         }
     }
 }

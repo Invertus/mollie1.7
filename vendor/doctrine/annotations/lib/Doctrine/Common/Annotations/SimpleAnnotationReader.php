@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,8 +17,7 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-namespace Doctrine\Common\Annotations;
+namespace MolliePrefix\Doctrine\Common\Annotations;
 
 /**
  * Simple Annotation Reader.
@@ -29,13 +29,12 @@ namespace Doctrine\Common\Annotations;
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Fabio B. Silva <fabio.bat.silva@gmail.com>
  */
-class SimpleAnnotationReader implements Reader
+class SimpleAnnotationReader implements \MolliePrefix\Doctrine\Common\Annotations\Reader
 {
     /**
      * @var DocParser
      */
     private $parser;
-
     /**
      * Constructor.
      *
@@ -43,10 +42,9 @@ class SimpleAnnotationReader implements Reader
      */
     public function __construct()
     {
-        $this->parser = new DocParser();
-        $this->parser->setIgnoreNotImportedAnnotations(true);
+        $this->parser = new \MolliePrefix\Doctrine\Common\Annotations\DocParser();
+        $this->parser->setIgnoreNotImportedAnnotations(\true);
     }
-
     /**
      * Adds a namespace in which we will look for annotations.
      *
@@ -58,31 +56,27 @@ class SimpleAnnotationReader implements Reader
     {
         $this->parser->addNamespace($namespace);
     }
-
     /**
      * {@inheritDoc}
      */
     public function getClassAnnotations(\ReflectionClass $class)
     {
-        return $this->parser->parse($class->getDocComment(), 'class '.$class->getName());
+        return $this->parser->parse($class->getDocComment(), 'class ' . $class->getName());
     }
-
     /**
      * {@inheritDoc}
      */
     public function getMethodAnnotations(\ReflectionMethod $method)
     {
-        return $this->parser->parse($method->getDocComment(), 'method '.$method->getDeclaringClass()->name.'::'.$method->getName().'()');
+        return $this->parser->parse($method->getDocComment(), 'method ' . $method->getDeclaringClass()->name . '::' . $method->getName() . '()');
     }
-
     /**
      * {@inheritDoc}
      */
     public function getPropertyAnnotations(\ReflectionProperty $property)
     {
-        return $this->parser->parse($property->getDocComment(), 'property '.$property->getDeclaringClass()->name.'::$'.$property->getName());
+        return $this->parser->parse($property->getDocComment(), 'property ' . $property->getDeclaringClass()->name . '::$' . $property->getName());
     }
-
     /**
      * {@inheritDoc}
      */
@@ -93,10 +87,8 @@ class SimpleAnnotationReader implements Reader
                 return $annot;
             }
         }
-
         return null;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -107,10 +99,8 @@ class SimpleAnnotationReader implements Reader
                 return $annot;
             }
         }
-
         return null;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -121,7 +111,6 @@ class SimpleAnnotationReader implements Reader
                 return $annot;
             }
         }
-
         return null;
     }
 }

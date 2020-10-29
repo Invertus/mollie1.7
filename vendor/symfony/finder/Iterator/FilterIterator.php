@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Finder\Iterator;
+namespace MolliePrefix\Symfony\Component\Finder\Iterator;
 
 /**
  * This iterator just overrides the rewind method in order to correct a PHP bug,
@@ -31,17 +30,14 @@ abstract class FilterIterator extends \FilterIterator
      */
     public function rewind()
     {
-        if (\PHP_VERSION_ID > 50607 || (\PHP_VERSION_ID > 50523 && \PHP_VERSION_ID < 50600)) {
+        if (\PHP_VERSION_ID > 50607 || \PHP_VERSION_ID > 50523 && \PHP_VERSION_ID < 50600) {
             parent::rewind();
-
             return;
         }
-
         $iterator = $this;
         while ($iterator instanceof \OuterIterator) {
             $innerIterator = $iterator->getInnerIterator();
-
-            if ($innerIterator instanceof RecursiveDirectoryIterator) {
+            if ($innerIterator instanceof \MolliePrefix\Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator) {
                 // this condition is necessary for iterators to work properly with non-local filesystems like ftp
                 if ($innerIterator->isRewindable()) {
                     $innerIterator->next();
@@ -51,10 +47,8 @@ abstract class FilterIterator extends \FilterIterator
                 $innerIterator->next();
                 $innerIterator->rewind();
             }
-
             $iterator = $innerIterator;
         }
-
         parent::rewind();
     }
 }

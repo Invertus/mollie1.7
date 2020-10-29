@@ -9,31 +9,27 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-namespace PhpCsFixer\Fixer\Phpdoc;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Preg;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-use PhpCsFixer\Utils;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Preg;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+use MolliePrefix\PhpCsFixer\Utils;
 /**
  * @author Ceeram <ceeram@cakephp.org>
  * @author Graham Campbell <graham@alt-three.com>
  */
-final class PhpdocIndentFixer extends AbstractFixer
+final class PhpdocIndentFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Docblocks should have the same indentation as the documented subject.',
-            [new CodeSample('<?php
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Docblocks should have the same indentation as the documented subject.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
 class DocBlocks
 {
 /**
@@ -41,10 +37,8 @@ class DocBlocks
  */
     const INDENT = 1;
 }
-')]
-        );
+')]);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -55,64 +49,50 @@ class DocBlocks
     {
         return 20;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(T_DOC_COMMENT);
+        return $tokens->isTokenKindFound(\T_DOC_COMMENT);
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         foreach ($tokens as $index => $token) {
-            if (!$token->isGivenKind(T_DOC_COMMENT)) {
+            if (!$token->isGivenKind(\T_DOC_COMMENT)) {
                 continue;
             }
-
             $nextIndex = $tokens->getNextMeaningfulToken($index);
-
             // skip if there is no next token or if next token is block end `}`
             if (null === $nextIndex || $tokens[$nextIndex]->equals('}')) {
                 continue;
             }
-
             $prevIndex = $index - 1;
             $prevToken = $tokens[$prevIndex];
-
             // ignore inline docblocks
-            if (
-                $prevToken->isGivenKind(T_OPEN_TAG)
-                || ($prevToken->isWhitespace(" \t") && !$tokens[$index - 2]->isGivenKind(T_OPEN_TAG))
-                || $prevToken->equalsAny([';', ',', '{', '('])
-            ) {
+            if ($prevToken->isGivenKind(\T_OPEN_TAG) || $prevToken->isWhitespace(" \t") && !$tokens[$index - 2]->isGivenKind(\T_OPEN_TAG) || $prevToken->equalsAny([';', ',', '{', '('])) {
                 continue;
             }
-
             $indent = '';
             if ($tokens[$nextIndex - 1]->isWhitespace()) {
-                $indent = Utils::calculateTrailingWhitespaceIndent($tokens[$nextIndex - 1]);
+                $indent = \MolliePrefix\PhpCsFixer\Utils::calculateTrailingWhitespaceIndent($tokens[$nextIndex - 1]);
             }
-
             $newPrevContent = $this->fixWhitespaceBeforeDocblock($prevToken->getContent(), $indent);
             if ($newPrevContent) {
                 if ($prevToken->isArray()) {
-                    $tokens[$prevIndex] = new Token([$prevToken->getId(), $newPrevContent]);
+                    $tokens[$prevIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$prevToken->getId(), $newPrevContent]);
                 } else {
-                    $tokens[$prevIndex] = new Token($newPrevContent);
+                    $tokens[$prevIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token($newPrevContent);
                 }
             } else {
                 $tokens->clearAt($prevIndex);
             }
-
-            $tokens[$index] = new Token([T_DOC_COMMENT, $this->fixDocBlock($token->getContent(), $indent)]);
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $this->fixDocBlock($token->getContent(), $indent)]);
         }
     }
-
     /**
      * Fix indentation of Docblock.
      *
@@ -123,9 +103,8 @@ class DocBlocks
      */
     private function fixDocBlock($content, $indent)
     {
-        return ltrim(Preg::replace('/^\h*\*/m', $indent.' *', $content));
+        return \ltrim(\MolliePrefix\PhpCsFixer\Preg::replace('/^\\h*\\*/m', $indent . ' *', $content));
     }
-
     /**
      * @param string $content Whitespace before Docblock
      * @param string $indent  Indentation of the documented subject
@@ -134,6 +113,6 @@ class DocBlocks
      */
     private function fixWhitespaceBeforeDocblock($content, $indent)
     {
-        return rtrim($content, " \t").$indent;
+        return \rtrim($content, " \t") . $indent;
     }
 }

@@ -9,14 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Casing;
 
-namespace PhpCsFixer\Fixer\Casing;
-
-use PhpCsFixer\AbstractProxyFixer;
-use PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-
+use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
+use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 /**
  * Fixer for rules defined in PSR2 ¶2.5.
  *
@@ -24,19 +22,15 @@ use PhpCsFixer\FixerDefinition\FixerDefinition;
  *
  * @deprecated proxy to ConstantCaseFixer
  */
-final class LowercaseConstantsFixer extends AbstractProxyFixer implements DeprecatedFixerInterface
+final class LowercaseConstantsFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'The PHP constants `true`, `false`, and `null` MUST be in lower case.',
-            [new CodeSample("<?php\n\$a = FALSE;\n\$b = True;\n\$c = nuLL;\n")]
-        );
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('The PHP constants `true`, `false`, and `null` MUST be in lower case.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\n\$a = FALSE;\n\$b = True;\n\$c = nuLL;\n")]);
     }
-
     /**
      * Returns names of fixers to use instead, if any.
      *
@@ -44,17 +38,15 @@ final class LowercaseConstantsFixer extends AbstractProxyFixer implements Deprec
      */
     public function getSuccessorsNames()
     {
-        return array_keys($this->proxyFixers);
+        return \array_keys($this->proxyFixers);
     }
-
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        $fixer = new ConstantCaseFixer();
+        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\Casing\ConstantCaseFixer();
         $fixer->configure(['case' => 'lower']);
-
         return [$fixer];
     }
 }

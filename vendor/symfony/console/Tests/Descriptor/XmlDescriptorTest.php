@@ -8,18 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Tests\Descriptor;
 
-namespace Symfony\Component\Console\Tests\Descriptor;
-
-use Symfony\Component\Console\Descriptor\XmlDescriptor;
-
-class XmlDescriptorTest extends AbstractDescriptorTest
+use MolliePrefix\Symfony\Component\Console\Descriptor\XmlDescriptor;
+class XmlDescriptorTest extends \MolliePrefix\Symfony\Component\Console\Tests\Descriptor\AbstractDescriptorTest
 {
     protected function getDescriptor()
     {
-        return new XmlDescriptor();
+        return new \MolliePrefix\Symfony\Component\Console\Descriptor\XmlDescriptor();
     }
-
     protected function getFormat()
     {
         return 'xml';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Unit test class for the ValidDefaultValue sniff.
  *
@@ -6,15 +7,11 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
+namespace MolliePrefix\PHP_CodeSniffer\Standards\PEAR\Tests\Functions;
 
-namespace PHP_CodeSniffer\Standards\PEAR\Tests\Functions;
-
-use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-
-class ValidDefaultValueUnitTest extends AbstractSniffUnitTest
+use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+class ValidDefaultValueUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
 {
-
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -25,21 +22,9 @@ class ValidDefaultValueUnitTest extends AbstractSniffUnitTest
      */
     public function getErrorList()
     {
-        return [
-            29  => 1,
-            34  => 1,
-            39  => 1,
-            71  => 1,
-            76  => 1,
-            81  => 1,
-            91  => 1,
-            99  => 1,
-            101 => 1,
-        ];
-
-    }//end getErrorList()
-
-
+        return [29 => 1, 34 => 1, 39 => 1, 71 => 1, 76 => 1, 81 => 1, 91 => 1, 99 => 1, 101 => 1];
+    }
+    //end getErrorList()
     /**
      * Returns the lines where warnings should occur.
      *
@@ -51,8 +36,7 @@ class ValidDefaultValueUnitTest extends AbstractSniffUnitTest
     public function getWarningList()
     {
         return [];
-
-    }//end getWarningList()
-
-
-}//end class
+    }
+    //end getWarningList()
+}
+//end class

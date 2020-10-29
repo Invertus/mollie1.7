@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpParser;
+namespace MolliePrefix\PhpParser;
 
 interface ErrorHandler
 {
@@ -9,5 +9,5 @@ interface ErrorHandler
      *
      * @param Error $error The error that needs to be handled
      */
-    public function handleError(Error $error);
+    public function handleError(\MolliePrefix\PhpParser\Error $error);
 }

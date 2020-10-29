@@ -1,10 +1,9 @@
 <?php
 
-namespace PhpParser\Node;
+namespace MolliePrefix\PhpParser\Node;
 
-use PhpParser\Node;
-
-interface FunctionLike extends Node
+use MolliePrefix\PhpParser\Node;
+interface FunctionLike extends \MolliePrefix\PhpParser\Node
 {
     /**
      * Whether to return by reference
@@ -12,21 +11,18 @@ interface FunctionLike extends Node
      * @return bool
      */
     public function returnsByRef();
-
     /**
      * List of parameters
      *
      * @return Node\Param[]
      */
     public function getParams();
-
     /**
      * Get the declared return type or null
      * 
      * @return null|string|Node\Name|Node\NullableType
      */
     public function getReturnType();
-
     /**
      * The function body
      *

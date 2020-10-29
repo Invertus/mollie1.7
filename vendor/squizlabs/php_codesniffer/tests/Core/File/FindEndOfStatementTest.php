@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tests for the \PHP_CodeSniffer\Files\File:findEndOfStatement method.
  *
@@ -6,15 +7,11 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
+namespace MolliePrefix\PHP_CodeSniffer\Tests\Core\File;
 
-namespace PHP_CodeSniffer\Tests\Core\File;
-
-use PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest;
-
-class FindEndOfStatementTest extends AbstractMethodUnitTest
+use MolliePrefix\PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest;
+class FindEndOfStatementTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest
 {
-
-
     /**
      * Test a simple assignment.
      *
@@ -22,14 +19,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testSimpleAssignment()
     {
-        $start = $this->getTargetToken('/* testSimpleAssignment */', T_VARIABLE);
+        $start = $this->getTargetToken('/* testSimpleAssignment */', \T_VARIABLE);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 5), $found);
-
-    }//end testSimpleAssignment()
-
-
+        $this->assertSame($start + 5, $found);
+    }
+    //end testSimpleAssignment()
     /**
      * Test a direct call to a control structure.
      *
@@ -37,14 +31,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testControlStructure()
     {
-        $start = $this->getTargetToken('/* testControlStructure */', T_WHILE);
+        $start = $this->getTargetToken('/* testControlStructure */', \T_WHILE);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 6), $found);
-
-    }//end testControlStructure()
-
-
+        $this->assertSame($start + 6, $found);
+    }
+    //end testControlStructure()
     /**
      * Test the assignment of a closure.
      *
@@ -52,14 +43,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testClosureAssignment()
     {
-        $start = $this->getTargetToken('/* testClosureAssignment */', T_VARIABLE, '$a');
+        $start = $this->getTargetToken('/* testClosureAssignment */', \T_VARIABLE, '$a');
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 13), $found);
-
-    }//end testClosureAssignment()
-
-
+        $this->assertSame($start + 13, $found);
+    }
+    //end testClosureAssignment()
     /**
      * Test using a heredoc in a function argument.
      *
@@ -68,26 +56,19 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
     public function testHeredocFunctionArg()
     {
         // Find the end of the function.
-        $start = $this->getTargetToken('/* testHeredocFunctionArg */', T_STRING, 'myFunction');
+        $start = $this->getTargetToken('/* testHeredocFunctionArg */', \T_STRING, 'myFunction');
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 10), $found);
-
+        $this->assertSame($start + 10, $found);
         // Find the end of the heredoc.
         $start += 2;
-        $found  = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 4), $found);
-
-        // Find the end of the last arg.
-        $start = ($found + 2);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
+        $this->assertSame($start + 4, $found);
+        // Find the end of the last arg.
+        $start = $found + 2;
+        $found = self::$phpcsFile->findEndOfStatement($start);
         $this->assertSame($start, $found);
-
-    }//end testHeredocFunctionArg()
-
-
+    }
+    //end testHeredocFunctionArg()
     /**
      * Test parts of a switch statement.
      *
@@ -96,26 +77,19 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
     public function testSwitch()
     {
         // Find the end of the switch.
-        $start = $this->getTargetToken('/* testSwitch */', T_SWITCH);
+        $start = $this->getTargetToken('/* testSwitch */', \T_SWITCH);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 28), $found);
-
+        $this->assertSame($start + 28, $found);
         // Find the end of the case.
         $start += 9;
-        $found  = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 8), $found);
-
+        $found = self::$phpcsFile->findEndOfStatement($start);
+        $this->assertSame($start + 8, $found);
         // Find the end of default case.
         $start += 11;
-        $found  = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 6), $found);
-
-    }//end testSwitch()
-
-
+        $found = self::$phpcsFile->findEndOfStatement($start);
+        $this->assertSame($start + 6, $found);
+    }
+    //end testSwitch()
     /**
      * Test statements that are array values.
      *
@@ -124,26 +98,19 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
     public function testStatementAsArrayValue()
     {
         // Test short array syntax.
-        $start = $this->getTargetToken('/* testStatementAsArrayValue */', T_NEW);
+        $start = $this->getTargetToken('/* testStatementAsArrayValue */', \T_NEW);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 2), $found);
-
+        $this->assertSame($start + 2, $found);
         // Test long array syntax.
         $start += 12;
-        $found  = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 2), $found);
-
+        $found = self::$phpcsFile->findEndOfStatement($start);
+        $this->assertSame($start + 2, $found);
         // Test same statement outside of array.
         $start += 10;
-        $found  = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 3), $found);
-
-    }//end testStatementAsArrayValue()
-
-
+        $found = self::$phpcsFile->findEndOfStatement($start);
+        $this->assertSame($start + 3, $found);
+    }
+    //end testStatementAsArrayValue()
     /**
      * Test a use group.
      *
@@ -151,14 +118,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testUseGroup()
     {
-        $start = $this->getTargetToken('/* testUseGroup */', T_USE);
+        $start = $this->getTargetToken('/* testUseGroup */', \T_USE);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 23), $found);
-
-    }//end testUseGroup()
-
-
+        $this->assertSame($start + 23, $found);
+    }
+    //end testUseGroup()
     /**
      * Test arrow function as array value.
      *
@@ -166,14 +130,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testArrowFunctionArrayValue()
     {
-        $start = $this->getTargetToken('/* testArrowFunctionArrayValue */', T_FN);
+        $start = $this->getTargetToken('/* testArrowFunctionArrayValue */', \T_FN);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 9), $found);
-
-    }//end testArrowFunctionArrayValue()
-
-
+        $this->assertSame($start + 9, $found);
+    }
+    //end testArrowFunctionArrayValue()
     /**
      * Test static arrow function.
      *
@@ -181,17 +142,13 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testStaticArrowFunction()
     {
-        $static = $this->getTargetToken('/* testStaticArrowFunction */', T_STATIC);
-        $fn     = $this->getTargetToken('/* testStaticArrowFunction */', T_FN);
-
+        $static = $this->getTargetToken('/* testStaticArrowFunction */', \T_STATIC);
+        $fn = $this->getTargetToken('/* testStaticArrowFunction */', \T_FN);
         $endOfStatementStatic = self::$phpcsFile->findEndOfStatement($static);
-        $endOfStatementFn     = self::$phpcsFile->findEndOfStatement($fn);
-
+        $endOfStatementFn = self::$phpcsFile->findEndOfStatement($fn);
         $this->assertSame($endOfStatementFn, $endOfStatementStatic);
-
-    }//end testStaticArrowFunction()
-
-
+    }
+    //end testStaticArrowFunction()
     /**
      * Test arrow function with return value.
      *
@@ -199,14 +156,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testArrowFunctionReturnValue()
     {
-        $start = $this->getTargetToken('/* testArrowFunctionReturnValue */', T_FN);
+        $start = $this->getTargetToken('/* testArrowFunctionReturnValue */', \T_FN);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 18), $found);
-
-    }//end testArrowFunctionReturnValue()
-
-
+        $this->assertSame($start + 18, $found);
+    }
+    //end testArrowFunctionReturnValue()
     /**
      * Test arrow function used as a function argument.
      *
@@ -214,14 +168,11 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testArrowFunctionAsArgument()
     {
-        $start = $this->getTargetToken('/* testArrowFunctionAsArgument */', T_FN);
+        $start = $this->getTargetToken('/* testArrowFunctionAsArgument */', \T_FN);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 8), $found);
-
-    }//end testArrowFunctionAsArgument()
-
-
+        $this->assertSame($start + 8, $found);
+    }
+    //end testArrowFunctionAsArgument()
     /**
      * Test arrow function with arrays used as a function argument.
      *
@@ -229,12 +180,10 @@ class FindEndOfStatementTest extends AbstractMethodUnitTest
      */
     public function testArrowFunctionWithArrayAsArgument()
     {
-        $start = $this->getTargetToken('/* testArrowFunctionWithArrayAsArgument */', T_FN);
+        $start = $this->getTargetToken('/* testArrowFunctionWithArrayAsArgument */', \T_FN);
         $found = self::$phpcsFile->findEndOfStatement($start);
-
-        $this->assertSame(($start + 17), $found);
-
-    }//end testArrowFunctionWithArrayAsArgument()
-
-
-}//end class
+        $this->assertSame($start + 17, $found);
+    }
+    //end testArrowFunctionWithArrayAsArgument()
+}
+//end class

@@ -9,47 +9,50 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\ReturnNotation;
 
-namespace PhpCsFixer\Fixer\ReturnNotation;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\FixerDefinition\VersionSpecification;
-use PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
-use PhpCsFixer\Tokenizer\CT;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification;
+use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Graham Campbell <graham@alt-three.com>
  */
-final class SimplifiedNullReturnFixer extends AbstractFixer
+final class SimplifiedNullReturnFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'A return statement wishing to return `void` should not return `null`.',
-            [
-                new CodeSample("<?php return null;\n"),
-                new VersionSpecificCodeSample(
-                    <<<'EOT'
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('A return statement wishing to return `void` should not return `null`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php return null;\n"), new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample(<<<'EOT'
 <?php
-function foo() { return null; }
-function bar(): int { return null; }
-function baz(): ?int { return null; }
-function xyz(): void { return null; }
+
+namespace MolliePrefix;
+
+function foo()
+{
+    return null;
+}
+function bar() : int
+{
+    return null;
+}
+function baz() : ?int
+{
+    return null;
+}
+function xyz() : void
+{
+    return null;
+}
 
 EOT
-                    ,
-                    new VersionSpecification(70100)
-                ),
-            ]
-        );
+, new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification(70100))]);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -59,37 +62,33 @@ EOT
     {
         return 16;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(T_RETURN);
+        return $tokens->isTokenKindFound(\T_RETURN);
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         foreach ($tokens as $index => $token) {
-            if (!$token->isGivenKind(T_RETURN)) {
+            if (!$token->isGivenKind(\T_RETURN)) {
                 continue;
             }
-
             if ($this->needFixing($tokens, $index)) {
                 $this->clear($tokens, $index);
             }
         }
     }
-
     /**
      * Clear the return statement located at a given index.
      *
      * @param int $index
      */
-    private function clear(Tokens $tokens, $index)
+    private function clear(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
     {
         while (!$tokens[++$index]->equals(';')) {
             if ($this->shouldClearToken($tokens, $index)) {
@@ -97,7 +96,6 @@ EOT
             }
         }
     }
-
     /**
      * Does the return statement located at a given index need fixing?
      *
@@ -105,24 +103,20 @@ EOT
      *
      * @return bool
      */
-    private function needFixing(Tokens $tokens, $index)
+    private function needFixing(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
     {
         if ($this->isStrictOrNullableReturnTypeFunction($tokens, $index)) {
-            return false;
+            return \false;
         }
-
         $content = '';
         while (!$tokens[$index]->equals(';')) {
             $index = $tokens->getNextMeaningfulToken($index);
             $content .= $tokens[$index]->getContent();
         }
-
-        $content = ltrim($content, '(');
-        $content = rtrim($content, ');');
-
-        return 'null' === strtolower($content);
+        $content = \ltrim($content, '(');
+        $content = \rtrim($content, ');');
+        return 'null' === \strtolower($content);
     }
-
     /**
      * Is the return within a function with a non-void or nullable return type?
      *
@@ -130,27 +124,23 @@ EOT
      *
      * @return bool
      */
-    private function isStrictOrNullableReturnTypeFunction(Tokens $tokens, $returnIndex)
+    private function isStrictOrNullableReturnTypeFunction(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $returnIndex)
     {
         $functionIndex = $returnIndex;
         do {
-            $functionIndex = $tokens->getPrevTokenOfKind($functionIndex, [[T_FUNCTION]]);
+            $functionIndex = $tokens->getPrevTokenOfKind($functionIndex, [[\T_FUNCTION]]);
             if (null === $functionIndex) {
-                return false;
+                return \false;
             }
             $openingCurlyBraceIndex = $tokens->getNextTokenOfKind($functionIndex, ['{']);
-            $closingCurlyBraceIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $openingCurlyBraceIndex);
+            $closingCurlyBraceIndex = $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_CURLY_BRACE, $openingCurlyBraceIndex);
         } while ($closingCurlyBraceIndex < $returnIndex);
-
         $possibleVoidIndex = $tokens->getPrevMeaningfulToken($openingCurlyBraceIndex);
-        $isStrictReturnType = $tokens[$possibleVoidIndex]->isGivenKind(T_STRING) && 'void' !== $tokens[$possibleVoidIndex]->getContent();
-
-        $nullableTypeIndex = $tokens->getNextTokenOfKind($functionIndex, [[CT::T_NULLABLE_TYPE]]);
+        $isStrictReturnType = $tokens[$possibleVoidIndex]->isGivenKind(\T_STRING) && 'void' !== $tokens[$possibleVoidIndex]->getContent();
+        $nullableTypeIndex = $tokens->getNextTokenOfKind($functionIndex, [[\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NULLABLE_TYPE]]);
         $isNullableReturnType = null !== $nullableTypeIndex && $nullableTypeIndex < $openingCurlyBraceIndex;
-
         return $isStrictReturnType || $isNullableReturnType;
     }
-
     /**
      * Should we clear the specific token?
      *
@@ -161,10 +151,9 @@ EOT
      *
      * @return bool
      */
-    private function shouldClearToken(Tokens $tokens, $index)
+    private function shouldClearToken(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
     {
         $token = $tokens[$index];
-
         return !$token->isComment() && !($token->isWhitespace() && $tokens[$index + 1]->isComment());
     }
 }

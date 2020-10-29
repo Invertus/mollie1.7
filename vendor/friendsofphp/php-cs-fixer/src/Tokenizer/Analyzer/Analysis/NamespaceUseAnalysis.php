@@ -9,60 +9,52 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\Tokenizer\Analyzer\Analysis;
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis;
 
 /**
  * @internal
  */
-final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
+final class NamespaceUseAnalysis implements \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\StartEndTokenAwareAnalysis
 {
     const TYPE_CLASS = 1;
     const TYPE_FUNCTION = 2;
     const TYPE_CONSTANT = 3;
-
     /**
      * The fully qualified use namespace.
      *
      * @var string
      */
     private $fullName;
-
     /**
      * The short version of use namespace or the alias name in case of aliased use statements.
      *
      * @var string
      */
     private $shortName;
-
     /**
      * Is the use statement being aliased?
      *
      * @var bool
      */
     private $isAliased;
-
     /**
      * The start index of the namespace declaration in the analyzed Tokens.
      *
      * @var int
      */
     private $startIndex;
-
     /**
      * The end index of the namespace declaration in the analyzed Tokens.
      *
      * @var int
      */
     private $endIndex;
-
     /**
      * The type of import: class, function or constant.
      *
      * @var int
      */
     private $type;
-
     /**
      * @param string $fullName
      * @param string $shortName
@@ -80,7 +72,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
         $this->endIndex = $endIndex;
         $this->type = $type;
     }
-
     /**
      * @return string
      */
@@ -88,7 +79,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return $this->fullName;
     }
-
     /**
      * @return string
      */
@@ -96,7 +86,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return $this->shortName;
     }
-
     /**
      * @return bool
      */
@@ -104,7 +93,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return $this->isAliased;
     }
-
     /**
      * @return int
      */
@@ -112,7 +100,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return $this->startIndex;
     }
-
     /**
      * @return int
      */
@@ -120,7 +107,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return $this->endIndex;
     }
-
     /**
      * @return bool
      */
@@ -128,7 +114,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return self::TYPE_CLASS === $this->type;
     }
-
     /**
      * @return bool
      */
@@ -136,7 +121,6 @@ final class NamespaceUseAnalysis implements StartEndTokenAwareAnalysis
     {
         return self::TYPE_FUNCTION === $this->type;
     }
-
     /**
      * @return bool
      */

@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\Console\Command;
+namespace MolliePrefix\PhpCsFixer\Console\Command;
 
 /**
  * @author SpacePossum
@@ -23,12 +22,10 @@ final class DescribeNameNotFoundException extends \InvalidArgumentException
      * @var string
      */
     private $name;
-
     /**
      * @var string 'rule'|'set'
      */
     private $type;
-
     /**
      * @param string $name
      * @param string $type
@@ -37,10 +34,8 @@ final class DescribeNameNotFoundException extends \InvalidArgumentException
     {
         $this->name = $name;
         $this->type = $type;
-
         parent::__construct();
     }
-
     /**
      * @return string
      */
@@ -48,7 +43,6 @@ final class DescribeNameNotFoundException extends \InvalidArgumentException
     {
         return $this->name;
     }
-
     /**
      * @return string
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Symfony\Component\Debug\Tests\Fixtures;
+namespace MolliePrefix\Symfony\Component\Debug\Tests\Fixtures;
 
 /**
  * @internal
@@ -13,7 +13,6 @@ trait InternalTrait2
     public function internalMethod()
     {
     }
-
     /**
      * @internal but should not trigger a deprecation
      */

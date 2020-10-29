@@ -1,9 +1,8 @@
 <?php
 
-namespace PhpParser\Node;
+namespace MolliePrefix\PhpParser\Node;
 
-use PhpParser\NodeAbstract;
-
-abstract class Stmt extends NodeAbstract
+use MolliePrefix\PhpParser\NodeAbstract;
+abstract class Stmt extends \MolliePrefix\PhpParser\NodeAbstract
 {
 }

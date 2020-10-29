@@ -1,10 +1,9 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-
-abstract class TraitUseAdaptation extends Node\Stmt
+use MolliePrefix\PhpParser\Node;
+abstract class TraitUseAdaptation extends \MolliePrefix\PhpParser\Node\Stmt
 {
     /** @var Node\Name Trait name */
     public $trait;

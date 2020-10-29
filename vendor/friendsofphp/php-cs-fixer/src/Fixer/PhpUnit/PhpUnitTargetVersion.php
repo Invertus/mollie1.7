@@ -9,11 +9,9 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-namespace PhpCsFixer\Fixer\PhpUnit;
-
-use Composer\Semver\Comparator;
-
+use MolliePrefix\Composer\Semver\Comparator;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
@@ -35,11 +33,9 @@ final class PhpUnitTargetVersion
     const VERSION_6_0 = '6.0';
     const VERSION_7_5 = '7.5';
     const VERSION_NEWEST = 'newest';
-
     private function __construct()
     {
     }
-
     /**
      * @param string $candidate
      * @param string $target
@@ -49,13 +45,11 @@ final class PhpUnitTargetVersion
     public static function fulfills($candidate, $target)
     {
         if (self::VERSION_NEWEST === $target) {
-            throw new \LogicException(sprintf('Parameter `target` shall not be provided as `%s`, determine proper target for tested PHPUnit feature instead.', self::VERSION_NEWEST));
+            throw new \LogicException(\sprintf('Parameter `target` shall not be provided as `%s`, determine proper target for tested PHPUnit feature instead.', self::VERSION_NEWEST));
         }
-
         if (self::VERSION_NEWEST === $candidate) {
-            return true;
+            return \true;
         }
-
-        return Comparator::greaterThanOrEqualTo($candidate, $target);
+        return \MolliePrefix\Composer\Semver\Comparator::greaterThanOrEqualTo($candidate, $target);
     }
 }

@@ -1,9 +1,8 @@
 <?php
 
-namespace PhpParser\Node\Expr\BinaryOp;
+namespace MolliePrefix\PhpParser\Node\Expr\BinaryOp;
 
-use PhpParser\Node\Expr\BinaryOp;
-
-class Equal extends BinaryOp
+use MolliePrefix\PhpParser\Node\Expr\BinaryOp;
+class Equal extends \MolliePrefix\PhpParser\Node\Expr\BinaryOp
 {
 }

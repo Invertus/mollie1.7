@@ -8,17 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\EventDispatcher\Debug;
 
-namespace Symfony\Component\EventDispatcher\Debug;
-
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
+use MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @method reset() Resets the trace.
  */
-interface TraceableEventDispatcherInterface extends EventDispatcherInterface
+interface TraceableEventDispatcherInterface extends \MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcherInterface
 {
     /**
      * Gets the called listeners.
@@ -26,7 +24,6 @@ interface TraceableEventDispatcherInterface extends EventDispatcherInterface
      * @return array An array of called listeners
      */
     public function getCalledListeners();
-
     /**
      * Gets the not called listeners.
      *

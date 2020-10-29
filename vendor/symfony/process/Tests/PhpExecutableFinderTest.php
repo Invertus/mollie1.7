@@ -8,16 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Process\Tests;
 
-namespace Symfony\Component\Process\Tests;
-
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Process\PhpExecutableFinder;
-
+use MolliePrefix\PHPUnit\Framework\TestCase;
+use MolliePrefix\Symfony\Component\Process\PhpExecutableFinder;
 /**
  * @author Robert Schönthal <seroscho@googlemail.com>
  */
-class PhpExecutableFinderTest extends TestCase
+class PhpExecutableFinderTest extends \MolliePrefix\PHPUnit\Framework\TestCase
 {
     /**
      * tests find() with the constant PHP_BINARY.
@@ -27,16 +25,12 @@ class PhpExecutableFinderTest extends TestCase
         if (\defined('HHVM_VERSION')) {
             $this->markTestSkipped('Should not be executed in HHVM context.');
         }
-
-        $f = new PhpExecutableFinder();
-
+        $f = new \MolliePrefix\Symfony\Component\Process\PhpExecutableFinder();
         $current = \PHP_BINARY;
         $args = 'phpdbg' === \PHP_SAPI ? ' -qrr' : '';
-
-        $this->assertEquals($current.$args, $f->find(), '::find() returns the executable PHP');
-        $this->assertEquals($current, $f->find(false), '::find() returns the executable PHP');
+        $this->assertEquals($current . $args, $f->find(), '::find() returns the executable PHP');
+        $this->assertEquals($current, $f->find(\false), '::find() returns the executable PHP');
     }
-
     /**
      * tests find() with the env var / constant PHP_BINARY with HHVM.
      */
@@ -45,22 +39,17 @@ class PhpExecutableFinderTest extends TestCase
         if (!\defined('HHVM_VERSION')) {
             $this->markTestSkipped('Should be executed in HHVM context.');
         }
-
-        $f = new PhpExecutableFinder();
-
-        $current = getenv('PHP_BINARY') ?: \PHP_BINARY;
-
-        $this->assertEquals($current.' --php', $f->find(), '::find() returns the executable PHP');
-        $this->assertEquals($current, $f->find(false), '::find() returns the executable PHP');
+        $f = new \MolliePrefix\Symfony\Component\Process\PhpExecutableFinder();
+        $current = \getenv('PHP_BINARY') ?: \PHP_BINARY;
+        $this->assertEquals($current . ' --php', $f->find(), '::find() returns the executable PHP');
+        $this->assertEquals($current, $f->find(\false), '::find() returns the executable PHP');
     }
-
     /**
      * tests find() with the env var PHP_PATH.
      */
     public function testFindArguments()
     {
-        $f = new PhpExecutableFinder();
-
+        $f = new \MolliePrefix\Symfony\Component\Process\PhpExecutableFinder();
         if (\defined('HHVM_VERSION')) {
             $this->assertEquals(['--php'], $f->findArguments(), '::findArguments() returns HHVM arguments');
         } elseif ('phpdbg' === \PHP_SAPI) {

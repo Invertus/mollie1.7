@@ -35,12 +35,11 @@
 
 namespace Mollie\Utility;
 
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Order as MollieOrderAlias;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment as MolliePaymentAlias;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\PaymentCollection;
-use _PhpScoper5eddef0da618a\Mollie\Api\Types\PaymentStatus;
-use _PhpScoper5eddef0da618a\Mollie\Api\Types\RefundStatus;
+use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
+use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
+use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
+use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Mollie\Config\Config;
 
 class OrderStatusUtility
@@ -74,7 +73,7 @@ class OrderStatusUtility
         if ($isVoucher) {
             /** @var PaymentCollection $payments */
             $payments = $transaction->payments();
-            /** @var Payment $payment */
+            /** @var MolliePaymentAlias $payment */
             foreach ($payments as $payment) {
                 $remainingAmount = $payment->getAmountRemaining();
             }

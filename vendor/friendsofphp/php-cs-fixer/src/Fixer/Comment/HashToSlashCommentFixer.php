@@ -9,14 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Comment;
 
-namespace PhpCsFixer\Fixer\Comment;
-
-use PhpCsFixer\AbstractProxyFixer;
-use PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-
+use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
+use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 /**
  * Changes single comments prefixes '#' with '//'.
  *
@@ -24,35 +22,29 @@ use PhpCsFixer\FixerDefinition\FixerDefinition;
  *
  * @deprecated in 2.4, proxy to SingleLineCommentStyleFixer
  */
-final class HashToSlashCommentFixer extends AbstractProxyFixer implements DeprecatedFixerInterface
+final class HashToSlashCommentFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Single line comments should use double slashes `//` and not hash `#`.',
-            [new CodeSample("<?php # comment\n")]
-        );
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Single line comments should use double slashes `//` and not hash `#`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php # comment\n")]);
     }
-
     /**
      * {@inheritdoc}
      */
     public function getSuccessorsNames()
     {
-        return array_keys($this->proxyFixers);
+        return \array_keys($this->proxyFixers);
     }
-
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        $fixer = new SingleLineCommentStyleFixer();
+        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\Comment\SingleLineCommentStyleFixer();
         $fixer->configure(['comment_types' => ['hash']]);
-
         return [$fixer];
     }
 }

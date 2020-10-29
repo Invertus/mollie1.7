@@ -1,26 +1,14 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-
-class InterfaceTest extends \PHPUnit_Framework_TestCase
+use MolliePrefix\PhpParser\Node;
+class InterfaceTest extends \MolliePrefix\PHPUnit_Framework_TestCase
 {
-    public function testGetMethods() {
-        $methods = array(
-            new ClassMethod('foo'),
-            new ClassMethod('bar'),
-        );
-        $interface = new Class_('Foo', array(
-            'stmts' => array(
-                new Node\Stmt\ClassConst(array(new Node\Const_('C1', new Node\Scalar\String_('C1')))),
-                $methods[0],
-                new Node\Stmt\ClassConst(array(new Node\Const_('C2', new Node\Scalar\String_('C2')))),
-                $methods[1],
-                new Node\Stmt\ClassConst(array(new Node\Const_('C3', new Node\Scalar\String_('C3')))),
-            )
-        ));
-
+    public function testGetMethods()
+    {
+        $methods = array(new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('foo'), new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('bar'));
+        $interface = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('stmts' => array(new \MolliePrefix\PhpParser\Node\Stmt\ClassConst(array(new \MolliePrefix\PhpParser\Node\Const_('C1', new \MolliePrefix\PhpParser\Node\Scalar\String_('C1')))), $methods[0], new \MolliePrefix\PhpParser\Node\Stmt\ClassConst(array(new \MolliePrefix\PhpParser\Node\Const_('C2', new \MolliePrefix\PhpParser\Node\Scalar\String_('C2')))), $methods[1], new \MolliePrefix\PhpParser\Node\Stmt\ClassConst(array(new \MolliePrefix\PhpParser\Node\Const_('C3', new \MolliePrefix\PhpParser\Node\Scalar\String_('C3')))))));
         $this->assertSame($methods, $interface->getMethods());
     }
 }

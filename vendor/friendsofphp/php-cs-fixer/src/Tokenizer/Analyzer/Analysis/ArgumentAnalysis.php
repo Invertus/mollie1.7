@@ -9,8 +9,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-
-namespace PhpCsFixer\Tokenizer\Analyzer\Analysis;
+namespace MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis;
 
 /**
  * @internal
@@ -23,41 +22,36 @@ final class ArgumentAnalysis
      * @var null|string
      */
     private $default;
-
     /**
      * The name of the argument.
      *
      * @var string
      */
     private $name;
-
     /**
      * The index where the name is located in the supplied Tokens object.
      *
      * @var int
      */
     private $nameIndex;
-
     /**
      * The type analysis of the argument.
      *
      * @var null|TypeAnalysis
      */
     private $typeAnalysis;
-
     /**
      * @param string      $name
      * @param int         $nameIndex
      * @param null|string $default
      */
-    public function __construct($name, $nameIndex, $default, TypeAnalysis $typeAnalysis = null)
+    public function __construct($name, $nameIndex, $default, \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis $typeAnalysis = null)
     {
         $this->name = $name;
         $this->nameIndex = $nameIndex;
         $this->default = $default ?: null;
         $this->typeAnalysis = $typeAnalysis ?: null;
     }
-
     /**
      * @return null|string
      */
@@ -65,7 +59,6 @@ final class ArgumentAnalysis
     {
         return $this->default;
     }
-
     /**
      * @return bool
      */
@@ -73,7 +66,6 @@ final class ArgumentAnalysis
     {
         return null !== $this->default;
     }
-
     /**
      * @return string
      */
@@ -81,7 +73,6 @@ final class ArgumentAnalysis
     {
         return $this->name;
     }
-
     /**
      * @return int
      */
@@ -89,7 +80,6 @@ final class ArgumentAnalysis
     {
         return $this->nameIndex;
     }
-
     /**
      * @return null|TypeAnalysis
      */
@@ -97,7 +87,6 @@ final class ArgumentAnalysis
     {
         return $this->typeAnalysis;
     }
-
     /**
      * @return bool
      */

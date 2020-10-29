@@ -1,13 +1,13 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-
+use MolliePrefix\PhpParser\Node;
 /** Nop/empty statement (;). */
-class Nop extends Node\Stmt
+class Nop extends \MolliePrefix\PhpParser\Node\Stmt
 {
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array();
     }
 }

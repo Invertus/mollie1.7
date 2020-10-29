@@ -1,7 +1,10 @@
 {
-    "name": "nikic/php-parser",
+    "name": "nikic\/php-parser",
     "description": "A PHP parser written in PHP",
-    "keywords": ["php", "parser"],
+    "keywords": [
+        "php",
+        "parser"
+    ],
     "type": "library",
     "license": "BSD-3-Clause",
     "authors": [
@@ -14,14 +17,16 @@
         "ext-tokenizer": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0|~5.0"
+        "phpunit\/phpunit": "~4.0|~5.0"
     },
     "autoload": {
         "psr-4": {
-            "PhpParser\\": "lib/PhpParser"
+            "MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\": "lib\/PhpParser"
         }
     },
-    "bin": ["bin/php-parse"],
+    "bin": [
+        "bin\/php-parse"
+    ],
     "extra": {
         "branch-alias": {
             "dev-master": "3.0-dev"

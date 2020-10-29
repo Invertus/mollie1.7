@@ -8,19 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Finder\Iterator;
+namespace MolliePrefix\Symfony\Component\Finder\Iterator;
 
 /**
  * MultiplePcreFilterIterator filters files using patterns (regexps, globs or strings).
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class MultiplePcreFilterIterator extends FilterIterator
+abstract class MultiplePcreFilterIterator extends \MolliePrefix\Symfony\Component\Finder\Iterator\FilterIterator
 {
     protected $matchRegexps = [];
     protected $noMatchRegexps = [];
-
     /**
      * @param \Iterator $iterator        The Iterator to filter
      * @param array     $matchPatterns   An array of patterns that need to match
@@ -31,14 +29,11 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
         foreach ($matchPatterns as $pattern) {
             $this->matchRegexps[] = $this->toRegex($pattern);
         }
-
         foreach ($noMatchPatterns as $pattern) {
             $this->noMatchRegexps[] = $this->toRegex($pattern);
         }
-
         parent::__construct($iterator);
     }
-
     /**
      * Checks whether the string is accepted by the regex filters.
      *
@@ -54,26 +49,22 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
     {
         // should at least not match one rule to exclude
         foreach ($this->noMatchRegexps as $regex) {
-            if (preg_match($regex, $string)) {
-                return false;
+            if (\preg_match($regex, $string)) {
+                return \false;
             }
         }
-
         // should at least match one rule
         if ($this->matchRegexps) {
             foreach ($this->matchRegexps as $regex) {
-                if (preg_match($regex, $string)) {
-                    return true;
+                if (\preg_match($regex, $string)) {
+                    return \true;
                 }
             }
-
-            return false;
+            return \false;
         }
-
         // If there is no match rules, the file is accepted
-        return true;
+        return \true;
     }
-
     /**
      * Checks whether the string is a regex.
      *
@@ -83,24 +74,20 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
      */
     protected function isRegex($str)
     {
-        if (preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
-            $start = substr($m[1], 0, 1);
-            $end = substr($m[1], -1);
-
+        if (\preg_match('/^(.{3,}?)[imsxuADU]*$/', $str, $m)) {
+            $start = \substr($m[1], 0, 1);
+            $end = \substr($m[1], -1);
             if ($start === $end) {
-                return !preg_match('/[*?[:alnum:] \\\\]/', $start);
+                return !\preg_match('/[*?[:alnum:] \\\\]/', $start);
             }
-
             foreach ([['{', '}'], ['(', ')'], ['[', ']'], ['<', '>']] as $delimiters) {
                 if ($start === $delimiters[0] && $end === $delimiters[1]) {
-                    return true;
+                    return \true;
                 }
             }
         }
-
-        return false;
+        return \false;
     }
-
     /**
      * Converts string into regexp.
      *
@@ -108,5 +95,5 @@ abstract class MultiplePcreFilterIterator extends FilterIterator
      *
      * @return string regexp corresponding to a given string
      */
-    abstract protected function toRegex($str);
+    protected abstract function toRegex($str);
 }

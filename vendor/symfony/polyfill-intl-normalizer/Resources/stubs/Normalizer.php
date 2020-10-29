@@ -1,6 +1,8 @@
 <?php
 
-class Normalizer extends Symfony\Polyfill\Intl\Normalizer\Normalizer
+namespace MolliePrefix;
+
+class Normalizer extends \MolliePrefix\Symfony\Polyfill\Intl\Normalizer\Normalizer
 {
     /**
      * @deprecated since ICU 56 and removed in PHP 8
@@ -15,3 +17,4 @@ class Normalizer extends Symfony\Polyfill\Intl\Normalizer\Normalizer
     const NFC = 4;
     const NFKC = 5;
 }
+\class_alias('MolliePrefix\\Normalizer', 'Normalizer', \false);

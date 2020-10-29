@@ -1,16 +1,14 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-
-class While_ extends Node\Stmt
+use MolliePrefix\PhpParser\Node;
+class While_ extends \MolliePrefix\PhpParser\Node\Stmt
 {
     /** @var Node\Expr Condition */
     public $cond;
     /** @var Node[] Statements */
     public $stmts;
-
     /**
      * Constructs a while node.
      *
@@ -18,13 +16,14 @@ class While_ extends Node\Stmt
      * @param Node[]    $stmts      Statements
      * @param array     $attributes Additional attributes
      */
-    public function __construct(Node\Expr $cond, array $stmts = array(), array $attributes = array()) {
+    public function __construct(\MolliePrefix\PhpParser\Node\Expr $cond, array $stmts = array(), array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->cond = $cond;
         $this->stmts = $stmts;
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('cond', 'stmts');
     }
 }

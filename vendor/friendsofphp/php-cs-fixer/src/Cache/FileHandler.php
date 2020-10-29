@@ -9,23 +9,20 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Cache;
 
-namespace PhpCsFixer\Cache;
-
-use Symfony\Component\Filesystem\Exception\IOException;
-
+use MolliePrefix\Symfony\Component\Filesystem\Exception\IOException;
 /**
  * @author Andreas Möller <am@localheinz.com>
  *
  * @internal
  */
-final class FileHandler implements FileHandlerInterface
+final class FileHandler implements \MolliePrefix\PhpCsFixer\Cache\FileHandlerInterface
 {
     /**
      * @var string
      */
     private $file;
-
     /**
      * @param string $file
      */
@@ -33,67 +30,41 @@ final class FileHandler implements FileHandlerInterface
     {
         $this->file = $file;
     }
-
     public function getFile()
     {
         return $this->file;
     }
-
     public function read()
     {
-        if (!file_exists($this->file)) {
+        if (!\file_exists($this->file)) {
             return null;
         }
-
-        $content = file_get_contents($this->file);
-
+        $content = \file_get_contents($this->file);
         try {
-            $cache = Cache::fromJson($content);
+            $cache = \MolliePrefix\PhpCsFixer\Cache\Cache::fromJson($content);
         } catch (\InvalidArgumentException $exception) {
             return null;
         }
-
         return $cache;
     }
-
-    public function write(CacheInterface $cache)
+    public function write(\MolliePrefix\PhpCsFixer\Cache\CacheInterface $cache)
     {
         $content = $cache->toJson();
-
-        if (file_exists($this->file)) {
-            if (is_dir($this->file)) {
-                throw new IOException(
-                    sprintf('Cannot write cache file "%s" as the location exists as directory.', realpath($this->file)),
-                    0,
-                    null,
-                    $this->file
-                );
+        if (\file_exists($this->file)) {
+            if (\is_dir($this->file)) {
+                throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Cannot write cache file "%s" as the location exists as directory.', \realpath($this->file)), 0, null, $this->file);
             }
-
-            if (!is_writable($this->file)) {
-                throw new IOException(
-                    sprintf('Cannot write to file "%s" as it is not writable.', realpath($this->file)),
-                    0,
-                    null,
-                    $this->file
-                );
+            if (!\is_writable($this->file)) {
+                throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Cannot write to file "%s" as it is not writable.', \realpath($this->file)), 0, null, $this->file);
             }
         } else {
-            @touch($this->file);
-            @chmod($this->file, 0666);
+            @\touch($this->file);
+            @\chmod($this->file, 0666);
         }
-
-        $bytesWritten = @file_put_contents($this->file, $content);
-
-        if (false === $bytesWritten) {
-            $error = error_get_last();
-
-            throw new IOException(
-                sprintf('Failed to write file "%s", "%s".', $this->file, isset($error['message']) ? $error['message'] : 'no reason available'),
-                0,
-                null,
-                $this->file
-            );
+        $bytesWritten = @\file_put_contents($this->file, $content);
+        if (\false === $bytesWritten) {
+            $error = \error_get_last();
+            throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Failed to write file "%s", "%s".', $this->file, isset($error['message']) ? $error['message'] : 'no reason available'), 0, null, $this->file);
         }
     }
 }

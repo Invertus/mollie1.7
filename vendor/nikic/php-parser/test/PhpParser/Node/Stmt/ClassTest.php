@@ -1,66 +1,43 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-class ClassTest extends \PHPUnit_Framework_TestCase
+class ClassTest extends \MolliePrefix\PHPUnit_Framework_TestCase
 {
-    public function testIsAbstract() {
-        $class = new Class_('Foo', array('type' => Class_::MODIFIER_ABSTRACT));
+    public function testIsAbstract()
+    {
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('type' => \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT));
         $this->assertTrue($class->isAbstract());
-
-        $class = new Class_('Foo');
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo');
         $this->assertFalse($class->isAbstract());
     }
-
-    public function testIsFinal() {
-        $class = new Class_('Foo', array('type' => Class_::MODIFIER_FINAL));
+    public function testIsFinal()
+    {
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('type' => \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_FINAL));
         $this->assertTrue($class->isFinal());
-
-        $class = new Class_('Foo');
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo');
         $this->assertFalse($class->isFinal());
     }
-
-    public function testGetMethods() {
-        $methods = array(
-            new ClassMethod('foo'),
-            new ClassMethod('bar'),
-            new ClassMethod('fooBar'),
-        );
-        $class = new Class_('Foo', array(
-            'stmts' => array(
-                new TraitUse(array()),
-                $methods[0],
-                new ClassConst(array()),
-                $methods[1],
-                new Property(0, array()),
-                $methods[2],
-            )
-        ));
-
+    public function testGetMethods()
+    {
+        $methods = array(new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('foo'), new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('bar'), new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('fooBar'));
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('stmts' => array(new \MolliePrefix\PhpParser\Node\Stmt\TraitUse(array()), $methods[0], new \MolliePrefix\PhpParser\Node\Stmt\ClassConst(array()), $methods[1], new \MolliePrefix\PhpParser\Node\Stmt\Property(0, array()), $methods[2])));
         $this->assertSame($methods, $class->getMethods());
     }
-
-    public function testGetMethod() {
-        $methodConstruct = new ClassMethod('__CONSTRUCT');
-        $methodTest = new ClassMethod('test');
-        $class = new Class_('Foo', array(
-            'stmts' => array(
-                new ClassConst(array()),
-                $methodConstruct,
-                new Property(0, array()),
-                $methodTest,
-            )
-        ));
-
+    public function testGetMethod()
+    {
+        $methodConstruct = new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('__CONSTRUCT');
+        $methodTest = new \MolliePrefix\PhpParser\Node\Stmt\ClassMethod('test');
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('stmts' => array(new \MolliePrefix\PhpParser\Node\Stmt\ClassConst(array()), $methodConstruct, new \MolliePrefix\PhpParser\Node\Stmt\Property(0, array()), $methodTest)));
         $this->assertSame($methodConstruct, $class->getMethod('__construct'));
         $this->assertSame($methodTest, $class->getMethod('test'));
         $this->assertNull($class->getMethod('nonExisting'));
     }
-
-    public function testDeprecatedTypeNode() {
-        $class = new Class_('Foo', array('type' => Class_::MODIFIER_ABSTRACT));
+    public function testDeprecatedTypeNode()
+    {
+        $class = new \MolliePrefix\PhpParser\Node\Stmt\Class_('Foo', array('type' => \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT));
         $this->assertTrue($class->isAbstract());
-        $this->assertSame(Class_::MODIFIER_ABSTRACT, $class->flags);
-        $this->assertSame(Class_::MODIFIER_ABSTRACT, $class->type);
+        $this->assertSame(\MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT, $class->flags);
+        $this->assertSame(\MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT, $class->type);
     }
 }

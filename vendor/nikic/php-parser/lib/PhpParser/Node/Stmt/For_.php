@@ -1,10 +1,9 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-
-class For_ extends Node\Stmt
+use MolliePrefix\PhpParser\Node;
+class For_ extends \MolliePrefix\PhpParser\Node\Stmt
 {
     /** @var Node\Expr[] Init expressions */
     public $init;
@@ -14,7 +13,6 @@ class For_ extends Node\Stmt
     public $loop;
     /** @var Node[] Statements */
     public $stmts;
-
     /**
      * Constructs a for loop node.
      *
@@ -25,15 +23,16 @@ class For_ extends Node\Stmt
      *                          'stmts' => array(): Statements
      * @param array $attributes Additional attributes
      */
-    public function __construct(array $subNodes = array(), array $attributes = array()) {
+    public function __construct(array $subNodes = array(), array $attributes = array())
+    {
         parent::__construct($attributes);
         $this->init = isset($subNodes['init']) ? $subNodes['init'] : array();
         $this->cond = isset($subNodes['cond']) ? $subNodes['cond'] : array();
         $this->loop = isset($subNodes['loop']) ? $subNodes['loop'] : array();
         $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('init', 'cond', 'loop', 'stmts');
     }
 }

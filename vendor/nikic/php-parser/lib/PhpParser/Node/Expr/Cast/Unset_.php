@@ -1,9 +1,8 @@
 <?php
 
-namespace PhpParser\Node\Expr\Cast;
+namespace MolliePrefix\PhpParser\Node\Expr\Cast;
 
-use PhpParser\Node\Expr\Cast;
-
-class Unset_ extends Cast
+use MolliePrefix\PhpParser\Node\Expr\Cast;
+class Unset_ extends \MolliePrefix\PhpParser\Node\Expr\Cast
 {
 }

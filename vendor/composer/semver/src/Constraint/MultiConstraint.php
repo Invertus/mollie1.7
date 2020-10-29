@@ -8,33 +8,28 @@
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
  */
-
-namespace Composer\Semver\Constraint;
+namespace MolliePrefix\Composer\Semver\Constraint;
 
 /**
  * Defines a conjunctive or disjunctive set of constraints.
  */
-class MultiConstraint implements ConstraintInterface
+class MultiConstraint implements \MolliePrefix\Composer\Semver\Constraint\ConstraintInterface
 {
     /** @var ConstraintInterface[] */
     protected $constraints;
-
     /** @var string|null */
     protected $prettyString;
-
     /** @var bool */
     protected $conjunctive;
-
     /**
      * @param ConstraintInterface[] $constraints A set of constraints
      * @param bool                  $conjunctive Whether the constraints should be treated as conjunctive or disjunctive
      */
-    public function __construct(array $constraints, $conjunctive = true)
+    public function __construct(array $constraints, $conjunctive = \true)
     {
         $this->constraints = $constraints;
         $this->conjunctive = $conjunctive;
     }
-
     /**
      * @return ConstraintInterface[]
      */
@@ -42,7 +37,6 @@ class MultiConstraint implements ConstraintInterface
     {
         return $this->constraints;
     }
-
     /**
      * @return bool
      */
@@ -50,7 +44,6 @@ class MultiConstraint implements ConstraintInterface
     {
         return $this->conjunctive;
     }
-
     /**
      * @return bool
      */
@@ -58,33 +51,28 @@ class MultiConstraint implements ConstraintInterface
     {
         return !$this->conjunctive;
     }
-
     /**
      * @param ConstraintInterface $provider
      *
      * @return bool
      */
-    public function matches(ConstraintInterface $provider)
+    public function matches(\MolliePrefix\Composer\Semver\Constraint\ConstraintInterface $provider)
     {
-        if (false === $this->conjunctive) {
+        if (\false === $this->conjunctive) {
             foreach ($this->constraints as $constraint) {
                 if ($constraint->matches($provider)) {
-                    return true;
+                    return \true;
                 }
             }
-
-            return false;
+            return \false;
         }
-
         foreach ($this->constraints as $constraint) {
             if (!$constraint->matches($provider)) {
-                return false;
+                return \false;
             }
         }
-
-        return true;
+        return \true;
     }
-
     /**
      * @param string|null $prettyString
      */
@@ -92,7 +80,6 @@ class MultiConstraint implements ConstraintInterface
     {
         $this->prettyString = $prettyString;
     }
-
     /**
      * @return string
      */
@@ -101,10 +88,8 @@ class MultiConstraint implements ConstraintInterface
         if ($this->prettyString) {
             return $this->prettyString;
         }
-
         return (string) $this;
     }
-
     /**
      * @return string
      */
@@ -114,7 +99,6 @@ class MultiConstraint implements ConstraintInterface
         foreach ($this->constraints as $constraint) {
             $constraints[] = (string) $constraint;
         }
-
-        return '[' . implode($this->conjunctive ? ' ' : ' || ', $constraints) . ']';
+        return '[' . \implode($this->conjunctive ? ' ' : ' || ', $constraints) . ']';
     }
 }

@@ -1,9 +1,8 @@
 <?php
 
-namespace PhpParser\Node\Expr\BinaryOp;
+namespace MolliePrefix\PhpParser\Node\Expr\BinaryOp;
 
-use PhpParser\Node\Expr\BinaryOp;
-
-class Coalesce extends BinaryOp
+use MolliePrefix\PhpParser\Node\Expr\BinaryOp;
+class Coalesce extends \MolliePrefix\PhpParser\Node\Expr\BinaryOp
 {
 }

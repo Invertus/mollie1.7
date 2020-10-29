@@ -1,11 +1,10 @@
 <?php
 
-namespace PhpParser\Node\Stmt;
+namespace MolliePrefix\PhpParser\Node\Stmt;
 
-use PhpParser\Node;
-use PhpParser\Node\FunctionLike;
-
-class Function_ extends Node\Stmt implements FunctionLike
+use MolliePrefix\PhpParser\Node;
+use MolliePrefix\PhpParser\Node\FunctionLike;
+class Function_ extends \MolliePrefix\PhpParser\Node\Stmt implements \MolliePrefix\PhpParser\Node\FunctionLike
 {
     /** @var bool Whether function returns by reference */
     public $byRef;
@@ -17,7 +16,6 @@ class Function_ extends Node\Stmt implements FunctionLike
     public $returnType;
     /** @var Node[] Statements */
     public $stmts;
-
     /**
      * Constructs a function node.
      *
@@ -29,32 +27,33 @@ class Function_ extends Node\Stmt implements FunctionLike
      *                           'stmts'      => array(): Statements
      * @param array  $attributes Additional attributes
      */
-    public function __construct($name, array $subNodes = array(), array $attributes = array()) {
+    public function __construct($name, array $subNodes = array(), array $attributes = array())
+    {
         parent::__construct($attributes);
-        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : false;
+        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : \false;
         $this->name = $name;
         $this->params = isset($subNodes['params']) ? $subNodes['params'] : array();
         $this->returnType = isset($subNodes['returnType']) ? $subNodes['returnType'] : null;
         $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
-
-    public function getSubNodeNames() {
+    public function getSubNodeNames()
+    {
         return array('byRef', 'name', 'params', 'returnType', 'stmts');
     }
-
-    public function returnsByRef() {
+    public function returnsByRef()
+    {
         return $this->byRef;
     }
-
-    public function getParams() {
+    public function getParams()
+    {
         return $this->params;
     }
-
-    public function getReturnType() {
+    public function getReturnType()
+    {
         return $this->returnType;
     }
-
-    public function getStmts() {
+    public function getStmts()
+    {
         return $this->stmts;
     }
 }

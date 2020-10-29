@@ -9,15 +9,13 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer;
 
-namespace PhpCsFixer\Fixer;
-
-use PhpCsFixer\WhitespacesFixerConfig;
-
+use MolliePrefix\PhpCsFixer\WhitespacesFixerConfig;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-interface WhitespacesAwareFixerInterface extends FixerInterface
+interface WhitespacesAwareFixerInterface extends \MolliePrefix\PhpCsFixer\Fixer\FixerInterface
 {
-    public function setWhitespacesConfig(WhitespacesFixerConfig $config);
+    public function setWhitespacesConfig(\MolliePrefix\PhpCsFixer\WhitespacesFixerConfig $config);
 }

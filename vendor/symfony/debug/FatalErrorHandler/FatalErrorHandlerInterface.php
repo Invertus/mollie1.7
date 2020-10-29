@@ -8,11 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Debug\FatalErrorHandler;
 
-namespace Symfony\Component\Debug\FatalErrorHandler;
-
-use Symfony\Component\Debug\Exception\FatalErrorException;
-
+use MolliePrefix\Symfony\Component\Debug\Exception\FatalErrorException;
 /**
  * Attempts to convert fatal errors to exceptions.
  *
@@ -28,5 +26,5 @@ interface FatalErrorHandlerInterface
      *
      * @return FatalErrorException|null A FatalErrorException instance if the class is able to convert the error, null otherwise
      */
-    public function handleError(array $error, FatalErrorException $exception);
+    public function handleError(array $error, \MolliePrefix\Symfony\Component\Debug\Exception\FatalErrorException $exception);
 }

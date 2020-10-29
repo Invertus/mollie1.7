@@ -1,11 +1,13 @@
 <?php
 
-use Symfony\Component\Console\Command\Command;
+namespace MolliePrefix;
 
-class FooSameCaseLowercaseCommand extends Command
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+class FooSameCaseLowercaseCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
 {
     protected function configure()
     {
         $this->setName('foo:bar')->setDescription('foo:bar command');
     }
 }
+\class_alias('MolliePrefix\\FooSameCaseLowercaseCommand', 'MolliePrefix\\FooSameCaseLowercaseCommand', \false);

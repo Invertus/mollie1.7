@@ -1,13 +1,13 @@
 <?php
 
-namespace PhpParser\Unserializer;
+namespace MolliePrefix\PhpParser\Unserializer;
 
-use PhpParser\Comment;
-use PhpParser\Node\Scalar;
-
-class XMLTest extends \PHPUnit_Framework_TestCase
+use MolliePrefix\PhpParser\Comment;
+use MolliePrefix\PhpParser\Node\Scalar;
+class XMLTest extends \MolliePrefix\PHPUnit_Framework_TestCase
 {
-    public function testNode() {
+    public function testNode()
+    {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <AST xmlns:node="http://nikic.github.com/PHPParser/XML/node" xmlns:subNode="http://nikic.github.com/PHPParser/XML/subNode" xmlns:attribute="http://nikic.github.com/PHPParser/XML/attribute" xmlns:scalar="http://nikic.github.com/PHPParser/XML/scalar">
@@ -28,37 +28,22 @@ class XMLTest extends \PHPUnit_Framework_TestCase
  </node:Scalar_String>
 </AST>
 XML;
-
-        $unserializer  = new XML;
-        $this->assertEquals(
-            new Scalar\String_('Test', array(
-                'startLine' => 1,
-                'comments'  => array(
-                    new Comment('// comment' . "\n", 2),
-                    new Comment\Doc('/** doc comment */', 3),
-                ),
-            )),
-            $unserializer->unserialize($xml)
-        );
+        $unserializer = new \MolliePrefix\PhpParser\Unserializer\XML();
+        $this->assertEquals(new \MolliePrefix\PhpParser\Node\Scalar\String_('Test', array('startLine' => 1, 'comments' => array(new \MolliePrefix\PhpParser\Comment('// comment' . "\n", 2), new \MolliePrefix\PhpParser\Comment\Doc('/** doc comment */', 3)))), $unserializer->unserialize($xml));
     }
-
-    public function testEmptyNode() {
+    public function testEmptyNode()
+    {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <AST xmlns:node="http://nikic.github.com/PHPParser/XML/node">
  <node:Scalar_MagicConst_Class />
 </AST>
 XML;
-
-        $unserializer  = new XML;
-
-        $this->assertEquals(
-            new Scalar\MagicConst\Class_,
-            $unserializer->unserialize($xml)
-        );
+        $unserializer = new \MolliePrefix\PhpParser\Unserializer\XML();
+        $this->assertEquals(new \MolliePrefix\PhpParser\Node\Scalar\MagicConst\Class_(), $unserializer->unserialize($xml));
     }
-
-    public function testScalars() {
+    public function testScalars()
+    {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <AST xmlns:scalar="http://nikic.github.com/PHPParser/XML/scalar">
@@ -77,74 +62,43 @@ XML;
  </scalar:array>
 </AST>
 XML;
-        $result = array(
-            array(), array(),
-            'test', '', '',
-            1,
-            1, 1.5,
-            true, false, null
-        );
-
-        $unserializer  = new XML;
+        $result = array(array(), array(), 'test', '', '', 1, 1, 1.5, \true, \false, null);
+        $unserializer = new \MolliePrefix\PhpParser\Unserializer\XML();
         $this->assertEquals($result, $unserializer->unserialize($xml));
     }
-
     /**
      * @expectedException        \DomainException
      * @expectedExceptionMessage AST root element not found
      */
-    public function testWrongRootElementError() {
+    public function testWrongRootElementError()
+    {
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <notAST/>
 XML;
-
-        $unserializer = new XML;
+        $unserializer = new \MolliePrefix\PhpParser\Unserializer\XML();
         $unserializer->unserialize($xml);
     }
-
     /**
      * @dataProvider             provideTestErrors
      */
-    public function testErrors($xml, $errorMsg) {
+    public function testErrors($xml, $errorMsg)
+    {
         $this->setExpectedException('DomainException', $errorMsg);
-
         $xml = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <AST xmlns:scalar="http://nikic.github.com/PHPParser/XML/scalar"
      xmlns:node="http://nikic.github.com/PHPParser/XML/node"
      xmlns:subNode="http://nikic.github.com/PHPParser/XML/subNode"
      xmlns:foo="http://nikic.github.com/PHPParser/XML/foo">
- $xml
+ {$xml}
 </AST>
 XML;
-
-        $unserializer = new XML;
+        $unserializer = new \MolliePrefix\PhpParser\Unserializer\XML();
         $unserializer->unserialize($xml);
     }
-
-    public function provideTestErrors() {
-        return array(
-            array('<scalar:true>test</scalar:true>',   '"true" scalar must be empty'),
-            array('<scalar:false>test</scalar:false>', '"false" scalar must be empty'),
-            array('<scalar:null>test</scalar:null>',   '"null" scalar must be empty'),
-            array('<scalar:foo>bar</scalar:foo>',      'Unknown scalar type "foo"'),
-            array('<scalar:int>x</scalar:int>',        '"x" is not a valid int'),
-            array('<scalar:float>x</scalar:float>',    '"x" is not a valid float'),
-            array('',                                  'Expected node or scalar'),
-            array('<foo:bar>test</foo:bar>',           'Unexpected node of type "foo:bar"'),
-            array(
-                '<node:Scalar_String><foo:bar>test</foo:bar></node:Scalar_String>',
-                'Expected sub node or attribute, got node of type "foo:bar"'
-            ),
-            array(
-                '<node:Scalar_String><subNode:value/></node:Scalar_String>',
-                'Expected node or scalar'
-            ),
-            array(
-                '<node:Foo><subNode:value/></node:Foo>',
-                'Unknown node type "Foo"'
-            ),
-        );
+    public function provideTestErrors()
+    {
+        return array(array('<scalar:true>test</scalar:true>', '"true" scalar must be empty'), array('<scalar:false>test</scalar:false>', '"false" scalar must be empty'), array('<scalar:null>test</scalar:null>', '"null" scalar must be empty'), array('<scalar:foo>bar</scalar:foo>', 'Unknown scalar type "foo"'), array('<scalar:int>x</scalar:int>', '"x" is not a valid int'), array('<scalar:float>x</scalar:float>', '"x" is not a valid float'), array('', 'Expected node or scalar'), array('<foo:bar>test</foo:bar>', 'Unexpected node of type "foo:bar"'), array('<node:Scalar_String><foo:bar>test</foo:bar></node:Scalar_String>', 'Expected sub node or attribute, got node of type "foo:bar"'), array('<node:Scalar_String><subNode:value/></node:Scalar_String>', 'Expected node or scalar'), array('<node:Foo><subNode:value/></node:Foo>', 'Unknown node type "Foo"'));
     }
 }

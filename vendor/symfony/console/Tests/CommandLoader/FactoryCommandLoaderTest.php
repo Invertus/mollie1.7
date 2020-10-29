@@ -8,51 +8,46 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Tests\CommandLoader;
 
-namespace Symfony\Component\Console\Tests\CommandLoader;
-
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
-
-class FactoryCommandLoaderTest extends TestCase
+use MolliePrefix\PHPUnit\Framework\TestCase;
+use MolliePrefix\Symfony\Component\Console\Command\Command;
+use MolliePrefix\Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
+class FactoryCommandLoaderTest extends \MolliePrefix\PHPUnit\Framework\TestCase
 {
     public function testHas()
     {
-        $loader = new FactoryCommandLoader([
-            'foo' => function () { return new Command('foo'); },
-            'bar' => function () { return new Command('bar'); },
-        ]);
-
+        $loader = new \MolliePrefix\Symfony\Component\Console\CommandLoader\FactoryCommandLoader(['foo' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('foo');
+        }, 'bar' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('bar');
+        }]);
         $this->assertTrue($loader->has('foo'));
         $this->assertTrue($loader->has('bar'));
         $this->assertFalse($loader->has('baz'));
     }
-
     public function testGet()
     {
-        $loader = new FactoryCommandLoader([
-            'foo' => function () { return new Command('foo'); },
-            'bar' => function () { return new Command('bar'); },
-        ]);
-
-        $this->assertInstanceOf(Command::class, $loader->get('foo'));
-        $this->assertInstanceOf(Command::class, $loader->get('bar'));
+        $loader = new \MolliePrefix\Symfony\Component\Console\CommandLoader\FactoryCommandLoader(['foo' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('foo');
+        }, 'bar' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('bar');
+        }]);
+        $this->assertInstanceOf(\MolliePrefix\Symfony\Component\Console\Command\Command::class, $loader->get('foo'));
+        $this->assertInstanceOf(\MolliePrefix\Symfony\Component\Console\Command\Command::class, $loader->get('bar'));
     }
-
     public function testGetUnknownCommandThrows()
     {
-        $this->expectException('Symfony\Component\Console\Exception\CommandNotFoundException');
-        (new FactoryCommandLoader([]))->get('unknown');
+        $this->expectException('MolliePrefix\\Symfony\\Component\\Console\\Exception\\CommandNotFoundException');
+        (new \MolliePrefix\Symfony\Component\Console\CommandLoader\FactoryCommandLoader([]))->get('unknown');
     }
-
     public function testGetCommandNames()
     {
-        $loader = new FactoryCommandLoader([
-            'foo' => function () { return new Command('foo'); },
-            'bar' => function () { return new Command('bar'); },
-        ]);
-
+        $loader = new \MolliePrefix\Symfony\Component\Console\CommandLoader\FactoryCommandLoader(['foo' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('foo');
+        }, 'bar' => function () {
+            return new \MolliePrefix\Symfony\Component\Console\Command\Command('bar');
+        }]);
         $this->assertSame(['foo', 'bar'], $loader->getNames());
     }
 }

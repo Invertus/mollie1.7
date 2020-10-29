@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpParser;
+namespace MolliePrefix\PhpParser;
 
 interface NodeVisitor
 {
@@ -16,7 +16,6 @@ interface NodeVisitor
      * @return null|Node[] Array of nodes
      */
     public function beforeTraverse(array $nodes);
-
     /**
      * Called when entering a node.
      *
@@ -34,8 +33,7 @@ interface NodeVisitor
      *
      * @return null|int|Node Node
      */
-    public function enterNode(Node $node);
-
+    public function enterNode(\MolliePrefix\PhpParser\Node $node);
     /**
      * Called when leaving a node.
      *
@@ -55,8 +53,7 @@ interface NodeVisitor
      *
      * @return null|false|int|Node|Node[] Node
      */
-    public function leaveNode(Node $node);
-
+    public function leaveNode(\MolliePrefix\PhpParser\Node $node);
     /**
      * Called once after traversal.
      *

@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpParser;
+namespace MolliePrefix\PhpParser;
 
 interface Builder
 {

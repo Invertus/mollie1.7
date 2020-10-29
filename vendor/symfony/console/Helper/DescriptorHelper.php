@@ -8,39 +8,30 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Helper;
 
-namespace Symfony\Component\Console\Helper;
-
-use Symfony\Component\Console\Descriptor\DescriptorInterface;
-use Symfony\Component\Console\Descriptor\JsonDescriptor;
-use Symfony\Component\Console\Descriptor\MarkdownDescriptor;
-use Symfony\Component\Console\Descriptor\TextDescriptor;
-use Symfony\Component\Console\Descriptor\XmlDescriptor;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use MolliePrefix\Symfony\Component\Console\Descriptor\DescriptorInterface;
+use MolliePrefix\Symfony\Component\Console\Descriptor\JsonDescriptor;
+use MolliePrefix\Symfony\Component\Console\Descriptor\MarkdownDescriptor;
+use MolliePrefix\Symfony\Component\Console\Descriptor\TextDescriptor;
+use MolliePrefix\Symfony\Component\Console\Descriptor\XmlDescriptor;
+use MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
 /**
  * This class adds helper method to describe objects in various formats.
  *
  * @author Jean-François Simon <contact@jfsimon.fr>
  */
-class DescriptorHelper extends Helper
+class DescriptorHelper extends \MolliePrefix\Symfony\Component\Console\Helper\Helper
 {
     /**
      * @var DescriptorInterface[]
      */
     private $descriptors = [];
-
     public function __construct()
     {
-        $this
-            ->register('txt', new TextDescriptor())
-            ->register('xml', new XmlDescriptor())
-            ->register('json', new JsonDescriptor())
-            ->register('md', new MarkdownDescriptor())
-        ;
+        $this->register('txt', new \MolliePrefix\Symfony\Component\Console\Descriptor\TextDescriptor())->register('xml', new \MolliePrefix\Symfony\Component\Console\Descriptor\XmlDescriptor())->register('json', new \MolliePrefix\Symfony\Component\Console\Descriptor\JsonDescriptor())->register('md', new \MolliePrefix\Symfony\Component\Console\Descriptor\MarkdownDescriptor());
     }
-
     /**
      * Describes an object if supported.
      *
@@ -52,21 +43,15 @@ class DescriptorHelper extends Helper
      *
      * @throws InvalidArgumentException when the given format is not supported
      */
-    public function describe(OutputInterface $output, $object, array $options = [])
+    public function describe(\MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output, $object, array $options = [])
     {
-        $options = array_merge([
-            'raw_text' => false,
-            'format' => 'txt',
-        ], $options);
-
+        $options = \array_merge(['raw_text' => \false, 'format' => 'txt'], $options);
         if (!isset($this->descriptors[$options['format']])) {
-            throw new InvalidArgumentException(sprintf('Unsupported format "%s".', $options['format']));
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException(\sprintf('Unsupported format "%s".', $options['format']));
         }
-
         $descriptor = $this->descriptors[$options['format']];
         $descriptor->describe($output, $object, $options);
     }
-
     /**
      * Registers a descriptor.
      *
@@ -74,13 +59,11 @@ class DescriptorHelper extends Helper
      *
      * @return $this
      */
-    public function register($format, DescriptorInterface $descriptor)
+    public function register($format, \MolliePrefix\Symfony\Component\Console\Descriptor\DescriptorInterface $descriptor)
     {
         $this->descriptors[$format] = $descriptor;
-
         return $this;
     }
-
     /**
      * {@inheritdoc}
      */

@@ -9,11 +9,9 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tests\Test;
 
-namespace PhpCsFixer\Tests\Test;
-
-use Symfony\Component\Finder\SplFileInfo;
-
+use MolliePrefix\Symfony\Component\Finder\SplFileInfo;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
@@ -24,5 +22,5 @@ interface IntegrationCaseFactoryInterface
     /**
      * @return IntegrationCase
      */
-    public function create(SplFileInfo $file);
+    public function create(\MolliePrefix\Symfony\Component\Finder\SplFileInfo $file);
 }

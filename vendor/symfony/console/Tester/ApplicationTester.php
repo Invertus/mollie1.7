@@ -8,16 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Tester;
 
-namespace Symfony\Component\Console\Tester;
-
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\StreamOutput;
-
+use MolliePrefix\Symfony\Component\Console\Application;
+use MolliePrefix\Symfony\Component\Console\Input\ArrayInput;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\ConsoleOutput;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+use MolliePrefix\Symfony\Component\Console\Output\StreamOutput;
 /**
  * Eases the testing of console applications.
  *
@@ -37,13 +35,11 @@ class ApplicationTester
      * @var OutputInterface
      */
     private $output;
-    private $captureStreamsIndependently = false;
-
-    public function __construct(Application $application)
+    private $captureStreamsIndependently = \false;
+    public function __construct(\MolliePrefix\Symfony\Component\Console\Application $application)
     {
         $this->application = $application;
     }
-
     /**
      * Executes the application.
      *
@@ -61,14 +57,13 @@ class ApplicationTester
      */
     public function run(array $input, $options = [])
     {
-        $this->input = new ArrayInput($input);
+        $this->input = new \MolliePrefix\Symfony\Component\Console\Input\ArrayInput($input);
         if (isset($options['interactive'])) {
             $this->input->setInteractive($options['interactive']);
         }
-
         $this->captureStreamsIndependently = \array_key_exists('capture_stderr_separately', $options) && $options['capture_stderr_separately'];
         if (!$this->captureStreamsIndependently) {
-            $this->output = new StreamOutput(fopen('php://memory', 'w', false));
+            $this->output = new \MolliePrefix\Symfony\Component\Console\Output\StreamOutput(\fopen('php://memory', 'w', \false));
             if (isset($options['decorated'])) {
                 $this->output->setDecorated($options['decorated']);
             }
@@ -76,30 +71,22 @@ class ApplicationTester
                 $this->output->setVerbosity($options['verbosity']);
             }
         } else {
-            $this->output = new ConsoleOutput(
-                isset($options['verbosity']) ? $options['verbosity'] : ConsoleOutput::VERBOSITY_NORMAL,
-                isset($options['decorated']) ? $options['decorated'] : null
-            );
-
-            $errorOutput = new StreamOutput(fopen('php://memory', 'w', false));
+            $this->output = new \MolliePrefix\Symfony\Component\Console\Output\ConsoleOutput(isset($options['verbosity']) ? $options['verbosity'] : \MolliePrefix\Symfony\Component\Console\Output\ConsoleOutput::VERBOSITY_NORMAL, isset($options['decorated']) ? $options['decorated'] : null);
+            $errorOutput = new \MolliePrefix\Symfony\Component\Console\Output\StreamOutput(\fopen('php://memory', 'w', \false));
             $errorOutput->setFormatter($this->output->getFormatter());
             $errorOutput->setVerbosity($this->output->getVerbosity());
             $errorOutput->setDecorated($this->output->isDecorated());
-
             $reflectedOutput = new \ReflectionObject($this->output);
             $strErrProperty = $reflectedOutput->getProperty('stderr');
-            $strErrProperty->setAccessible(true);
+            $strErrProperty->setAccessible(\true);
             $strErrProperty->setValue($this->output, $errorOutput);
-
             $reflectedParent = $reflectedOutput->getParentClass();
             $streamProperty = $reflectedParent->getProperty('stream');
-            $streamProperty->setAccessible(true);
-            $streamProperty->setValue($this->output, fopen('php://memory', 'w', false));
+            $streamProperty->setAccessible(\true);
+            $streamProperty->setValue($this->output, \fopen('php://memory', 'w', \false));
         }
-
         return $this->statusCode = $this->application->run($this->input, $this->output);
     }
-
     /**
      * Gets the display returned by the last execution of the application.
      *
@@ -107,19 +94,15 @@ class ApplicationTester
      *
      * @return string The display
      */
-    public function getDisplay($normalize = false)
+    public function getDisplay($normalize = \false)
     {
-        rewind($this->output->getStream());
-
-        $display = stream_get_contents($this->output->getStream());
-
+        \rewind($this->output->getStream());
+        $display = \stream_get_contents($this->output->getStream());
         if ($normalize) {
-            $display = str_replace(\PHP_EOL, "\n", $display);
+            $display = \str_replace(\PHP_EOL, "\n", $display);
         }
-
         return $display;
     }
-
     /**
      * Gets the output written to STDERR by the application.
      *
@@ -127,23 +110,18 @@ class ApplicationTester
      *
      * @return string
      */
-    public function getErrorOutput($normalize = false)
+    public function getErrorOutput($normalize = \false)
     {
         if (!$this->captureStreamsIndependently) {
             throw new \LogicException('The error output is not available when the tester is run without "capture_stderr_separately" option set.');
         }
-
-        rewind($this->output->getErrorOutput()->getStream());
-
-        $display = stream_get_contents($this->output->getErrorOutput()->getStream());
-
+        \rewind($this->output->getErrorOutput()->getStream());
+        $display = \stream_get_contents($this->output->getErrorOutput()->getStream());
         if ($normalize) {
-            $display = str_replace(\PHP_EOL, "\n", $display);
+            $display = \str_replace(\PHP_EOL, "\n", $display);
         }
-
         return $display;
     }
-
     /**
      * Gets the input instance used by the last execution of the application.
      *
@@ -153,7 +131,6 @@ class ApplicationTester
     {
         return $this->input;
     }
-
     /**
      * Gets the output instance used by the last execution of the application.
      *
@@ -163,7 +140,6 @@ class ApplicationTester
     {
         return $this->output;
     }
-
     /**
      * Gets the status code returned by the last execution of the application.
      *

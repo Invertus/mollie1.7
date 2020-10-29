@@ -9,16 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer;
 
-namespace PhpCsFixer\Fixer;
-
-use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
-
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  * @author SpacePossum
  */
-interface DefinedFixerInterface extends FixerInterface
+interface DefinedFixerInterface extends \MolliePrefix\PhpCsFixer\Fixer\FixerInterface
 {
     /**
      * Returns the definition of the fixer.

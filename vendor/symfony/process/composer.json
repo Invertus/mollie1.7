@@ -1,9 +1,9 @@
 {
-    "name": "symfony/process",
+    "name": "symfony\/process",
     "type": "library",
     "description": "Symfony Process Component",
     "keywords": [],
-    "homepage": "https://symfony.com",
+    "homepage": "https:\/\/symfony.com",
     "license": "MIT",
     "authors": [
         {
@@ -12,16 +12,18 @@
         },
         {
             "name": "Symfony Community",
-            "homepage": "https://symfony.com/contributors"
+            "homepage": "https:\/\/symfony.com\/contributors"
         }
     ],
     "require": {
         "php": "^5.5.9|>=7.0.8"
     },
     "autoload": {
-        "psr-4": { "Symfony\\Component\\Process\\": "" },
+        "psr-4": {
+            "MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\": ""
+        },
         "exclude-from-classmap": [
-            "/Tests/"
+            "\/Tests\/"
         ]
     },
     "minimum-stability": "dev",

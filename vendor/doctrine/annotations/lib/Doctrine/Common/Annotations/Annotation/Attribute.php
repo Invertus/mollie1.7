@@ -17,8 +17,7 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-namespace Doctrine\Common\Annotations\Annotation;
+namespace MolliePrefix\Doctrine\Common\Annotations\Annotation;
 
 /**
  * Annotation that can be used to signal to the parser
@@ -34,14 +33,12 @@ final class Attribute
      * @var string
      */
     public $name;
-
     /**
      * @var string
      */
     public $type;
-
     /**
      * @var boolean
      */
-    public $required = false;
+    public $required = \false;
 }

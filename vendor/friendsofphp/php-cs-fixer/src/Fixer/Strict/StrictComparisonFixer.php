@@ -9,30 +9,22 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\Strict;
 
-namespace PhpCsFixer\Fixer\Strict;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class StrictComparisonFixer extends AbstractFixer
+final class StrictComparisonFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
 {
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Comparisons should be strict.',
-            [new CodeSample("<?php\n\$a = 1== \$b;\n")],
-            null,
-            'Changing comparisons to strict might change code behavior.'
-        );
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Comparisons should be strict.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\n\$a = 1== \$b;\n")], null, 'Changing comparisons to strict might change code behavior.');
     }
-
     /**
      * {@inheritdoc}
      *
@@ -42,44 +34,30 @@ final class StrictComparisonFixer extends AbstractFixer
     {
         return 0;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isAnyTokenKindsFound([T_IS_EQUAL, T_IS_NOT_EQUAL]);
+        return $tokens->isAnyTokenKindsFound([\T_IS_EQUAL, \T_IS_NOT_EQUAL]);
     }
-
     /**
      * {@inheritdoc}
      */
     public function isRisky()
     {
-        return true;
+        return \true;
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        static $map = [
-            T_IS_EQUAL => [
-                'id' => T_IS_IDENTICAL,
-                'content' => '===',
-            ],
-            T_IS_NOT_EQUAL => [
-                'id' => T_IS_NOT_IDENTICAL,
-                'content' => '!==',
-            ],
-        ];
-
+        static $map = [\T_IS_EQUAL => ['id' => \T_IS_IDENTICAL, 'content' => '==='], \T_IS_NOT_EQUAL => ['id' => \T_IS_NOT_IDENTICAL, 'content' => '!==']];
         foreach ($tokens as $index => $token) {
             $tokenId = $token->getId();
-
             if (isset($map[$tokenId])) {
-                $tokens[$index] = new Token([$map[$tokenId]['id'], $map[$tokenId]['content']]);
+                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$map[$tokenId]['id'], $map[$tokenId]['content']]);
             }
         }
     }

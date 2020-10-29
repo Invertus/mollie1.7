@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Symfony\Component\Console;
+namespace MolliePrefix\Symfony\Component\Console;
 
 /**
  * Contains all events dispatched by an Application.
@@ -26,7 +25,6 @@ final class ConsoleEvents
      * @Event("Symfony\Component\Console\Event\ConsoleCommandEvent")
      */
     const COMMAND = 'console.command';
-
     /**
      * The TERMINATE event allows you to attach listeners after a command is
      * executed by the console.
@@ -34,7 +32,6 @@ final class ConsoleEvents
      * @Event("Symfony\Component\Console\Event\ConsoleTerminateEvent")
      */
     const TERMINATE = 'console.terminate';
-
     /**
      * The EXCEPTION event occurs when an uncaught exception appears
      * while executing Command#run().
@@ -47,7 +44,6 @@ final class ConsoleEvents
      * @deprecated The console.exception event is deprecated since version 3.3 and will be removed in 4.0. Use the console.error event instead.
      */
     const EXCEPTION = 'console.exception';
-
     /**
      * The ERROR event occurs when an uncaught exception or error appears.
      *

@@ -9,17 +9,15 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Report;
 
-namespace PhpCsFixer\Report;
-
-use PhpCsFixer\Differ\DiffConsoleFormatter;
-
+use MolliePrefix\PhpCsFixer\Differ\DiffConsoleFormatter;
 /**
  * @author Boris Gorbylev <ekho@ekho.name>
  *
  * @internal
  */
-final class TextReporter implements ReporterInterface
+final class TextReporter implements \MolliePrefix\PhpCsFixer\Report\ReporterInterface
 {
     /**
      * {@inheritdoc}
@@ -28,30 +26,24 @@ final class TextReporter implements ReporterInterface
     {
         return 'txt';
     }
-
     /**
      * {@inheritdoc}
      */
-    public function generate(ReportSummary $reportSummary)
+    public function generate(\MolliePrefix\PhpCsFixer\Report\ReportSummary $reportSummary)
     {
         $output = '';
-
         $i = 0;
         foreach ($reportSummary->getChanged() as $file => $fixResult) {
             ++$i;
-            $output .= sprintf('%4d) %s', $i, $file);
-
+            $output .= \sprintf('%4d) %s', $i, $file);
             if ($reportSummary->shouldAddAppliedFixers()) {
                 $output .= $this->getAppliedFixers($reportSummary->isDecoratedOutput(), $fixResult);
             }
-
             $output .= $this->getDiff($reportSummary->isDecoratedOutput(), $fixResult);
-            $output .= PHP_EOL;
+            $output .= \PHP_EOL;
         }
-
-        return $output.$this->getFooter($reportSummary->getTime(), $reportSummary->getMemory(), $reportSummary->isDryRun());
+        return $output . $this->getFooter($reportSummary->getTime(), $reportSummary->getMemory(), $reportSummary->isDryRun());
     }
-
     /**
      * @param bool $isDecoratedOutput
      *
@@ -59,12 +51,8 @@ final class TextReporter implements ReporterInterface
      */
     private function getAppliedFixers($isDecoratedOutput, array $fixResult)
     {
-        return sprintf(
-            $isDecoratedOutput ? ' (<comment>%s</comment>)' : ' (%s)',
-            implode(', ', $fixResult['appliedFixers'])
-        );
+        return \sprintf($isDecoratedOutput ? ' (<comment>%s</comment>)' : ' (%s)', \implode(', ', $fixResult['appliedFixers']));
     }
-
     /**
      * @param bool $isDecoratedOutput
      *
@@ -75,16 +63,9 @@ final class TextReporter implements ReporterInterface
         if (empty($fixResult['diff'])) {
             return '';
         }
-
-        $diffFormatter = new DiffConsoleFormatter($isDecoratedOutput, sprintf(
-            '<comment>      ---------- begin diff ----------</comment>%s%%s%s<comment>      ----------- end diff -----------</comment>',
-            PHP_EOL,
-            PHP_EOL
-        ));
-
-        return PHP_EOL.$diffFormatter->format($fixResult['diff']).PHP_EOL;
+        $diffFormatter = new \MolliePrefix\PhpCsFixer\Differ\DiffConsoleFormatter($isDecoratedOutput, \sprintf('<comment>      ---------- begin diff ----------</comment>%s%%s%s<comment>      ----------- end diff -----------</comment>', \PHP_EOL, \PHP_EOL));
+        return \PHP_EOL . $diffFormatter->format($fixResult['diff']) . \PHP_EOL;
     }
-
     /**
      * @param int  $time
      * @param int  $memory
@@ -97,12 +78,6 @@ final class TextReporter implements ReporterInterface
         if (0 === $time || 0 === $memory) {
             return '';
         }
-
-        return PHP_EOL.sprintf(
-            '%s all files in %.3f seconds, %.3f MB memory used'.PHP_EOL,
-            $isDryRun ? 'Checked' : 'Fixed',
-            $time / 1000,
-            $memory / 1024 / 1024
-        );
+        return \PHP_EOL . \sprintf('%s all files in %.3f seconds, %.3f MB memory used' . \PHP_EOL, $isDryRun ? 'Checked' : 'Fixed', $time / 1000, $memory / 1024 / 1024);
     }
 }

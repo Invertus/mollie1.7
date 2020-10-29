@@ -1,4 +1,7 @@
 <?php
+
+namespace MolliePrefix;
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -17,22 +20,20 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
-if (!defined('_PS_VERSION_')) {
+if (!\defined('_PS_VERSION_')) {
     exit;
 }
-function upgrade_module_2_2($object, $install = false)
+function upgrade_module_2_2($object, $install = \false)
 {
     if ($object->active || $install) {
-        Configuration::updateValue('GSITEMAP_PRIORITY_HOME', 1.0);
-        Configuration::updateValue('GSITEMAP_PRIORITY_PRODUCT', 0.9);
-        Configuration::updateValue('GSITEMAP_PRIORITY_CATEGORY', 0.8);
-        Configuration::updateValue('GSITEMAP_PRIORITY_CMS', 0.7);
-        Configuration::updateValue('GSITEMAP_FREQUENCY', 'weekly');
-        Configuration::updateValue('GSITEMAP_LAST_EXPORT', false);
-
-        return Db::getInstance()->Execute('DROP TABLE IF  EXISTS `' . _DB_PREFIX_ . 'gsitemap_sitemap`') && Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;');
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_HOME', 1.0);
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_PRODUCT', 0.9);
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_CATEGORY', 0.8);
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_CMS', 0.7);
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_FREQUENCY', 'weekly');
+        \MolliePrefix\Configuration::updateValue('GSITEMAP_LAST_EXPORT', \false);
+        return \MolliePrefix\Db::getInstance()->Execute('DROP TABLE IF  EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap`') && \MolliePrefix\Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . \_MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;');
     }
     $object->upgrade_detail['2.2'][] = 'GSitemap upgrade error !';
-
-    return false;
+    return \false;
 }

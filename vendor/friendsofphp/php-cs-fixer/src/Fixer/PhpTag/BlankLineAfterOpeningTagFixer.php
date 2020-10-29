@@ -9,32 +9,26 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Fixer\PhpTag;
 
-namespace PhpCsFixer\Fixer\PhpTag;
-
-use PhpCsFixer\AbstractFixer;
-use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
-use PhpCsFixer\FixerDefinition\CodeSample;
-use PhpCsFixer\FixerDefinition\FixerDefinition;
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
+use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Ceeram <ceeram@cakephp.org>
  */
-final class BlankLineAfterOpeningTagFixer extends AbstractFixer implements WhitespacesAwareFixerInterface
+final class BlankLineAfterOpeningTagFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new FixerDefinition(
-            'Ensure there is no code on the same line as the PHP open tag and it is followed by a blank line.',
-            [new CodeSample("<?php \$a = 1;\n\$b = 1;\n")]
-        );
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Ensure there is no code on the same line as the PHP open tag and it is followed by a blank line.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php \$a = 1;\n\$b = 1;\n")]);
     }
-
     /**
      * {@inheritdoc}
      *
@@ -45,53 +39,44 @@ final class BlankLineAfterOpeningTagFixer extends AbstractFixer implements White
     {
         return 1;
     }
-
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(Tokens $tokens)
+    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(T_OPEN_TAG);
+        return $tokens->isTokenKindFound(\T_OPEN_TAG);
     }
-
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         $lineEnding = $this->whitespacesConfig->getLineEnding();
-
         // ignore files with short open tag and ignore non-monolithic files
-        if (!$tokens[0]->isGivenKind(T_OPEN_TAG) || !$tokens->isMonolithicPhp()) {
+        if (!$tokens[0]->isGivenKind(\T_OPEN_TAG) || !$tokens->isMonolithicPhp()) {
             return;
         }
-
-        $newlineFound = false;
+        $newlineFound = \false;
         /** @var Token $token */
         foreach ($tokens as $token) {
-            if ($token->isWhitespace() && false !== strpos($token->getContent(), "\n")) {
-                $newlineFound = true;
-
+            if ($token->isWhitespace() && \false !== \strpos($token->getContent(), "\n")) {
+                $newlineFound = \true;
                 break;
             }
         }
-
         // ignore one-line files
         if (!$newlineFound) {
             return;
         }
-
         $token = $tokens[0];
-
-        if (false === strpos($token->getContent(), "\n")) {
-            $tokens[0] = new Token([$token->getId(), rtrim($token->getContent()).$lineEnding]);
+        if (\false === \strpos($token->getContent(), "\n")) {
+            $tokens[0] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->getId(), \rtrim($token->getContent()) . $lineEnding]);
         }
-
-        if (false === strpos($tokens[1]->getContent(), "\n")) {
+        if (\false === \strpos($tokens[1]->getContent(), "\n")) {
             if ($tokens[1]->isWhitespace()) {
-                $tokens[1] = new Token([T_WHITESPACE, $lineEnding.$tokens[1]->getContent()]);
+                $tokens[1] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, $lineEnding . $tokens[1]->getContent()]);
             } else {
-                $tokens->insertAt(1, new Token([T_WHITESPACE, $lineEnding]));
+                $tokens->insertAt(1, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, $lineEnding]));
             }
         }
     }

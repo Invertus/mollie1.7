@@ -8,20 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\Console\Command;
 
-namespace Symfony\Component\Console\Command;
-
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Exception\ExceptionInterface;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Exception\LogicException;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use MolliePrefix\Symfony\Component\Console\Application;
+use MolliePrefix\Symfony\Component\Console\Exception\ExceptionInterface;
+use MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException;
+use MolliePrefix\Symfony\Component\Console\Exception\LogicException;
+use MolliePrefix\Symfony\Component\Console\Helper\HelperSet;
+use MolliePrefix\Symfony\Component\Console\Input\InputArgument;
+use MolliePrefix\Symfony\Component\Console\Input\InputDefinition;
+use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
+use MolliePrefix\Symfony\Component\Console\Input\InputOption;
+use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
 /**
  * Base class for all commands.
  *
@@ -33,23 +31,21 @@ class Command
      * @var string|null The default command name
      */
     protected static $defaultName;
-
     private $application;
     private $name;
     private $processTitle;
     private $aliases = [];
     private $definition;
-    private $hidden = false;
+    private $hidden = \false;
     private $help = '';
     private $description = '';
-    private $ignoreValidationErrors = false;
-    private $applicationDefinitionMerged = false;
-    private $applicationDefinitionMergedWithArgs = false;
+    private $ignoreValidationErrors = \false;
+    private $applicationDefinitionMerged = \false;
+    private $applicationDefinitionMergedWithArgs = \false;
     private $code;
     private $synopsis = [];
     private $usages = [];
     private $helperSet;
-
     /**
      * @return string|null The default command name or null when no default name is set
      */
@@ -57,10 +53,8 @@ class Command
     {
         $class = static::class;
         $r = new \ReflectionProperty($class, 'defaultName');
-
         return $class === $r->class ? static::$defaultName : null;
     }
-
     /**
      * @param string|null $name The name of the command; passing null means it must be set in configure()
      *
@@ -68,15 +62,12 @@ class Command
      */
     public function __construct($name = null)
     {
-        $this->definition = new InputDefinition();
-
-        if (null !== $name || null !== $name = static::getDefaultName()) {
+        $this->definition = new \MolliePrefix\Symfony\Component\Console\Input\InputDefinition();
+        if (null !== $name || null !== ($name = static::getDefaultName())) {
             $this->setName($name);
         }
-
         $this->configure();
     }
-
     /**
      * Ignores validation errors.
      *
@@ -84,10 +75,9 @@ class Command
      */
     public function ignoreValidationErrors()
     {
-        $this->ignoreValidationErrors = true;
+        $this->ignoreValidationErrors = \true;
     }
-
-    public function setApplication(Application $application = null)
+    public function setApplication(\MolliePrefix\Symfony\Component\Console\Application $application = null)
     {
         $this->application = $application;
         if ($application) {
@@ -96,12 +86,10 @@ class Command
             $this->helperSet = null;
         }
     }
-
-    public function setHelperSet(HelperSet $helperSet)
+    public function setHelperSet(\MolliePrefix\Symfony\Component\Console\Helper\HelperSet $helperSet)
     {
         $this->helperSet = $helperSet;
     }
-
     /**
      * Gets the helper set.
      *
@@ -111,7 +99,6 @@ class Command
     {
         return $this->helperSet;
     }
-
     /**
      * Gets the application instance for this command.
      *
@@ -121,7 +108,6 @@ class Command
     {
         return $this->application;
     }
-
     /**
      * Checks whether the command is enabled or not in the current environment.
      *
@@ -132,16 +118,14 @@ class Command
      */
     public function isEnabled()
     {
-        return true;
+        return \true;
     }
-
     /**
      * Configures the current command.
      */
     protected function configure()
     {
     }
-
     /**
      * Executes the current command.
      *
@@ -156,11 +140,10 @@ class Command
      *
      * @see setCode()
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
-        throw new LogicException('You must override the execute() method in the concrete command class.');
+        throw new \MolliePrefix\Symfony\Component\Console\Exception\LogicException('You must override the execute() method in the concrete command class.');
     }
-
     /**
      * Interacts with the user.
      *
@@ -168,10 +151,9 @@ class Command
      * This means that this is the only place where the command can
      * interactively ask for values of missing required arguments.
      */
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
     }
-
     /**
      * Initializes the command after the input has been bound and before the input
      * is validated.
@@ -182,10 +164,9 @@ class Command
      * @see InputInterface::bind()
      * @see InputInterface::validate()
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
     }
-
     /**
      * Runs the command.
      *
@@ -200,64 +181,54 @@ class Command
      * @see setCode()
      * @see execute()
      */
-    public function run(InputInterface $input, OutputInterface $output)
+    public function run(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
     {
         // force the creation of the synopsis before the merge with the app definition
-        $this->getSynopsis(true);
-        $this->getSynopsis(false);
-
+        $this->getSynopsis(\true);
+        $this->getSynopsis(\false);
         // add the application arguments and options
         $this->mergeApplicationDefinition();
-
         // bind the input against the command specific arguments/options
         try {
             $input->bind($this->definition);
-        } catch (ExceptionInterface $e) {
+        } catch (\MolliePrefix\Symfony\Component\Console\Exception\ExceptionInterface $e) {
             if (!$this->ignoreValidationErrors) {
                 throw $e;
             }
         }
-
         $this->initialize($input, $output);
-
         if (null !== $this->processTitle) {
             if (\function_exists('cli_set_process_title')) {
-                if (!@cli_set_process_title($this->processTitle)) {
+                if (!@\cli_set_process_title($this->processTitle)) {
                     if ('Darwin' === \PHP_OS) {
-                        $output->writeln('<comment>Running "cli_set_process_title" as an unprivileged user is not supported on MacOS.</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
+                        $output->writeln('<comment>Running "cli_set_process_title" as an unprivileged user is not supported on MacOS.</comment>', \MolliePrefix\Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE);
                     } else {
-                        cli_set_process_title($this->processTitle);
+                        \cli_set_process_title($this->processTitle);
                     }
                 }
-            } elseif (\function_exists('setproctitle')) {
+            } elseif (\function_exists('MolliePrefix\\setproctitle')) {
                 setproctitle($this->processTitle);
-            } elseif (OutputInterface::VERBOSITY_VERY_VERBOSE === $output->getVerbosity()) {
+            } elseif (\MolliePrefix\Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERY_VERBOSE === $output->getVerbosity()) {
                 $output->writeln('<comment>Install the proctitle PECL to be able to change the process title.</comment>');
             }
         }
-
         if ($input->isInteractive()) {
             $this->interact($input, $output);
         }
-
         // The command name argument is often omitted when a command is executed directly with its run() method.
         // It would fail the validation if we didn't make sure the command argument is present,
         // since it's required by the application.
         if ($input->hasArgument('command') && null === $input->getArgument('command')) {
             $input->setArgument('command', $this->getName());
         }
-
         $input->validate();
-
         if ($this->code) {
             $statusCode = \call_user_func($this->code, $input, $output);
         } else {
             $statusCode = $this->execute($input, $output);
         }
-
-        return is_numeric($statusCode) ? (int) $statusCode : 0;
+        return \is_numeric($statusCode) ? (int) $statusCode : 0;
     }
-
     /**
      * Sets the code to execute when running this command.
      *
@@ -288,12 +259,9 @@ class Command
                 }
             }
         }
-
         $this->code = $code;
-
         return $this;
     }
-
     /**
      * Merges the application definition with the command definition.
      *
@@ -301,25 +269,20 @@ class Command
      *
      * @param bool $mergeArgs Whether to merge or not the Application definition arguments to Command definition arguments
      */
-    public function mergeApplicationDefinition($mergeArgs = true)
+    public function mergeApplicationDefinition($mergeArgs = \true)
     {
-        if (null === $this->application || (true === $this->applicationDefinitionMerged && ($this->applicationDefinitionMergedWithArgs || !$mergeArgs))) {
+        if (null === $this->application || \true === $this->applicationDefinitionMerged && ($this->applicationDefinitionMergedWithArgs || !$mergeArgs)) {
             return;
         }
-
         $this->definition->addOptions($this->application->getDefinition()->getOptions());
-
-        $this->applicationDefinitionMerged = true;
-
+        $this->applicationDefinitionMerged = \true;
         if ($mergeArgs) {
             $currentArguments = $this->definition->getArguments();
             $this->definition->setArguments($this->application->getDefinition()->getArguments());
             $this->definition->addArguments($currentArguments);
-
-            $this->applicationDefinitionMergedWithArgs = true;
+            $this->applicationDefinitionMergedWithArgs = \true;
         }
     }
-
     /**
      * Sets an array of argument and option instances.
      *
@@ -329,17 +292,14 @@ class Command
      */
     public function setDefinition($definition)
     {
-        if ($definition instanceof InputDefinition) {
+        if ($definition instanceof \MolliePrefix\Symfony\Component\Console\Input\InputDefinition) {
             $this->definition = $definition;
         } else {
             $this->definition->setDefinition($definition);
         }
-
-        $this->applicationDefinitionMerged = false;
-
+        $this->applicationDefinitionMerged = \false;
         return $this;
     }
-
     /**
      * Gets the InputDefinition attached to this Command.
      *
@@ -348,12 +308,10 @@ class Command
     public function getDefinition()
     {
         if (null === $this->definition) {
-            throw new LogicException(sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', static::class));
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\LogicException(\sprintf('Command class "%s" is not correctly initialized. You probably forgot to call the parent constructor.', static::class));
         }
-
         return $this->definition;
     }
-
     /**
      * Gets the InputDefinition to be used to create representations of this Command.
      *
@@ -368,7 +326,6 @@ class Command
     {
         return $this->getDefinition();
     }
-
     /**
      * Adds an argument.
      *
@@ -383,11 +340,9 @@ class Command
      */
     public function addArgument($name, $mode = null, $description = '', $default = null)
     {
-        $this->definition->addArgument(new InputArgument($name, $mode, $description, $default));
-
+        $this->definition->addArgument(new \MolliePrefix\Symfony\Component\Console\Input\InputArgument($name, $mode, $description, $default));
         return $this;
     }
-
     /**
      * Adds an option.
      *
@@ -403,11 +358,9 @@ class Command
      */
     public function addOption($name, $shortcut = null, $mode = null, $description = '', $default = null)
     {
-        $this->definition->addOption(new InputOption($name, $shortcut, $mode, $description, $default));
-
+        $this->definition->addOption(new \MolliePrefix\Symfony\Component\Console\Input\InputOption($name, $shortcut, $mode, $description, $default));
         return $this;
     }
-
     /**
      * Sets the name of the command.
      *
@@ -425,12 +378,9 @@ class Command
     public function setName($name)
     {
         $this->validateName($name);
-
         $this->name = $name;
-
         return $this;
     }
-
     /**
      * Sets the process title of the command.
      *
@@ -444,10 +394,8 @@ class Command
     public function setProcessTitle($title)
     {
         $this->processTitle = $title;
-
         return $this;
     }
-
     /**
      * Returns the command name.
      *
@@ -457,7 +405,6 @@ class Command
     {
         return $this->name;
     }
-
     /**
      * @param bool $hidden Whether or not the command should be hidden from the list of commands
      *
@@ -466,10 +413,8 @@ class Command
     public function setHidden($hidden)
     {
         $this->hidden = (bool) $hidden;
-
         return $this;
     }
-
     /**
      * @return bool whether the command should be publicly shown or not
      */
@@ -477,7 +422,6 @@ class Command
     {
         return $this->hidden;
     }
-
     /**
      * Sets the description for the command.
      *
@@ -488,10 +432,8 @@ class Command
     public function setDescription($description)
     {
         $this->description = $description;
-
         return $this;
     }
-
     /**
      * Returns the description for the command.
      *
@@ -501,7 +443,6 @@ class Command
     {
         return $this->description;
     }
-
     /**
      * Sets the help for the command.
      *
@@ -512,10 +453,8 @@ class Command
     public function setHelp($help)
     {
         $this->help = $help;
-
         return $this;
     }
-
     /**
      * Returns the help for the command.
      *
@@ -525,7 +464,6 @@ class Command
     {
         return $this->help;
     }
-
     /**
      * Returns the processed help for the command replacing the %command.name% and
      * %command.full_name% patterns with the real values dynamically.
@@ -536,19 +474,10 @@ class Command
     {
         $name = $this->name;
         $isSingleCommand = $this->application && $this->application->isSingleCommand();
-
-        $placeholders = [
-            '%command.name%',
-            '%command.full_name%',
-        ];
-        $replacements = [
-            $name,
-            $isSingleCommand ? $_SERVER['PHP_SELF'] : $_SERVER['PHP_SELF'].' '.$name,
-        ];
-
-        return str_replace($placeholders, $replacements, $this->getHelp() ?: $this->getDescription());
+        $placeholders = ['%command.name%', '%command.full_name%'];
+        $replacements = [$name, $isSingleCommand ? $_SERVER['PHP_SELF'] : $_SERVER['PHP_SELF'] . ' ' . $name];
+        return \str_replace($placeholders, $replacements, $this->getHelp() ?: $this->getDescription());
     }
-
     /**
      * Sets the aliases for the command.
      *
@@ -561,18 +490,14 @@ class Command
     public function setAliases($aliases)
     {
         if (!\is_array($aliases) && !$aliases instanceof \Traversable) {
-            throw new InvalidArgumentException('$aliases must be an array or an instance of \Traversable.');
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException('$aliases must be an array or an instance of \\Traversable.');
         }
-
         foreach ($aliases as $alias) {
             $this->validateName($alias);
         }
-
         $this->aliases = $aliases;
-
         return $this;
     }
-
     /**
      * Returns the aliases for the command.
      *
@@ -582,7 +507,6 @@ class Command
     {
         return $this->aliases;
     }
-
     /**
      * Returns the synopsis for the command.
      *
@@ -590,17 +514,14 @@ class Command
      *
      * @return string The synopsis
      */
-    public function getSynopsis($short = false)
+    public function getSynopsis($short = \false)
     {
         $key = $short ? 'short' : 'long';
-
         if (!isset($this->synopsis[$key])) {
-            $this->synopsis[$key] = trim(sprintf('%s %s', $this->name, $this->definition->getSynopsis($short)));
+            $this->synopsis[$key] = \trim(\sprintf('%s %s', $this->name, $this->definition->getSynopsis($short)));
         }
-
         return $this->synopsis[$key];
     }
-
     /**
      * Add a command usage example.
      *
@@ -610,15 +531,12 @@ class Command
      */
     public function addUsage($usage)
     {
-        if (0 !== strpos($usage, $this->name)) {
-            $usage = sprintf('%s %s', $this->name, $usage);
+        if (0 !== \strpos($usage, $this->name)) {
+            $usage = \sprintf('%s %s', $this->name, $usage);
         }
-
         $this->usages[] = $usage;
-
         return $this;
     }
-
     /**
      * Returns alternative usages of the command.
      *
@@ -628,7 +546,6 @@ class Command
     {
         return $this->usages;
     }
-
     /**
      * Gets a helper instance by name.
      *
@@ -642,12 +559,10 @@ class Command
     public function getHelper($name)
     {
         if (null === $this->helperSet) {
-            throw new LogicException(sprintf('Cannot retrieve helper "%s" because there is no HelperSet defined. Did you forget to add your command to the application or to set the application on the command using the setApplication() method? You can also set the HelperSet directly using the setHelperSet() method.', $name));
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\LogicException(\sprintf('Cannot retrieve helper "%s" because there is no HelperSet defined. Did you forget to add your command to the application or to set the application on the command using the setApplication() method? You can also set the HelperSet directly using the setHelperSet() method.', $name));
         }
-
         return $this->helperSet->get($name);
     }
-
     /**
      * Validates a command name.
      *
@@ -659,8 +574,8 @@ class Command
      */
     private function validateName($name)
     {
-        if (!preg_match('/^[^\:]++(\:[^\:]++)*$/', $name)) {
-            throw new InvalidArgumentException(sprintf('Command name "%s" is invalid.', $name));
+        if (!\preg_match('/^[^\\:]++(\\:[^\\:]++)*$/', $name)) {
+            throw new \MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException(\sprintf('Command name "%s" is invalid.', $name));
         }
     }
 }

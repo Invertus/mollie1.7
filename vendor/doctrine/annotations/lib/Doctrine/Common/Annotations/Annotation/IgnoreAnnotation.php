@@ -1,4 +1,5 @@
 <?php
+
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -16,8 +17,7 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-
-namespace Doctrine\Common\Annotations\Annotation;
+namespace MolliePrefix\Doctrine\Common\Annotations\Annotation;
 
 /**
  * Annotation that can be used to signal to the parser to ignore specific
@@ -32,7 +32,6 @@ final class IgnoreAnnotation
      * @var array
      */
     public $names;
-
     /**
      * Constructor.
      *
@@ -42,13 +41,12 @@ final class IgnoreAnnotation
      */
     public function __construct(array $values)
     {
-        if (is_string($values['value'])) {
+        if (\is_string($values['value'])) {
             $values['value'] = array($values['value']);
         }
-        if (!is_array($values['value'])) {
-            throw new \RuntimeException(sprintf('@IgnoreAnnotation expects either a string name, or an array of strings, but got %s.', json_encode($values['value'])));
+        if (!\is_array($values['value'])) {
+            throw new \RuntimeException(\sprintf('@IgnoreAnnotation expects either a string name, or an array of strings, but got %s.', \json_encode($values['value'])));
         }
-
         $this->names = $values['value'];
     }
 }

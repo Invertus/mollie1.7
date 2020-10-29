@@ -8,15 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace MolliePrefix\Symfony\Component\EventDispatcher\Tests;
 
-namespace Symfony\Component\EventDispatcher\Tests;
-
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
-class EventDispatcherTest extends AbstractEventDispatcherTest
+use MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcher;
+class EventDispatcherTest extends \MolliePrefix\Symfony\Component\EventDispatcher\Tests\AbstractEventDispatcherTest
 {
     protected function createEventDispatcher()
     {
-        return new EventDispatcher();
+        return new \MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcher();
     }
 }

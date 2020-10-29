@@ -9,12 +9,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
+namespace MolliePrefix\PhpCsFixer\Tests\Test\Assert;
 
-namespace PhpCsFixer\Tests\Test\Assert;
-
-use PhpCsFixer\Tokenizer\Token;
-use PhpCsFixer\Tokenizer\Tokens;
-
+use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
@@ -22,27 +20,14 @@ use PhpCsFixer\Tokenizer\Tokens;
  */
 trait AssertTokensTrait
 {
-    private static function assertTokens(Tokens $expectedTokens, Tokens $inputTokens)
+    private static function assertTokens(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $expectedTokens, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $inputTokens)
     {
         foreach ($expectedTokens as $index => $expectedToken) {
             $inputToken = $inputTokens[$index];
-
-            static::assertTrue(
-                $expectedToken->equals($inputToken),
-                sprintf("The token at index %d must be:\n%s,\ngot:\n%s.", $index, $expectedToken->toJson(), $inputToken->toJson())
-            );
-
+            static::assertTrue($expectedToken->equals($inputToken), \sprintf("The token at index %d must be:\n%s,\ngot:\n%s.", $index, $expectedToken->toJson(), $inputToken->toJson()));
             $expectedTokenKind = $expectedToken->isArray() ? $expectedToken->getId() : $expectedToken->getContent();
-            static::assertTrue(
-                $inputTokens->isTokenKindFound($expectedTokenKind),
-                sprintf(
-                    'The token kind %s (%s) must be found in tokens collection.',
-                    $expectedTokenKind,
-                    \is_string($expectedTokenKind) ? $expectedTokenKind : Token::getNameForId($expectedTokenKind)
-                )
-            );
+            static::assertTrue($inputTokens->isTokenKindFound($expectedTokenKind), \sprintf('The token kind %s (%s) must be found in tokens collection.', $expectedTokenKind, \is_string($expectedTokenKind) ? $expectedTokenKind : \MolliePrefix\PhpCsFixer\Tokenizer\Token::getNameForId($expectedTokenKind)));
         }
-
         static::assertSame($expectedTokens->count(), $inputTokens->count(), 'Both collections must have the same length.');
     }
 }
