@@ -1,11 +1,21 @@
 <?php
 
-use libphonenumber\NumberParseException;
 use Mollie\Exception\PhoneNumberException;
 use Mollie\Utility\PhoneNumberUtility;
+use MolliePrefix\libphonenumber\NumberParseException;
 use PHPUnit\Framework\TestCase;
 
-class PhoneNumberUtilityTest extends TestCas
+/**
+ * @todo: these hacks should be removed once our tests are running in prestashop environment in pipelines.
+ */
+class Validate {
+    public static function isLanguageIsoCode($iso_code)
+    {
+        return preg_match('/^[a-zA-Z]{2,3}$/', $iso_code);
+    }
+}
+
+class PhoneNumberUtilityTest extends TestCase
 {
     /**
      * @dataProvider provideFormatNumber
