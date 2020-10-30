@@ -12,7 +12,7 @@ interface PaymentMethodSortProviderInterface
      * @param array $paymentMethods
      * @return array
      */
-    public function getSortedInAscendingWay(array $paymentMethods);
+    public function getSortedInAscendingWayForCheckout(array $paymentMethods);
 
     /**
      * @param array $paymentMethods

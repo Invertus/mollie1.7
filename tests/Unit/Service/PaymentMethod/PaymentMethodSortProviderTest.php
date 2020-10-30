@@ -19,9 +19,9 @@ class PaymentMethodSortProviderTest extends TestCase
 {
     public function testItSortsPaymentMethodsAscendingWay()
     {
-        $p1 = new FakePaymentMethod('extraSafe', 0);
-        $p2 = new FakePaymentMethod('superSafe', 2);
-        $p3 = new FakePaymentMethod('paySafe', 4);
+        $p1 = [ 'position' => 0 ];
+        $p2 = [ 'position' => 2 ];
+        $p3 = [ 'position' => 4 ];
 
         $paymentMethods = [
             $p3,
@@ -30,7 +30,7 @@ class PaymentMethodSortProviderTest extends TestCase
         ];
 
         $sort = new PaymentMethodSortProvider();
-        $sorted = $sort->getSortedInAscendingWay($paymentMethods);
+        $sorted = $sort->getSortedInAscendingWayForCheckout($paymentMethods);
 
         $this->assertEquals(
             [

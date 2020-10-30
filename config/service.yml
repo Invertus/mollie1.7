@@ -10,6 +10,7 @@ services:
       - '@Mollie\Service\PaymentsTranslationService'
       - '@Mollie\Service\CustomerService'
       - '@Mollie\Provider\CreditCardLogoProvider'
+      - '@Mollie\Service\PaymentMethod\PaymentMethodSortProvider'
 
   Mollie\Service\ApiService:
     arguments:
