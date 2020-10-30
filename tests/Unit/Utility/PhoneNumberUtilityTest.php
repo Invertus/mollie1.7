@@ -1,0 +1,77 @@
+<?php
+
+use libphonenumber\NumberParseException;
+use Mollie\Exception\PhoneNumberException;
+use Mollie\Utility\PhoneNumberUtility;
+use PHPUnit\Framework\TestCase;
+
+class PhoneNumberUtilityTest extends TestCase
+{
+    /**
+     * @dataProvider provideFormatNumber
+     */
+    public function testItFormatsInternationalPhoneNumberCorrectly($number, $countryCode, $expectedNumber)
+    {
+        $result = PhoneNumberUtility::internationalizeNumber($number, $countryCode);
+
+        $this->assertEquals($expectedNumber, $result);
+    }
+
+    public function provideFormatNumber()
+    {
+        return [
+            'Lithuania without country code' => [
+                '862816785',
+                'LT',
+                '+370 628 16785'
+            ],
+            'Netherlands with country code already entered' => [
+                '+31203698545',
+                'NL',
+                '+31 20 369 8545'
+            ],
+            'UK London region phone number without country code and have wrapper' => [
+                '(020) 1234 5678',
+                'GB',
+                '+44 20 1234 5678'
+            ],
+            'Adding gaps' => [
+                '+37062816785',
+                'LT',
+                '+370 628 16785'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider providePhoneNumberErrors
+     */
+    public function testInternationalizePhoneNumber_errors($number, $countryCode, $exceptionCode)
+    {
+        $this->expectException(PhoneNumberException::class);
+        $this->expectExceptionCode($exceptionCode);
+
+        PhoneNumberUtility::internationalizeNumber($number, $countryCode);
+    }
+
+    public function providePhoneNumberErrors()
+    {
+        return [
+            'no number provided' => [
+                '',
+                'LT',
+                NumberParseException::NOT_A_NUMBER
+            ],
+            'wrong country code' => [
+                '+37062816785',
+                'MIDDLEEARTH',
+                NumberParseException::INVALID_COUNTRY_CODE
+            ],
+            'too short number' => [
+                '1',
+                'LT',
+                NumberParseException::NOT_A_NUMBER
+            ]
+        ];
+    }
+}
