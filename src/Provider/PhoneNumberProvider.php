@@ -7,7 +7,7 @@ use Country;
 use Mollie\Exception\PhoneNumberException;
 use Mollie\Repository\ReadOnlyRepositoryInterface;
 use Mollie\Utility\PhoneNumberUtility;
-use MolliePrefix\Psr\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 use Validate;
 
 final class PhoneNumberProvider implements PhoneNumberProviderInterface
