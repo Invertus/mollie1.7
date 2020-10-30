@@ -25,9 +25,7 @@ return [
                 'test_old',
                 'tests',
                 'Tests',
-                'vendor-bin',
-                'psr/log',
-                'giggsey'
+                'vendor-bin'
             ])
             ->in('vendor'),
         Finder::create()->append([

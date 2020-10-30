@@ -2,11 +2,11 @@
 
 namespace Mollie\Utility;
 
-use libphonenumber\NumberParseException;
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberFormat;
-use libphonenumber\PhoneNumberUtil;
 use Mollie\Exception\PhoneNumberException;
+use MolliePrefix\libphonenumber\NumberParseException;
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberFormat;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
 use Validate;
 
 class PhoneNumberUtility
