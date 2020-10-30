@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 /**
  * Interface MatcherAPIInterface
@@ -22,5 +22,5 @@ interface MatcherAPIInterface
      * @param boolean $allowPrefixMatch
      * @return boolean
      */
-    public function matchNationalNumber($number, PhoneNumberDesc $numberDesc, $allowPrefixMatch);
+    public function matchNationalNumber($number, \MolliePrefix\libphonenumber\PhoneNumberDesc $numberDesc, $allowPrefixMatch);
 }

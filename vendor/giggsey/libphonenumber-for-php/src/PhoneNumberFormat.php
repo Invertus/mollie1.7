@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 /**
  * INTERNATIONAL and NATIONAL formats are consistent with the definition in ITU-T Recommendation

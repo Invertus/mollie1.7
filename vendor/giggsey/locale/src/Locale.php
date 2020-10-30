@@ -1,11 +1,10 @@
 <?php
 
-namespace Giggsey\Locale;
+namespace MolliePrefix\Giggsey\Locale;
 
 class Locale
 {
     protected static $dataDir = '../data/';
-
     /**
      * Gets the primary language for the input locale
      *
@@ -14,11 +13,9 @@ class Locale
      */
     public static function getPrimaryLanguage($locale)
     {
-        $parts = explode('-', str_replace('_', '-', $locale));
-
-        return strtolower($parts[0]);
+        $parts = \explode('-', \str_replace('_', '-', $locale));
+        return \strtolower($parts[0]);
     }
-
     /**
      * Get the region for the input locale
      *
@@ -27,25 +24,19 @@ class Locale
      */
     public static function getRegion($locale)
     {
-        $parts = explode('-', str_replace('_', '-', $locale));
-
-        if (count($parts) === 1) {
+        $parts = \explode('-', \str_replace('_', '-', $locale));
+        if (\count($parts) === 1) {
             return '';
         }
-
-        $region = end($parts);
-
-        if (strlen($region) === 4) {
+        $region = \end($parts);
+        if (\strlen($region) === 4) {
             return '';
         }
-
         if ($region === 'POSIX') {
             $region = 'US';
         }
-
-        return strtoupper($region);
+        return \strtoupper($region);
     }
-
     /**
      * Get the localised display name for the region of the input locale
      *
@@ -55,56 +46,43 @@ class Locale
      */
     public static function getDisplayRegion($locale, $inLocale)
     {
-        $dataDir = __DIR__ . DIRECTORY_SEPARATOR . static::$dataDir;
-
+        $dataDir = __DIR__ . \DIRECTORY_SEPARATOR . static::$dataDir;
         // Convert $locale into a region
         $region = static::getRegion($locale);
-
-        $regionList = require $dataDir . '_list.php';
-
+        $regionList = (require $dataDir . '_list.php');
         /*
          * Loop through each part of the $inLocale, and see if we have data for that locale
          *
          * E.g zh-Hans-HK will look for zh-Hanks-HK, zh-Hanks, then finally zh
          */
-        $fallbackParts = explode('-', str_replace('_', '-', $inLocale));
+        $fallbackParts = \explode('-', \str_replace('_', '-', $inLocale));
         $filesToSearch = array();
-
-        $i = count($fallbackParts);
+        $i = \count($fallbackParts);
         while ($i > 0) {
-            $searchLocale = strtolower(implode('-', $fallbackParts));
-
+            $searchLocale = \strtolower(\implode('-', $fallbackParts));
             if (isset($regionList[$searchLocale])) {
                 $filesToSearch[] = $searchLocale;
             }
-
-            array_pop($fallbackParts);
+            \array_pop($fallbackParts);
             $i--;
         }
-
         /*
          * Load data files, and load the region (if it exists) from it
          */
-
         foreach ($filesToSearch as $fileToSearch) {
             // Load data file
-            $data = require $dataDir . $fileToSearch . '.php';
-
+            $data = (require $dataDir . $fileToSearch . '.php');
             if (isset($data[$region])) {
                 return $data[$region];
             }
         }
-
         return '';
     }
-
     public static function getVersion()
     {
-        $file = __DIR__ . DIRECTORY_SEPARATOR . static::$dataDir . '_version.php';
-
+        $file = __DIR__ . \DIRECTORY_SEPARATOR . static::$dataDir . '_version.php';
         return require $file;
     }
-
     /**
      * Return a list of all the supported locales
      *
@@ -112,12 +90,10 @@ class Locale
      */
     public static function getSupportedLocales()
     {
-        $dataDir = __DIR__ . DIRECTORY_SEPARATOR . static::$dataDir;
-        $regionList = require $dataDir . '_list.php';
-
-        return array_keys($regionList);
+        $dataDir = __DIR__ . \DIRECTORY_SEPARATOR . static::$dataDir;
+        $regionList = (require $dataDir . '_list.php');
+        return \array_keys($regionList);
     }
-
     /**
      * Load a list of all countries supported by a particular Locale
      *
@@ -127,48 +103,37 @@ class Locale
      */
     public static function getAllCountriesForLocale($locale)
     {
-        $dataDir = __DIR__ . DIRECTORY_SEPARATOR . static::$dataDir;
-        $regionList = require $dataDir . '_list.php';
-
+        $dataDir = __DIR__ . \DIRECTORY_SEPARATOR . static::$dataDir;
+        $regionList = (require $dataDir . '_list.php');
         if (!isset($regionList[$locale])) {
             throw new \RuntimeException("Locale is not supported");
         }
-
         /*
          * Loop through each part of the $locale, and load data for that locale
          *
          * E.g zh-Hans-HK will look for zh-Hanks-HK, zh-Hanks, then finally zh
          */
-        $fallbackParts = explode('-', str_replace('_', '-', $locale));
+        $fallbackParts = \explode('-', \str_replace('_', '-', $locale));
         $filesToSearch = array();
-
-        $i = count($fallbackParts);
+        $i = \count($fallbackParts);
         while ($i > 0) {
-            $searchLocale = strtolower(implode('-', $fallbackParts));
-
+            $searchLocale = \strtolower(\implode('-', $fallbackParts));
             if (isset($regionList[$searchLocale])) {
                 $filesToSearch[] = $searchLocale;
             }
-
-            array_pop($fallbackParts);
+            \array_pop($fallbackParts);
             $i--;
         }
-
         /*
          * Load data files, and load the region (if it exists) from it
          */
-
         $returnData = array();
-
         foreach ($filesToSearch as $fileToSearch) {
             // Load data file
-            $data = require $dataDir . $fileToSearch . '.php';
-
+            $data = (require $dataDir . $fileToSearch . '.php');
             $returnData += $data;
         }
-
-        ksort($returnData);
-
+        \ksort($returnData);
         return $returnData;
     }
 }

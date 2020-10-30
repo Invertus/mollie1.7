@@ -1,14 +1,13 @@
 <?php
 
-namespace libphonenumber\geocoding;
+namespace MolliePrefix\libphonenumber\geocoding;
 
-use Giggsey\Locale\Locale;
-use libphonenumber\NumberParseException;
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberType;
-use libphonenumber\PhoneNumberUtil;
-use libphonenumber\prefixmapper\PrefixFileReader;
-
+use MolliePrefix\Giggsey\Locale\Locale;
+use MolliePrefix\libphonenumber\NumberParseException;
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberType;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
+use MolliePrefix\libphonenumber\prefixmapper\PrefixFileReader;
 class PhoneNumberOfflineGeocoder
 {
     const MAPPING_DATA_DIRECTORY = '/data';
@@ -24,18 +23,15 @@ class PhoneNumberOfflineGeocoder
      * @var PrefixFileReader
      */
     protected $prefixFileReader;
-
     /**
      * PhoneNumberOfflineGeocoder constructor.
      * @param string $phonePrefixDataDirectory
      */
     protected function __construct($phonePrefixDataDirectory)
     {
-        $this->phoneUtil = PhoneNumberUtil::getInstance();
-
-        $this->prefixFileReader = new PrefixFileReader(__DIR__ . DIRECTORY_SEPARATOR . $phonePrefixDataDirectory);
+        $this->phoneUtil = \MolliePrefix\libphonenumber\PhoneNumberUtil::getInstance();
+        $this->prefixFileReader = new \MolliePrefix\libphonenumber\prefixmapper\PrefixFileReader(__DIR__ . \DIRECTORY_SEPARATOR . $phonePrefixDataDirectory);
     }
-
     /**
      * Gets a PhoneNumberOfflineGeocoder instance to carry out international phone number geocoding.
      *
@@ -50,15 +46,12 @@ class PhoneNumberOfflineGeocoder
         if (static::$instance === null) {
             static::$instance = new static($mappingDir);
         }
-
         return static::$instance;
     }
-
     public static function resetInstance()
     {
         static::$instance = null;
     }
-
     /**
      * As per getDescriptionForValidNumber, but explicitly checks the validity of the number
      * passed in.
@@ -73,21 +66,17 @@ class PhoneNumberOfflineGeocoder
      * @return string a text description for the given language code for the given phone number, or empty
      *     string if the number passed in is invalid
      */
-    public function getDescriptionForNumber(PhoneNumber $number, $locale, $userRegion = null)
+    public function getDescriptionForNumber(\MolliePrefix\libphonenumber\PhoneNumber $number, $locale, $userRegion = null)
     {
         $numberType = $this->phoneUtil->getNumberType($number);
-
-        if ($numberType === PhoneNumberType::UNKNOWN) {
+        if ($numberType === \MolliePrefix\libphonenumber\PhoneNumberType::UNKNOWN) {
             return '';
         }
-
         if (!$this->phoneUtil->isNumberGeographical($numberType, $number->getCountryCode())) {
             return $this->getCountryNameForNumber($number, $locale);
         }
-
         return $this->getDescriptionForValidNumber($number, $locale, $userRegion);
     }
-
     /**
      * Returns the customary display name in the given language for the given territory the phone
      * number is from. If it could be from many territories, nothing is returned.
@@ -96,14 +85,12 @@ class PhoneNumberOfflineGeocoder
      * @param string $locale
      * @return string
      */
-    protected function getCountryNameForNumber(PhoneNumber $number, $locale)
+    protected function getCountryNameForNumber(\MolliePrefix\libphonenumber\PhoneNumber $number, $locale)
     {
         $regionCodes = $this->phoneUtil->getRegionCodesForCountryCode($number->getCountryCode());
-
         if (\count($regionCodes) === 1) {
             return $this->getRegionDisplayName($regionCodes[0], $locale);
         }
-
         $regionWhereNumberIsValid = 'ZZ';
         foreach ($regionCodes as $regionCode) {
             if ($this->phoneUtil->isValidNumberForRegion($number, $regionCode)) {
@@ -115,10 +102,8 @@ class PhoneNumberOfflineGeocoder
                 $regionWhereNumberIsValid = $regionCode;
             }
         }
-
         return $this->getRegionDisplayName($regionWhereNumberIsValid, $locale);
     }
-
     /**
      * Returns the customary display name in the given language for the given region.
      *
@@ -128,16 +113,11 @@ class PhoneNumberOfflineGeocoder
      */
     protected function getRegionDisplayName($regionCode, $locale)
     {
-        if ($regionCode === null || $regionCode == 'ZZ' || $regionCode === PhoneNumberUtil::REGION_CODE_FOR_NON_GEO_ENTITY) {
+        if ($regionCode === null || $regionCode == 'ZZ' || $regionCode === \MolliePrefix\libphonenumber\PhoneNumberUtil::REGION_CODE_FOR_NON_GEO_ENTITY) {
             return '';
         }
-
-        return Locale::getDisplayRegion(
-            '-' . $regionCode,
-            $locale
-        );
+        return \MolliePrefix\Giggsey\Locale\Locale::getDisplayRegion('-' . $regionCode, $locale);
     }
-
     /**
      * Returns a text description for the given phone number, in the language provided. The
      * description might consist of the name of the country where the phone number is from, or the
@@ -167,27 +147,26 @@ class PhoneNumberOfflineGeocoder
      *     empty string if the number could come from multiple countries, or the country code is
      *     in fact invalid
      */
-    public function getDescriptionForValidNumber(PhoneNumber $number, $locale, $userRegion = null)
+    public function getDescriptionForValidNumber(\MolliePrefix\libphonenumber\PhoneNumber $number, $locale, $userRegion = null)
     {
         // If the user region matches the number's region, then we just show the lower-level
         // description, if one exists - if no description exists, we will show the region(country) name
         // for the number.
         $regionCode = $this->phoneUtil->getRegionCodeForNumber($number);
         if ($userRegion == null || $userRegion == $regionCode) {
-            $languageStr = Locale::getPrimaryLanguage($locale);
+            $languageStr = \MolliePrefix\Giggsey\Locale\Locale::getPrimaryLanguage($locale);
             $scriptStr = '';
-            $regionStr = Locale::getRegion($locale);
-
-            $mobileToken = PhoneNumberUtil::getCountryMobileToken($number->getCountryCode());
+            $regionStr = \MolliePrefix\Giggsey\Locale\Locale::getRegion($locale);
+            $mobileToken = \MolliePrefix\libphonenumber\PhoneNumberUtil::getCountryMobileToken($number->getCountryCode());
             $nationalNumber = $this->phoneUtil->getNationalSignificantNumber($number);
-            if ($mobileToken !== '' && (!\strncmp($nationalNumber, $mobileToken, \strlen($mobileToken)))) {
+            if ($mobileToken !== '' && !\strncmp($nationalNumber, $mobileToken, \strlen($mobileToken))) {
                 // In some countries, eg. Argentina, mobile numbers have a mobile token before the national
                 // destination code, this should be removed before geocoding.
                 $nationalNumber = \substr($nationalNumber, \strlen($mobileToken));
                 $region = $this->phoneUtil->getRegionCodeForCountryCode($number->getCountryCode());
                 try {
                     $copiedNumber = $this->phoneUtil->parse($nationalNumber, $region);
-                } catch (NumberParseException $e) {
+                } catch (\MolliePrefix\libphonenumber\NumberParseException $e) {
                     // If this happens, just reuse what we had.
                     $copiedNumber = $number;
                 }
@@ -195,8 +174,7 @@ class PhoneNumberOfflineGeocoder
             } else {
                 $areaDescription = $this->prefixFileReader->getDescriptionForNumber($number, $languageStr, $scriptStr, $regionStr);
             }
-
-            return (\strlen($areaDescription) > 0) ? $areaDescription : $this->getCountryNameForNumber($number, $locale);
+            return \strlen($areaDescription) > 0 ? $areaDescription : $this->getCountryNameForNumber($number, $locale);
         }
         // Otherwise, we just show the region(country) name for now.
         return $this->getRegionDisplayName($regionCode, $locale);

@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 /**
  * Generic exception class for errors encountered when parsing phone numbers.
@@ -22,16 +22,13 @@ class NumberParseException extends \Exception
     const TOO_SHORT_NSN = 3;
     // This indicates the string had more digits than any valid phone number could have.
     const TOO_LONG = 4;
-
     protected $errorType;
-
     public function __construct($errorType, $message, $previous = null)
     {
         parent::__construct($message, $errorType, $previous);
         $this->message = $message;
         $this->errorType = $errorType;
     }
-
     /**
      * Returns the error type of the exception that has been thrown.
      */
@@ -39,7 +36,6 @@ class NumberParseException extends \Exception
     {
         return $this->errorType;
     }
-
     public function __toString()
     {
         return 'Error type: ' . $this->errorType . '. ' . $this->message;

@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 /**
  * Types of phone number matches

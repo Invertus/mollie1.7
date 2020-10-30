@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 interface MetadataSourceInterface
 {
@@ -10,7 +10,6 @@ interface MetadataSourceInterface
      * @return PhoneMetadata the phone metadata for that region, or null if there is none.
      */
     public function getMetadataForRegion($regionCode);
-
     /**
      * Gets phone metadata for a non-geographical region.
      * @param int $countryCallingCode the country calling code.

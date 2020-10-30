@@ -1,19 +1,18 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 /**
  * Class RegexBasedMatcher
  * @package libphonenumber
  * @internal
  */
-class RegexBasedMatcher implements MatcherAPIInterface
+class RegexBasedMatcher implements \MolliePrefix\libphonenumber\MatcherAPIInterface
 {
     public static function create()
     {
         return new static();
     }
-
     /**
      * Returns whether the given national number (a string containing only decimal digits) matches
      * the national number pattern defined in the given {@code PhoneNumberDesc} message.
@@ -23,20 +22,16 @@ class RegexBasedMatcher implements MatcherAPIInterface
      * @param boolean $allowPrefixMatch
      * @return boolean
      */
-    public function matchNationalNumber($number, PhoneNumberDesc $numberDesc, $allowPrefixMatch)
+    public function matchNationalNumber($number, \MolliePrefix\libphonenumber\PhoneNumberDesc $numberDesc, $allowPrefixMatch)
     {
         $nationalNumberPattern = $numberDesc->getNationalNumberPattern();
-
         // We don't want to consider it a prefix match when matching non-empty input against an empty
         // pattern
-
         if (\strlen($nationalNumberPattern) === 0) {
-            return false;
+            return \false;
         }
-
         return $this->match($number, $nationalNumberPattern, $allowPrefixMatch);
     }
-
     /**
      * @param string $number
      * @param string $pattern
@@ -45,12 +40,10 @@ class RegexBasedMatcher implements MatcherAPIInterface
      */
     private function match($number, $pattern, $allowPrefixMatch)
     {
-        $matcher = new Matcher($pattern, $number);
-
+        $matcher = new \MolliePrefix\libphonenumber\Matcher($pattern, $number);
         if (!$matcher->lookingAt()) {
-            return false;
+            return \false;
         }
-
-        return $matcher->matches() ? true : $allowPrefixMatch;
+        return $matcher->matches() ? \true : $allowPrefixMatch;
     }
 }

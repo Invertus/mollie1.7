@@ -1,15 +1,13 @@
 <?php
 
-namespace libphonenumber\Leniency;
+namespace MolliePrefix\libphonenumber\Leniency;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberMatcher;
-use libphonenumber\PhoneNumberUtil;
-
-class ExactGrouping extends AbstractLeniency
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberMatcher;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
+class ExactGrouping extends \MolliePrefix\libphonenumber\Leniency\AbstractLeniency
 {
     protected static $level = 4;
-
     /**
      * Phone numbers accepted are PhoneNumberUtil::isValidNumber() valid and are grouped
      * in the same way that we would have formatted it, or as a single block. For example,
@@ -26,28 +24,13 @@ class ExactGrouping extends AbstractLeniency
      * @param PhoneNumberUtil $util
      * @return bool
      */
-    public static function verify(PhoneNumber $number, $candidate, PhoneNumberUtil $util)
+    public static function verify(\MolliePrefix\libphonenumber\PhoneNumber $number, $candidate, \MolliePrefix\libphonenumber\PhoneNumberUtil $util)
     {
-        if (!$util->isValidNumber($number)
-            || !PhoneNumberMatcher::containsOnlyValidXChars($number, $candidate, $util)
-            || PhoneNumberMatcher::containsMoreThanOneSlashInNationalNumber($number, $candidate)
-            || !PhoneNumberMatcher::isNationalPrefixPresentIfRequired($number, $util)
-        ) {
-            return false;
+        if (!$util->isValidNumber($number) || !\MolliePrefix\libphonenumber\PhoneNumberMatcher::containsOnlyValidXChars($number, $candidate, $util) || \MolliePrefix\libphonenumber\PhoneNumberMatcher::containsMoreThanOneSlashInNationalNumber($number, $candidate) || !\MolliePrefix\libphonenumber\PhoneNumberMatcher::isNationalPrefixPresentIfRequired($number, $util)) {
+            return \false;
         }
-
-        return PhoneNumberMatcher::checkNumberGroupingIsValid(
-            $number,
-            $candidate,
-            $util,
-            function (PhoneNumberUtil $util, PhoneNumber $number, $normalizedCandidate, $expectedNumberGroups) {
-                return PhoneNumberMatcher::allNumberGroupsAreExactlyPresent(
-                    $util,
-                    $number,
-                    $normalizedCandidate,
-                    $expectedNumberGroups
-                );
-            }
-        );
+        return \MolliePrefix\libphonenumber\PhoneNumberMatcher::checkNumberGroupingIsValid($number, $candidate, $util, function (\MolliePrefix\libphonenumber\PhoneNumberUtil $util, \MolliePrefix\libphonenumber\PhoneNumber $number, $normalizedCandidate, $expectedNumberGroups) {
+            return \MolliePrefix\libphonenumber\PhoneNumberMatcher::allNumberGroupsAreExactlyPresent($util, $number, $normalizedCandidate, $expectedNumberGroups);
+        });
     }
 }

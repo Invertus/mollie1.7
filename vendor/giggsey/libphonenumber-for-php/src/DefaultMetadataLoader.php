@@ -1,8 +1,8 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
-class DefaultMetadataLoader implements MetadataLoaderInterface
+class DefaultMetadataLoader implements \MolliePrefix\libphonenumber\MetadataLoaderInterface
 {
     public function loadMetadata($metadataFileName)
     {

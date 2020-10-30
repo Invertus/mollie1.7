@@ -1,15 +1,14 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: giggsey
  * Date: 14/10/13
  * Time: 16:00
  */
+namespace MolliePrefix\libphonenumber;
 
-namespace libphonenumber;
-
-use libphonenumber\prefixmapper\PrefixTimeZonesMap;
-
+use MolliePrefix\libphonenumber\prefixmapper\PrefixTimeZonesMap;
 class PhoneNumberToTimeZonesMapper
 {
     const UNKNOWN_TIMEZONE = 'Etc/Unknown';
@@ -25,30 +24,21 @@ class PhoneNumberToTimeZonesMapper
      */
     protected $phoneUtil;
     protected $prefixTimeZonesMap;
-
     protected function __construct($phonePrefixDataDirectory)
     {
-        $this->prefixTimeZonesMap = static::loadPrefixTimeZonesMapFromFile(
-            \dirname(__FILE__) . $phonePrefixDataDirectory . DIRECTORY_SEPARATOR . static::MAPPING_DATA_FILE_NAME
-        );
-        $this->phoneUtil = PhoneNumberUtil::getInstance();
-
+        $this->prefixTimeZonesMap = static::loadPrefixTimeZonesMapFromFile(\dirname(__FILE__) . $phonePrefixDataDirectory . \DIRECTORY_SEPARATOR . static::MAPPING_DATA_FILE_NAME);
+        $this->phoneUtil = \MolliePrefix\libphonenumber\PhoneNumberUtil::getInstance();
         $this->unknownTimeZoneList[] = static::UNKNOWN_TIMEZONE;
     }
-
     protected static function loadPrefixTimeZonesMapFromFile($path)
     {
         if (!\is_readable($path)) {
             throw new \InvalidArgumentException('Mapping file can not be found');
         }
-
-        $data = require $path;
-
-        $map = new PrefixTimeZonesMap($data);
-
+        $data = (require $path);
+        $map = new \MolliePrefix\libphonenumber\prefixmapper\PrefixTimeZonesMap($data);
         return $map;
     }
-
     /**
      * Gets a {@link PhoneNumberToTimeZonesMapper} instance.
      *
@@ -63,10 +53,8 @@ class PhoneNumberToTimeZonesMapper
         if (static::$instance === null) {
             static::$instance = new static($mappingDir);
         }
-
         return static::$instance;
     }
-
     /**
      * Returns a String with the ICU unknown time zone.
      * @return string
@@ -75,7 +63,6 @@ class PhoneNumberToTimeZonesMapper
     {
         return static::UNKNOWN_TIMEZONE;
     }
-
     /**
      * As per {@link #getTimeZonesForGeographicalNumber(PhoneNumber)} but explicitly checks
      * the validity of the number passed in.
@@ -84,21 +71,17 @@ class PhoneNumberToTimeZonesMapper
      * @return array a list of the corresponding time zones or a single element list with the default
      *     unknown time zone if no other time zone was found or if the number was invalid
      */
-    public function getTimeZonesForNumber(PhoneNumber $number)
+    public function getTimeZonesForNumber(\MolliePrefix\libphonenumber\PhoneNumber $number)
     {
         $numberType = $this->phoneUtil->getNumberType($number);
-
-        if ($numberType === PhoneNumberType::UNKNOWN) {
+        if ($numberType === \MolliePrefix\libphonenumber\PhoneNumberType::UNKNOWN) {
             return $this->unknownTimeZoneList;
         }
-
-        if (!PhoneNumberUtil::getInstance()->isNumberGeographical($numberType, $number->getCountryCode())) {
+        if (!\MolliePrefix\libphonenumber\PhoneNumberUtil::getInstance()->isNumberGeographical($numberType, $number->getCountryCode())) {
             return $this->getCountryLevelTimeZonesforNumber($number);
         }
-
         return $this->getTimeZonesForGeographicalNumber($number);
     }
-
     /**
      * Returns the list of time zones corresponding to the country calling code of {@code number}.
      *
@@ -106,12 +89,11 @@ class PhoneNumberToTimeZonesMapper
      * @return array the list of corresponding time zones or a single element list with the default
      *     unknown time zone if no other time zone was found
      */
-    protected function getCountryLevelTimeZonesforNumber(PhoneNumber $number)
+    protected function getCountryLevelTimeZonesforNumber(\MolliePrefix\libphonenumber\PhoneNumber $number)
     {
         $timezones = $this->prefixTimeZonesMap->lookupCountryLevelTimeZonesForNumber($number);
-        return (\count($timezones) == 0) ? $this->unknownTimeZoneList : $timezones;
+        return \count($timezones) == 0 ? $this->unknownTimeZoneList : $timezones;
     }
-
     /**
      * Returns a list of time zones to which a phone number belongs.
      *
@@ -123,11 +105,10 @@ class PhoneNumberToTimeZonesMapper
      * @return array a list of the corresponding time zones or a single element list with the default
      *     unknown time zone if no other time zone was found or if the number was invalid
      */
-    public function getTimeZonesForGeographicalNumber(PhoneNumber $number)
+    public function getTimeZonesForGeographicalNumber(\MolliePrefix\libphonenumber\PhoneNumber $number)
     {
         return $this->getTimeZonesForGeocodableNumber($number);
     }
-
     /**
      * Returns a list of time zones to which a geocodable phone number belongs.
      *
@@ -135,9 +116,9 @@ class PhoneNumberToTimeZonesMapper
      * @return array the list of correspondiing time zones or a single element list with the default
      * unknown timezone if no other time zone was found or if the number was invalid
      */
-    protected function getTimeZonesForGeocodableNumber(PhoneNumber $number)
+    protected function getTimeZonesForGeocodableNumber(\MolliePrefix\libphonenumber\PhoneNumber $number)
     {
         $timezones = $this->prefixTimeZonesMap->lookupTimeZonesForNumber($number);
-        return (\count($timezones) == 0) ? $this->unknownTimeZoneList : $timezones;
+        return \count($timezones) == 0 ? $this->unknownTimeZoneList : $timezones;
     }
 }

@@ -1,14 +1,12 @@
 <?php
 
-namespace libphonenumber\Leniency;
+namespace MolliePrefix\libphonenumber\Leniency;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberUtil;
-
-class Possible extends AbstractLeniency
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
+class Possible extends \MolliePrefix\libphonenumber\Leniency\AbstractLeniency
 {
     protected static $level = 1;
-
     /**
      * Phone numbers accepted are PhoneNumberUtil::isPossibleNumber(), but not necessarily
      * PhoneNumberUtil::isValidNumber().
@@ -18,7 +16,7 @@ class Possible extends AbstractLeniency
      * @param PhoneNumberUtil $util
      * @return bool
      */
-    public static function verify(PhoneNumber $number, $candidate, PhoneNumberUtil $util)
+    public static function verify(\MolliePrefix\libphonenumber\PhoneNumber $number, $candidate, \MolliePrefix\libphonenumber\PhoneNumberUtil $util)
     {
         return $util->isPossibleNumber($number);
     }

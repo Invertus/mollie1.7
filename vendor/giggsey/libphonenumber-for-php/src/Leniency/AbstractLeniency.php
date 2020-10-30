@@ -1,10 +1,9 @@
 <?php
 
-namespace libphonenumber\Leniency;
+namespace MolliePrefix\libphonenumber\Leniency;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberUtil;
-
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
 abstract class AbstractLeniency
 {
     /**
@@ -12,7 +11,6 @@ abstract class AbstractLeniency
      * @var int
      */
     protected static $level;
-
     /**
      * Returns true if $number is a verified number according to this leniency
      *
@@ -22,33 +20,29 @@ abstract class AbstractLeniency
      * @return bool
      * @codeCoverageIgnore
      */
-    public static function verify(PhoneNumber $number, $candidate, PhoneNumberUtil $util)
+    public static function verify(\MolliePrefix\libphonenumber\PhoneNumber $number, $candidate, \MolliePrefix\libphonenumber\PhoneNumberUtil $util)
     {
         // This can not be called directly
-        throw new \BadMethodCallException;
+        throw new \BadMethodCallException();
     }
-
     /**
      * Compare against another Leniency
      * @param AbstractLeniency $leniency
      * @return int
      */
-    public static function compareTo(AbstractLeniency $leniency)
+    public static function compareTo(\MolliePrefix\libphonenumber\Leniency\AbstractLeniency $leniency)
     {
         return static::getLevel() - $leniency::getLevel();
     }
-
     protected static function getLevel()
     {
         if (static::$level === null) {
             throw new \RuntimeException('$level should be defined');
         }
-
         return static::$level;
     }
-
     public function __toString()
     {
-        return str_replace('libphonenumber\\Leniency\\', '', get_class($this));
+        return \str_replace('libphonenumber\\Leniency\\', '', \get_class($this));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
 class PhoneNumber implements \Serializable
 {
@@ -68,7 +68,7 @@ class PhoneNumber implements \Serializable
      *
      * @var int|null
      */
-    protected $countryCodeSource = CountryCodeSource::UNSPECIFIED;
+    protected $countryCodeSource = \MolliePrefix\libphonenumber\CountryCodeSource::UNSPECIFIED;
     /**
      * The carrier selection code that is preferred when calling this phone number domestically. This
      * also includes codes that need to be dialed in some countries when calling from landlines to
@@ -85,14 +85,13 @@ class PhoneNumber implements \Serializable
      *
      * @var bool
      */
-    protected $hasNumberOfLeadingZeros = false;
+    protected $hasNumberOfLeadingZeros = \false;
     /**
      * The number of leading zeros of this phone number.
      *
      * @var int
      */
     protected $numberOfLeadingZeros = 1;
-
     /**
      * Clears this phone number.
      *
@@ -112,7 +111,6 @@ class PhoneNumber implements \Serializable
         $this->clearPreferredDomesticCarrierCode();
         return $this;
     }
-
     /**
      * Clears the country code of this phone number.
      *
@@ -123,7 +121,6 @@ class PhoneNumber implements \Serializable
         $this->countryCode = null;
         return $this;
     }
-
     /**
      * Clears the national number of this phone number.
      *
@@ -134,7 +131,6 @@ class PhoneNumber implements \Serializable
         $this->nationalNumber = null;
         return $this;
     }
-
     /**
      * Clears the extension of this phone number.
      *
@@ -145,7 +141,6 @@ class PhoneNumber implements \Serializable
         $this->extension = null;
         return $this;
     }
-
     /**
      * Clears the italian leading zero information of this phone number.
      *
@@ -156,7 +151,6 @@ class PhoneNumber implements \Serializable
         $this->italianLeadingZero = null;
         return $this;
     }
-
     /**
      * Clears the number of leading zeros of this phone number.
      *
@@ -164,11 +158,10 @@ class PhoneNumber implements \Serializable
      */
     public function clearNumberOfLeadingZeros()
     {
-        $this->hasNumberOfLeadingZeros = false;
+        $this->hasNumberOfLeadingZeros = \false;
         $this->numberOfLeadingZeros = 1;
         return $this;
     }
-
     /**
      * Clears the raw input of this phone number.
      *
@@ -179,7 +172,6 @@ class PhoneNumber implements \Serializable
         $this->rawInput = null;
         return $this;
     }
-
     /**
      * Clears the country code source of this phone number.
      *
@@ -187,10 +179,9 @@ class PhoneNumber implements \Serializable
      */
     public function clearCountryCodeSource()
     {
-        $this->countryCodeSource = CountryCodeSource::UNSPECIFIED;
+        $this->countryCodeSource = \MolliePrefix\libphonenumber\CountryCodeSource::UNSPECIFIED;
         return $this;
     }
-
     /**
      * Clears the preferred domestic carrier code of this phone number.
      *
@@ -201,7 +192,6 @@ class PhoneNumber implements \Serializable
         $this->preferredDomesticCarrierCode = null;
         return $this;
     }
-
     /**
      * Merges the information from another phone number into this phone number.
      *
@@ -209,7 +199,7 @@ class PhoneNumber implements \Serializable
      *
      * @return PhoneNumber This PhoneNumber instance, for chaining method calls.
      */
-    public function mergeFrom(PhoneNumber $other)
+    public function mergeFrom(\MolliePrefix\libphonenumber\PhoneNumber $other)
     {
         if ($other->hasCountryCode()) {
             $this->setCountryCode($other->getCountryCode());
@@ -237,7 +227,6 @@ class PhoneNumber implements \Serializable
         }
         return $this;
     }
-
     /**
      * Returns whether this phone number has a country code set.
      *
@@ -247,7 +236,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->countryCode !== null;
     }
-
     /**
      * Returns the country code of this phone number.
      *
@@ -257,7 +245,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->countryCode;
     }
-
     /**
      * Sets the country code of this phone number.
      *
@@ -270,7 +257,6 @@ class PhoneNumber implements \Serializable
         $this->countryCode = (int) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has a national number set.
      *
@@ -280,7 +266,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->nationalNumber !== null;
     }
-
     /**
      * Returns the national number of this phone number.
      *
@@ -290,7 +275,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->nationalNumber;
     }
-
     /**
      * Sets the national number of this phone number.
      *
@@ -303,7 +287,6 @@ class PhoneNumber implements \Serializable
         $this->nationalNumber = (string) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has an extension set.
      *
@@ -313,7 +296,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->extension !== null;
     }
-
     /**
      * Returns the extension of this phone number.
      *
@@ -323,7 +305,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->extension;
     }
-
     /**
      * Sets the extension of this phone number.
      *
@@ -336,7 +317,6 @@ class PhoneNumber implements \Serializable
         $this->extension = (string) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has the italian leading zero information set.
      *
@@ -346,7 +326,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->italianLeadingZero !== null;
     }
-
     /**
      * Sets whether this phone number uses an italian leading zero.
      *
@@ -359,7 +338,6 @@ class PhoneNumber implements \Serializable
         $this->italianLeadingZero = (bool) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number uses an italian leading zero.
      *
@@ -369,7 +347,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->italianLeadingZero;
     }
-
     /**
      * Returns whether this phone number has a number of leading zeros set.
      *
@@ -379,7 +356,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->hasNumberOfLeadingZeros;
     }
-
     /**
      * Returns the number of leading zeros of this phone number.
      *
@@ -389,7 +365,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->numberOfLeadingZeros;
     }
-
     /**
      * Sets the number of leading zeros of this phone number.
      *
@@ -399,11 +374,10 @@ class PhoneNumber implements \Serializable
      */
     public function setNumberOfLeadingZeros($value)
     {
-        $this->hasNumberOfLeadingZeros = true;
+        $this->hasNumberOfLeadingZeros = \true;
         $this->numberOfLeadingZeros = (int) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has a raw input.
      *
@@ -413,7 +387,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->rawInput !== null;
     }
-
     /**
      * Returns the raw input of this phone number.
      *
@@ -423,7 +396,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->rawInput;
     }
-
     /**
      * Sets the raw input of this phone number.
      *
@@ -436,7 +408,6 @@ class PhoneNumber implements \Serializable
         $this->rawInput = (string) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has a country code source.
      *
@@ -444,9 +415,8 @@ class PhoneNumber implements \Serializable
      */
     public function hasCountryCodeSource()
     {
-        return $this->countryCodeSource !== CountryCodeSource::UNSPECIFIED;
+        return $this->countryCodeSource !== \MolliePrefix\libphonenumber\CountryCodeSource::UNSPECIFIED;
     }
-
     /**
      * Returns the country code source of this phone number.
      *
@@ -456,7 +426,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->countryCodeSource;
     }
-
     /**
      * Sets the country code source of this phone number.
      *
@@ -469,7 +438,6 @@ class PhoneNumber implements \Serializable
         $this->countryCodeSource = (int) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number has a preferred domestic carrier code.
      *
@@ -479,7 +447,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->preferredDomesticCarrierCode !== null;
     }
-
     /**
      * Returns the preferred domestic carrier code of this phone number.
      *
@@ -489,7 +456,6 @@ class PhoneNumber implements \Serializable
     {
         return $this->preferredDomesticCarrierCode;
     }
-
     /**
      * Sets the preferred domestic carrier code of this phone number.
      *
@@ -502,7 +468,6 @@ class PhoneNumber implements \Serializable
         $this->preferredDomesticCarrierCode = (string) $value;
         return $this;
     }
-
     /**
      * Returns whether this phone number is equal to another.
      *
@@ -510,28 +475,19 @@ class PhoneNumber implements \Serializable
      *
      * @return bool True if the phone numbers are equal, false otherwise.
      */
-    public function equals(PhoneNumber $other)
+    public function equals(\MolliePrefix\libphonenumber\PhoneNumber $other)
     {
-        $sameType = get_class($other) == get_class($this);
-        $sameCountry = $this->hasCountryCode() == $other->hasCountryCode() &&
-            (!$this->hasCountryCode() || $this->getCountryCode() == $other->getCountryCode());
-        $sameNational = $this->hasNationalNumber() == $other->hasNationalNumber() &&
-            (!$this->hasNationalNumber() || $this->getNationalNumber() == $other->getNationalNumber());
-        $sameExt = $this->hasExtension() == $other->hasExtension() &&
-            (!$this->hasExtension() || $this->getExtension() == $other->getExtension());
-        $sameLead = $this->hasItalianLeadingZero() == $other->hasItalianLeadingZero() &&
-            (!$this->hasItalianLeadingZero() || $this->isItalianLeadingZero() == $other->isItalianLeadingZero());
+        $sameType = \get_class($other) == \get_class($this);
+        $sameCountry = $this->hasCountryCode() == $other->hasCountryCode() && (!$this->hasCountryCode() || $this->getCountryCode() == $other->getCountryCode());
+        $sameNational = $this->hasNationalNumber() == $other->hasNationalNumber() && (!$this->hasNationalNumber() || $this->getNationalNumber() == $other->getNationalNumber());
+        $sameExt = $this->hasExtension() == $other->hasExtension() && (!$this->hasExtension() || $this->getExtension() == $other->getExtension());
+        $sameLead = $this->hasItalianLeadingZero() == $other->hasItalianLeadingZero() && (!$this->hasItalianLeadingZero() || $this->isItalianLeadingZero() == $other->isItalianLeadingZero());
         $sameZeros = $this->getNumberOfLeadingZeros() == $other->getNumberOfLeadingZeros();
-        $sameRaw = $this->hasRawInput() == $other->hasRawInput() &&
-            (!$this->hasRawInput() || $this->getRawInput() == $other->getRawInput());
-        $sameCountrySource = $this->hasCountryCodeSource() == $other->hasCountryCodeSource() &&
-            (!$this->hasCountryCodeSource() || $this->getCountryCodeSource() == $other->getCountryCodeSource());
-        $samePrefCar = $this->hasPreferredDomesticCarrierCode() == $other->hasPreferredDomesticCarrierCode() &&
-            (!$this->hasPreferredDomesticCarrierCode() || $this->getPreferredDomesticCarrierCode(
-                ) == $other->getPreferredDomesticCarrierCode());
+        $sameRaw = $this->hasRawInput() == $other->hasRawInput() && (!$this->hasRawInput() || $this->getRawInput() == $other->getRawInput());
+        $sameCountrySource = $this->hasCountryCodeSource() == $other->hasCountryCodeSource() && (!$this->hasCountryCodeSource() || $this->getCountryCodeSource() == $other->getCountryCodeSource());
+        $samePrefCar = $this->hasPreferredDomesticCarrierCode() == $other->hasPreferredDomesticCarrierCode() && (!$this->hasPreferredDomesticCarrierCode() || $this->getPreferredDomesticCarrierCode() == $other->getPreferredDomesticCarrierCode());
         return $sameType && $sameCountry && $sameNational && $sameExt && $sameLead && $sameZeros && $sameRaw && $sameCountrySource && $samePrefCar;
     }
-
     /**
      * Returns a string representation of this phone number.
      * @return string
@@ -539,7 +495,6 @@ class PhoneNumber implements \Serializable
     public function __toString()
     {
         $outputString = '';
-
         $outputString .= 'Country Code: ' . $this->countryCode;
         $outputString .= ' National Number: ' . $this->nationalNumber;
         if ($this->hasItalianLeadingZero()) {
@@ -559,46 +514,22 @@ class PhoneNumber implements \Serializable
         }
         return $outputString;
     }
-
     /**
      * @inheritDoc
      */
     public function serialize()
     {
-        return serialize(
-            array(
-                $this->countryCode,
-                $this->nationalNumber,
-                $this->extension,
-                $this->italianLeadingZero,
-                $this->numberOfLeadingZeros,
-                $this->rawInput,
-                $this->countryCodeSource,
-                $this->preferredDomesticCarrierCode
-            )
-        );
+        return \serialize(array($this->countryCode, $this->nationalNumber, $this->extension, $this->italianLeadingZero, $this->numberOfLeadingZeros, $this->rawInput, $this->countryCodeSource, $this->preferredDomesticCarrierCode));
     }
-
     /**
      * @inheritDoc
      */
     public function unserialize($serialized)
     {
-        $data = unserialize($serialized);
-
-        list(
-            $this->countryCode,
-            $this->nationalNumber,
-            $this->extension,
-            $this->italianLeadingZero,
-            $this->numberOfLeadingZeros,
-            $this->rawInput,
-            $this->countryCodeSource,
-            $this->preferredDomesticCarrierCode
-        ) = $data;
-
+        $data = \unserialize($serialized);
+        list($this->countryCode, $this->nationalNumber, $this->extension, $this->italianLeadingZero, $this->numberOfLeadingZeros, $this->rawInput, $this->countryCodeSource, $this->preferredDomesticCarrierCode) = $data;
         if ($this->numberOfLeadingZeros > 1) {
-            $this->hasNumberOfLeadingZeros = true;
+            $this->hasNumberOfLeadingZeros = \true;
         }
     }
 }

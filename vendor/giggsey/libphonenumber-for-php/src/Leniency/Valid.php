@@ -1,15 +1,13 @@
 <?php
 
-namespace libphonenumber\Leniency;
+namespace MolliePrefix\libphonenumber\Leniency;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberMatcher;
-use libphonenumber\PhoneNumberUtil;
-
-class Valid extends AbstractLeniency
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberMatcher;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
+class Valid extends \MolliePrefix\libphonenumber\Leniency\AbstractLeniency
 {
     protected static $level = 2;
-
     /**
      * Phone numbers accepted are PhoneNumberUtil::isPossibleNumber() and PhoneNumberUtil::isValidNumber().
      * Numbers written in national format must have their national-prefix present if it is usually written
@@ -20,13 +18,11 @@ class Valid extends AbstractLeniency
      * @param PhoneNumberUtil $util
      * @return bool
      */
-    public static function verify(PhoneNumber $number, $candidate, PhoneNumberUtil $util)
+    public static function verify(\MolliePrefix\libphonenumber\PhoneNumber $number, $candidate, \MolliePrefix\libphonenumber\PhoneNumberUtil $util)
     {
-        if (!$util->isValidNumber($number)
-            || !PhoneNumberMatcher::containsOnlyValidXChars($number, $candidate, $util)) {
-            return false;
+        if (!$util->isValidNumber($number) || !\MolliePrefix\libphonenumber\PhoneNumberMatcher::containsOnlyValidXChars($number, $candidate, $util)) {
+            return \false;
         }
-
-        return PhoneNumberMatcher::isNationalPrefixPresentIfRequired($number, $util);
+        return \MolliePrefix\libphonenumber\PhoneNumberMatcher::isNationalPrefixPresentIfRequired($number, $util);
     }
 }

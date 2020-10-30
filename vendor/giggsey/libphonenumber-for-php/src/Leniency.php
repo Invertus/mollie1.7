@@ -1,31 +1,27 @@
 <?php
 
-namespace libphonenumber;
+namespace MolliePrefix\libphonenumber;
 
-use libphonenumber\Leniency\Possible;
-use libphonenumber\Leniency\StrictGrouping;
-use libphonenumber\Leniency\Valid;
-use libphonenumber\Leniency\ExactGrouping;
-
+use MolliePrefix\libphonenumber\Leniency\Possible;
+use MolliePrefix\libphonenumber\Leniency\StrictGrouping;
+use MolliePrefix\libphonenumber\Leniency\Valid;
+use MolliePrefix\libphonenumber\Leniency\ExactGrouping;
 class Leniency
 {
     public static function POSSIBLE()
     {
-        return new Possible;
+        return new \MolliePrefix\libphonenumber\Leniency\Possible();
     }
-
     public static function VALID()
     {
-        return new Valid;
+        return new \MolliePrefix\libphonenumber\Leniency\Valid();
     }
-
     public static function STRICT_GROUPING()
     {
-        return new StrictGrouping;
+        return new \MolliePrefix\libphonenumber\Leniency\StrictGrouping();
     }
-
     public static function EXACT_GROUPING()
     {
-        return new ExactGrouping;
+        return new \MolliePrefix\libphonenumber\Leniency\ExactGrouping();
     }
 }

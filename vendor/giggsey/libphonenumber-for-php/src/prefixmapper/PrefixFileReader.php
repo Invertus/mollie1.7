@@ -1,10 +1,9 @@
 <?php
 
-namespace libphonenumber\prefixmapper;
+namespace MolliePrefix\libphonenumber\prefixmapper;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberUtil;
-
+use MolliePrefix\libphonenumber\PhoneNumber;
+use MolliePrefix\libphonenumber\PhoneNumberUtil;
 /**
  * A helper class doing file handling and lookup of phone number prefix mappings.
  *
@@ -25,26 +24,20 @@ class PrefixFileReader
      * @var array
      */
     protected $availablePhonePrefixMaps = array();
-
     public function __construct($phonePrefixDataDirectory)
     {
         $this->phonePrefixDataDirectory = $phonePrefixDataDirectory;
         $this->loadMappingFileProvider();
     }
-
     protected function loadMappingFileProvider()
     {
-        $mapPath = $this->phonePrefixDataDirectory . DIRECTORY_SEPARATOR . 'Map.php';
-        if (!file_exists($mapPath)) {
-            throw new \InvalidArgumentException("Invalid data directory: $mapPath");
+        $mapPath = $this->phonePrefixDataDirectory . \DIRECTORY_SEPARATOR . 'Map.php';
+        if (!\file_exists($mapPath)) {
+            throw new \InvalidArgumentException("Invalid data directory: {$mapPath}");
         }
-
-        $map = require $mapPath;
-
-        $this->mappingFileProvider = new MappingFileProvider($map);
+        $map = (require $mapPath);
+        $this->mappingFileProvider = new \MolliePrefix\libphonenumber\prefixmapper\MappingFileProvider($map);
     }
-
-
     /**
      * @param $prefixMapKey
      * @param $language
@@ -55,39 +48,32 @@ class PrefixFileReader
     public function getPhonePrefixDescriptions($prefixMapKey, $language, $script, $region)
     {
         $fileName = $this->mappingFileProvider->getFileName($prefixMapKey, $language, $script, $region);
-        if (strlen($fileName) == 0) {
+        if (\strlen($fileName) == 0) {
             return null;
         }
-
         if (!isset($this->availablePhonePrefixMaps[$fileName])) {
             $this->loadPhonePrefixMapFromFile($fileName);
         }
-
         return $this->availablePhonePrefixMaps[$fileName];
     }
-
     protected function loadPhonePrefixMapFromFile($fileName)
     {
-        $path = $this->phonePrefixDataDirectory . DIRECTORY_SEPARATOR . $fileName;
-        if (!file_exists($path)) {
+        $path = $this->phonePrefixDataDirectory . \DIRECTORY_SEPARATOR . $fileName;
+        if (!\file_exists($path)) {
             throw new \InvalidArgumentException('Data does not exist');
         }
-
-        $map = require $path;
-        $areaCodeMap = new PhonePrefixMap($map);
-
+        $map = (require $path);
+        $areaCodeMap = new \MolliePrefix\libphonenumber\prefixmapper\PhonePrefixMap($map);
         $this->availablePhonePrefixMaps[$fileName] = $areaCodeMap;
     }
-
     public function mayFallBackToEnglish($language)
     {
         // Don't fall back to English if the requested language is among the following:
         // - Chinese
         // - Japanese
         // - Korean
-        return ($language != 'zh' && $language != 'ja' && $language != 'ko');
+        return $language != 'zh' && $language != 'ja' && $language != 'ko';
     }
-
     /**
      * Returns a text description in the given language for the given phone number.
      *
@@ -99,22 +85,19 @@ class PrefixFileReader
      * @return string a text description for the given language code for the given phone number, or empty
      *     string if the number passed in is invalid or could belong to multiple countries
      */
-    public function getDescriptionForNumber(PhoneNumber $number, $language, $script, $region)
+    public function getDescriptionForNumber(\MolliePrefix\libphonenumber\PhoneNumber $number, $language, $script, $region)
     {
-        $phonePrefix = $number->getCountryCode() . PhoneNumberUtil::getInstance()->getNationalSignificantNumber($number);
-
+        $phonePrefix = $number->getCountryCode() . \MolliePrefix\libphonenumber\PhoneNumberUtil::getInstance()->getNationalSignificantNumber($number);
         $phonePrefixDescriptions = $this->getPhonePrefixDescriptions($phonePrefix, $language, $script, $region);
-
-        $description = ($phonePrefixDescriptions !== null) ? $phonePrefixDescriptions->lookup($number) : null;
+        $description = $phonePrefixDescriptions !== null ? $phonePrefixDescriptions->lookup($number) : null;
         // When a location is not available in the requested language, fall back to English.
-        if (($description === null || strlen($description) === 0) && $this->mayFallBackToEnglish($language)) {
+        if (($description === null || \strlen($description) === 0) && $this->mayFallBackToEnglish($language)) {
             $defaultMap = $this->getPhonePrefixDescriptions($phonePrefix, 'en', '', '');
             if ($defaultMap === null) {
                 return '';
             }
             $description = $defaultMap->lookup($number);
         }
-
-        return ($description !== null) ? $description : '';
+        return $description !== null ? $description : '';
     }
 }
