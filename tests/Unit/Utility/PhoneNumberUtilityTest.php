@@ -5,15 +5,18 @@ use Mollie\Utility\PhoneNumberUtility;
 use MolliePrefix\libphonenumber\NumberParseException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @todo: these hacks should be removed once our tests are running in prestashop environment in pipelines.
- */
-class Validate {
-    public static function isLanguageIsoCode($iso_code)
-    {
-        return preg_match('/^[a-zA-Z]{2,3}$/', $iso_code);
+if (!class_exists('Validate')) {
+    /**
+     * @todo: these hacks should be removed once our tests are running in prestashop environment in pipelines.
+     */
+    class Validate {
+        public static function isLanguageIsoCode($iso_code)
+        {
+            return preg_match('/^[a-zA-Z]{2,3}$/', $iso_code);
+        }
     }
 }
+
 
 class PhoneNumberUtilityTest extends TestCase
 {
@@ -32,7 +35,7 @@ class PhoneNumberUtilityTest extends TestCase
         return [
             'Lithuania without country code' => [
                 '862816785',
-                'LT',
+                'lt',
                 '+370 628 16785'
             ],
             'Netherlands with country code already entered' => [
