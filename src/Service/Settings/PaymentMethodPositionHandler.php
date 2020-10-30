@@ -25,6 +25,10 @@ final class PaymentMethodPositionHandler implements PaymentMethodPositionHandler
     {
         $ids = array_keys($positions);
 
+        if (empty($ids)) {
+            return;
+        }
+
         /** @var \MolPaymentMethod[] $paymentMethods */
         $paymentMethods = $this->paymentMethodRepository
             ->findAll()
