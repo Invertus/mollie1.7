@@ -8,6 +8,15 @@ namespace Mollie\Service\PaymentMethod;
  */
 interface PaymentMethodSortProviderInterface
 {
-    public function getSortedInAscendingWay(array $paymentMethods): array;
-    public function getSortedInAscendingWayForConfiguration(array $paymentMethods): array;
+    /**
+     * @param array $paymentMethods
+     * @return array
+     */
+    public function getSortedInAscendingWay(array $paymentMethods);
+
+    /**
+     * @param array $paymentMethods
+     * @return array
+     */
+    public function getSortedInAscendingWayForConfiguration(array $paymentMethods);
 }

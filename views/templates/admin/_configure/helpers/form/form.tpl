@@ -78,7 +78,7 @@
           {assign var = 'methodObj' value=$paymentMethod.obj}
           {if $paymentMethod.id === 'voucher'}{continue}{/if}
           <li class="payment-method border border-bottom ui-sortable-handle">
-            <input type="hidden" name="payment_option_position[{$paymentMethod.id}]" class="js-payment-option-position">
+            <input type="hidden" name="payment_option_position[{$paymentMethod.obj->id}]" class="js-payment-option-position">
 
             <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
             <a class="text collapsed payment-method__text" data-toggle="collapse" href="#payment-method-form-{$paymentMethod.id}"

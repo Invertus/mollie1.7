@@ -7,7 +7,7 @@ use MolPaymentMethod;
 final class PaymentMethodSortProvider implements PaymentMethodSortProviderInterface
 {
     //todo: rename in checkout maybe
-    public function getSortedInAscendingWay(array $paymentMethods): array
+    public function getSortedInAscendingWay(array $paymentMethods)
     {
         usort($paymentMethods, function (MolPaymentMethod $a, MolPaymentMethod $b) {
             if ($a->position === $b->position) {
@@ -20,7 +20,7 @@ final class PaymentMethodSortProvider implements PaymentMethodSortProviderInterf
         return $paymentMethods;
     }
 
-    public function getSortedInAscendingWayForConfiguration(array $paymentMethods): array
+    public function getSortedInAscendingWayForConfiguration(array $paymentMethods)
     {
         usort($paymentMethods, function (array $a, array $b) {
             if ($a['obj']->position === $b['obj']->position) {
