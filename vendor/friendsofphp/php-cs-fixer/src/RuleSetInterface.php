@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
+
+namespace PhpCsFixer;
 
 /**
  * Set of rules to be used by fixer.
@@ -21,7 +22,9 @@ namespace MolliePrefix\PhpCsFixer;
 interface RuleSetInterface
 {
     public function __construct(array $set = []);
+
     public static function create(array $set = []);
+
     /**
      * Get configuration for given rule.
      *
@@ -30,18 +33,21 @@ interface RuleSetInterface
      * @return null|array
      */
     public function getRuleConfiguration($rule);
+
     /**
      * Get all rules from rules set.
      *
      * @return array
      */
     public function getRules();
+
     /**
      * Get names of all set definitions.
      *
      * @return string[]
      */
     public function getSetDefinitionNames();
+
     /**
      * Check given rule is in rules set.
      *

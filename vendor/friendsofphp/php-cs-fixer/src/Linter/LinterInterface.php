@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Linter;
+
+namespace PhpCsFixer\Linter;
 
 /**
  * Interface for PHP code linting process manager.
@@ -22,6 +23,7 @@ interface LinterInterface
      * @return bool
      */
     public function isAsync();
+
     /**
      * Lint PHP file.
      *
@@ -30,6 +32,7 @@ interface LinterInterface
      * @return LintingResultInterface
      */
     public function lintFile($path);
+
     /**
      * Lint PHP code.
      *

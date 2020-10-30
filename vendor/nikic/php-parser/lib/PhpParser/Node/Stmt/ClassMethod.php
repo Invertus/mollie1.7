@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-use MolliePrefix\PhpParser\Node\FunctionLike;
-class ClassMethod extends \MolliePrefix\PhpParser\Node\Stmt implements \MolliePrefix\PhpParser\Node\FunctionLike
+use PhpParser\Node;
+use PhpParser\Node\FunctionLike;
+
+class ClassMethod extends Node\Stmt implements FunctionLike
 {
     /** @var int Flags */
     public $flags;
@@ -18,8 +19,10 @@ class ClassMethod extends \MolliePrefix\PhpParser\Node\Stmt implements \MolliePr
     public $returnType;
     /** @var Node[]|null Statements */
     public $stmts;
+
     /** @deprecated Use $flags instead */
     public $type;
+
     /**
      * Constructs a class method node.
      *
@@ -32,59 +35,60 @@ class ClassMethod extends \MolliePrefix\PhpParser\Node\Stmt implements \MolliePr
      *                                'stmts'      => array()        : Statements
      * @param array       $attributes Additional attributes
      */
-    public function __construct($name, array $subNodes = array(), array $attributes = array())
-    {
+    public function __construct($name, array $subNodes = array(), array $attributes = array()) {
         parent::__construct($attributes);
-        $this->flags = isset($subNodes['flags']) ? $subNodes['flags'] : (isset($subNodes['type']) ? $subNodes['type'] : 0);
+        $this->flags = isset($subNodes['flags']) ? $subNodes['flags']
+            : (isset($subNodes['type']) ? $subNodes['type'] : 0);
         $this->type = $this->flags;
-        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : \false;
+        $this->byRef = isset($subNodes['byRef'])  ? $subNodes['byRef']  : false;
         $this->name = $name;
         $this->params = isset($subNodes['params']) ? $subNodes['params'] : array();
         $this->returnType = isset($subNodes['returnType']) ? $subNodes['returnType'] : null;
-        $this->stmts = \array_key_exists('stmts', $subNodes) ? $subNodes['stmts'] : array();
+        $this->stmts = array_key_exists('stmts', $subNodes) ? $subNodes['stmts'] : array();
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('flags', 'byRef', 'name', 'params', 'returnType', 'stmts');
     }
-    public function returnsByRef()
-    {
+
+    public function returnsByRef() {
         return $this->byRef;
     }
-    public function getParams()
-    {
+
+    public function getParams() {
         return $this->params;
     }
-    public function getReturnType()
-    {
+
+    public function getReturnType() {
         return $this->returnType;
     }
-    public function getStmts()
-    {
+
+    public function getStmts() {
         return $this->stmts;
     }
-    public function isPublic()
-    {
-        return ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_PUBLIC) !== 0 || ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::VISIBILITY_MODIFIER_MASK) === 0;
+
+    public function isPublic() {
+        return ($this->flags & Class_::MODIFIER_PUBLIC) !== 0
+            || ($this->flags & Class_::VISIBILITY_MODIFIER_MASK) === 0;
     }
-    public function isProtected()
-    {
-        return (bool) ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_PROTECTED);
+
+    public function isProtected() {
+        return (bool) ($this->flags & Class_::MODIFIER_PROTECTED);
     }
-    public function isPrivate()
-    {
-        return (bool) ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_PRIVATE);
+
+    public function isPrivate() {
+        return (bool) ($this->flags & Class_::MODIFIER_PRIVATE);
     }
-    public function isAbstract()
-    {
-        return (bool) ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT);
+
+    public function isAbstract() {
+        return (bool) ($this->flags & Class_::MODIFIER_ABSTRACT);
     }
-    public function isFinal()
-    {
-        return (bool) ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_FINAL);
+
+    public function isFinal() {
+        return (bool) ($this->flags & Class_::MODIFIER_FINAL);
     }
-    public function isStatic()
-    {
-        return (bool) ($this->flags & \MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_STATIC);
+
+    public function isStatic() {
+        return (bool) ($this->flags & Class_::MODIFIER_STATIC);
     }
 }

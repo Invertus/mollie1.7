@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Doctrine\Annotation;
 
-use MolliePrefix\Doctrine\Common\Annotations\DocLexer;
+namespace PhpCsFixer\Doctrine\Annotation;
+
+use Doctrine\Common\Annotations\DocLexer;
+
 /**
  * A Doctrine annotation token.
  *
@@ -23,19 +25,22 @@ final class Token
      * @var int
      */
     private $type;
+
     /**
      * @var string
      */
     private $content;
+
     /**
      * @param int    $type    The type
      * @param string $content The content
      */
-    public function __construct($type = \MolliePrefix\Doctrine\Common\Annotations\DocLexer::T_NONE, $content = '')
+    public function __construct($type = DocLexer::T_NONE, $content = '')
     {
         $this->type = $type;
         $this->content = $content;
     }
+
     /**
      * @return int
      */
@@ -43,6 +48,7 @@ final class Token
     {
         return $this->type;
     }
+
     /**
      * @param int $type
      */
@@ -50,6 +56,7 @@ final class Token
     {
         $this->type = $type;
     }
+
     /**
      * @return string
      */
@@ -57,6 +64,7 @@ final class Token
     {
         return $this->content;
     }
+
     /**
      * @param string $content
      */
@@ -64,6 +72,7 @@ final class Token
     {
         $this->content = $content;
     }
+
     /**
      * Returns whether the token type is one of the given types.
      *
@@ -76,8 +85,10 @@ final class Token
         if (!\is_array($types)) {
             $types = [$types];
         }
-        return \in_array($this->getType(), $types, \true);
+
+        return \in_array($this->getType(), $types, true);
     }
+
     /**
      * Overrides the content with an empty string.
      */

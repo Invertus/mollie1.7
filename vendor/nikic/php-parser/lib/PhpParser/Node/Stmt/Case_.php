@@ -1,14 +1,16 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class Case_ extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node;
+
+class Case_ extends Node\Stmt
 {
     /** @var null|Node\Expr $cond Condition (null for default) */
     public $cond;
     /** @var Node[] Statements */
     public $stmts;
+
     /**
      * Constructs a case node.
      *
@@ -16,14 +18,13 @@ class Case_ extends \MolliePrefix\PhpParser\Node\Stmt
      * @param Node[]         $stmts      Statements
      * @param array          $attributes Additional attributes
      */
-    public function __construct($cond, array $stmts = array(), array $attributes = array())
-    {
+    public function __construct($cond, array $stmts = array(), array $attributes = array()) {
         parent::__construct($attributes);
         $this->cond = $cond;
         $this->stmts = $stmts;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('cond', 'stmts');
     }
 }

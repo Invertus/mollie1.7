@@ -9,14 +9,18 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\DocBlock;
 
-use MolliePrefix\PhpCsFixer\Preg;
+namespace PhpCsFixer\DocBlock;
+
+use PhpCsFixer\Preg;
+
 /**
  * This represents an entire annotation from a docblock.
  *
  * @author Graham Campbell <graham@alt-three.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ *
+ * @final
  */
 class Annotation
 {
@@ -26,76 +30,94 @@ class Annotation
      * @internal
      */
     const REGEX_TYPES = '
-    # <simple> is any non-array, non-generic, non-alternated type, eg `int` or `\\Foo`
-    # <array> is array of <simple>, eg `int[]` or `\\Foo[]`
-    # <generic> is generic collection type, like `array<string, int>`, `Collection<Item>` and more complex like `Collection<int, \\null|SubCollection<string>>`
+    # <simple> is any non-array, non-generic, non-alternated type, eg `int` or `\Foo`
+    # <array> is array of <simple>, eg `int[]` or `\Foo[]`
+    # <generic> is generic collection type, like `array<string, int>`, `Collection<Item>` and more complex like `Collection<int, \null|SubCollection<string>>`
     # <type> is <simple>, <array> or <generic> type, like `int`, `bool[]` or `Collection<ItemKey, ItemVal>`
     # <types> is one or more types alternated via `|`, like `int|bool[]|Collection<ItemKey, ItemVal>`
     (?<types>
         (?<type>
             (?<array>
-                (?&simple)(\\[\\])*
+                (?&simple)(\[\])*
             )
             |
             (?<simple>
-                [@$?]?[\\\\\\w]+
+                [@$?]?[\\\\\w]+
             )
             |
             (?<generic>
                 (?&simple)
                 <
-                    (?:(?&types),\\s*)?(?:(?&types)|(?&generic))
+                    (?:(?&types),\s*)?(?:(?&types)|(?&generic))
                 >
             )
         )
         (?:
-            \\|
+            \|
             (?:(?&simple)|(?&array)|(?&generic))
         )*
     )
     ';
+
     /**
      * All the annotation tag names with types.
      *
      * @var string[]
      */
-    private static $tags = ['method', 'param', 'property', 'property-read', 'property-write', 'return', 'throws', 'type', 'var'];
+    private static $tags = [
+        'method',
+        'param',
+        'property',
+        'property-read',
+        'property-write',
+        'return',
+        'throws',
+        'type',
+        'var',
+    ];
+
     /**
      * The lines that make up the annotation.
      *
      * @var Line[]
      */
     private $lines;
+
     /**
      * The position of the first line of the annotation in the docblock.
      *
      * @var int
      */
     private $start;
+
     /**
      * The position of the last line of the annotation in the docblock.
      *
      * @var int
      */
     private $end;
+
     /**
      * The associated tag.
      *
      * @var null|Tag
      */
     private $tag;
+
     /**
      * Lazy loaded, cached types content.
      *
      * @var null|string
      */
     private $typesContent;
+
     /**
      * The cached types.
      *
      * @var null|string[]
      */
     private $types;
+
     /**
      * Create a new line instance.
      *
@@ -103,11 +125,14 @@ class Annotation
      */
     public function __construct(array $lines)
     {
-        $this->lines = \array_values($lines);
-        $keys = \array_keys($lines);
+        $this->lines = array_values($lines);
+
+        $keys = array_keys($lines);
+
         $this->start = $keys[0];
-        $this->end = \end($keys);
+        $this->end = end($keys);
     }
+
     /**
      * Get the string representation of object.
      *
@@ -117,6 +142,7 @@ class Annotation
     {
         return $this->getContent();
     }
+
     /**
      * Get all the annotation tag names with types.
      *
@@ -126,6 +152,7 @@ class Annotation
     {
         return self::$tags;
     }
+
     /**
      * Get the start position of this annotation.
      *
@@ -135,6 +162,7 @@ class Annotation
     {
         return $this->start;
     }
+
     /**
      * Get the end position of this annotation.
      *
@@ -144,6 +172,7 @@ class Annotation
     {
         return $this->end;
     }
+
     /**
      * Get the associated tag.
      *
@@ -152,10 +181,12 @@ class Annotation
     public function getTag()
     {
         if (null === $this->tag) {
-            $this->tag = new \MolliePrefix\PhpCsFixer\DocBlock\Tag($this->lines[0]);
+            $this->tag = new Tag($this->lines[0]);
         }
+
         return $this->tag;
     }
+
     /**
      * Get the types associated with this annotation.
      *
@@ -165,15 +196,24 @@ class Annotation
     {
         if (null === $this->types) {
             $this->types = [];
+
             $content = $this->getTypesContent();
-            while ('' !== $content && \false !== $content) {
-                \MolliePrefix\PhpCsFixer\Preg::match('{^' . self::REGEX_TYPES . '$}x', $content, $matches);
+
+            while ('' !== $content && false !== $content) {
+                Preg::match(
+                    '{^'.self::REGEX_TYPES.'$}x',
+                    $content,
+                    $matches
+                );
+
                 $this->types[] = $matches['type'];
-                $content = \substr($content, \strlen($matches['type']) + 1);
+                $content = substr($content, \strlen($matches['type']) + 1);
             }
         }
+
         return $this->types;
     }
+
     /**
      * Set the types associated with this annotation.
      *
@@ -181,10 +221,13 @@ class Annotation
      */
     public function setTypes(array $types)
     {
-        $pattern = '/' . \preg_quote($this->getTypesContent(), '/') . '/';
-        $this->lines[0]->setContent(\MolliePrefix\PhpCsFixer\Preg::replace($pattern, \implode('|', $types), $this->lines[0]->getContent(), 1));
+        $pattern = '/'.preg_quote($this->getTypesContent(), '/').'/';
+
+        $this->lines[0]->setContent(Preg::replace($pattern, implode('|', $types), $this->lines[0]->getContent(), 1));
+
         $this->clearCache();
     }
+
     /**
      * Get the normalized types associated with this annotation, so they can easily be compared.
      *
@@ -192,12 +235,15 @@ class Annotation
      */
     public function getNormalizedTypes()
     {
-        $normalized = \array_map(static function ($type) {
-            return \strtolower($type);
+        $normalized = array_map(static function ($type) {
+            return strtolower($type);
         }, $this->getTypes());
-        \sort($normalized);
+
+        sort($normalized);
+
         return $normalized;
     }
+
     /**
      * Remove this annotation by removing all its lines.
      */
@@ -209,19 +255,23 @@ class Annotation
                 $line->remove();
             } elseif ($line->isTheStart()) {
                 // Multi line doc block, but start is on the same line as the first annotation, keep only the start
-                $content = \MolliePrefix\PhpCsFixer\Preg::replace('#(\\s*/\\*\\*).*#', '$1', $line->getContent());
+                $content = Preg::replace('#(\s*/\*\*).*#', '$1', $line->getContent());
+
                 $line->setContent($content);
             } elseif ($line->isTheEnd()) {
                 // Multi line doc block, but end is on the same line as the last annotation, keep only the end
-                $content = \MolliePrefix\PhpCsFixer\Preg::replace('#(\\s*)\\S.*(\\*/.*)#', '$1$2', $line->getContent());
+                $content = Preg::replace('#(\s*)\S.*(\*/.*)#', '$1$2', $line->getContent());
+
                 $line->setContent($content);
             } else {
                 // Multi line doc block, neither start nor end on this line, can be removed safely
                 $line->remove();
             }
         }
+
         $this->clearCache();
     }
+
     /**
      * Get the annotation content.
      *
@@ -229,12 +279,14 @@ class Annotation
      */
     public function getContent()
     {
-        return \implode('', $this->lines);
+        return implode('', $this->lines);
     }
+
     public function supportTypes()
     {
-        return \in_array($this->getTag()->getName(), self::$tags, \true);
+        return \in_array($this->getTag()->getName(), self::$tags, true);
     }
+
     /**
      * Get the current types content.
      *
@@ -246,14 +298,25 @@ class Annotation
     {
         if (null === $this->typesContent) {
             $name = $this->getTag()->getName();
+
             if (!$this->supportTypes()) {
                 throw new \RuntimeException('This tag does not support types.');
             }
-            $matchingResult = \MolliePrefix\PhpCsFixer\Preg::match('{^(?:\\s*\\*|/\\*\\*)\\s*@' . $name . '\\s+' . self::REGEX_TYPES . '(?:[*\\h\\v].*)?$}sx', $this->lines[0]->getContent(), $matches);
-            $this->typesContent = 1 === $matchingResult ? $matches['types'] : '';
+
+            $matchingResult = Preg::match(
+                '{^(?:\s*\*|/\*\*)\s*@'.$name.'\s+'.self::REGEX_TYPES.'(?:[*\h\v].*)?$}sx',
+                $this->lines[0]->getContent(),
+                $matches
+            );
+
+            $this->typesContent = 1 === $matchingResult
+                ? $matches['types']
+                : '';
         }
+
         return $this->typesContent;
     }
+
     private function clearCache()
     {
         $this->types = null;

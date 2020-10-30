@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class TryCatch extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node;
+
+class TryCatch extends Node\Stmt
 {
     /** @var Node[] Statements */
     public $stmts;
@@ -11,6 +12,7 @@ class TryCatch extends \MolliePrefix\PhpParser\Node\Stmt
     public $catches;
     /** @var null|Finally_ Optional finally node */
     public $finally;
+
     /**
      * Constructs a try catch node.
      *
@@ -19,15 +21,14 @@ class TryCatch extends \MolliePrefix\PhpParser\Node\Stmt
      * @param null|Finally_ $finally    Optionaly finally node
      * @param array|null    $attributes Additional attributes
      */
-    public function __construct(array $stmts, array $catches, \MolliePrefix\PhpParser\Node\Stmt\Finally_ $finally = null, array $attributes = array())
-    {
+    public function __construct(array $stmts, array $catches, Finally_ $finally = null, array $attributes = array()) {
         parent::__construct($attributes);
         $this->stmts = $stmts;
         $this->catches = $catches;
         $this->finally = $finally;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('stmts', 'catches', 'finally');
     }
 }

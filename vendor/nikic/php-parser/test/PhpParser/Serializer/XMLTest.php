@@ -1,15 +1,15 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Serializer;
+namespace PhpParser\Serializer;
 
-use MolliePrefix\PhpParser;
-class XMLTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use PhpParser;
+
+class XMLTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @covers PhpParser\Serializer\XML<extended>
      */
-    public function testSerialize()
-    {
+    public function testSerialize() {
         $code = <<<CODE
 <?php
 // comment
@@ -152,19 +152,21 @@ CODE;
  </scalar:array>
 </AST>
 XML;
-        $parser = new \MolliePrefix\PhpParser\Parser\Php7(new \MolliePrefix\PhpParser\Lexer());
-        $serializer = new \MolliePrefix\PhpParser\Serializer\XML();
-        $code = \str_replace("\r\n", "\n", $code);
+
+        $parser     = new PhpParser\Parser\Php7(new PhpParser\Lexer);
+        $serializer = new XML;
+
+        $code = str_replace("\r\n", "\n", $code);
         $stmts = $parser->parse($code);
         $this->assertXmlStringEqualsXmlString($xml, $serializer->serialize($stmts));
     }
+
     /**
      * @expectedException        \InvalidArgumentException
      * @expectedExceptionMessage Unexpected node type
      */
-    public function testError()
-    {
-        $serializer = new \MolliePrefix\PhpParser\Serializer\XML();
-        $serializer->serialize(array(new \stdClass()));
+    public function testError() {
+        $serializer = new XML;
+        $serializer->serialize(array(new \stdClass));
     }
 }

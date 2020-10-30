@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Generator;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+namespace PhpCsFixer\Tokenizer\Generator;
+
+use PhpCsFixer\Tokenizer\Token;
+
 /**
  * @internal
  */
@@ -27,13 +29,15 @@ final class NamespacedStringTokenGenerator
     public function generate($input)
     {
         $tokens = [];
-        $parts = \explode('\\', $input);
+        $parts = explode('\\', $input);
+
         foreach ($parts as $index => $part) {
-            $tokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $part]);
+            $tokens[] = new Token([T_STRING, $part]);
             if ($index !== \count($parts) - 1) {
-                $tokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_NS_SEPARATOR, '\\']);
+                $tokens[] = new Token([T_NS_SEPARATOR, '\\']);
             }
         }
+
         return $tokens;
     }
 }

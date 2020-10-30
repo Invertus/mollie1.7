@@ -9,31 +9,38 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Graham Campbell <graham@alt-three.com>
  */
-final class NoBlankLinesAfterPhpdocFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class NoBlankLinesAfterPhpdocFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_DOC_COMMENT);
+        return $tokens->isTokenKindFound(T_DOC_COMMENT);
     }
+
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('There should not be blank lines between docblock and the documented element.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'There should not be blank lines between docblock and the documented element.',
+            [
+                new CodeSample(
+                    '<?php
 
 /**
  * This is the bar class.
@@ -41,8 +48,12 @@ final class NoBlankLinesAfterPhpdocFixer extends \MolliePrefix\PhpCsFixer\Abstra
 
 
 class Bar {}
-')]);
+'
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -53,36 +64,50 @@ class Bar {}
     {
         return -20;
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        static $forbiddenSuccessors = [\T_DOC_COMMENT, \T_COMMENT, \T_WHITESPACE, \T_RETURN, \T_THROW, \T_GOTO, \T_CONTINUE, \T_BREAK, \T_DECLARE, \T_USE];
+        static $forbiddenSuccessors = [
+            T_DOC_COMMENT,
+            T_COMMENT,
+            T_WHITESPACE,
+            T_RETURN,
+            T_THROW,
+            T_GOTO,
+            T_CONTINUE,
+            T_BREAK,
+            T_DECLARE,
+            T_USE,
+        ];
+
         foreach ($tokens as $index => $token) {
-            if (!$token->isGivenKind(\T_DOC_COMMENT)) {
+            if (!$token->isGivenKind(T_DOC_COMMENT)) {
                 continue;
             }
             // get the next non-whitespace token inc comments, provided
             // that there is whitespace between it and the current token
             $next = $tokens->getNextNonWhitespace($index);
-            if ($index + 2 === $next && \false === $tokens[$next]->isGivenKind($forbiddenSuccessors)) {
+            if ($index + 2 === $next && false === $tokens[$next]->isGivenKind($forbiddenSuccessors)) {
                 $this->fixWhitespace($tokens, $index + 1);
             }
         }
     }
+
     /**
      * Cleanup a whitespace token.
      *
      * @param int $index
      */
-    private function fixWhitespace(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    private function fixWhitespace(Tokens $tokens, $index)
     {
         $content = $tokens[$index]->getContent();
         // if there is more than one new line in the whitespace, then we need to fix it
-        if (\substr_count($content, "\n") > 1) {
+        if (substr_count($content, "\n") > 1) {
             // the final bit of the whitespace must be the next statement's indentation
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, \substr($content, \strrpos($content, "\n"))]);
+            $tokens[$index] = new Token([T_WHITESPACE, substr($content, strrpos($content, "\n"))]);
         }
     }
 }

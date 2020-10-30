@@ -8,25 +8,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Debug;
+
+namespace Symfony\Component\Debug;
 
 function headers_sent()
 {
-    return \false;
+    return false;
 }
-function header($str, $replace = \true, $status = null)
+
+function header($str, $replace = true, $status = null)
 {
-    \MolliePrefix\Symfony\Component\Debug\Tests\testHeader($str, $replace, $status);
+    Tests\testHeader($str, $replace, $status);
 }
-namespace MolliePrefix\Symfony\Component\Debug\Tests;
+
+namespace Symfony\Component\Debug\Tests;
 
 function testHeader()
 {
     static $headers = [];
-    if (!($h = \func_get_args())) {
+
+    if (!$h = \func_get_args()) {
         $h = $headers;
         $headers = [];
+
         return $h;
     }
+
     $headers[] = \func_get_args();
 }

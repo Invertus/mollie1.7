@@ -1,7 +1,7 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\Debug\Tests\Fixtures;
+namespace Symfony\Component\Debug\Tests\Fixtures;
 
-interface NonDeprecatedInterface extends \MolliePrefix\Symfony\Component\Debug\Tests\Fixtures\DeprecatedInterface
+interface NonDeprecatedInterface extends DeprecatedInterface
 {
 }

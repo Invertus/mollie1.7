@@ -8,59 +8,68 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Console\Tests\Command;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Console\Application;
-use MolliePrefix\Symfony\Component\Console\Tester\CommandTester;
-class ListCommandTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Console\Tests\Command;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
+
+class ListCommandTest extends TestCase
 {
     public function testExecuteListsCommands()
     {
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
-        $commandTester->execute(['command' => $command->getName()], ['decorated' => \false]);
-        $this->assertMatchesRegularExpression('/help\\s{2,}Displays help for a command/', $commandTester->getDisplay(), '->execute() returns a list of available commands');
+        $application = new Application();
+        $commandTester = new CommandTester($command = $application->get('list'));
+        $commandTester->execute(['command' => $command->getName()], ['decorated' => false]);
+
+        $this->assertMatchesRegularExpression('/help\s{2,}Displays help for a command/', $commandTester->getDisplay(), '->execute() returns a list of available commands');
     }
+
     public function testExecuteListsCommandsWithXmlOption()
     {
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
+        $application = new Application();
+        $commandTester = new CommandTester($command = $application->get('list'));
         $commandTester->execute(['command' => $command->getName(), '--format' => 'xml']);
         $this->assertMatchesRegularExpression('/<command id="list" name="list" hidden="0">/', $commandTester->getDisplay(), '->execute() returns a list of available commands in XML if --xml is passed');
     }
+
     public function testExecuteListsCommandsWithRawOption()
     {
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
-        $commandTester->execute(['command' => $command->getName(), '--raw' => \true]);
+        $application = new Application();
+        $commandTester = new CommandTester($command = $application->get('list'));
+        $commandTester->execute(['command' => $command->getName(), '--raw' => true]);
         $output = <<<'EOF'
 help   Displays help for a command
 list   Lists commands
 
 EOF;
-        $this->assertEquals($output, $commandTester->getDisplay(\true));
+
+        $this->assertEquals($output, $commandTester->getDisplay(true));
     }
+
     public function testExecuteListsCommandsWithNamespaceArgument()
     {
-        require_once \realpath(__DIR__ . '/../Fixtures/FooCommand.php');
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $application->add(new \MolliePrefix\FooCommand());
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
-        $commandTester->execute(['command' => $command->getName(), 'namespace' => 'foo', '--raw' => \true]);
+        require_once realpath(__DIR__.'/../Fixtures/FooCommand.php');
+        $application = new Application();
+        $application->add(new \FooCommand());
+        $commandTester = new CommandTester($command = $application->get('list'));
+        $commandTester->execute(['command' => $command->getName(), 'namespace' => 'foo', '--raw' => true]);
         $output = <<<'EOF'
 foo:bar   The foo:bar command
 
 EOF;
-        $this->assertEquals($output, $commandTester->getDisplay(\true));
+
+        $this->assertEquals($output, $commandTester->getDisplay(true));
     }
+
     public function testExecuteListsCommandsOrder()
     {
-        require_once \realpath(__DIR__ . '/../Fixtures/Foo6Command.php');
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $application->add(new \MolliePrefix\Foo6Command());
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
-        $commandTester->execute(['command' => $command->getName()], ['decorated' => \false]);
+        require_once realpath(__DIR__.'/../Fixtures/Foo6Command.php');
+        $application = new Application();
+        $application->add(new \Foo6Command());
+        $commandTester = new CommandTester($command = $application->get('list'));
+        $commandTester->execute(['command' => $command->getName()], ['decorated' => false]);
         $output = <<<'EOF'
 Console Tool
 
@@ -82,20 +91,23 @@ Available commands:
  0foo
   0foo:bar  0foo:bar command
 EOF;
-        $this->assertEquals($output, \trim($commandTester->getDisplay(\true)));
+
+        $this->assertEquals($output, trim($commandTester->getDisplay(true)));
     }
+
     public function testExecuteListsCommandsOrderRaw()
     {
-        require_once \realpath(__DIR__ . '/../Fixtures/Foo6Command.php');
-        $application = new \MolliePrefix\Symfony\Component\Console\Application();
-        $application->add(new \MolliePrefix\Foo6Command());
-        $commandTester = new \MolliePrefix\Symfony\Component\Console\Tester\CommandTester($command = $application->get('list'));
-        $commandTester->execute(['command' => $command->getName(), '--raw' => \true]);
+        require_once realpath(__DIR__.'/../Fixtures/Foo6Command.php');
+        $application = new Application();
+        $application->add(new \Foo6Command());
+        $commandTester = new CommandTester($command = $application->get('list'));
+        $commandTester->execute(['command' => $command->getName(), '--raw' => true]);
         $output = <<<'EOF'
 help       Displays help for a command
 list       Lists commands
 0foo:bar   0foo:bar command
 EOF;
-        $this->assertEquals($output, \trim($commandTester->getDisplay(\true)));
+
+        $this->assertEquals($output, trim($commandTester->getDisplay(true)));
     }
 }

@@ -9,13 +9,16 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\DocBlock;
+
+namespace PhpCsFixer\DocBlock;
 
 /**
  * This class is responsible for comparing tags to see if they should be kept
  * together, or kept apart.
  *
  * @author Graham Campbell <graham@alt-three.com>
+ *
+ * @final
  */
 class TagComparator
 {
@@ -24,24 +27,33 @@ class TagComparator
      *
      * @var array
      */
-    private static $groups = [['deprecated', 'link', 'see', 'since'], ['author', 'copyright', 'license'], ['category', 'package', 'subpackage'], ['property', 'property-read', 'property-write']];
+    private static $groups = [
+        ['deprecated', 'link', 'see', 'since'],
+        ['author', 'copyright', 'license'],
+        ['category', 'package', 'subpackage'],
+        ['property', 'property-read', 'property-write'],
+    ];
+
     /**
      * Should the given tags be kept together, or kept apart?
      *
      * @return bool
      */
-    public static function shouldBeTogether(\MolliePrefix\PhpCsFixer\DocBlock\Tag $first, \MolliePrefix\PhpCsFixer\DocBlock\Tag $second)
+    public static function shouldBeTogether(Tag $first, Tag $second)
     {
         $firstName = $first->getName();
         $secondName = $second->getName();
+
         if ($firstName === $secondName) {
-            return \true;
+            return true;
         }
+
         foreach (self::$groups as $group) {
-            if (\in_array($firstName, $group, \true) && \in_array($secondName, $group, \true)) {
-                return \true;
+            if (\in_array($firstName, $group, true) && \in_array($secondName, $group, true)) {
+                return true;
             }
         }
-        return \false;
+
+        return false;
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Unit test class for the FunctionDeclaration sniff.
  *
@@ -7,11 +6,15 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Squiz\Tests\Functions;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-class FunctionDeclarationUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
+namespace PHP_CodeSniffer\Standards\Squiz\Tests\Functions;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+
+class FunctionDeclarationUnitTest extends AbstractSniffUnitTest
 {
+
+
     /**
      * Returns the lines where errors should occur.
      *
@@ -22,9 +25,14 @@ class FunctionDeclarationUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\St
      */
     public function getErrorList()
     {
-        return [55 => 1, 68 => 1];
-    }
-    //end getErrorList()
+        return [
+            55 => 1,
+            68 => 1,
+        ];
+
+    }//end getErrorList()
+
+
     /**
      * Returns the lines where warnings should occur.
      *
@@ -36,7 +44,8 @@ class FunctionDeclarationUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\St
     public function getWarningList()
     {
         return [];
-    }
-    //end getWarningList()
-}
-//end class
+
+    }//end getWarningList()
+
+
+}//end class

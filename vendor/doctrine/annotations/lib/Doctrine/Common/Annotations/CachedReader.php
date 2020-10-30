@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -17,34 +16,40 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-namespace MolliePrefix\Doctrine\Common\Annotations;
 
-use MolliePrefix\Doctrine\Common\Cache\Cache;
+namespace Doctrine\Common\Annotations;
+
+use Doctrine\Common\Cache\Cache;
 use ReflectionClass;
+
 /**
  * A cache aware annotation reader.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  */
-final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Reader
+final class CachedReader implements Reader
 {
     /**
      * @var Reader
      */
     private $delegate;
+
     /**
      * @var Cache
      */
     private $cache;
+
     /**
      * @var boolean
      */
     private $debug;
+
     /**
      * @var array
      */
     private $loadedAnnotations = array();
+
     /**
      * Constructor.
      *
@@ -52,55 +57,66 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
      * @param Cache  $cache
      * @param bool   $debug
      */
-    public function __construct(\MolliePrefix\Doctrine\Common\Annotations\Reader $reader, \MolliePrefix\Doctrine\Common\Cache\Cache $cache, $debug = \false)
+    public function __construct(Reader $reader, Cache $cache, $debug = false)
     {
         $this->delegate = $reader;
         $this->cache = $cache;
-        $this->debug = (bool) $debug;
+        $this->debug = (boolean) $debug;
     }
+
     /**
      * {@inheritDoc}
      */
-    public function getClassAnnotations(\ReflectionClass $class)
+    public function getClassAnnotations(ReflectionClass $class)
     {
         $cacheKey = $class->getName();
+
         if (isset($this->loadedAnnotations[$cacheKey])) {
             return $this->loadedAnnotations[$cacheKey];
         }
-        if (\false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
+
+        if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
             $annots = $this->delegate->getClassAnnotations($class);
             $this->saveToCache($cacheKey, $annots);
         }
+
         return $this->loadedAnnotations[$cacheKey] = $annots;
     }
+
     /**
      * {@inheritDoc}
      */
-    public function getClassAnnotation(\ReflectionClass $class, $annotationName)
+    public function getClassAnnotation(ReflectionClass $class, $annotationName)
     {
         foreach ($this->getClassAnnotations($class) as $annot) {
             if ($annot instanceof $annotationName) {
                 return $annot;
             }
         }
+
         return null;
     }
+
     /**
      * {@inheritDoc}
      */
     public function getPropertyAnnotations(\ReflectionProperty $property)
     {
         $class = $property->getDeclaringClass();
-        $cacheKey = $class->getName() . '$' . $property->getName();
+        $cacheKey = $class->getName().'$'.$property->getName();
+
         if (isset($this->loadedAnnotations[$cacheKey])) {
             return $this->loadedAnnotations[$cacheKey];
         }
-        if (\false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
+
+        if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
             $annots = $this->delegate->getPropertyAnnotations($property);
             $this->saveToCache($cacheKey, $annots);
         }
+
         return $this->loadedAnnotations[$cacheKey] = $annots;
     }
+
     /**
      * {@inheritDoc}
      */
@@ -111,24 +127,30 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
                 return $annot;
             }
         }
+
         return null;
     }
+
     /**
      * {@inheritDoc}
      */
     public function getMethodAnnotations(\ReflectionMethod $method)
     {
         $class = $method->getDeclaringClass();
-        $cacheKey = $class->getName() . '#' . $method->getName();
+        $cacheKey = $class->getName().'#'.$method->getName();
+
         if (isset($this->loadedAnnotations[$cacheKey])) {
             return $this->loadedAnnotations[$cacheKey];
         }
-        if (\false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
+
+        if (false === ($annots = $this->fetchFromCache($cacheKey, $class))) {
             $annots = $this->delegate->getMethodAnnotations($method);
             $this->saveToCache($cacheKey, $annots);
         }
+
         return $this->loadedAnnotations[$cacheKey] = $annots;
     }
+
     /**
      * {@inheritDoc}
      */
@@ -139,8 +161,10 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
                 return $annot;
             }
         }
+
         return null;
     }
+
     /**
      * Clears loaded annotations.
      *
@@ -150,6 +174,7 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
     {
         $this->loadedAnnotations = array();
     }
+
     /**
      * Fetches a value from the cache.
      *
@@ -158,15 +183,17 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
      *
      * @return mixed The cached value or false when the value is not in cache.
      */
-    private function fetchFromCache($cacheKey, \ReflectionClass $class)
+    private function fetchFromCache($cacheKey, ReflectionClass $class)
     {
-        if (($data = $this->cache->fetch($cacheKey)) !== \false) {
+        if (($data = $this->cache->fetch($cacheKey)) !== false) {
             if (!$this->debug || $this->isCacheFresh($cacheKey, $class)) {
                 return $data;
             }
         }
-        return \false;
+
+        return false;
     }
+
     /**
      * Saves a value to the cache.
      *
@@ -179,9 +206,10 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
     {
         $this->cache->save($cacheKey, $value);
         if ($this->debug) {
-            $this->cache->save('[C]' . $cacheKey, \time());
+            $this->cache->save('[C]'.$cacheKey, time());
         }
     }
+
     /**
      * Checks if the cache is fresh.
      *
@@ -190,32 +218,45 @@ final class CachedReader implements \MolliePrefix\Doctrine\Common\Annotations\Re
      *
      * @return boolean
      */
-    private function isCacheFresh($cacheKey, \ReflectionClass $class)
+    private function isCacheFresh($cacheKey, ReflectionClass $class)
     {
-        if (null === ($lastModification = $this->getLastModification($class))) {
-            return \true;
+        if (null === $lastModification = $this->getLastModification($class)) {
+            return true;
         }
-        return $this->cache->fetch('[C]' . $cacheKey) >= $lastModification;
+
+        return $this->cache->fetch('[C]'.$cacheKey) >= $lastModification;
     }
+
     /**
      * Returns the time the class was last modified, testing traits and parents
      *
      * @param ReflectionClass $class
      * @return int
      */
-    private function getLastModification(\ReflectionClass $class)
+    private function getLastModification(ReflectionClass $class)
     {
         $filename = $class->getFileName();
-        $parent = $class->getParentClass();
-        return \max(\array_merge([$filename ? \filemtime($filename) : 0], \array_map([$this, 'getTraitLastModificationTime'], $class->getTraits()), \array_map([$this, 'getLastModification'], $class->getInterfaces()), $parent ? [$this->getLastModification($parent)] : []));
+        $parent   = $class->getParentClass();
+
+        return max(array_merge(
+            [$filename ? filemtime($filename) : 0],
+            array_map([$this, 'getTraitLastModificationTime'], $class->getTraits()),
+            array_map([$this, 'getLastModification'], $class->getInterfaces()),
+            $parent ? [$this->getLastModification($parent)] : []
+        ));
     }
+
     /**
      * @param ReflectionClass $reflectionTrait
      * @return int
      */
-    private function getTraitLastModificationTime(\ReflectionClass $reflectionTrait)
+    private function getTraitLastModificationTime(ReflectionClass $reflectionTrait)
     {
         $fileName = $reflectionTrait->getFileName();
-        return \max(\array_merge([$fileName ? \filemtime($fileName) : 0], \array_map([$this, 'getTraitLastModificationTime'], $reflectionTrait->getTraits())));
+
+        return max(array_merge(
+            [$fileName ? filemtime($fileName) : 0],
+            array_map([$this, 'getTraitLastModificationTime'], $reflectionTrait->getTraits())
+        ));
     }
 }

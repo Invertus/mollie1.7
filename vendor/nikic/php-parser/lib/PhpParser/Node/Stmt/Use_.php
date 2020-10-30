@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node\Stmt;
-class Use_ extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node\Stmt;
+
+class Use_ extends Stmt
 {
     /**
      * Unknown type. Both Stmt\Use_ / Stmt\GroupUse and Stmt\UseUse have a $type property, one of them will always be
@@ -17,10 +18,12 @@ class Use_ extends \MolliePrefix\PhpParser\Node\Stmt
     const TYPE_FUNCTION = 2;
     /** Constant import */
     const TYPE_CONSTANT = 3;
+
     /** @var int Type of alias */
     public $type;
     /** @var UseUse[] Aliases */
     public $uses;
+
     /**
      * Constructs an alias (use) list node.
      *
@@ -28,14 +31,13 @@ class Use_ extends \MolliePrefix\PhpParser\Node\Stmt
      * @param int      $type       Type of alias
      * @param array    $attributes Additional attributes
      */
-    public function __construct(array $uses, $type = self::TYPE_NORMAL, array $attributes = array())
-    {
+    public function __construct(array $uses, $type = self::TYPE_NORMAL, array $attributes = array()) {
         parent::__construct($attributes);
         $this->type = $type;
         $this->uses = $uses;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('type', 'uses');
     }
 }

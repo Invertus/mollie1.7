@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Linter;
 
-use MolliePrefix\Symfony\Component\Process\Process;
+namespace PhpCsFixer\Linter;
+
+use Symfony\Component\Process\Process;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
@@ -23,6 +25,7 @@ final class ProcessLinterProcessBuilder
      * @var string
      */
     private $executable;
+
     /**
      * @param string $executable PHP executable
      */
@@ -30,6 +33,7 @@ final class ProcessLinterProcessBuilder
     {
         $this->executable = $executable;
     }
+
     /**
      * @param string $path
      *
@@ -37,6 +41,10 @@ final class ProcessLinterProcessBuilder
      */
     public function build($path)
     {
-        return new \MolliePrefix\Symfony\Component\Process\Process([$this->executable, '-l', $path]);
+        return new Process([
+            $this->executable,
+            '-l',
+            $path,
+        ]);
     }
 }

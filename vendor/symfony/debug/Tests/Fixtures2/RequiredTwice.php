@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\Debug\Tests\Fixtures2;
+namespace Symfony\Component\Debug\Tests\Fixtures2;
 
 class RequiredTwice
 {

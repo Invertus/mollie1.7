@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\Debug\Tests\Fixtures;
+namespace Symfony\Component\Debug\Tests\Fixtures;
 
 /**
  * @final since version 3.3.
@@ -9,6 +9,7 @@ class FinalClass1
 {
     // simple comment
 }
+
 /**
  * @final
  */
@@ -16,6 +17,7 @@ class FinalClass2
 {
     // no comment
 }
+
 /**
  * @final comment with @@@ and ***
  *
@@ -25,6 +27,7 @@ class FinalClass3
 {
     // with comment and a tag after
 }
+
 /**
  * @final
  *
@@ -34,6 +37,7 @@ class FinalClass4
 {
     // without comment and a tag after
 }
+
 /**
  * @author John Doe
  *
@@ -45,6 +49,7 @@ class FinalClass5
 {
     // with comment and a tag before
 }
+
 /**
  * @author John Doe
  *
@@ -54,6 +59,7 @@ class FinalClass6
 {
     // without comment and a tag before
 }
+
 /**
  * @author John Doe
  *
@@ -66,6 +72,7 @@ class FinalClass7
 {
     // with comment and a tag before and after
 }
+
 /**
  * @author John Doe
  * @final

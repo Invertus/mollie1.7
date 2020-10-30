@@ -17,7 +17,8 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-namespace MolliePrefix\Doctrine\Common\Annotations\Annotation;
+
+namespace Doctrine\Common\Annotations\Annotation;
 
 /**
  * Annotation that can be used to signal to the parser
@@ -38,12 +39,14 @@ final class Enum
      * @var array
      */
     public $value;
+
     /**
      * Literal target declaration.
      *
      * @var array
      */
     public $literal;
+
     /**
      * Annotation constructor.
      *
@@ -53,20 +56,29 @@ final class Enum
      */
     public function __construct(array $values)
     {
-        if (!isset($values['literal'])) {
+        if ( ! isset($values['literal'])) {
             $values['literal'] = array();
         }
+
         foreach ($values['value'] as $var) {
-            if (!\is_scalar($var)) {
-                throw new \InvalidArgumentException(\sprintf('@Enum supports only scalar values "%s" given.', \is_object($var) ? \get_class($var) : \gettype($var)));
+            if( ! is_scalar($var)) {
+                throw new \InvalidArgumentException(sprintf(
+                    '@Enum supports only scalar values "%s" given.',
+                    is_object($var) ? get_class($var) : gettype($var)
+                ));
             }
         }
+
         foreach ($values['literal'] as $key => $var) {
-            if (!\in_array($key, $values['value'])) {
-                throw new \InvalidArgumentException(\sprintf('Undefined enumerator value "%s" for literal "%s".', $key, $var));
+            if( ! in_array($key, $values['value'])) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Undefined enumerator value "%s" for literal "%s".',
+                    $key , $var
+                ));
             }
         }
-        $this->value = $values['value'];
-        $this->literal = $values['literal'];
+
+        $this->value    = $values['value'];
+        $this->literal  = $values['literal'];
     }
 }

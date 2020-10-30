@@ -9,25 +9,31 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\PhpTag;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\PhpTag;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Vincent Klaiber <hello@vinkla.com>
  */
-final class NoShortEchoTagFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class NoShortEchoTagFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Replace short-echo `<?=` with long format `<?php echo` syntax.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?= \"foo\";\n")]);
+        return new FixerDefinition(
+            'Replace short-echo `<?=` with long format `<?php echo` syntax.',
+            [new CodeSample("<?= \"foo\";\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -37,30 +43,38 @@ final class NoShortEchoTagFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
     {
         return 0;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_OPEN_TAG_WITH_ECHO);
+        return $tokens->isTokenKindFound(T_OPEN_TAG_WITH_ECHO);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         $i = \count($tokens);
+
         while ($i--) {
             $token = $tokens[$i];
-            if (!$token->isGivenKind(\T_OPEN_TAG_WITH_ECHO)) {
+
+            if (!$token->isGivenKind(T_OPEN_TAG_WITH_ECHO)) {
                 continue;
             }
+
             $nextIndex = $i + 1;
-            $tokens[$i] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_OPEN_TAG, '<?php ']);
+
+            $tokens[$i] = new Token([T_OPEN_TAG, '<?php ']);
+
             if (!$tokens[$nextIndex]->isWhitespace()) {
-                $tokens->insertAt($nextIndex, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']));
+                $tokens->insertAt($nextIndex, new Token([T_WHITESPACE, ' ']));
             }
-            $tokens->insertAt($nextIndex, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_ECHO, 'echo']));
+
+            $tokens->insertAt($nextIndex, new Token([T_ECHO, 'echo']));
         }
     }
 }

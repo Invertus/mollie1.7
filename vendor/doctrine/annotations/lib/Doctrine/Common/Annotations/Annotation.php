@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -17,7 +16,8 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-namespace MolliePrefix\Doctrine\Common\Annotations;
+
+namespace Doctrine\Common\Annotations;
 
 /**
  * Annotations class.
@@ -35,6 +35,7 @@ class Annotation
      * @var string
      */
     public $value;
+
     /**
      * Constructor.
      *
@@ -43,9 +44,10 @@ class Annotation
     public final function __construct(array $data)
     {
         foreach ($data as $key => $value) {
-            $this->{$key} = $value;
+            $this->$key = $value;
         }
     }
+
     /**
      * Error handler for unknown property accessor in Annotation class.
      *
@@ -55,8 +57,11 @@ class Annotation
      */
     public function __get($name)
     {
-        throw new \BadMethodCallException(\sprintf("Unknown property '%s' on annotation '%s'.", $name, \get_class($this)));
+        throw new \BadMethodCallException(
+            sprintf("Unknown property '%s' on annotation '%s'.", $name, get_class($this))
+        );
     }
+
     /**
      * Error handler for unknown property mutator in Annotation class.
      *
@@ -67,6 +72,8 @@ class Annotation
      */
     public function __set($name, $value)
     {
-        throw new \BadMethodCallException(\sprintf("Unknown property '%s' on annotation '%s'.", $name, \get_class($this)));
+        throw new \BadMethodCallException(
+            sprintf("Unknown property '%s' on annotation '%s'.", $name, get_class($this))
+        );
     }
 }

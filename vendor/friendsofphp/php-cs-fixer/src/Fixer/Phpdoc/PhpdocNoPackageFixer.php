@@ -9,23 +9,29 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+
 /**
  * @author Graham Campbell <graham@alt-three.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpdocNoPackageFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer
+final class PhpdocNoPackageFixer extends AbstractProxyFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('`@package` and `@subpackage` annotations should be omitted from PHPDoc.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            '`@package` and `@subpackage` annotations should be omitted from PHPDoc.',
+            [
+                new CodeSample(
+                    '<?php
 /**
  * @internal
  * @package Foo
@@ -34,8 +40,12 @@ final class PhpdocNoPackageFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyF
 class Baz
 {
 }
-')]);
+'
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -46,13 +56,15 @@ class Baz
     {
         return parent::getPriority();
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer();
+        $fixer = new GeneralPhpdocAnnotationRemoveFixer();
         $fixer->configure(['annotations' => ['package', 'subpackage']]);
+
         return [$fixer];
     }
 }

@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Cache;
+
+namespace PhpCsFixer\Cache;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -25,6 +26,7 @@ interface CacheManagerInterface
      * @return bool
      */
     public function needFixing($file, $fileContent);
+
     /**
      * @param string $file
      * @param string $fileContent

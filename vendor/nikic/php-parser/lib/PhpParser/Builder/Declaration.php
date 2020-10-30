@@ -1,12 +1,15 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Builder;
+namespace PhpParser\Builder;
 
-use MolliePrefix\PhpParser;
-abstract class Declaration extends \MolliePrefix\PhpParser\BuilderAbstract
+use PhpParser;
+
+abstract class Declaration extends PhpParser\BuilderAbstract
 {
     protected $attributes = array();
-    public abstract function addStmt($stmt);
+
+    abstract public function addStmt($stmt);
+
     /**
      * Adds multiple statements.
      *
@@ -14,13 +17,14 @@ abstract class Declaration extends \MolliePrefix\PhpParser\BuilderAbstract
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function addStmts(array $stmts)
-    {
+    public function addStmts(array $stmts) {
         foreach ($stmts as $stmt) {
             $this->addStmt($stmt);
         }
+
         return $this;
     }
+
     /**
      * Sets doc comment for the declaration.
      *
@@ -28,9 +32,11 @@ abstract class Declaration extends \MolliePrefix\PhpParser\BuilderAbstract
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function setDocComment($docComment)
-    {
-        $this->attributes['comments'] = array($this->normalizeDocComment($docComment));
+    public function setDocComment($docComment) {
+        $this->attributes['comments'] = array(
+            $this->normalizeDocComment($docComment)
+        );
+
         return $this;
     }
 }

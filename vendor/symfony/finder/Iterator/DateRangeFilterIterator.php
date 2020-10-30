@@ -8,17 +8,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Finder\Iterator;
 
-use MolliePrefix\Symfony\Component\Finder\Comparator\DateComparator;
+namespace Symfony\Component\Finder\Iterator;
+
+use Symfony\Component\Finder\Comparator\DateComparator;
+
 /**
  * DateRangeFilterIterator filters out files that are not in the given date range (last modified dates).
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class DateRangeFilterIterator extends \MolliePrefix\Symfony\Component\Finder\Iterator\FilterIterator
+class DateRangeFilterIterator extends FilterIterator
 {
     private $comparators = [];
+
     /**
      * @param \Iterator        $iterator    The Iterator to filter
      * @param DateComparator[] $comparators An array of DateComparator instances
@@ -26,8 +29,10 @@ class DateRangeFilterIterator extends \MolliePrefix\Symfony\Component\Finder\Ite
     public function __construct(\Iterator $iterator, array $comparators)
     {
         $this->comparators = $comparators;
+
         parent::__construct($iterator);
     }
+
     /**
      * Filters the iterator values.
      *
@@ -36,15 +41,18 @@ class DateRangeFilterIterator extends \MolliePrefix\Symfony\Component\Finder\Ite
     public function accept()
     {
         $fileinfo = $this->current();
-        if (!\file_exists($fileinfo->getPathname())) {
-            return \false;
+
+        if (!file_exists($fileinfo->getPathname())) {
+            return false;
         }
+
         $filedate = $fileinfo->getMTime();
         foreach ($this->comparators as $compare) {
             if (!$compare->test($filedate)) {
-                return \false;
+                return false;
             }
         }
-        return \true;
+
+        return true;
     }
 }

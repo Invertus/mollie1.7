@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher;
+
+namespace Symfony\Component\EventDispatcher;
 
 /**
  * Event is the base class for classes containing event data.
@@ -29,7 +30,8 @@ class Event
     /**
      * @var bool Whether no further event listeners should be triggered
      */
-    private $propagationStopped = \false;
+    private $propagationStopped = false;
+
     /**
      * Returns whether further event listeners should be triggered.
      *
@@ -41,6 +43,7 @@ class Event
     {
         return $this->propagationStopped;
     }
+
     /**
      * Stops the propagation of the event to further event listeners.
      *
@@ -50,6 +53,6 @@ class Event
      */
     public function stopPropagation()
     {
-        $this->propagationStopped = \true;
+        $this->propagationStopped = true;
     }
 }

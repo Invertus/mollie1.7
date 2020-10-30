@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class Foreach_ extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node;
+
+class Foreach_ extends Node\Stmt
 {
     /** @var Node\Expr Expression to iterate */
     public $expr;
@@ -15,6 +16,7 @@ class Foreach_ extends \MolliePrefix\PhpParser\Node\Stmt
     public $valueVar;
     /** @var Node[] Statements */
     public $stmts;
+
     /**
      * Constructs a foreach node.
      *
@@ -26,17 +28,16 @@ class Foreach_ extends \MolliePrefix\PhpParser\Node\Stmt
      *                              'stmts'  => array(): Statements
      * @param array     $attributes Additional attributes
      */
-    public function __construct(\MolliePrefix\PhpParser\Node\Expr $expr, \MolliePrefix\PhpParser\Node\Expr $valueVar, array $subNodes = array(), array $attributes = array())
-    {
+    public function __construct(Node\Expr $expr, Node\Expr $valueVar, array $subNodes = array(), array $attributes = array()) {
         parent::__construct($attributes);
         $this->expr = $expr;
         $this->keyVar = isset($subNodes['keyVar']) ? $subNodes['keyVar'] : null;
-        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : \false;
+        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : false;
         $this->valueVar = $valueVar;
         $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('expr', 'keyVar', 'byRef', 'valueVar', 'stmts');
     }
 }

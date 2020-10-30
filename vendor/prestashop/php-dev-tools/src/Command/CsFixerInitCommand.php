@@ -1,24 +1,40 @@
 <?php
 
-namespace MolliePrefix\PrestaShop\CodingStandards\Command;
+namespace PrestaShop\CodingStandards\Command;
 
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Input\InputOption;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
-use MolliePrefix\Symfony\Component\Filesystem\Filesystem;
-class CsFixerInitCommand extends \MolliePrefix\PrestaShop\CodingStandards\Command\AbstractCommand
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
+
+class CsFixerInitCommand extends AbstractCommand
 {
     protected function configure()
     {
-        $this->setName('cs-fixer:init')->setDescription('Initialize Cs Fixer environement')->addOption('dest', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Where the configuration will be stored', '.');
+        $this->setName('cs-fixer:init')
+            ->setDescription('Initialize Cs Fixer environement')
+            ->addOption(
+                'dest',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Where the configuration will be stored',
+                '.' // Current directory
+            );
     }
-    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $fs = new \MolliePrefix\Symfony\Component\Filesystem\Filesystem();
+        $fs = new Filesystem();
         $directory = __DIR__ . '/../../templates/cs-fixer/';
         $destination = $input->getOption('dest');
+
         foreach (['php_cs.dist', 'prettyci.composer.json'] as $template) {
-            $this->copyFile($input, $output, $directory . $template, $destination . '/.' . $template);
+            $this->copyFile(
+                $input,
+                $output,
+                $directory . $template,
+                $destination . '/.' . $template
+            );
         }
     }
 }

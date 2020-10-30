@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer;
+
+namespace PhpCsFixer\Tokenizer;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -43,9 +44,11 @@ final class CT
     const T_TYPE_COLON = 10025;
     const T_USE_LAMBDA = 10026;
     const T_USE_TRAIT = 10027;
+
     private function __construct()
     {
     }
+
     /**
      * Get name for custom token.
      *
@@ -56,11 +59,14 @@ final class CT
     public static function getName($value)
     {
         if (!self::has($value)) {
-            throw new \InvalidArgumentException(\sprintf('No custom token was found for "%s".', $value));
+            throw new \InvalidArgumentException(sprintf('No custom token was found for "%s".', $value));
         }
+
         $tokens = self::getMapById();
-        return 'CT::' . $tokens[$value];
+
+        return 'CT::'.$tokens[$value];
     }
+
     /**
      * Check if given custom token exists.
      *
@@ -71,15 +77,19 @@ final class CT
     public static function has($value)
     {
         $tokens = self::getMapById();
+
         return isset($tokens[$value]);
     }
+
     private static function getMapById()
     {
         static $constants;
+
         if (null === $constants) {
             $reflection = new \ReflectionClass(__CLASS__);
-            $constants = \array_flip($reflection->getConstants());
+            $constants = array_flip($reflection->getConstants());
         }
+
         return $constants;
     }
 }

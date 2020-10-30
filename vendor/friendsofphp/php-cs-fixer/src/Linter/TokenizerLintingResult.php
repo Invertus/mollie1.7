@@ -9,30 +9,42 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Linter;
+
+namespace PhpCsFixer\Linter;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  *
  * @internal
  */
-final class TokenizerLintingResult implements \MolliePrefix\PhpCsFixer\Linter\LintingResultInterface
+final class TokenizerLintingResult implements LintingResultInterface
 {
     /**
-     * @var null|\ParseError
+     * @var null|\Error
      */
     private $error;
-    public function __construct(\ParseError $error = null)
+
+    public function __construct(\Error $error = null)
     {
         $this->error = $error;
     }
+
     /**
      * {@inheritdoc}
      */
     public function check()
     {
         if (null !== $this->error) {
-            throw new \MolliePrefix\PhpCsFixer\Linter\LintingException(\sprintf('PHP Parse error: %s on line %d.', $this->error->getMessage(), $this->error->getLine()), $this->error->getCode(), $this->error);
+            throw new LintingException(
+                sprintf('%s: %s on line %d.', $this->getMessagePrefix(), $this->error->getMessage(), $this->error->getLine()),
+                $this->error->getCode(),
+                $this->error
+            );
         }
+    }
+
+    private function getMessagePrefix()
+    {
+        return $this->error instanceof \ParseError ? 'Parse error' : 'Fatal error';
     }
 }

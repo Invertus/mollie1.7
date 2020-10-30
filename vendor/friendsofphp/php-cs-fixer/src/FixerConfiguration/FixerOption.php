@@ -9,38 +9,46 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
-final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface
+namespace PhpCsFixer\FixerConfiguration;
+
+final class FixerOption implements FixerOptionInterface
 {
     /**
      * @var string
      */
     private $name;
+
     /**
      * @var string
      */
     private $description;
+
     /**
      * @var mixed
      */
     private $default;
+
     /**
      * @var bool
      */
     private $isRequired;
+
     /**
      * @var null|string[]
      */
     private $allowedTypes;
+
     /**
      * @var null|array
      */
     private $allowedValues;
+
     /**
      * @var null|\Closure
      */
     private $normalizer;
+
     /**
      * @param string        $name
      * @param string        $description
@@ -48,11 +56,19 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
      * @param mixed         $default
      * @param null|string[] $allowedTypes
      */
-    public function __construct($name, $description, $isRequired = \true, $default = null, array $allowedTypes = null, array $allowedValues = null, \Closure $normalizer = null)
-    {
+    public function __construct(
+        $name,
+        $description,
+        $isRequired = true,
+        $default = null,
+        array $allowedTypes = null,
+        array $allowedValues = null,
+        \Closure $normalizer = null
+    ) {
         if ($isRequired && null !== $default) {
             throw new \LogicException('Required options cannot have a default value.');
         }
+
         if (null !== $allowedValues) {
             foreach ($allowedValues as &$allowedValue) {
                 if ($allowedValue instanceof \Closure) {
@@ -60,6 +76,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
                 }
             }
         }
+
         $this->name = $name;
         $this->description = $description;
         $this->isRequired = $isRequired;
@@ -70,6 +87,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
             $this->normalizer = $this->unbind($normalizer);
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -77,6 +95,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return $this->name;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -84,6 +103,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return $this->description;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -91,6 +111,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return !$this->isRequired;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -99,8 +120,10 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
         if (!$this->hasDefault()) {
             throw new \LogicException('No default value defined.');
         }
+
         return $this->default;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -108,6 +131,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return $this->allowedTypes;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -115,6 +139,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return $this->allowedValues;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -122,6 +147,7 @@ final class FixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\F
     {
         return $this->normalizer;
     }
+
     /**
      * Unbinds the given closure to avoid memory leaks.
      *

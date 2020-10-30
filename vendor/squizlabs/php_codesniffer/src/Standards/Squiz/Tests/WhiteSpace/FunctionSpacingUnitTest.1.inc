@@ -479,7 +479,7 @@ class Foo {
     }
 }
 
-if (function_exists('\MolliePrefix\foo') === false) {
+if (function_exists('foo') === false) {
     function foo(){}
 }
 

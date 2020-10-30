@@ -9,27 +9,29 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Console\Command;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\Console\Application;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurableFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\FixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\AliasedFixerOption;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\DeprecatedFixerOption;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface;
-use MolliePrefix\PhpCsFixer\FixerFactory;
-use MolliePrefix\PhpCsFixer\Preg;
-use MolliePrefix\PhpCsFixer\RuleSet;
-use MolliePrefix\PhpCsFixer\Utils;
-use MolliePrefix\Symfony\Component\Console\Command\HelpCommand as BaseHelpCommand;
-use MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatter;
-use MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+namespace PhpCsFixer\Console\Command;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\Console\Application;
+use PhpCsFixer\Fixer\ConfigurableFixerInterface;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use PhpCsFixer\Fixer\FixerInterface;
+use PhpCsFixer\FixerConfiguration\AliasedFixerOption;
+use PhpCsFixer\FixerConfiguration\AllowedValueSubset;
+use PhpCsFixer\FixerConfiguration\DeprecatedFixerOption;
+use PhpCsFixer\FixerConfiguration\FixerOptionInterface;
+use PhpCsFixer\FixerFactory;
+use PhpCsFixer\Preg;
+use PhpCsFixer\RuleSet;
+use PhpCsFixer\Utils;
+use Symfony\Component\Console\Command\HelpCommand as BaseHelpCommand;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -37,9 +39,10 @@ use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
  *
  * @internal
  */
-final class HelpCommand extends \MolliePrefix\Symfony\Component\Console\Command\HelpCommand
+final class HelpCommand extends BaseHelpCommand
 {
     protected static $defaultName = 'help';
+
     /**
      * Returns help-copy suitable for console output.
      *
@@ -47,36 +50,37 @@ final class HelpCommand extends \MolliePrefix\Symfony\Component\Console\Command\
      */
     public static function getHelpCopy()
     {
-        $template = <<<'EOF'
+        $template =
+            <<<'EOF'
 The <info>%command.name%</info> command tries to fix as much coding standards
 problems as possible on a given file or files in a given directory and its subdirectories:
 
     <info>$ php %command.full_name% /path/to/dir</info>
     <info>$ php %command.full_name% /path/to/file</info>
 
-By default <comment>--path-mode</comment> is set to ``override``, which means, that if you specify the path to a file or a directory via
-command arguments, then the paths provided to a ``Finder`` in config file will be ignored. You can use <comment>--path-mode=intersection</comment>
+By default <comment>--path-mode</comment> is set to `override`, which means, that if you specify the path to a file or a directory via
+command arguments, then the paths provided to a `Finder` in config file will be ignored. You can use <comment>--path-mode=intersection</comment>
 to merge paths from the config file and from the argument:
 
     <info>$ php %command.full_name% --path-mode=intersection /path/to/dir</info>
 
-The <comment>--format</comment> option for the output format. Supported formats are ``txt`` (default one), ``json``, ``xml``, ``checkstyle``, ``junit`` and ``gitlab``.
+The <comment>--format</comment> option for the output format. Supported formats are `txt` (default one), `json`, `xml`, `checkstyle`, `junit` and `gitlab`.
 
 NOTE: the output for the following formats are generated in accordance with XML schemas
 
-* ``junit`` follows the `JUnit xml schema from Jenkins </doc/junit-10.xsd>`_
-* ``checkstyle`` follows the common `"checkstyle" xml schema </doc/checkstyle.xsd>`_
+* `checkstyle` follows the common `"checkstyle" xml schema </doc/report-schema/checkstyle.xsd>`_
+* `junit` follows the `JUnit xml schema from Jenkins </doc/report-schema/junit-10.xsd>`_
 
 The <comment>--quiet</comment> Do not output any message.
 
-The <comment>--verbose</comment> option will show the applied rules. When using the ``txt`` format it will also display progress notifications.
+The <comment>--verbose</comment> option will show the applied rules. When using the `txt` format it will also display progress notifications.
 
 NOTE: if there is an error like "errors reported during linting after fixing", you can use this to be even more verbose for debugging purpose
 
-* ``--verbose=0`` or no option: normal
-* ``--verbose``, ``--verbose=1``, ``-v``: verbose
-* ``--verbose=2``, ``-vv``: very verbose
-* ``--verbose=3``, ``-vvv``: debug
+* `--verbose=0` or no option: normal
+* `--verbose`, `--verbose=1`, `-v`: verbose
+* `--verbose=2`, `-vv`: very verbose
+* `--verbose=3`, `-vvv`: debug
 
 The <comment>--rules</comment> option limits the rules to apply to the
 project:
@@ -99,7 +103,7 @@ When using combinations of exact and exclude rules, applying exact rules along w
 
     <info>$ php %command.full_name% /path/to/project --rules=@Symfony,-@PSR1,-blank_line_before_statement,strict_comparison</info>
 
-Complete configuration for rules can be supplied using a ``json`` formatted string.
+Complete configuration for rules can be supplied using a `json` formatted string.
 
     <info>$ php %command.full_name% /path/to/project --rules='{"concat_space": {"spacing": "none"}}'</info>
 
@@ -112,7 +116,7 @@ The <comment>--diff-format</comment> option allows to specify in which format th
 * <comment>udiff</comment>: unified diff format;
 * <comment>sbd</comment>: Sebastianbergmann/diff format (default when using `--diff` without specifying `diff-format`).
 
-The <comment>--allow-risky</comment> option (pass ``yes`` or ``no``) allows you to set whether risky rules may run. Default value is taken from config file.
+The <comment>--allow-risky</comment> option (pass `yes` or `no`) allows you to set whether risky rules may run. Default value is taken from config file.
 A rule is considered risky if it could change code behaviour. By default no risky rules are run.
 
 The <comment>--stop-on-violation</comment> flag stops the execution upon first file that needs to be fixed.
@@ -193,14 +197,14 @@ The example below will add two rules to the default list of PSR2 set rules:
 
     ?>
 
-**NOTE**: ``exclude`` will work only for directories, so if you need to exclude file, try ``notPath``.
-Both ``exclude`` and ``notPath`` methods accept only relative paths to the ones defined with the ``in`` method.
+**NOTE**: `exclude` will work only for directories, so if you need to exclude file, try `notPath`.
+Both `exclude` and `notPath` methods accept only relative paths to the ones defined with the `in` method.
 
 See `Symfony\Finder` (<url>https://symfony.com/doc/current/components/finder.html</url>)
 online documentation for other `Finder` methods.
 
 You may also use an exclude list for the rules instead of the above shown include approach.
-The following example shows how to use all ``Symfony`` rules but the ``full_opening_tag`` rule.
+The following example shows how to use all `Symfony` rules but the `full_opening_tag` rule.
 
     <?php
 
@@ -231,7 +235,7 @@ configure them in your config file.
 
     ?>
 
-By using ``--using-cache`` option with ``yes`` or ``no`` you can set if the caching
+By using `--using-cache` option with `yes` or `no` you can set if the caching
 mechanism should be used.
 
 Caching
@@ -243,7 +247,7 @@ files if the tool version has changed or the list of rules has changed.
 Cache is supported only for tool downloaded as phar file or installed via
 composer.
 
-Cache can be disabled via ``--using-cache`` option or config file:
+Cache can be disabled via `--using-cache` option or config file:
 
     <?php
 
@@ -253,7 +257,7 @@ Cache can be disabled via ``--using-cache`` option or config file:
 
     ?>
 
-Cache file can be specified via ``--cache-file`` option or config file:
+Cache file can be specified via `--cache-file` option or config file:
 
     <?php
 
@@ -266,7 +270,7 @@ Cache file can be specified via ``--cache-file`` option or config file:
 Using PHP CS Fixer on CI
 ------------------------
 
-Require ``friendsofphp/php-cs-fixer`` as a ``dev`` dependency:
+Require `friendsofphp/php-cs-fixer` as a `dev` dependency:
 
     $ ./composer.phar require --dev friendsofphp/php-cs-fixer
 
@@ -274,12 +278,12 @@ Then, add the following command to your CI:
 
 %%%CI_INTEGRATION%%%
 
-Where ``$COMMIT_RANGE`` is your range of commits, e.g. ``$TRAVIS_COMMIT_RANGE`` or ``HEAD~..HEAD``.
+Where `$COMMIT_RANGE` is your range of commits, e.g. `$TRAVIS_COMMIT_RANGE` or `HEAD~..HEAD`.
 
 Exit code
 ---------
 
-Exit code is built using following bit flags:
+Exit code of the fix command is built using following bit flags:
 
 *  0 - OK.
 *  1 - General error (or PHP minimal requirement not matched).
@@ -289,12 +293,22 @@ Exit code is built using following bit flags:
 * 32 - Configuration error of a Fixer.
 * 64 - Exception raised within the application.
 
-(Applies to exit code of the ``fix`` command only)
-EOF;
-        return \strtr($template, ['%%%CONFIG_INTERFACE_URL%%%' => \sprintf('https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/v%s/src/ConfigInterface.php', self::getLatestReleaseVersionFromChangeLog()), '%%%CI_INTEGRATION%%%' => \implode("\n", \array_map(static function ($line) {
-            return '    $ ' . $line;
-        }, \array_slice(\file(__DIR__ . '/../../../ci-integration.sh', \FILE_IGNORE_NEW_LINES), 3))), '%%%FIXERS_DETAILS%%%' => self::getFixersHelp()]);
+EOF
+        ;
+
+        return strtr($template, [
+            '%%%CONFIG_INTERFACE_URL%%%' => sprintf(
+                'https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/v%s/src/ConfigInterface.php',
+                self::getLatestReleaseVersionFromChangeLog()
+            ),
+            '%%%CI_INTEGRATION%%%' => implode("\n", array_map(
+                static function ($line) { return '    $ '.$line; },
+                \array_slice(file(__DIR__.'/../../../ci-integration.sh', FILE_IGNORE_NEW_LINES), 3)
+            )),
+            '%%%FIXERS_DETAILS%%%' => self::getFixersHelp(),
+        ]);
     }
+
     /**
      * @param mixed $value
      *
@@ -302,55 +316,49 @@ EOF;
      */
     public static function toString($value)
     {
-        if (\is_array($value)) {
-            // Output modifications:
-            // - remove new-lines
-            // - combine multiple whitespaces
-            // - switch array-syntax to short array-syntax
-            // - remove whitespace at array opening
-            // - remove trailing array comma and whitespace at array closing
-            // - remove numeric array indexes
-            static $replaces = [['#\\r|\\n#', '#\\s{1,}#', '#array\\s*\\((.*)\\)#s', '#\\[\\s+#', '#,\\s*\\]#', '#\\d+\\s*=>\\s*#'], ['', ' ', '[$1]', '[', ']', '']];
-            $str = \var_export($value, \true);
-            do {
-                $strNew = \MolliePrefix\PhpCsFixer\Preg::replace($replaces[0], $replaces[1], $str);
-                if ($strNew === $str) {
-                    break;
-                }
-                $str = $strNew;
-            } while (\true);
-        } else {
-            $str = \var_export($value, \true);
-        }
-        return \MolliePrefix\PhpCsFixer\Preg::replace('/\\bNULL\\b/', 'null', $str);
+        return \is_array($value)
+            ? static::arrayToString($value)
+            : static::scalarToString($value)
+        ;
     }
+
     /**
      * Returns the allowed values of the given option that can be converted to a string.
      *
      * @return null|array
      */
-    public static function getDisplayableAllowedValues(\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $option)
+    public static function getDisplayableAllowedValues(FixerOptionInterface $option)
     {
         $allowed = $option->getAllowedValues();
+
         if (null !== $allowed) {
-            $allowed = \array_filter($allowed, static function ($value) {
-                return !$value instanceof \Closure;
+            $allowed = array_filter($allowed, static function ($value) {
+                return !($value instanceof \Closure);
             });
-            \usort($allowed, static function ($valueA, $valueB) {
-                if ($valueA instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset) {
+
+            usort($allowed, static function ($valueA, $valueB) {
+                if ($valueA instanceof AllowedValueSubset) {
                     return -1;
                 }
-                if ($valueB instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset) {
+
+                if ($valueB instanceof AllowedValueSubset) {
                     return 1;
                 }
-                return \strcasecmp(self::toString($valueA), self::toString($valueB));
+
+                return strcasecmp(
+                    self::toString($valueA),
+                    self::toString($valueB)
+                );
             });
+
             if (0 === \count($allowed)) {
                 $allowed = null;
             }
         }
+
         return $allowed;
     }
+
     /**
      * @throws \RuntimeException when failing to parse the change log file
      *
@@ -359,143 +367,212 @@ EOF;
     public static function getLatestReleaseVersionFromChangeLog()
     {
         static $version = null;
+
         if (null !== $version) {
             return $version;
         }
+
         $changelogFile = self::getChangeLogFile();
         if (null === $changelogFile) {
-            $version = \MolliePrefix\PhpCsFixer\Console\Application::VERSION;
+            $version = Application::VERSION;
+
             return $version;
         }
-        $changelog = @\file_get_contents($changelogFile);
-        if (\false === $changelog) {
-            $error = \error_get_last();
-            throw new \RuntimeException(\sprintf('Failed to read content of the changelog file "%s".%s', $changelogFile, $error ? ' ' . $error['message'] : ''));
+
+        $changelog = @file_get_contents($changelogFile);
+        if (false === $changelog) {
+            $error = error_get_last();
+
+            throw new \RuntimeException(sprintf(
+                'Failed to read content of the changelog file "%s".%s',
+                $changelogFile,
+                $error ? ' '.$error['message'] : ''
+            ));
         }
-        for ($i = \MolliePrefix\PhpCsFixer\Console\Application::getMajorVersion(); $i > 0; --$i) {
-            if (1 === \MolliePrefix\PhpCsFixer\Preg::match('/Changelog for v(' . $i . '.\\d+.\\d+)/', $changelog, $matches)) {
+
+        for ($i = Application::getMajorVersion(); $i > 0; --$i) {
+            if (1 === Preg::match('/Changelog for v('.$i.'.\d+.\d+)/', $changelog, $matches)) {
                 $version = $matches[1];
+
                 break;
             }
         }
+
         if (null === $version) {
-            throw new \RuntimeException(\sprintf('Failed to parse changelog data of "%s".', $changelogFile));
+            throw new \RuntimeException(sprintf('Failed to parse changelog data of "%s".', $changelogFile));
         }
+
         return $version;
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function initialize(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $output->getFormatter()->setStyle('url', new \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterStyle('blue'));
+        $output->getFormatter()->setStyle('url', new OutputFormatterStyle('blue'));
     }
+
     /**
      * @return null|string
      */
     private static function getChangeLogFile()
     {
-        $changelogFile = __DIR__ . '/../../../CHANGELOG.md';
-        return \is_file($changelogFile) ? $changelogFile : null;
+        $changelogFile = __DIR__.'/../../../CHANGELOG.md';
+
+        return is_file($changelogFile) ? $changelogFile : null;
     }
+
     /**
      * @return string
      */
     private static function getFixersHelp()
     {
         $help = '';
-        $fixerFactory = new \MolliePrefix\PhpCsFixer\FixerFactory();
+        $fixerFactory = new FixerFactory();
         /** @var AbstractFixer[] $fixers */
         $fixers = $fixerFactory->registerBuiltInFixers()->getFixers();
+
         // sort fixers by name
-        \usort($fixers, static function (\MolliePrefix\PhpCsFixer\Fixer\FixerInterface $a, \MolliePrefix\PhpCsFixer\Fixer\FixerInterface $b) {
-            return \strcmp($a->getName(), $b->getName());
-        });
+        usort(
+            $fixers,
+            static function (FixerInterface $a, FixerInterface $b) {
+                return strcmp($a->getName(), $b->getName());
+            }
+        );
+
         $ruleSets = [];
-        foreach (\MolliePrefix\PhpCsFixer\RuleSet::create()->getSetDefinitionNames() as $setName) {
-            $ruleSets[$setName] = new \MolliePrefix\PhpCsFixer\RuleSet([$setName => \true]);
+        foreach (RuleSet::create()->getSetDefinitionNames() as $setName) {
+            $ruleSets[$setName] = new RuleSet([$setName => true]);
         }
-        $getSetsWithRule = static function ($rule) use($ruleSets) {
+
+        $getSetsWithRule = static function ($rule) use ($ruleSets) {
             $sets = [];
+
             foreach ($ruleSets as $setName => $ruleSet) {
                 if ($ruleSet->hasRule($rule)) {
                     $sets[] = $setName;
                 }
             }
+
             return $sets;
         };
+
         $count = \count($fixers) - 1;
         foreach ($fixers as $i => $fixer) {
             $sets = $getSetsWithRule($fixer->getName());
+
             $description = $fixer->getDefinition()->getSummary();
-            if ($fixer instanceof \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface) {
+
+            if ($fixer instanceof DeprecatedFixerInterface) {
                 $successors = $fixer->getSuccessorsNames();
-                $message = [] === $successors ? 'will be removed on next major version' : \sprintf('use %s instead', \MolliePrefix\PhpCsFixer\Utils::naturalLanguageJoinWithBackticks($successors));
-                $description .= \sprintf(' DEPRECATED: %s.', $message);
+                $message = [] === $successors
+                    ? 'will be removed on next major version'
+                    : sprintf('use %s instead', Utils::naturalLanguageJoinWithBackticks($successors));
+                $description .= sprintf(' DEPRECATED: %s.', $message);
             }
-            $description = \implode("\n   | ", self::wordwrap(\MolliePrefix\PhpCsFixer\Preg::replace('/(`.+?`)/', '<info>$1</info>', $description), 72));
+
+            $description = implode("\n   | ", self::wordwrap(
+                Preg::replace('/(`.+?`)/', '<info>$1</info>', $description),
+                72
+            ));
+
             if (!empty($sets)) {
-                $help .= \sprintf(" * <comment>%s</comment> [%s]\n   | %s\n", $fixer->getName(), \implode(', ', $sets), $description);
+                $help .= sprintf(" * <comment>%s</comment> [%s]\n   | %s\n", $fixer->getName(), implode(', ', $sets), $description);
             } else {
-                $help .= \sprintf(" * <comment>%s</comment>\n   | %s\n", $fixer->getName(), $description);
+                $help .= sprintf(" * <comment>%s</comment>\n   | %s\n", $fixer->getName(), $description);
             }
+
             if ($fixer->isRisky()) {
-                $help .= \sprintf("   | *Risky rule: %s.*\n", \MolliePrefix\PhpCsFixer\Preg::replace('/(`.+?`)/', '<info>$1</info>', \lcfirst(\MolliePrefix\PhpCsFixer\Preg::replace('/\\.$/', '', $fixer->getDefinition()->getRiskyDescription()))));
+                $help .= sprintf(
+                    "   | *Risky rule: %s.*\n",
+                    Preg::replace(
+                        '/(`.+?`)/',
+                        '<info>$1</info>',
+                        lcfirst(Preg::replace('/\.$/', '', $fixer->getDefinition()->getRiskyDescription()))
+                    )
+                );
             }
-            if ($fixer instanceof \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface) {
+
+            if ($fixer instanceof ConfigurationDefinitionFixerInterface) {
                 $configurationDefinition = $fixer->getConfigurationDefinition();
                 $configurationDefinitionOptions = $configurationDefinition->getOptions();
                 if (\count($configurationDefinitionOptions)) {
                     $help .= "   |\n   | Configuration options:\n";
-                    \usort($configurationDefinitionOptions, static function (\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $optionA, \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $optionB) {
-                        return \strcmp($optionA->getName(), $optionB->getName());
-                    });
+
+                    usort(
+                        $configurationDefinitionOptions,
+                        static function (FixerOptionInterface $optionA, FixerOptionInterface $optionB) {
+                            return strcmp($optionA->getName(), $optionB->getName());
+                        }
+                    );
+
                     foreach ($configurationDefinitionOptions as $option) {
-                        $line = '<info>' . \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatter::escape($option->getName()) . '</info>';
+                        $line = '<info>'.OutputFormatter::escape($option->getName()).'</info>';
+
                         $allowed = self::getDisplayableAllowedValues($option);
                         if (null !== $allowed) {
                             foreach ($allowed as &$value) {
-                                if ($value instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset) {
-                                    $value = 'a subset of <comment>' . self::toString($value->getAllowedValues()) . '</comment>';
+                                if ($value instanceof AllowedValueSubset) {
+                                    $value = 'a subset of <comment>'.self::toString($value->getAllowedValues()).'</comment>';
                                 } else {
-                                    $value = '<comment>' . self::toString($value) . '</comment>';
+                                    $value = '<comment>'.self::toString($value).'</comment>';
                                 }
                             }
                         } else {
-                            $allowed = \array_map(static function ($type) {
-                                return '<comment>' . $type . '</comment>';
-                            }, $option->getAllowedTypes());
+                            $allowed = array_map(
+                                static function ($type) {
+                                    return '<comment>'.$type.'</comment>';
+                                },
+                                $option->getAllowedTypes()
+                            );
                         }
+
                         if (null !== $allowed) {
-                            $line .= ' (' . \implode(', ', $allowed) . ')';
+                            $line .= ' ('.implode(', ', $allowed).')';
                         }
-                        $line .= ': ' . \MolliePrefix\PhpCsFixer\Preg::replace('/(`.+?`)/', '<info>$1</info>', \lcfirst(\MolliePrefix\PhpCsFixer\Preg::replace('/\\.$/', '', \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatter::escape($option->getDescription())))) . '; ';
+
+                        $line .= ': '.Preg::replace(
+                            '/(`.+?`)/',
+                            '<info>$1</info>',
+                            lcfirst(Preg::replace('/\.$/', '', OutputFormatter::escape($option->getDescription())))
+                        ).'; ';
                         if ($option->hasDefault()) {
-                            $line .= 'defaults to <comment>' . self::toString($option->getDefault()) . '</comment>';
+                            $line .= 'defaults to <comment>'.self::toString($option->getDefault()).'</comment>';
                         } else {
                             $line .= 'required';
                         }
-                        if ($option instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\DeprecatedFixerOption) {
-                            $line .= '. DEPRECATED: ' . \MolliePrefix\PhpCsFixer\Preg::replace('/(`.+?`)/', '<info>$1</info>', \lcfirst(\MolliePrefix\PhpCsFixer\Preg::replace('/\\.$/', '', \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatter::escape($option->getDeprecationMessage()))));
+
+                        if ($option instanceof DeprecatedFixerOption) {
+                            $line .= '. DEPRECATED: '.Preg::replace(
+                                '/(`.+?`)/',
+                                '<info>$1</info>',
+                                lcfirst(Preg::replace('/\.$/', '', OutputFormatter::escape($option->getDeprecationMessage())))
+                            );
                         }
-                        if ($option instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\AliasedFixerOption) {
-                            $line .= '; DEPRECATED alias: <comment>' . $option->getAlias() . '</comment>';
+
+                        if ($option instanceof AliasedFixerOption) {
+                            $line .= '; DEPRECATED alias: <comment>'.$option->getAlias().'</comment>';
                         }
+
                         foreach (self::wordwrap($line, 72) as $index => $line) {
-                            $help .= (0 === $index ? '   | - ' : '   |   ') . $line . "\n";
+                            $help .= (0 === $index ? '   | - ' : '   |   ').$line."\n";
                         }
                     }
                 }
-            } elseif ($fixer instanceof \MolliePrefix\PhpCsFixer\Fixer\ConfigurableFixerInterface) {
+            } elseif ($fixer instanceof ConfigurableFixerInterface) {
                 $help .= "   | *Configurable rule.*\n";
             }
+
             if ($count !== $i) {
                 $help .= "\n";
             }
         }
+
         // prevent "\</foo>" from being rendered as an escaped literal style tag
-        return \MolliePrefix\PhpCsFixer\Preg::replace('#\\\\(</.*?>)#', '<<$1', $help);
+        return Preg::replace('#\\\\(</.*?>)#', '<<$1', $help);
     }
+
     /**
      * Wraps a string to the given number of characters, ignoring style tags.
      *
@@ -509,21 +586,79 @@ EOF;
         $result = [];
         $currentLine = 0;
         $lineLength = 0;
-        foreach (\explode(' ', $string) as $word) {
-            $wordLength = \strlen(\MolliePrefix\PhpCsFixer\Preg::replace('~</?(\\w+)>~', '', $word));
+        foreach (explode(' ', $string) as $word) {
+            $wordLength = \strlen(Preg::replace('~</?(\w+)>~', '', $word));
             if (0 !== $lineLength) {
-                ++$wordLength;
-                // space before word
+                ++$wordLength; // space before word
             }
+
             if ($lineLength + $wordLength > $width) {
                 ++$currentLine;
                 $lineLength = 0;
             }
+
             $result[$currentLine][] = $word;
             $lineLength += $wordLength;
         }
-        return \array_map(static function ($line) {
-            return \implode(' ', $line);
+
+        return array_map(static function ($line) {
+            return implode(' ', $line);
         }, $result);
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return string
+     */
+    private static function scalarToString($value)
+    {
+        $str = var_export($value, true);
+
+        return Preg::replace('/\bNULL\b/', 'null', $str);
+    }
+
+    /**
+     * @return string
+     */
+    private static function arrayToString(array $value)
+    {
+        if (0 === \count($value)) {
+            return '[]';
+        }
+
+        $isHash = static::isHash($value);
+        $str = '[';
+
+        foreach ($value as $k => $v) {
+            if ($isHash) {
+                $str .= static::scalarToString($k).' => ';
+            }
+
+            $str .= \is_array($v)
+                ? static::arrayToString($v).', '
+                : static::scalarToString($v).', '
+            ;
+        }
+
+        return substr($str, 0, -2).']';
+    }
+
+    /**
+     * @return bool
+     */
+    private static function isHash(array $array)
+    {
+        $i = 0;
+
+        foreach ($array as $k => $v) {
+            if ($k !== $i) {
+                return true;
+            }
+
+            ++$i;
+        }
+
+        return false;
     }
 }

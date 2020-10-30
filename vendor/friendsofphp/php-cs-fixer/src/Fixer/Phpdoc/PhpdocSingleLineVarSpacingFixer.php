@@ -9,28 +9,34 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Preg;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Preg;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Fixer for part of rule defined in PSR5 ¶7.22.
  *
  * @author SpacePossum
  */
-final class PhpdocSingleLineVarSpacingFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpdocSingleLineVarSpacingFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Single line `@var` PHPDoc should have proper spacing.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php /**@var   MyClass   \$a   */\n\$a = test();\n")]);
+        return new FixerDefinition(
+            'Single line `@var` PHPDoc should have proper spacing.',
+            [new CodeSample("<?php /**@var   MyClass   \$a   */\n\$a = test();\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -41,34 +47,40 @@ final class PhpdocSingleLineVarSpacingFixer extends \MolliePrefix\PhpCsFixer\Abs
     {
         return -10;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isAnyTokenKindsFound([\T_COMMENT, \T_DOC_COMMENT]);
+        return $tokens->isAnyTokenKindsFound([T_COMMENT, T_DOC_COMMENT]);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         /** @var Token $token */
         foreach ($tokens as $index => $token) {
-            if ($token->isGivenKind(\T_DOC_COMMENT)) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $this->fixTokenContent($token->getContent())]);
+            if ($token->isGivenKind(T_DOC_COMMENT)) {
+                $tokens[$index] = new Token([T_DOC_COMMENT, $this->fixTokenContent($token->getContent())]);
+
                 continue;
             }
-            if (!$token->isGivenKind(\T_COMMENT)) {
+
+            if (!$token->isGivenKind(T_COMMENT)) {
                 continue;
             }
+
             $content = $token->getContent();
             $fixedContent = $this->fixTokenContent($content);
             if ($content !== $fixedContent) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $fixedContent]);
+                $tokens[$index] = new Token([T_DOC_COMMENT, $fixedContent]);
             }
         }
     }
+
     /**
      * @param string $content
      *
@@ -76,15 +88,21 @@ final class PhpdocSingleLineVarSpacingFixer extends \MolliePrefix\PhpCsFixer\Abs
      */
     private function fixTokenContent($content)
     {
-        return \MolliePrefix\PhpCsFixer\Preg::replaceCallback('#^/\\*\\*\\h*@var\\h+(\\S+)\\h*(\\$\\S+)?\\h*([^\\n]*)\\*/$#', static function (array $matches) {
-            $content = '/** @var';
-            for ($i = 1, $m = \count($matches); $i < $m; ++$i) {
-                if ('' !== $matches[$i]) {
-                    $content .= ' ' . $matches[$i];
+        return Preg::replaceCallback(
+            '#^/\*\*\h*@var\h+(\S+)\h*(\$\S+)?\h*([^\n]*)\*/$#',
+            static function (array $matches) {
+                $content = '/** @var';
+                for ($i = 1, $m = \count($matches); $i < $m; ++$i) {
+                    if ('' !== $matches[$i]) {
+                        $content .= ' '.$matches[$i];
+                    }
                 }
-            }
-            $content = \rtrim($content);
-            return $content . ' */';
-        }, $content);
+
+                $content = rtrim($content);
+
+                return $content.' */';
+            },
+            $content
+        );
     }
 }

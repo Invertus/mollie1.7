@@ -9,10 +9,12 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
 
-use MolliePrefix\PhpCsFixer\Fixer\FixerInterface;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
+namespace PhpCsFixer;
+
+use PhpCsFixer\Fixer\FixerInterface;
+use PhpCsFixer\Tokenizer\Token;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  * @author Graham Campbell <graham@alt-three.com>
@@ -32,13 +34,16 @@ final class Utils
     public static function calculateBitmask(array $options)
     {
         $bitmask = 0;
+
         foreach ($options as $optionName) {
             if (\defined($optionName)) {
                 $bitmask |= \constant($optionName);
             }
         }
+
         return $bitmask;
     }
+
     /**
      * Converts a camel cased string to a snake cased string.
      *
@@ -48,8 +53,9 @@ final class Utils
      */
     public static function camelCaseToUnderscore($string)
     {
-        return \strtolower(\MolliePrefix\PhpCsFixer\Preg::replace('/(?<!^)((?=[A-Z][^A-Z])|(?<![A-Z])(?=[A-Z]))/', '_', $string));
+        return strtolower(Preg::replace('/(?<!^)((?=[A-Z][^A-Z])|(?<![A-Z])(?=[A-Z]))/', '_', $string));
     }
+
     /**
      * Compare two integers for equality.
      *
@@ -66,8 +72,10 @@ final class Utils
         if ($a === $b) {
             return 0;
         }
+
         return $a < $b ? -1 : 1;
     }
+
     /**
      * Calculate the trailing whitespace.
      *
@@ -75,17 +83,24 @@ final class Utils
      *
      * @return string
      */
-    public static function calculateTrailingWhitespaceIndent(\MolliePrefix\PhpCsFixer\Tokenizer\Token $token)
+    public static function calculateTrailingWhitespaceIndent(Token $token)
     {
         if (!$token->isWhitespace()) {
-            throw new \InvalidArgumentException(\sprintf('The given token must be whitespace, got "%s".', $token->getName()));
+            throw new \InvalidArgumentException(sprintf('The given token must be whitespace, got "%s".', $token->getName()));
         }
-        $str = \strrchr(\str_replace(["\r\n", "\r"], "\n", $token->getContent()), "\n");
-        if (\false === $str) {
+
+        $str = strrchr(
+            str_replace(["\r\n", "\r"], "\n", $token->getContent()),
+            "\n"
+        );
+
+        if (false === $str) {
             return '';
         }
-        return \ltrim($str, "\n");
+
+        return ltrim($str, "\n");
     }
+
     /**
      * Perform stable sorting using provided comparison function.
      *
@@ -99,20 +114,25 @@ final class Utils
      */
     public static function stableSort(array $elements, callable $getComparedValue, callable $compareValues)
     {
-        \array_walk($elements, static function (&$element, $index) use($getComparedValue) {
+        array_walk($elements, static function (&$element, $index) use ($getComparedValue) {
             $element = [$element, $index, $getComparedValue($element)];
         });
-        \usort($elements, static function ($a, $b) use($compareValues) {
+
+        usort($elements, static function ($a, $b) use ($compareValues) {
             $comparison = $compareValues($a[2], $b[2]);
+
             if (0 !== $comparison) {
                 return $comparison;
             }
+
             return self::cmpInt($a[1], $b[1]);
         });
-        return \array_map(static function (array $item) {
+
+        return array_map(static function (array $item) {
             return $item[0];
         }, $elements);
     }
+
     /**
      * Sort fixers by their priorities.
      *
@@ -124,12 +144,17 @@ final class Utils
     {
         // Schwartzian transform is used to improve the efficiency and avoid
         // `usort(): Array was modified by the user comparison function` warning for mocked objects.
-        return self::stableSort($fixers, static function (\MolliePrefix\PhpCsFixer\Fixer\FixerInterface $fixer) {
-            return $fixer->getPriority();
-        }, static function ($a, $b) {
-            return self::cmpInt($b, $a);
-        });
+        return self::stableSort(
+            $fixers,
+            static function (FixerInterface $fixer) {
+                return $fixer->getPriority();
+            },
+            static function ($a, $b) {
+                return self::cmpInt($b, $a);
+            }
+        );
     }
+
     /**
      * Join names in natural language wrapped in backticks, e.g. `a`, `b` and `c`.
      *
@@ -144,13 +169,17 @@ final class Utils
         if (empty($names)) {
             throw new \InvalidArgumentException('Array of names cannot be empty');
         }
-        $names = \array_map(static function ($name) {
-            return \sprintf('`%s`', $name);
+
+        $names = array_map(static function ($name) {
+            return sprintf('`%s`', $name);
         }, $names);
-        $last = \array_pop($names);
+
+        $last = array_pop($names);
+
         if ($names) {
-            return \implode(', ', $names) . ' and ' . $last;
+            return implode(', ', $names).' and '.$last;
         }
+
         return $last;
     }
 }

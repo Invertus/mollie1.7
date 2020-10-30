@@ -9,20 +9,24 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use MolliePrefix\Symfony\Component\OptionsResolver\OptionsResolver;
-final class FixerConfigurationResolver implements \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverInterface
+namespace PhpCsFixer\FixerConfiguration;
+
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+final class FixerConfigurationResolver implements FixerConfigurationResolverInterface
 {
     /**
      * @var FixerOptionInterface[]
      */
     private $options = [];
+
     /**
      * @var string[]
      */
     private $registeredNames = [];
+
     /**
      * @param iterable<FixerOptionInterface> $options
      */
@@ -31,10 +35,12 @@ final class FixerConfigurationResolver implements \MolliePrefix\PhpCsFixer\Fixer
         foreach ($options as $option) {
             $this->addOption($option);
         }
+
         if (empty($this->registeredNames)) {
             throw new \LogicException('Options cannot be empty.');
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -42,65 +48,81 @@ final class FixerConfigurationResolver implements \MolliePrefix\PhpCsFixer\Fixer
     {
         return $this->options;
     }
+
     /**
      * {@inheritdoc}
      */
     public function resolve(array $options)
     {
-        $resolver = new \MolliePrefix\Symfony\Component\OptionsResolver\OptionsResolver();
+        $resolver = new OptionsResolver();
+
         foreach ($this->options as $option) {
             $name = $option->getName();
-            if ($option instanceof \MolliePrefix\PhpCsFixer\FixerConfiguration\AliasedFixerOption) {
+
+            if ($option instanceof AliasedFixerOption) {
                 $alias = $option->getAlias();
+
                 if (\array_key_exists($alias, $options)) {
                     if (\array_key_exists($name, $options)) {
-                        throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException(\sprintf('Aliased option %s/%s is passed multiple times.', $name, $alias));
+                        throw new InvalidOptionsException(sprintf('Aliased option "%s"/"%s" is passed multiple times.', $name, $alias));
                     }
-                    @\trigger_error(\sprintf('Option "%s" is deprecated, use "%s" instead.', $alias, $name), \E_USER_DEPRECATED);
+
+                    @trigger_error(sprintf('Option "%s" is deprecated, use "%s" instead.', $alias, $name), E_USER_DEPRECATED);
+
                     $options[$name] = $options[$alias];
                     unset($options[$alias]);
                 }
             }
+
             if ($option->hasDefault()) {
                 $resolver->setDefault($name, $option->getDefault());
             } else {
                 $resolver->setRequired($name);
             }
+
             $allowedValues = $option->getAllowedValues();
             if (null !== $allowedValues) {
                 foreach ($allowedValues as &$allowedValue) {
                     if (\is_object($allowedValue) && \is_callable($allowedValue)) {
-                        $allowedValue = static function ($values) use($allowedValue) {
+                        $allowedValue = static function ($values) use ($allowedValue) {
                             return $allowedValue($values);
                         };
                     }
                 }
+
                 $resolver->setAllowedValues($name, $allowedValues);
             }
+
             $allowedTypes = $option->getAllowedTypes();
             if (null !== $allowedTypes) {
                 $resolver->setAllowedTypes($name, $allowedTypes);
             }
+
             $normalizer = $option->getNormalizer();
             if (null !== $normalizer) {
                 $resolver->setNormalizer($name, $normalizer);
             }
         }
+
         return $resolver->resolve($options);
     }
+
     /**
      * @throws \LogicException when the option is already defined
      *
      * @return $this
      */
-    private function addOption(\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $option)
+    private function addOption(FixerOptionInterface $option)
     {
         $name = $option->getName();
-        if (\in_array($name, $this->registeredNames, \true)) {
-            throw new \LogicException(\sprintf('The "%s" option is defined multiple times.', $name));
+
+        if (\in_array($name, $this->registeredNames, true)) {
+            throw new \LogicException(sprintf('The "%s" option is defined multiple times.', $name));
         }
+
         $this->options[] = $option;
         $this->registeredNames[] = $name;
+
         return $this;
     }
 }

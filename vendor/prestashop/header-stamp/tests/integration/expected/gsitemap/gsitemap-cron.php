@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -20,32 +17,40 @@ namespace MolliePrefix;
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
+
 /*
  * This file can be called using a cron to generate Google sitemap files automatically
  */
-include \dirname(__FILE__) . '/../../config/config.inc.php';
-include \dirname(__FILE__) . '/../../init.php';
+
+include dirname(__FILE__) . '/../../config/config.inc.php';
+include dirname(__FILE__) . '/../../init.php';
+
 /* Check security token */
-if (!\MolliePrefix\Tools::isPHPCLI()) {
-    if (\MolliePrefix\Tools::substr(\MolliePrefix\Tools::encrypt('gsitemap/cron'), 0, 10) != \MolliePrefix\Tools::getValue('token') || !\MolliePrefix\Module::isInstalled('gsitemap')) {
+if (!Tools::isPHPCLI()) {
+    if (Tools::substr(Tools::encrypt('gsitemap/cron'), 0, 10) != Tools::getValue('token') || !Module::isInstalled('gsitemap')) {
         die('Bad token');
     }
 }
-$gsitemap = \MolliePrefix\Module::getInstanceByName('gsitemap');
+
+$gsitemap = Module::getInstanceByName('gsitemap');
+
 /* Check if the module is enabled */
 if ($gsitemap->active) {
     /* Check if the requested shop exists */
-    $shops = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT id_shop FROM `' . \_DB_PREFIX_ . 'shop`');
+    $shops = Db::getInstance()->ExecuteS('SELECT id_shop FROM `' . _DB_PREFIX_ . 'shop`');
     $list_id_shop = array();
     foreach ($shops as $shop) {
         $list_id_shop[] = (int) $shop['id_shop'];
     }
-    $id_shop = \MolliePrefix\Tools::getIsset(\MolliePrefix\Tools::getValue('id_shop')) && \in_array(\MolliePrefix\Tools::getValue('id_shop'), $list_id_shop) ? (int) \MolliePrefix\Tools::getValue('id_shop') : (int) \MolliePrefix\Configuration::get('PS_SHOP_DEFAULT');
-    $gsitemap->cron = \true;
+
+    $id_shop = (Tools::getIsset(Tools::getValue('id_shop')) && in_array(Tools::getValue('id_shop'), $list_id_shop)) ? (int) Tools::getValue('id_shop') : (int) Configuration::get('PS_SHOP_DEFAULT');
+    $gsitemap->cron = true;
+
     /* for the main run initiat the sitemap's files name stored in the database */
-    if (!\MolliePrefix\Tools::getIsset(\MolliePrefix\Tools::getValue('continue'))) {
+    if (!Tools::getIsset(Tools::getValue('continue'))) {
         $gsitemap->emptySitemap((int) $id_shop);
     }
+
     /* Create the Google sitemap's files */
     $gsitemap->createSitemap((int) $id_shop);
 }

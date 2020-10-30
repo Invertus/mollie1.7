@@ -9,21 +9,24 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Whitespace;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+namespace PhpCsFixer\Fixer\Whitespace;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  * @author SpacePossum
  *
  * @deprecated in 2.10, proxy to NoExtraBlankLinesFixer
  */
-final class NoExtraConsecutiveBlankLinesFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
+final class NoExtraConsecutiveBlankLinesFixer extends AbstractProxyFixer implements ConfigurationDefinitionFixerInterface, DeprecatedFixerInterface, WhitespacesAwareFixerInterface
 {
     private $fixer;
+
     /**
      * {@inheritdoc}
      */
@@ -31,22 +34,26 @@ final class NoExtraConsecutiveBlankLinesFixer extends \MolliePrefix\PhpCsFixer\A
     {
         return $this->getFixer()->getDefinition();
     }
+
     public function configure(array $configuration = null)
     {
         $this->getFixer()->configure($configuration);
         $this->configuration = $configuration;
     }
+
     public function getConfigurationDefinition()
     {
         return $this->getFixer()->getConfigurationDefinition();
     }
+
     /**
      * {@inheritdoc}
      */
     public function getSuccessorsNames()
     {
-        return \array_keys($this->proxyFixers);
+        return array_keys($this->proxyFixers);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -54,11 +61,13 @@ final class NoExtraConsecutiveBlankLinesFixer extends \MolliePrefix\PhpCsFixer\A
     {
         return [$this->getFixer()];
     }
+
     private function getFixer()
     {
         if (null === $this->fixer) {
-            $this->fixer = new \MolliePrefix\PhpCsFixer\Fixer\Whitespace\NoExtraBlankLinesFixer();
+            $this->fixer = new NoExtraBlankLinesFixer();
         }
+
         return $this->fixer;
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Tests for the \PHP_CodeSniffer\Files\File:getMethodParameters method.
  *
@@ -7,11 +6,15 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Tests\Core\File;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest;
-class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest
+namespace PHP_CodeSniffer\Tests\Core\File;
+
+use PHP_CodeSniffer\Tests\Core\AbstractMethodUnitTest;
+
+class GetMethodParametersTest extends AbstractMethodUnitTest
 {
+
+
     /**
      * Verify pass-by-reference parsing.
      *
@@ -19,11 +22,21 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testPassByReference()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var', 'content' => '&$var', 'pass_by_reference' => \true, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testPassByReference()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var',
+            'content'           => '&$var',
+            'pass_by_reference' => true,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testPassByReference()
+
+
     /**
      * Verify array hint parsing.
      *
@@ -31,11 +44,21 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testArrayHint()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var', 'content' => 'array $var', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => 'array', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testArrayHint()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var',
+            'content'           => 'array $var',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => 'array',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testArrayHint()
+
+
     /**
      * Verify type hint parsing.
      *
@@ -43,12 +66,30 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testTypeHint()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => 'foo $var1', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => 'foo', 'nullable_type' => \false];
-        $expected[1] = ['name' => '$var2', 'content' => 'bar $var2', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => 'bar', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testTypeHint()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => 'foo $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => 'foo',
+            'nullable_type'     => false,
+        ];
+
+        $expected[1] = [
+            'name'              => '$var2',
+            'content'           => 'bar $var2',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => 'bar',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testTypeHint()
+
+
     /**
      * Verify self type hint parsing.
      *
@@ -56,11 +97,21 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testSelfTypeHint()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var', 'content' => 'self $var', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => 'self', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testSelfTypeHint()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var',
+            'content'           => 'self $var',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => 'self',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testSelfTypeHint()
+
+
     /**
      * Verify nullable type hint parsing.
      *
@@ -68,12 +119,30 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testNullableTypeHint()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => '?int $var1', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '?int', 'nullable_type' => \true];
-        $expected[1] = ['name' => '$var2', 'content' => '?\\bar $var2', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '?\\bar', 'nullable_type' => \true];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testNullableTypeHint()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '?int $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?int',
+            'nullable_type'     => true,
+        ];
+
+        $expected[1] = [
+            'name'              => '$var2',
+            'content'           => '?\bar $var2',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?\bar',
+            'nullable_type'     => true,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testNullableTypeHint()
+
+
     /**
      * Verify variable.
      *
@@ -81,11 +150,21 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testVariable()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var', 'content' => '$var', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testVariable()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var',
+            'content'           => '$var',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testVariable()
+
+
     /**
      * Verify default value parsing with a single function param.
      *
@@ -93,11 +172,22 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testSingleDefaultValue()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => '$var1=self::CONSTANT', 'default' => 'self::CONSTANT', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testSingleDefaultValue()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '$var1=self::CONSTANT',
+            'default'           => 'self::CONSTANT',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testSingleDefaultValue()
+
+
     /**
      * Verify default value parsing.
      *
@@ -105,12 +195,31 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testDefaultValues()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => '$var1=1', 'default' => '1', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $expected[1] = ['name' => '$var2', 'content' => "\$var2='value'", 'default' => "'value'", 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testDefaultValues()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '$var1=1',
+            'default'           => '1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+        $expected[1] = [
+            'name'              => '$var2',
+            'content'           => "\$var2='value'",
+            'default'           => "'value'",
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testDefaultValues()
+
+
     /**
      * Verify "bitwise and" in default value !== pass-by-reference.
      *
@@ -118,11 +227,22 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testBitwiseAndConstantExpressionDefaultValue()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$a', 'content' => '$a = 10 & 20', 'default' => '10 & 20', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testBitwiseAndConstantExpressionDefaultValue()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$a',
+            'content'           => '$a = 10 & 20',
+            'default'           => '10 & 20',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testBitwiseAndConstantExpressionDefaultValue()
+
+
     /**
      * Verify that arrow functions are supported.
      *
@@ -130,12 +250,30 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testArrowFunction()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$a', 'content' => 'int $a', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => 'int', 'nullable_type' => \false];
-        $expected[1] = ['name' => '$b', 'content' => '...$b', 'pass_by_reference' => \false, 'variable_length' => \true, 'type_hint' => '', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testArrowFunction()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$a',
+            'content'           => 'int $a',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => 'int',
+            'nullable_type'     => false,
+        ];
+
+        $expected[1] = [
+            'name'              => '$b',
+            'content'           => '...$b',
+            'pass_by_reference' => false,
+            'variable_length'   => true,
+            'type_hint'         => '',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testArrowFunction()
+
+
     /**
      * Verify recognition of PHP8 mixed type declaration.
      *
@@ -143,11 +281,21 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testPHP8MixedTypeHint()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => 'mixed &...$var1', 'pass_by_reference' => \true, 'variable_length' => \true, 'type_hint' => 'mixed', 'nullable_type' => \false];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testPHP8MixedTypeHint()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => 'mixed &...$var1',
+            'pass_by_reference' => true,
+            'variable_length'   => true,
+            'type_hint'         => 'mixed',
+            'nullable_type'     => false,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testPHP8MixedTypeHint()
+
+
     /**
      * Verify recognition of PHP8 mixed type declaration with nullability.
      *
@@ -155,11 +303,43 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     public function testPHP8MixedTypeHintNullable()
     {
-        $expected = [];
-        $expected[0] = ['name' => '$var1', 'content' => '?Mixed $var1', 'pass_by_reference' => \false, 'variable_length' => \false, 'type_hint' => '?Mixed', 'nullable_type' => \true];
-        $this->getMethodParametersTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
-    }
-    //end testPHP8MixedTypeHintNullable()
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '?Mixed $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?Mixed',
+            'nullable_type'     => true,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testPHP8MixedTypeHintNullable()
+
+
+    /**
+     * Verify recognition of type declarations using the namespace operator.
+     *
+     * @return void
+     */
+    public function testNamespaceOperatorTypeHint()
+    {
+        $expected    = [];
+        $expected[0] = [
+            'name'              => '$var1',
+            'content'           => '?namespace\Name $var1',
+            'pass_by_reference' => false,
+            'variable_length'   => false,
+            'type_hint'         => '?namespace\Name',
+            'nullable_type'     => true,
+        ];
+
+        $this->getMethodParametersTestHelper('/* '.__FUNCTION__.' */', $expected);
+
+    }//end testNamespaceOperatorTypeHint()
+
+
     /**
      * Test helper.
      *
@@ -170,10 +350,12 @@ class GetMethodParametersTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
      */
     private function getMethodParametersTestHelper($commentString, $expected)
     {
-        $function = $this->getTargetToken($commentString, [\T_FUNCTION, \T_FN]);
-        $found = self::$phpcsFile->getMethodParameters($function);
-        $this->assertArraySubset($expected, $found, \true);
-    }
-    //end getMethodParametersTestHelper()
-}
-//end class
+        $function = $this->getTargetToken($commentString, [T_FUNCTION, T_FN]);
+        $found    = self::$phpcsFile->getMethodParameters($function);
+
+        $this->assertArraySubset($expected, $found, true);
+
+    }//end getMethodParametersTestHelper()
+
+
+}//end class

@@ -9,25 +9,31 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
-use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
+namespace PhpCsFixer\Fixer\Operator;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Tokens;
+use PhpCsFixer\Tokenizer\TokensAnalyzer;
+
 /**
  * @author Gregor Harlan <gharlan@web.de>
  */
-final class UnaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class UnaryOperatorSpacesFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Unary operators should be placed adjacent to their operands.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\n\$sample ++;\n-- \$sample;\n\$sample = ! ! \$a;\n\$sample = ~  \$c;\nfunction & foo(){}\n")]);
+        return new FixerDefinition(
+            'Unary operators should be placed adjacent to their operands.',
+            [new CodeSample("<?php\n\$sample ++;\n-- \$sample;\n\$sample = ! ! \$a;\n\$sample = ~  \$c;\nfunction & foo(){}\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -37,28 +43,34 @@ final class UnaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\AbstractFi
     {
         return 0;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $tokensAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);
+        $tokensAnalyzer = new TokensAnalyzer($tokens);
+
         for ($index = $tokens->count() - 1; $index >= 0; --$index) {
             if ($tokensAnalyzer->isUnarySuccessorOperator($index)) {
                 if (!$tokens[$tokens->getPrevNonWhitespace($index)]->isComment()) {
                     $tokens->removeLeadingWhitespace($index);
                 }
+
                 continue;
             }
+
             if ($tokensAnalyzer->isUnaryPredecessorOperator($index)) {
                 $tokens->removeTrailingWhitespace($index);
+
                 continue;
             }
         }

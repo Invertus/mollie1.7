@@ -1,18 +1,18 @@
 <?php
 
-namespace MolliePrefix\PhpParser\ErrorHandler;
+namespace PhpParser\ErrorHandler;
 
-use MolliePrefix\PhpParser\Error;
-use MolliePrefix\PhpParser\ErrorHandler;
+use PhpParser\Error;
+use PhpParser\ErrorHandler;
+
 /**
  * Error handler that handles all errors by throwing them.
  *
  * This is the default strategy used by all components.
  */
-class Throwing implements \MolliePrefix\PhpParser\ErrorHandler
+class Throwing implements ErrorHandler
 {
-    public function handleError(\MolliePrefix\PhpParser\Error $error)
-    {
+    public function handleError(Error $error) {
         throw $error;
     }
 }

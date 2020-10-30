@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class Catch_ extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node;
+
+class Catch_ extends Node\Stmt
 {
     /** @var Node\Name[] Types of exceptions to catch */
     public $types;
@@ -11,6 +12,7 @@ class Catch_ extends \MolliePrefix\PhpParser\Node\Stmt
     public $var;
     /** @var Node[] Statements */
     public $stmts;
+
     /**
      * Constructs a catch node.
      *
@@ -19,15 +21,14 @@ class Catch_ extends \MolliePrefix\PhpParser\Node\Stmt
      * @param Node[]      $stmts      Statements
      * @param array       $attributes Additional attributes
      */
-    public function __construct(array $types, $var, array $stmts = array(), array $attributes = array())
-    {
+    public function __construct(array $types, $var, array $stmts = array(), array $attributes = array()) {
         parent::__construct($attributes);
         $this->types = $types;
         $this->var = $var;
         $this->stmts = $stmts;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('types', 'var', 'stmts');
     }
 }

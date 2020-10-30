@@ -9,13 +9,17 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\DocBlock;
 
-use MolliePrefix\PhpCsFixer\Preg;
+namespace PhpCsFixer\DocBlock;
+
+use PhpCsFixer\Preg;
+
 /**
  * This represents a line of a docblock.
  *
  * @author Graham Campbell <graham@alt-three.com>
+ *
+ * @final
  */
 class Line
 {
@@ -25,6 +29,7 @@ class Line
      * @var string
      */
     private $content;
+
     /**
      * Create a new line instance.
      *
@@ -34,6 +39,7 @@ class Line
     {
         $this->content = $content;
     }
+
     /**
      * Get the string representation of object.
      *
@@ -43,6 +49,7 @@ class Line
     {
         return $this->content;
     }
+
     /**
      * Get the content of this line.
      *
@@ -52,6 +59,7 @@ class Line
     {
         return $this->content;
     }
+
     /**
      * Does this line contain useful content?
      *
@@ -61,8 +69,9 @@ class Line
      */
     public function containsUsefulContent()
     {
-        return 0 !== \MolliePrefix\PhpCsFixer\Preg::match('/\\*\\s*\\S+/', $this->content) && '' !== \trim(\str_replace(['/', '*'], ' ', $this->content));
+        return 0 !== Preg::match('/\\*\s*\S+/', $this->content) && '' !== trim(str_replace(['/', '*'], ' ', $this->content));
     }
+
     /**
      * Does the line contain a tag?
      *
@@ -72,8 +81,9 @@ class Line
      */
     public function containsATag()
     {
-        return 0 !== \MolliePrefix\PhpCsFixer\Preg::match('/\\*\\s*@/', $this->content);
+        return 0 !== Preg::match('/\\*\s*@/', $this->content);
     }
+
     /**
      * Is the line the start of a docblock?
      *
@@ -81,8 +91,9 @@ class Line
      */
     public function isTheStart()
     {
-        return \false !== \strpos($this->content, '/**');
+        return false !== strpos($this->content, '/**');
     }
+
     /**
      * Is the line the end of a docblock?
      *
@@ -90,8 +101,9 @@ class Line
      */
     public function isTheEnd()
     {
-        return \false !== \strpos($this->content, '*/');
+        return false !== strpos($this->content, '*/');
     }
+
     /**
      * Set the content of this line.
      *
@@ -101,6 +113,7 @@ class Line
     {
         $this->content = $content;
     }
+
     /**
      * Remove this line by clearing its contents.
      *
@@ -112,6 +125,7 @@ class Line
     {
         $this->content = '';
     }
+
     /**
      * Append a blank docblock line to this line's contents.
      *
@@ -121,10 +135,12 @@ class Line
      */
     public function addBlank()
     {
-        $matched = \MolliePrefix\PhpCsFixer\Preg::match('/^(\\h*\\*)[^\\r\\n]*(\\r?\\n)$/', $this->content, $matches);
+        $matched = Preg::match('/^(\h*\*)[^\r\n]*(\r?\n)$/', $this->content, $matches);
+
         if (1 !== $matched) {
             return;
         }
-        $this->content .= $matches[1] . $matches[2];
+
+        $this->content .= $matches[1].$matches[2];
     }
 }

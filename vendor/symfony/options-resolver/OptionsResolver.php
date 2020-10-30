@@ -8,62 +8,73 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\OptionsResolver;
 
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException;
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
-use MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+namespace Symfony\Component\OptionsResolver;
+
+use Symfony\Component\OptionsResolver\Exception\AccessException;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
+use Symfony\Component\OptionsResolver\Exception\NoSuchOptionException;
+use Symfony\Component\OptionsResolver\Exception\OptionDefinitionException;
+use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
+
 /**
  * Validates options and merges them with default values.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Tobias Schultze <http://tobion.de>
  */
-class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver\Options
+class OptionsResolver implements Options
 {
     /**
      * The names of all defined options.
      */
     private $defined = [];
+
     /**
      * The default option values.
      */
     private $defaults = [];
+
     /**
      * The names of required options.
      */
     private $required = [];
+
     /**
      * The resolved option values.
      */
     private $resolved = [];
+
     /**
      * A list of normalizer closures.
      *
      * @var \Closure[]
      */
     private $normalizers = [];
+
     /**
      * A list of accepted values for each option.
      */
     private $allowedValues = [];
+
     /**
      * A list of accepted types for each option.
      */
     private $allowedTypes = [];
+
     /**
      * A list of closures for evaluating lazy options.
      */
     private $lazy = [];
+
     /**
      * A list of lazy options whose closure is currently being called.
      *
      * This list helps detecting circular dependencies between lazy options.
      */
     private $calling = [];
+
     /**
      * Whether the instance is locked for reading.
      *
@@ -72,8 +83,14 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      * process. If any option is changed after being read, all evaluated
      * lazy options that depend on this option would become invalid.
      */
-    private $locked = \false;
-    private static $typeAliases = ['boolean' => 'bool', 'integer' => 'int', 'double' => 'float'];
+    private $locked = false;
+
+    private static $typeAliases = [
+        'boolean' => 'bool',
+        'integer' => 'int',
+        'double' => 'float',
+    ];
+
     /**
      * Sets the default value of a given option.
      *
@@ -120,32 +137,40 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         // options could manipulate the state of the object, leading to
         // inconsistent results.
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Default values cannot be set from a lazy option or normalizer.');
+            throw new AccessException('Default values cannot be set from a lazy option or normalizer.');
         }
+
         // If an option is a closure that should be evaluated lazily, store it
         // in the "lazy" property.
         if ($value instanceof \Closure) {
             $reflClosure = new \ReflectionFunction($value);
             $params = $reflClosure->getParameters();
-            if (isset($params[0]) && \MolliePrefix\Symfony\Component\OptionsResolver\Options::class === $this->getParameterClassName($params[0])) {
+
+            if (isset($params[0]) && Options::class === $this->getParameterClassName($params[0])) {
                 // Initialize the option if no previous value exists
                 if (!isset($this->defaults[$option])) {
                     $this->defaults[$option] = null;
                 }
+
                 // Ignore previous lazy options if the closure has no second parameter
                 if (!isset($this->lazy[$option]) || !isset($params[1])) {
                     $this->lazy[$option] = [];
                 }
+
                 // Store closure for later evaluation
                 $this->lazy[$option][] = $value;
-                $this->defined[$option] = \true;
+                $this->defined[$option] = true;
+
                 // Make sure the option is processed
                 unset($this->resolved[$option]);
+
                 return $this;
             }
         }
+
         // This option is not lazy anymore
         unset($this->lazy[$option]);
+
         // Yet undefined options can be marked as resolved, because we only need
         // to resolve options with lazy closures, normalizers or validation
         // rules, none of which can exist for undefined options
@@ -153,10 +178,13 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         if (!isset($this->defined[$option]) || \array_key_exists($option, $this->resolved)) {
             $this->resolved[$option] = $value;
         }
+
         $this->defaults[$option] = $value;
-        $this->defined[$option] = \true;
+        $this->defined[$option] = true;
+
         return $this;
     }
+
     /**
      * Sets a list of default values.
      *
@@ -171,8 +199,10 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         foreach ($defaults as $option => $value) {
             $this->setDefault($option, $value);
         }
+
         return $this;
     }
+
     /**
      * Returns whether a default value is set for an option.
      *
@@ -187,6 +217,7 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     {
         return \array_key_exists($option, $this->defaults);
     }
+
     /**
      * Marks one or more options as required.
      *
@@ -199,14 +230,17 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function setRequired($optionNames)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Options cannot be made required from a lazy option or normalizer.');
+            throw new AccessException('Options cannot be made required from a lazy option or normalizer.');
         }
+
         foreach ((array) $optionNames as $option) {
-            $this->defined[$option] = \true;
-            $this->required[$option] = \true;
+            $this->defined[$option] = true;
+            $this->required[$option] = true;
         }
+
         return $this;
     }
+
     /**
      * Returns whether an option is required.
      *
@@ -220,6 +254,7 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     {
         return isset($this->required[$option]);
     }
+
     /**
      * Returns the names of all required options.
      *
@@ -229,8 +264,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     public function getRequiredOptions()
     {
-        return \array_keys($this->required);
+        return array_keys($this->required);
     }
+
     /**
      * Returns whether an option is missing a default value.
      *
@@ -246,6 +282,7 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     {
         return isset($this->required[$option]) && !\array_key_exists($option, $this->defaults);
     }
+
     /**
      * Returns the names of all options missing a default value.
      *
@@ -255,8 +292,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     public function getMissingOptions()
     {
-        return \array_keys(\array_diff_key($this->required, $this->defaults));
+        return array_keys(array_diff_key($this->required, $this->defaults));
     }
+
     /**
      * Defines a valid option name.
      *
@@ -273,13 +311,16 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function setDefined($optionNames)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Options cannot be defined from a lazy option or normalizer.');
+            throw new AccessException('Options cannot be defined from a lazy option or normalizer.');
         }
+
         foreach ((array) $optionNames as $option) {
-            $this->defined[$option] = \true;
+            $this->defined[$option] = true;
         }
+
         return $this;
     }
+
     /**
      * Returns whether an option is defined.
      *
@@ -294,6 +335,7 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     {
         return isset($this->defined[$option]);
     }
+
     /**
      * Returns the names of all defined options.
      *
@@ -303,8 +345,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     public function getDefinedOptions()
     {
-        return \array_keys($this->defined);
+        return array_keys($this->defined);
     }
+
     /**
      * Sets the normalizer for an option.
      *
@@ -334,16 +377,21 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function setNormalizer($option, \Closure $normalizer)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Normalizers cannot be set from a lazy option or normalizer.');
+            throw new AccessException('Normalizers cannot be set from a lazy option or normalizer.');
         }
+
         if (!isset($this->defined[$option])) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+            throw new UndefinedOptionsException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
         }
+
         $this->normalizers[$option] = $normalizer;
+
         // Make sure the option is processed
         unset($this->resolved[$option]);
+
         return $this;
     }
+
     /**
      * Sets allowed values for an option.
      *
@@ -368,16 +416,21 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function setAllowedValues($option, $allowedValues)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Allowed values cannot be set from a lazy option or normalizer.');
+            throw new AccessException('Allowed values cannot be set from a lazy option or normalizer.');
         }
+
         if (!isset($this->defined[$option])) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+            throw new UndefinedOptionsException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
         }
+
         $this->allowedValues[$option] = \is_array($allowedValues) ? $allowedValues : [$allowedValues];
+
         // Make sure the option is processed
         unset($this->resolved[$option]);
+
         return $this;
     }
+
     /**
      * Adds allowed values for an option.
      *
@@ -404,23 +457,29 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function addAllowedValues($option, $allowedValues)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Allowed values cannot be added from a lazy option or normalizer.');
+            throw new AccessException('Allowed values cannot be added from a lazy option or normalizer.');
         }
+
         if (!isset($this->defined[$option])) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+            throw new UndefinedOptionsException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
         }
+
         if (!\is_array($allowedValues)) {
             $allowedValues = [$allowedValues];
         }
+
         if (!isset($this->allowedValues[$option])) {
             $this->allowedValues[$option] = $allowedValues;
         } else {
-            $this->allowedValues[$option] = \array_merge($this->allowedValues[$option], $allowedValues);
+            $this->allowedValues[$option] = array_merge($this->allowedValues[$option], $allowedValues);
         }
+
         // Make sure the option is processed
         unset($this->resolved[$option]);
+
         return $this;
     }
+
     /**
      * Sets allowed types for an option.
      *
@@ -439,16 +498,21 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function setAllowedTypes($option, $allowedTypes)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Allowed types cannot be set from a lazy option or normalizer.');
+            throw new AccessException('Allowed types cannot be set from a lazy option or normalizer.');
         }
+
         if (!isset($this->defined[$option])) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+            throw new UndefinedOptionsException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
         }
+
         $this->allowedTypes[$option] = (array) $allowedTypes;
+
         // Make sure the option is processed
         unset($this->resolved[$option]);
+
         return $this;
     }
+
     /**
      * Adds allowed types for an option.
      *
@@ -469,20 +533,25 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function addAllowedTypes($option, $allowedTypes)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Allowed types cannot be added from a lazy option or normalizer.');
+            throw new AccessException('Allowed types cannot be added from a lazy option or normalizer.');
         }
+
         if (!isset($this->defined[$option])) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+            throw new UndefinedOptionsException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
         }
+
         if (!isset($this->allowedTypes[$option])) {
             $this->allowedTypes[$option] = (array) $allowedTypes;
         } else {
-            $this->allowedTypes[$option] = \array_merge($this->allowedTypes[$option], (array) $allowedTypes);
+            $this->allowedTypes[$option] = array_merge($this->allowedTypes[$option], (array) $allowedTypes);
         }
+
         // Make sure the option is processed
         unset($this->resolved[$option]);
+
         return $this;
     }
+
     /**
      * Removes the option with the given name.
      *
@@ -497,14 +566,17 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function remove($optionNames)
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Options cannot be removed from a lazy option or normalizer.');
+            throw new AccessException('Options cannot be removed from a lazy option or normalizer.');
         }
+
         foreach ((array) $optionNames as $option) {
             unset($this->defined[$option], $this->defaults[$option], $this->required[$option], $this->resolved[$option]);
             unset($this->lazy[$option], $this->normalizers[$option], $this->allowedTypes[$option], $this->allowedValues[$option]);
         }
+
         return $this;
     }
+
     /**
      * Removes all options.
      *
@@ -515,8 +587,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function clear()
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Options cannot be cleared from a lazy option or normalizer.');
+            throw new AccessException('Options cannot be cleared from a lazy option or normalizer.');
         }
+
         $this->defined = [];
         $this->defaults = [];
         $this->required = [];
@@ -525,8 +598,10 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         $this->normalizers = [];
         $this->allowedTypes = [];
         $this->allowedValues = [];
+
         return $this;
     }
+
     /**
      * Merges options with the default values stored in the container and
      * validates them.
@@ -554,37 +629,49 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function resolve(array $options = [])
     {
         if ($this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Options cannot be resolved from a lazy option or normalizer.');
+            throw new AccessException('Options cannot be resolved from a lazy option or normalizer.');
         }
+
         // Allow this method to be called multiple times
         $clone = clone $this;
+
         // Make sure that no unknown options are passed
-        $diff = \array_diff_key($options, $clone->defined);
+        $diff = array_diff_key($options, $clone->defined);
+
         if (\count($diff) > 0) {
-            \ksort($clone->defined);
-            \ksort($diff);
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException(\sprintf((\count($diff) > 1 ? 'The options "%s" do not exist.' : 'The option "%s" does not exist.') . ' Defined options are: "%s".', \implode('", "', \array_keys($diff)), \implode('", "', \array_keys($clone->defined))));
+            ksort($clone->defined);
+            ksort($diff);
+
+            throw new UndefinedOptionsException(sprintf((\count($diff) > 1 ? 'The options "%s" do not exist.' : 'The option "%s" does not exist.').' Defined options are: "%s".', implode('", "', array_keys($diff)), implode('", "', array_keys($clone->defined))));
         }
+
         // Override options set by the user
         foreach ($options as $option => $value) {
             $clone->defaults[$option] = $value;
             unset($clone->resolved[$option], $clone->lazy[$option]);
         }
+
         // Check whether any required option is missing
-        $diff = \array_diff_key($clone->required, $clone->defaults);
+        $diff = array_diff_key($clone->required, $clone->defaults);
+
         if (\count($diff) > 0) {
-            \ksort($diff);
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\MissingOptionsException(\sprintf(\count($diff) > 1 ? 'The required options "%s" are missing.' : 'The required option "%s" is missing.', \implode('", "', \array_keys($diff))));
+            ksort($diff);
+
+            throw new MissingOptionsException(sprintf(\count($diff) > 1 ? 'The required options "%s" are missing.' : 'The required option "%s" is missing.', implode('", "', array_keys($diff))));
         }
+
         // Lock the container
-        $clone->locked = \true;
+        $clone->locked = true;
+
         // Now process the individual options. Use offsetGet(), which resolves
         // the option itself and any options that the option depends on
         foreach ($clone->defaults as $option => $_) {
             $clone->offsetGet($option);
         }
+
         return $clone->resolved;
     }
+
     /**
      * Returns the resolved value of an option.
      *
@@ -603,32 +690,38 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function offsetGet($option)
     {
         if (!$this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Array access is only supported within closures of lazy options and normalizers.');
+            throw new AccessException('Array access is only supported within closures of lazy options and normalizers.');
         }
+
         // Shortcut for resolved options
         if (\array_key_exists($option, $this->resolved)) {
             return $this->resolved[$option];
         }
+
         // Check whether the option is set at all
         if (!\array_key_exists($option, $this->defaults)) {
             if (!isset($this->defined[$option])) {
-                throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\NoSuchOptionException(\sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, \implode('", "', \array_keys($this->defined))));
+                throw new NoSuchOptionException(sprintf('The option "%s" does not exist. Defined options are: "%s".', $option, implode('", "', array_keys($this->defined))));
             }
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\NoSuchOptionException(\sprintf('The optional option "%s" has no value set. You should make sure it is set with "isset" before reading it.', $option));
+
+            throw new NoSuchOptionException(sprintf('The optional option "%s" has no value set. You should make sure it is set with "isset" before reading it.', $option));
         }
+
         $value = $this->defaults[$option];
+
         // Resolve the option if the default value is lazily evaluated
         if (isset($this->lazy[$option])) {
             // If the closure is already being called, we have a cyclic
             // dependency
             if (isset($this->calling[$option])) {
-                throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\OptionDefinitionException(\sprintf('The options "%s" have a cyclic dependency.', \implode('", "', \array_keys($this->calling))));
+                throw new OptionDefinitionException(sprintf('The options "%s" have a cyclic dependency.', implode('", "', array_keys($this->calling))));
             }
+
             // The following section must be protected from cyclic
             // calls. Set $calling for the current $option to detect a cyclic
             // dependency
             // BEGIN
-            $this->calling[$option] = \true;
+            $this->calling[$option] = true;
             try {
                 foreach ($this->lazy[$option] as $closure) {
                     $value = $closure($this, $value);
@@ -638,69 +731,97 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
             }
             // END
         }
+
         // Validate the type of the resolved option
         if (isset($this->allowedTypes[$option])) {
-            $valid = \true;
+            $valid = true;
             $invalidTypes = [];
+
             foreach ($this->allowedTypes[$option] as $type) {
                 $type = isset(self::$typeAliases[$type]) ? self::$typeAliases[$type] : $type;
+
                 if ($valid = $this->verifyTypes($type, $value, $invalidTypes)) {
                     break;
                 }
             }
+
             if (!$valid) {
                 $fmtActualValue = $this->formatValue($value);
-                $fmtAllowedTypes = \implode('" or "', $this->allowedTypes[$option]);
-                $fmtProvidedTypes = \implode('|', \array_keys($invalidTypes));
-                $allowedContainsArrayType = \count(\array_filter($this->allowedTypes[$option], function ($item) {
-                    return '[]' === \substr(isset(self::$typeAliases[$item]) ? self::$typeAliases[$item] : $item, -2);
-                })) > 0;
+                $fmtAllowedTypes = implode('" or "', $this->allowedTypes[$option]);
+                $fmtProvidedTypes = implode('|', array_keys($invalidTypes));
+
+                $allowedContainsArrayType = \count(array_filter(
+                    $this->allowedTypes[$option],
+                    function ($item) {
+                        return '[]' === substr(isset(self::$typeAliases[$item]) ? self::$typeAliases[$item] : $item, -2);
+                    }
+                )) > 0;
+
                 if (\is_array($value) && $allowedContainsArrayType) {
-                    throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException(\sprintf('The option "%s" with value %s is expected to be of type "%s", but one of the elements is of type "%s".', $option, $fmtActualValue, $fmtAllowedTypes, $fmtProvidedTypes));
+                    throw new InvalidOptionsException(sprintf('The option "%s" with value %s is expected to be of type "%s", but one of the elements is of type "%s".', $option, $fmtActualValue, $fmtAllowedTypes, $fmtProvidedTypes));
                 }
-                throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException(\sprintf('The option "%s" with value %s is expected to be of type "%s", but is of type "%s".', $option, $fmtActualValue, $fmtAllowedTypes, $fmtProvidedTypes));
+
+                throw new InvalidOptionsException(sprintf('The option "%s" with value %s is expected to be of type "%s", but is of type "%s".', $option, $fmtActualValue, $fmtAllowedTypes, $fmtProvidedTypes));
             }
         }
+
         // Validate the value of the resolved option
         if (isset($this->allowedValues[$option])) {
-            $success = \false;
+            $success = false;
             $printableAllowedValues = [];
+
             foreach ($this->allowedValues[$option] as $allowedValue) {
                 if ($allowedValue instanceof \Closure) {
                     if ($allowedValue($value)) {
-                        $success = \true;
+                        $success = true;
                         break;
                     }
+
                     // Don't include closures in the exception message
                     continue;
                 }
+
                 if ($value === $allowedValue) {
-                    $success = \true;
+                    $success = true;
                     break;
                 }
+
                 $printableAllowedValues[] = $allowedValue;
             }
+
             if (!$success) {
-                $message = \sprintf('The option "%s" with value %s is invalid.', $option, $this->formatValue($value));
+                $message = sprintf(
+                    'The option "%s" with value %s is invalid.',
+                    $option,
+                    $this->formatValue($value)
+                );
+
                 if (\count($printableAllowedValues) > 0) {
-                    $message .= \sprintf(' Accepted values are: %s.', $this->formatValues($printableAllowedValues));
+                    $message .= sprintf(
+                        ' Accepted values are: %s.',
+                        $this->formatValues($printableAllowedValues)
+                    );
                 }
-                throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsException($message);
+
+                throw new InvalidOptionsException($message);
             }
         }
+
         // Normalize the validated option
         if (isset($this->normalizers[$option])) {
             // If the closure is already being called, we have a cyclic
             // dependency
             if (isset($this->calling[$option])) {
-                throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\OptionDefinitionException(\sprintf('The options "%s" have a cyclic dependency.', \implode('", "', \array_keys($this->calling))));
+                throw new OptionDefinitionException(sprintf('The options "%s" have a cyclic dependency.', implode('", "', array_keys($this->calling))));
             }
+
             $normalizer = $this->normalizers[$option];
+
             // The following section must be protected from cyclic
             // calls. Set $calling for the current $option to detect a cyclic
             // dependency
             // BEGIN
-            $this->calling[$option] = \true;
+            $this->calling[$option] = true;
             try {
                 $value = $normalizer($this, $value);
             } finally {
@@ -708,10 +829,13 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
             }
             // END
         }
+
         // Mark as resolved
         $this->resolved[$option] = $value;
+
         return $value;
     }
+
     /**
      * @param string $type
      * @param mixed  $value
@@ -721,44 +845,56 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     private function verifyTypes($type, $value, array &$invalidTypes)
     {
-        if (\is_array($value) && '[]' === \substr($type, -2)) {
+        if (\is_array($value) && '[]' === substr($type, -2)) {
             return $this->verifyArrayType($type, $value, $invalidTypes);
         }
+
         if (self::isValueValidType($type, $value)) {
-            return \true;
+            return true;
         }
+
         if (!$invalidTypes) {
-            $invalidTypes[$this->formatTypeOf($value, null)] = \true;
+            $invalidTypes[$this->formatTypeOf($value, null)] = true;
         }
-        return \false;
+
+        return false;
     }
+
     /**
      * @return bool
      */
     private function verifyArrayType($type, array $value, array &$invalidTypes, $level = 0)
     {
-        $type = \substr($type, 0, -2);
-        if ('[]' === \substr($type, -2)) {
-            $success = \true;
+        $type = substr($type, 0, -2);
+
+        if ('[]' === substr($type, -2)) {
+            $success = true;
             foreach ($value as $item) {
                 if (!\is_array($item)) {
-                    $invalidTypes[$this->formatTypeOf($item, null)] = \true;
-                    $success = \false;
+                    $invalidTypes[$this->formatTypeOf($item, null)] = true;
+
+                    $success = false;
                 } elseif (!$this->verifyArrayType($type, $item, $invalidTypes, $level + 1)) {
-                    $success = \false;
+                    $success = false;
                 }
             }
+
             return $success;
         }
-        $valid = \true;
+
+        $valid = true;
+
         foreach ($value as $item) {
             if (!self::isValueValidType($type, $item)) {
                 $invalidTypes[$this->formatTypeOf($item, $type)] = $value;
-                $valid = \false;
+
+                $valid = false;
             }
         }
+
         return $valid;
     }
+
     /**
      * Returns whether a resolved option with the given name exists.
      *
@@ -773,10 +909,12 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function offsetExists($option)
     {
         if (!$this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Array access is only supported within closures of lazy options and normalizers.');
+            throw new AccessException('Array access is only supported within closures of lazy options and normalizers.');
         }
+
         return \array_key_exists($option, $this->defaults);
     }
+
     /**
      * Not supported.
      *
@@ -784,8 +922,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     public function offsetSet($option, $value)
     {
-        throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Setting options via array access is not supported. Use setDefault() instead.');
+        throw new AccessException('Setting options via array access is not supported. Use setDefault() instead.');
     }
+
     /**
      * Not supported.
      *
@@ -793,8 +932,9 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
      */
     public function offsetUnset($option)
     {
-        throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Removing options via array access is not supported. Use remove() instead.');
+        throw new AccessException('Removing options via array access is not supported. Use remove() instead.');
     }
+
     /**
      * Returns the number of set options.
      *
@@ -809,10 +949,12 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     public function count()
     {
         if (!$this->locked) {
-            throw new \MolliePrefix\Symfony\Component\OptionsResolver\Exception\AccessException('Counting is only supported within closures of lazy options and normalizers.');
+            throw new AccessException('Counting is only supported within closures of lazy options and normalizers.');
         }
+
         return \count($this->defaults);
     }
+
     /**
      * Returns a string representation of the type of the value.
      *
@@ -829,27 +971,32 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
     private function formatTypeOf($value, $type)
     {
         $suffix = '';
-        if ('[]' === \substr($type, -2)) {
+
+        if ('[]' === substr($type, -2)) {
             $suffix = '[]';
-            $type = \substr($type, 0, -2);
-            while ('[]' === \substr($type, -2)) {
-                $type = \substr($type, 0, -2);
-                $value = \array_shift($value);
+            $type = substr($type, 0, -2);
+            while ('[]' === substr($type, -2)) {
+                $type = substr($type, 0, -2);
+                $value = array_shift($value);
                 if (!\is_array($value)) {
                     break;
                 }
                 $suffix .= '[]';
             }
+
             if (\is_array($value)) {
                 $subTypes = [];
                 foreach ($value as $val) {
-                    $subTypes[$this->formatTypeOf($val, null)] = \true;
+                    $subTypes[$this->formatTypeOf($val, null)] = true;
                 }
-                return \implode('|', \array_keys($subTypes)) . $suffix;
+
+                return implode('|', array_keys($subTypes)).$suffix;
             }
         }
-        return (\is_object($value) ? \get_class($value) : \gettype($value)) . $suffix;
+
+        return (\is_object($value) ? \get_class($value) : \gettype($value)).$suffix;
     }
+
     /**
      * Returns a string representation of the value.
      *
@@ -866,26 +1013,34 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         if (\is_object($value)) {
             return \get_class($value);
         }
+
         if (\is_array($value)) {
             return 'array';
         }
+
         if (\is_string($value)) {
-            return '"' . $value . '"';
+            return '"'.$value.'"';
         }
+
         if (\is_resource($value)) {
             return 'resource';
         }
+
         if (null === $value) {
             return 'null';
         }
-        if (\false === $value) {
+
+        if (false === $value) {
             return 'false';
         }
-        if (\true === $value) {
+
+        if (true === $value) {
             return 'true';
         }
+
         return (string) $value;
     }
+
     /**
      * Returns a string representation of a list of values.
      *
@@ -903,23 +1058,28 @@ class OptionsResolver implements \MolliePrefix\Symfony\Component\OptionsResolver
         foreach ($values as $key => $value) {
             $values[$key] = $this->formatValue($value);
         }
-        return \implode(', ', $values);
+
+        return implode(', ', $values);
     }
+
     private static function isValueValidType($type, $value)
     {
-        return \function_exists($isFunction = 'is_' . $type) && $isFunction($value) || $value instanceof $type;
+        return (\function_exists($isFunction = 'is_'.$type) && $isFunction($value)) || $value instanceof $type;
     }
+
     /**
      * @return string|null
      */
     private function getParameterClassName(\ReflectionParameter $parameter)
     {
-        if (!\method_exists($parameter, 'getType')) {
+        if (!method_exists($parameter, 'getType')) {
             return ($class = $parameter->getClass()) ? $class->name : null;
         }
+
         if (!($type = $parameter->getType()) || $type->isBuiltin()) {
             return null;
         }
+
         return $type instanceof \ReflectionNamedType ? $type->getName() : (string) $type;
     }
 }

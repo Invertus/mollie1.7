@@ -1,29 +1,33 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Builder;
+namespace PhpParser\Builder;
 
-use MolliePrefix\PhpParser;
-use MolliePrefix\PhpParser\Node\Name;
-use MolliePrefix\PhpParser\Node\Stmt;
-class Class_ extends \MolliePrefix\PhpParser\Builder\Declaration
+use PhpParser;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
+
+class Class_ extends Declaration
 {
     protected $name;
+
     protected $extends = null;
     protected $implements = array();
     protected $flags = 0;
+
     protected $uses = array();
     protected $constants = array();
     protected $properties = array();
     protected $methods = array();
+
     /**
      * Creates a class builder.
      *
      * @param string $name Name of the class
      */
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->name = $name;
     }
+
     /**
      * Extends a class.
      *
@@ -31,11 +35,12 @@ class Class_ extends \MolliePrefix\PhpParser\Builder\Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function extend($class)
-    {
+    public function extend($class) {
         $this->extends = $this->normalizeName($class);
+
         return $this;
     }
+
     /**
      * Implements one or more interfaces.
      *
@@ -43,33 +48,36 @@ class Class_ extends \MolliePrefix\PhpParser\Builder\Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function implement()
-    {
-        foreach (\func_get_args() as $interface) {
+    public function implement() {
+        foreach (func_get_args() as $interface) {
             $this->implements[] = $this->normalizeName($interface);
         }
+
         return $this;
     }
+
     /**
      * Makes the class abstract.
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function makeAbstract()
-    {
-        $this->setModifier(\MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_ABSTRACT);
+    public function makeAbstract() {
+        $this->setModifier(Stmt\Class_::MODIFIER_ABSTRACT);
+
         return $this;
     }
+
     /**
      * Makes the class final.
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function makeFinal()
-    {
-        $this->setModifier(\MolliePrefix\PhpParser\Node\Stmt\Class_::MODIFIER_FINAL);
+    public function makeFinal() {
+        $this->setModifier(Stmt\Class_::MODIFIER_FINAL);
+
         return $this;
     }
+
     /**
      * Adds a statement.
      *
@@ -77,24 +85,37 @@ class Class_ extends \MolliePrefix\PhpParser\Builder\Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function addStmt($stmt)
-    {
+    public function addStmt($stmt) {
         $stmt = $this->normalizeNode($stmt);
-        $targets = array('Stmt_TraitUse' => &$this->uses, 'Stmt_ClassConst' => &$this->constants, 'Stmt_Property' => &$this->properties, 'Stmt_ClassMethod' => &$this->methods);
+
+        $targets = array(
+            'Stmt_TraitUse'    => &$this->uses,
+            'Stmt_ClassConst'  => &$this->constants,
+            'Stmt_Property'    => &$this->properties,
+            'Stmt_ClassMethod' => &$this->methods,
+        );
+
         $type = $stmt->getType();
         if (!isset($targets[$type])) {
-            throw new \LogicException(\sprintf('Unexpected node of type "%s"', $type));
+            throw new \LogicException(sprintf('Unexpected node of type "%s"', $type));
         }
+
         $targets[$type][] = $stmt;
+
         return $this;
     }
+
     /**
      * Returns the built class node.
      *
      * @return Stmt\Class_ The built class node
      */
-    public function getNode()
-    {
-        return new \MolliePrefix\PhpParser\Node\Stmt\Class_($this->name, array('flags' => $this->flags, 'extends' => $this->extends, 'implements' => $this->implements, 'stmts' => \array_merge($this->uses, $this->constants, $this->properties, $this->methods)), $this->attributes);
+    public function getNode() {
+        return new Stmt\Class_($this->name, array(
+            'flags' => $this->flags,
+            'extends' => $this->extends,
+            'implements' => $this->implements,
+            'stmts' => array_merge($this->uses, $this->constants, $this->properties, $this->methods),
+        ), $this->attributes);
     }
 }

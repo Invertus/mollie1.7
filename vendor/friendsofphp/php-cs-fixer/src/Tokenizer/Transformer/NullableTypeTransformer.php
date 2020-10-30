@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transform `?` operator into CT::T_NULLABLE_TYPE in `function foo(?Bar $b) {}`.
  *
@@ -22,15 +24,8 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class NullableTypeTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class NullableTypeTransformer extends AbstractTransformer
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getCustomTokens()
-    {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NULLABLE_TYPE];
-    }
     /**
      * {@inheritdoc}
      */
@@ -39,6 +34,7 @@ final class NullableTypeTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\A
         // needs to run after TypeColonTransformer
         return -20;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -46,18 +42,29 @@ final class NullableTypeTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\A
     {
         return 70100;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
         if (!$token->equals('?')) {
             return;
         }
+
         $prevIndex = $tokens->getPrevMeaningfulToken($index);
         $prevToken = $tokens[$prevIndex];
-        if ($prevToken->equalsAny(['(', ',', [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_COLON], [\T_PRIVATE], [\T_PROTECTED], [\T_PUBLIC], [\T_VAR], [\T_STATIC]])) {
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NULLABLE_TYPE, '?']);
+
+        if ($prevToken->equalsAny(['(', ',', [CT::T_TYPE_COLON], [T_PRIVATE], [T_PROTECTED], [T_PUBLIC], [T_VAR], [T_STATIC]])) {
+            $tokens[$index] = new Token([CT::T_NULLABLE_TYPE, '?']);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDeprecatedCustomTokens()
+    {
+        return [CT::T_NULLABLE_TYPE];
     }
 }

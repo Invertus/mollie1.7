@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class Trait_ extends \MolliePrefix\PhpParser\Node\Stmt\ClassLike
+use PhpParser\Node;
+
+class Trait_ extends ClassLike
 {
     /**
      * Constructs a trait node.
@@ -13,14 +14,13 @@ class Trait_ extends \MolliePrefix\PhpParser\Node\Stmt\ClassLike
      *                           'stmts' => array(): Statements
      * @param array  $attributes Additional attributes
      */
-    public function __construct($name, array $subNodes = array(), array $attributes = array())
-    {
+    public function __construct($name, array $subNodes = array(), array $attributes = array()) {
         parent::__construct($attributes);
         $this->name = $name;
         $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('name', 'stmts');
     }
 }

@@ -1,48 +1,59 @@
 <?php
 
-namespace MolliePrefix\PhpParser;
+namespace PhpParser;
 
-class ErrorTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class ErrorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstruct()
-    {
-        $attributes = array('startLine' => 10, 'endLine' => 11);
-        $error = new \MolliePrefix\PhpParser\Error('Some error', $attributes);
+    public function testConstruct() {
+        $attributes = array(
+            'startLine' => 10,
+            'endLine' => 11,
+        );
+        $error = new Error('Some error', $attributes);
+
         $this->assertSame('Some error', $error->getRawMessage());
         $this->assertSame($attributes, $error->getAttributes());
         $this->assertSame(10, $error->getStartLine());
         $this->assertSame(11, $error->getEndLine());
         $this->assertSame('Some error on line 10', $error->getMessage());
+
         return $error;
     }
+
     /**
      * @depends testConstruct
      */
-    public function testSetMessageAndLine(\MolliePrefix\PhpParser\Error $error)
-    {
+    public function testSetMessageAndLine(Error $error) {
         $error->setRawMessage('Some other error');
         $this->assertSame('Some other error', $error->getRawMessage());
+
         $error->setStartLine(15);
         $this->assertSame(15, $error->getStartLine());
         $this->assertSame('Some other error on line 15', $error->getMessage());
     }
-    public function testUnknownLine()
-    {
-        $error = new \MolliePrefix\PhpParser\Error('Some error');
+
+    public function testUnknownLine() {
+        $error = new Error('Some error');
+
         $this->assertSame(-1, $error->getStartLine());
         $this->assertSame(-1, $error->getEndLine());
         $this->assertSame('Some error on unknown line', $error->getMessage());
     }
+
     /** @dataProvider provideTestColumnInfo */
-    public function testColumnInfo($code, $startPos, $endPos, $startColumn, $endColumn)
-    {
-        $error = new \MolliePrefix\PhpParser\Error('Some error', array('startFilePos' => $startPos, 'endFilePos' => $endPos));
-        $this->assertSame(\true, $error->hasColumnInfo());
+    public function testColumnInfo($code, $startPos, $endPos, $startColumn, $endColumn) {
+        $error = new Error('Some error', array(
+            'startFilePos' => $startPos,
+            'endFilePos' => $endPos,
+        ));
+
+        $this->assertSame(true, $error->hasColumnInfo());
         $this->assertSame($startColumn, $error->getStartColumn($code));
         $this->assertSame($endColumn, $error->getEndColumn($code));
+
     }
-    public function provideTestColumnInfo()
-    {
+
+    public function provideTestColumnInfo() {
         return array(
             // Error at "bar"
             array("<?php foo bar baz", 10, 12, 11, 13),
@@ -62,10 +73,11 @@ class ErrorTest extends \MolliePrefix\PHPUnit_Framework_TestCase
             array("<?\nphp", 0, 5, 1, 3),
         );
     }
-    public function testNoColumnInfo()
-    {
-        $error = new \MolliePrefix\PhpParser\Error('Some error', 3);
-        $this->assertSame(\false, $error->hasColumnInfo());
+
+    public function testNoColumnInfo() {
+        $error = new Error('Some error', 3);
+
+        $this->assertSame(false, $error->hasColumnInfo());
         try {
             $error->getStartColumn('');
             $this->fail('Expected RuntimeException');
@@ -79,13 +91,16 @@ class ErrorTest extends \MolliePrefix\PHPUnit_Framework_TestCase
             $this->assertSame('Error does not have column information', $e->getMessage());
         }
     }
+
     /**
      * @expectedException \RuntimeException
      * @expectedExceptionMessage Invalid position information
      */
-    public function testInvalidPosInfo()
-    {
-        $error = new \MolliePrefix\PhpParser\Error('Some error', array('startFilePos' => 10, 'endFilePos' => 11));
+    public function testInvalidPosInfo() {
+        $error = new Error('Some error', array(
+            'startFilePos' => 10,
+            'endFilePos' => 11,
+        ));
         $error->getStartColumn('code');
     }
 }

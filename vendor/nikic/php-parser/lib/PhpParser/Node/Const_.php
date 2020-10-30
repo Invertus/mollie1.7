@@ -1,14 +1,16 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node;
+namespace PhpParser\Node;
 
-use MolliePrefix\PhpParser\NodeAbstract;
-class Const_ extends \MolliePrefix\PhpParser\NodeAbstract
+use PhpParser\NodeAbstract;
+
+class Const_ extends NodeAbstract
 {
     /** @var string Name */
     public $name;
     /** @var Expr Value */
     public $value;
+
     /**
      * Constructs a const node for use in class const and const statements.
      *
@@ -16,14 +18,13 @@ class Const_ extends \MolliePrefix\PhpParser\NodeAbstract
      * @param Expr    $value      Value
      * @param array   $attributes Additional attributes
      */
-    public function __construct($name, \MolliePrefix\PhpParser\Node\Expr $value, array $attributes = array())
-    {
+    public function __construct($name, Expr $value, array $attributes = array()) {
         parent::__construct($attributes);
         $this->name = $name;
         $this->value = $value;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('name', 'value');
     }
 }

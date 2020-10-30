@@ -8,10 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher;
 
-use MolliePrefix\PHPUnit\Framework\MockObject\MockObject;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Symfony\Component\EventDispatcher;
+
+use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Lazily loads listeners and subscribers from the dependency injection
  * container.
@@ -22,28 +24,33 @@ use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @deprecated since 3.3, to be removed in 4.0. Use EventDispatcher with closure factories instead.
  */
-class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcher
+class ContainerAwareEventDispatcher extends EventDispatcher
 {
     private $container;
+
     /**
      * The service IDs of the event listeners and subscribers.
      */
     private $listenerIds = [];
+
     /**
      * The services registered as listeners.
      */
     private $listeners = [];
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface $container)
+
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+
         $class = static::class;
-        if ($this instanceof \MolliePrefix\PHPUnit_Framework_MockObject_MockObject || $this instanceof \MolliePrefix\PHPUnit\Framework\MockObject\MockObject || $this instanceof \MolliePrefix\Prophecy\Doubler\DoubleInterface) {
-            $class = \get_parent_class($class);
+        if ($this instanceof \PHPUnit_Framework_MockObject_MockObject || $this instanceof MockObject || $this instanceof \Prophecy\Doubler\DoubleInterface) {
+            $class = get_parent_class($class);
         }
         if (__CLASS__ !== $class) {
-            @\trigger_error(\sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
+            @trigger_error(sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
         }
     }
+
     /**
      * Adds a service as event listener.
      *
@@ -58,18 +65,22 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
      */
     public function addListenerService($eventName, $callback, $priority = 0)
     {
-        @\trigger_error(\sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
+
         if (!\is_array($callback) || 2 !== \count($callback)) {
             throw new \InvalidArgumentException('Expected an ["service", "method"] argument.');
         }
+
         $this->listenerIds[$eventName][] = [$callback[0], $callback[1], $priority];
     }
+
     public function removeListener($eventName, $listener)
     {
         $this->lazyLoad($eventName);
+
         if (isset($this->listenerIds[$eventName])) {
             foreach ($this->listenerIds[$eventName] as $i => list($serviceId, $method)) {
-                $key = $serviceId . '.' . $method;
+                $key = $serviceId.'.'.$method;
                 if (isset($this->listeners[$eventName][$key]) && $listener === [$this->listeners[$eventName][$key], $method]) {
                     unset($this->listeners[$eventName][$key]);
                     if (empty($this->listeners[$eventName])) {
@@ -82,8 +93,10 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
                 }
             }
         }
+
         parent::removeListener($eventName, $listener);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -92,11 +105,14 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
         if (null === $eventName) {
             return $this->listenerIds || $this->listeners || parent::hasListeners();
         }
+
         if (isset($this->listenerIds[$eventName])) {
-            return \true;
+            return true;
         }
+
         return parent::hasListeners($eventName);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -109,16 +125,20 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
         } else {
             $this->lazyLoad($eventName);
         }
+
         return parent::getListeners($eventName);
     }
+
     /**
      * {@inheritdoc}
      */
     public function getListenerPriority($eventName, $listener)
     {
         $this->lazyLoad($eventName);
+
         return parent::getListenerPriority($eventName, $listener);
     }
+
     /**
      * Adds a service as event subscriber.
      *
@@ -127,7 +147,8 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
      */
     public function addSubscriberService($serviceId, $class)
     {
-        @\trigger_error(\sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
+        @trigger_error(sprintf('The %s class is deprecated since Symfony 3.3 and will be removed in 4.0. Use EventDispatcher with closure factories instead.', __CLASS__), \E_USER_DEPRECATED);
+
         foreach ($class::getSubscribedEvents() as $eventName => $params) {
             if (\is_string($params)) {
                 $this->listenerIds[$eventName][] = [$serviceId, $params, 0];
@@ -140,11 +161,14 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
             }
         }
     }
+
     public function getContainer()
     {
-        @\trigger_error('The ' . __METHOD__ . '() method is deprecated since Symfony 3.3 as its class will be removed in 4.0. Inject the container or the services you need in your listeners/subscribers instead.', \E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.'() method is deprecated since Symfony 3.3 as its class will be removed in 4.0. Inject the container or the services you need in your listeners/subscribers instead.', \E_USER_DEPRECATED);
+
         return $this->container;
     }
+
     /**
      * Lazily loads listeners for this event from the dependency injection
      * container.
@@ -158,13 +182,15 @@ class ContainerAwareEventDispatcher extends \MolliePrefix\Symfony\Component\Even
         if (isset($this->listenerIds[$eventName])) {
             foreach ($this->listenerIds[$eventName] as list($serviceId, $method, $priority)) {
                 $listener = $this->container->get($serviceId);
-                $key = $serviceId . '.' . $method;
+
+                $key = $serviceId.'.'.$method;
                 if (!isset($this->listeners[$eventName][$key])) {
                     $this->addListener($eventName, [$listener, $method], $priority);
                 } elseif ($this->listeners[$eventName][$key] !== $listener) {
                     parent::removeListener($eventName, [$this->listeners[$eventName][$key], $method]);
                     $this->addListener($eventName, [$listener, $method], $priority);
                 }
+
                 $this->listeners[$eventName][$key] = $listener;
             }
         }

@@ -1,35 +1,49 @@
 <?php
 
-namespace MolliePrefix\Doctrine\Tests\Common\Lexer;
+namespace Doctrine\Tests\Common\Lexer;
 
-use MolliePrefix\Doctrine\Common\Lexer\AbstractLexer;
-class ConcreteLexer extends \MolliePrefix\Doctrine\Common\Lexer\AbstractLexer
+use Doctrine\Common\Lexer\AbstractLexer;
+
+class ConcreteLexer extends AbstractLexer
 {
     const INT = 'int';
+
     protected function getCatchablePatterns()
     {
-        return array('=|<|>', '[a-z]+', '\\d+');
+        return array(
+            '=|<|>',
+            '[a-z]+',
+            '\d+',
+        );
     }
+
     protected function getNonCatchablePatterns()
     {
-        return array('\\s+', '(.)');
+        return array(
+            '\s+',
+            '(.)',
+        );
     }
+
     protected function getType(&$value)
     {
-        if (\is_numeric($value)) {
-            $value = (int) $value;
+        if (is_numeric($value)) {
+            $value = (int)$value;
+
             return 'int';
         }
-        if (\in_array($value, array('=', '<', '>'))) {
+        if (in_array($value, array('=', '<', '>'))) {
             return 'operator';
         }
-        if (\is_string($value)) {
+        if (is_string($value)) {
             return 'string';
         }
+
         return;
     }
+
     protected function getModifiers()
     {
-        return parent::getModifiers() . 'u';
+        return parent::getModifiers().'u';
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2020 PrestaShop and Contributors
  *
@@ -24,7 +23,8 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-namespace MolliePrefix\PrestaShop\HeaderStamp;
+
+namespace PrestaShop\HeaderStamp;
 
 /**
  * Class responsible of loading license file in memory and returning its content
@@ -37,12 +37,14 @@ class LicenseHeader
      * @param string $content
      */
     private $content;
+
     /**
      * Path to the file
      *
      * @param string $filePath
      */
     private $filePath;
+
     /**
      * @param string $filePath
      */
@@ -50,6 +52,7 @@ class LicenseHeader
     {
         $this->filePath = $filePath;
     }
+
     /**
      * @return string Getter for Header content
      */
@@ -58,8 +61,10 @@ class LicenseHeader
         if (null === $this->content) {
             $this->loadFile();
         }
+
         return $this->content;
     }
+
     /**
      * Checks the file and loads its content in memory
      */
@@ -68,8 +73,9 @@ class LicenseHeader
         if (!\file_exists($this->filePath)) {
             // If the file is not found, we might have a relative path
             // We check this before throwing any exception
-            $fromRelativeFilePath = \getcwd() . '/' . $this->filePath;
+            $fromRelativeFilePath = getcwd() . '/' . $this->filePath;
             $fromSrcFolderFilePath = __DIR__ . '/../' . $this->filePath;
+
             if (\file_exists($fromRelativeFilePath)) {
                 $this->filePath = $fromRelativeFilePath;
             } elseif (\file_exists($fromSrcFolderFilePath)) {
@@ -78,9 +84,11 @@ class LicenseHeader
                 throw new \Exception('File ' . $this->filePath . ' does not exist.');
             }
         }
+
         if (!\is_readable($this->filePath)) {
             throw new \Exception('File ' . $this->filePath . ' cannot be read.');
         }
+
         $this->content = \file_get_contents($this->filePath);
     }
 }

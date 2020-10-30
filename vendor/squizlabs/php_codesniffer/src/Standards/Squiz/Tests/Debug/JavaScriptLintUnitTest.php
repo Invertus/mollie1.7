@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Unit test class for the JavaScriptLint sniff.
  *
@@ -7,12 +6,16 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Squiz\Tests\Debug;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-use MolliePrefix\PHP_CodeSniffer\Config;
-class JavaScriptLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
+namespace PHP_CodeSniffer\Standards\Squiz\Tests\Debug;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+use PHP_CodeSniffer\Config;
+
+class JavaScriptLintUnitTest extends AbstractSniffUnitTest
 {
+
+
     /**
      * Should this test be skipped for some reason.
      *
@@ -20,13 +23,16 @@ class JavaScriptLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standar
      */
     protected function shouldSkipTest()
     {
-        $jslPath = \MolliePrefix\PHP_CodeSniffer\Config::getExecutablePath('jsl');
+        $jslPath = Config::getExecutablePath('jsl');
         if ($jslPath === null) {
-            return \true;
+            return true;
         }
-        return \false;
-    }
-    //end shouldSkipTest()
+
+        return false;
+
+    }//end shouldSkipTest()
+
+
     /**
      * Returns the lines where errors should occur.
      *
@@ -38,8 +44,10 @@ class JavaScriptLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standar
     public function getErrorList()
     {
         return [];
-    }
-    //end getErrorList()
+
+    }//end getErrorList()
+
+
     /**
      * Returns the lines where warnings should occur.
      *
@@ -51,7 +59,8 @@ class JavaScriptLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standar
     public function getWarningList()
     {
         return [2 => 1];
-    }
-    //end getWarningList()
-}
-//end class
+
+    }//end getWarningList()
+
+
+}//end class

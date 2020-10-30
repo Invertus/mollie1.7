@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node;
+namespace PhpParser\Node;
 
-use MolliePrefix\PhpParser\NodeAbstract;
-class Param extends \MolliePrefix\PhpParser\NodeAbstract
+use PhpParser\NodeAbstract;
+
+class Param extends NodeAbstract
 {
     /** @var null|string|Name|NullableType Typehint */
     public $type;
@@ -15,6 +16,7 @@ class Param extends \MolliePrefix\PhpParser\NodeAbstract
     public $name;
     /** @var null|Expr Default value */
     public $default;
+
     /**
      * Constructs a parameter node.
      *
@@ -25,8 +27,7 @@ class Param extends \MolliePrefix\PhpParser\NodeAbstract
      * @param bool                          $variadic   Whether this is a variadic argument
      * @param array                         $attributes Additional attributes
      */
-    public function __construct($name, \MolliePrefix\PhpParser\Node\Expr $default = null, $type = null, $byRef = \false, $variadic = \false, array $attributes = array())
-    {
+    public function __construct($name, Expr $default = null, $type = null, $byRef = false, $variadic = false, array $attributes = array()) {
         parent::__construct($attributes);
         $this->type = $type;
         $this->byRef = $byRef;
@@ -34,8 +35,8 @@ class Param extends \MolliePrefix\PhpParser\NodeAbstract
         $this->name = $name;
         $this->default = $default;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('type', 'byRef', 'variadic', 'name', 'default');
     }
 }

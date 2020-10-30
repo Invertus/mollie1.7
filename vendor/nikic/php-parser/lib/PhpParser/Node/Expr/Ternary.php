@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Expr;
+namespace PhpParser\Node\Expr;
 
-use MolliePrefix\PhpParser\Node\Expr;
-class Ternary extends \MolliePrefix\PhpParser\Node\Expr
+use PhpParser\Node\Expr;
+
+class Ternary extends Expr
 {
     /** @var Expr Condition */
     public $cond;
@@ -11,6 +12,7 @@ class Ternary extends \MolliePrefix\PhpParser\Node\Expr
     public $if;
     /** @var Expr Expression for false */
     public $else;
+
     /**
      * Constructs a ternary operator node.
      *
@@ -19,15 +21,14 @@ class Ternary extends \MolliePrefix\PhpParser\Node\Expr
      * @param Expr      $else       Expression for false
      * @param array                    $attributes Additional attributes
      */
-    public function __construct(\MolliePrefix\PhpParser\Node\Expr $cond, $if, \MolliePrefix\PhpParser\Node\Expr $else, array $attributes = array())
-    {
+    public function __construct(Expr $cond, $if, Expr $else, array $attributes = array()) {
         parent::__construct($attributes);
         $this->cond = $cond;
         $this->if = $if;
         $this->else = $else;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('cond', 'if', 'else');
     }
 }

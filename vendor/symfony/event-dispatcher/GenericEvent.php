@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher;
+
+namespace Symfony\Component\EventDispatcher;
 
 /**
  * Event encapsulation class.
@@ -17,10 +18,11 @@ namespace MolliePrefix\Symfony\Component\EventDispatcher;
  *
  * @author Drak <drak@zikula.org>
  */
-class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event implements \ArrayAccess, \IteratorAggregate
+class GenericEvent extends Event implements \ArrayAccess, \IteratorAggregate
 {
     protected $subject;
     protected $arguments;
+
     /**
      * Encapsulate an event with $subject and $args.
      *
@@ -32,6 +34,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
         $this->subject = $subject;
         $this->arguments = $arguments;
     }
+
     /**
      * Getter for subject property.
      *
@@ -41,6 +44,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         return $this->subject;
     }
+
     /**
      * Get argument by key.
      *
@@ -55,8 +59,10 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
         if ($this->hasArgument($key)) {
             return $this->arguments[$key];
         }
-        throw new \InvalidArgumentException(\sprintf('Argument "%s" not found.', $key));
+
+        throw new \InvalidArgumentException(sprintf('Argument "%s" not found.', $key));
     }
+
     /**
      * Add argument to event.
      *
@@ -68,8 +74,10 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     public function setArgument($key, $value)
     {
         $this->arguments[$key] = $value;
+
         return $this;
     }
+
     /**
      * Getter for all arguments.
      *
@@ -79,6 +87,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         return $this->arguments;
     }
+
     /**
      * Set args property.
      *
@@ -89,8 +98,10 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     public function setArguments(array $args = [])
     {
         $this->arguments = $args;
+
         return $this;
     }
+
     /**
      * Has argument.
      *
@@ -102,6 +113,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         return \array_key_exists($key, $this->arguments);
     }
+
     /**
      * ArrayAccess for argument getter.
      *
@@ -115,6 +127,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         return $this->getArgument($key);
     }
+
     /**
      * ArrayAccess for argument setter.
      *
@@ -125,6 +138,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         $this->setArgument($key, $value);
     }
+
     /**
      * ArrayAccess for unset argument.
      *
@@ -136,6 +150,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
             unset($this->arguments[$key]);
         }
     }
+
     /**
      * ArrayAccess has argument.
      *
@@ -147,6 +162,7 @@ class GenericEvent extends \MolliePrefix\Symfony\Component\EventDispatcher\Event
     {
         return $this->hasArgument($key);
     }
+
     /**
      * IteratorAggregate for iterating over the object like an array.
      *

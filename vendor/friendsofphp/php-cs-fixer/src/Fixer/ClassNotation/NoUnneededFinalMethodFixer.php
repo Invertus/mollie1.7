@@ -9,23 +9,29 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\ClassNotation;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\ClassNotation;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class NoUnneededFinalMethodFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class NoUnneededFinalMethodFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('A `final` class must not have `final` methods and `private` methods must not be `final`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'A `final` class must not have `final` methods and `private` methods must not be `final`.',
+            [
+                new CodeSample(
+                    '<?php
 final class Foo
 {
     final public function foo1() {}
@@ -37,80 +43,104 @@ class Bar
 {
     final private function bar1() {}
 }
-')], null, 'Risky when child class overrides a `private` method.');
+'
+                ),
+            ],
+            null,
+            'Risky when child class overrides a `private` method.'
+        );
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_FINAL]);
+        return $tokens->isAllTokenKindsFound([T_CLASS, T_FINAL]);
     }
+
     public function isRisky()
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         $tokensCount = \count($tokens);
         for ($index = 0; $index < $tokensCount; ++$index) {
-            if (!$tokens[$index]->isGivenKind(\T_CLASS)) {
+            if (!$tokens[$index]->isGivenKind(T_CLASS)) {
                 continue;
             }
+
             $classOpen = $tokens->getNextTokenOfKind($index, ['{']);
             $prevToken = $tokens[$tokens->getPrevMeaningfulToken($index)];
-            $classIsFinal = $prevToken->isGivenKind(\T_FINAL);
+            $classIsFinal = $prevToken->isGivenKind(T_FINAL);
+
             $this->fixClass($tokens, $classOpen, $classIsFinal);
         }
     }
+
     /**
      * @param int  $classOpenIndex
      * @param bool $classIsFinal
      */
-    private function fixClass(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $classOpenIndex, $classIsFinal)
+    private function fixClass(Tokens $tokens, $classOpenIndex, $classIsFinal)
     {
         $tokensCount = \count($tokens);
+
         for ($index = $classOpenIndex + 1; $index < $tokensCount; ++$index) {
             // Class end
             if ($tokens[$index]->equals('}')) {
                 return;
             }
+
             // Skip method content
             if ($tokens[$index]->equals('{')) {
-                $index = $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_CURLY_BRACE, $index);
+                $index = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $index);
+
                 continue;
             }
-            if (!$tokens[$index]->isGivenKind(\T_FINAL)) {
+
+            if (!$tokens[$index]->isGivenKind(T_FINAL)) {
                 continue;
             }
-            if (!$classIsFinal && !$this->isPrivateMethod($tokens, $index, $classOpenIndex)) {
+
+            if (!$classIsFinal && !$this->isPrivateMethodOtherThanConstructor($tokens, $index, $classOpenIndex)) {
                 continue;
             }
+
             $tokens->clearAt($index);
-            $nextTokenIndex = $index + 1;
-            if ($tokens[$nextTokenIndex]->isWhitespace()) {
-                $tokens->clearAt($nextTokenIndex);
+
+            ++$index;
+
+            if ($tokens[$index]->isWhitespace()) {
+                $tokens->clearAt($index);
             }
         }
     }
+
     /**
      * @param int $index
      * @param int $classOpenIndex
      *
      * @return bool
      */
-    private function isPrivateMethod(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index, $classOpenIndex)
+    private function isPrivateMethodOtherThanConstructor(Tokens $tokens, $index, $classOpenIndex)
     {
-        $index = \max($classOpenIndex + 1, $tokens->getPrevTokenOfKind($index, [';', '{', '}']));
-        while (!$tokens[$index]->isGivenKind(\T_FUNCTION)) {
-            if ($tokens[$index]->isGivenKind(\T_PRIVATE)) {
-                return \true;
+        $index = max($classOpenIndex + 1, $tokens->getPrevTokenOfKind($index, [';', '{', '}']));
+        $private = false;
+
+        while (!$tokens[$index]->isGivenKind(T_FUNCTION)) {
+            if ($tokens[$index]->isGivenKind(T_PRIVATE)) {
+                $private = true;
             }
-            ++$index;
+
+            $index = $tokens->getNextMeaningfulToken($index);
         }
-        return \false;
+
+        return $private && '__construct' !== strtolower($tokens[$tokens->getNextMeaningfulToken($index)]->getContent());
     }
 }

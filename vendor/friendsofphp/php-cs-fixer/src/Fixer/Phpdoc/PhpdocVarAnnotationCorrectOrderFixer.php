@@ -9,26 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Preg;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Preg;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Kuba Werłos <werlos@gmail.com>
  */
-final class PhpdocVarAnnotationCorrectOrderFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpdocVarAnnotationCorrectOrderFixer extends AbstractFixer
 {
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('`@var` and `@type` annotations must have type and name in the correct order.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            '`@var` and `@type` annotations must have type and name in the correct order.',
+            [new CodeSample('<?php
 /** @var $foo int */
 $foo = 2 + 2;
-')]);
+')]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -39,24 +45,34 @@ $foo = 2 + 2;
     {
         return 0;
     }
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_DOC_COMMENT);
+        return $tokens->isTokenKindFound(T_DOC_COMMENT);
     }
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         foreach ($tokens as $index => $token) {
-            if (!$token->isGivenKind(\T_DOC_COMMENT)) {
+            if (!$token->isGivenKind(T_DOC_COMMENT)) {
                 continue;
             }
-            if (\false === \stripos($token->getContent(), '@var') && \false === \stripos($token->getContent(), '@type')) {
+
+            if (false === stripos($token->getContent(), '@var') && false === stripos($token->getContent(), '@type')) {
                 continue;
             }
-            $newContent = \MolliePrefix\PhpCsFixer\Preg::replace('/(@(?:type|var)\\s*)(\\$\\S+)(\\h+)([^\\$](?:[^<\\s]|<[^>]*>)*)(\\s|\\*)/i', '$1$4$3$2$5', $token->getContent());
+
+            $newContent = Preg::replace(
+                '/(@(?:type|var)\s*)(\$\S+)(\h+)([^\$](?:[^<\s]|<[^>]*>)*)(\s|\*)/i',
+                '$1$4$3$2$5',
+                $token->getContent()
+            );
+
             if ($newContent === $token->getContent()) {
                 continue;
             }
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->getId(), $newContent]);
+
+            $tokens[$index] = new Token([$token->getId(), $newContent]);
         }
     }
 }

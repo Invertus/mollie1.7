@@ -9,27 +9,33 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Import;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
-use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
+namespace PhpCsFixer\Fixer\Import;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+use PhpCsFixer\Tokenizer\TokensAnalyzer;
+
 /**
  * @author Carlos Cirello <carlos.cirello.nl@gmail.com>
  */
-final class NoLeadingImportSlashFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class NoLeadingImportSlashFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Remove leading slashes in `use` clauses.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nnamespace Foo;\nuse \\Bar;\n")]);
+        return new FixerDefinition(
+            'Remove leading slashes in `use` clauses.',
+            [new CodeSample("<?php\nnamespace Foo;\nuse \\Bar;\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -40,43 +46,54 @@ final class NoLeadingImportSlashFixer extends \MolliePrefix\PhpCsFixer\AbstractF
     {
         return -20;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_USE);
+        return $tokens->isTokenKindFound(T_USE);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $tokensAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);
+        $tokensAnalyzer = new TokensAnalyzer($tokens);
         $usesIndexes = $tokensAnalyzer->getImportUseIndexes();
+
         foreach ($usesIndexes as $idx) {
             $nextTokenIdx = $tokens->getNextMeaningfulToken($idx);
             $nextToken = $tokens[$nextTokenIdx];
-            if ($nextToken->isGivenKind(\T_NS_SEPARATOR)) {
+
+            if ($nextToken->isGivenKind(T_NS_SEPARATOR)) {
                 $this->removeLeadingImportSlash($tokens, $nextTokenIdx);
-            } elseif ($nextToken->isGivenKind([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT])) {
+            } elseif ($nextToken->isGivenKind([CT::T_FUNCTION_IMPORT, CT::T_CONST_IMPORT])) {
                 $nextTokenIdx = $tokens->getNextMeaningfulToken($nextTokenIdx);
-                if ($tokens[$nextTokenIdx]->isGivenKind(\T_NS_SEPARATOR)) {
+                if ($tokens[$nextTokenIdx]->isGivenKind(T_NS_SEPARATOR)) {
                     $this->removeLeadingImportSlash($tokens, $nextTokenIdx);
                 }
             }
         }
     }
+
     /**
      * @param int $index
      */
-    private function removeLeadingImportSlash(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    private function removeLeadingImportSlash(Tokens $tokens, $index)
     {
         $previousIndex = $tokens->getPrevNonWhitespace($index);
-        if ($previousIndex < $index - 1 || $tokens[$previousIndex]->isComment()) {
+
+        if (
+            $previousIndex < $index - 1
+            || $tokens[$previousIndex]->isComment()
+        ) {
             $tokens->clearAt($index);
+
             return;
         }
-        $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']);
+
+        $tokens[$index] = new Token([T_WHITESPACE, ' ']);
     }
 }

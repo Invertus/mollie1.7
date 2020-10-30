@@ -1,7 +1,7 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Comment;
+namespace PhpParser\Comment;
 
-class Doc extends \MolliePrefix\PhpParser\Comment
+class Doc extends \PhpParser\Comment
 {
 }

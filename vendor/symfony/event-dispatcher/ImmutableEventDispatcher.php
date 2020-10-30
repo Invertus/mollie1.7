@@ -8,27 +8,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher;
+
+namespace Symfony\Component\EventDispatcher;
 
 /**
  * A read-only proxy for an event dispatcher.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class ImmutableEventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcherInterface
+class ImmutableEventDispatcher implements EventDispatcherInterface
 {
     private $dispatcher;
-    public function __construct(\MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher)
+
+    public function __construct(EventDispatcherInterface $dispatcher)
     {
         $this->dispatcher = $dispatcher;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function dispatch($eventName, \MolliePrefix\Symfony\Component\EventDispatcher\Event $event = null)
+    public function dispatch($eventName, Event $event = null)
     {
         return $this->dispatcher->dispatch($eventName, $event);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -36,13 +40,15 @@ class ImmutableEventDispatcher implements \MolliePrefix\Symfony\Component\EventD
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
+
     /**
      * {@inheritdoc}
      */
-    public function addSubscriber(\MolliePrefix\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber)
+    public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -50,13 +56,15 @@ class ImmutableEventDispatcher implements \MolliePrefix\Symfony\Component\EventD
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
+
     /**
      * {@inheritdoc}
      */
-    public function removeSubscriber(\MolliePrefix\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber)
+    public function removeSubscriber(EventSubscriberInterface $subscriber)
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -64,6 +72,7 @@ class ImmutableEventDispatcher implements \MolliePrefix\Symfony\Component\EventD
     {
         return $this->dispatcher->getListeners($eventName);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -71,6 +80,7 @@ class ImmutableEventDispatcher implements \MolliePrefix\Symfony\Component\EventD
     {
         return $this->dispatcher->getListenerPriority($eventName, $listener);
     }
+
     /**
      * {@inheritdoc}
      */

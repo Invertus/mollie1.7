@@ -1,17 +1,20 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
-class Foo3Command extends \MolliePrefix\Symfony\Component\Console\Command\Command
+class Foo3Command extends Command
 {
     protected function configure()
     {
-        $this->setName('foo3:bar')->setDescription('The foo3:bar command');
+        $this
+            ->setName('foo3:bar')
+            ->setDescription('The foo3:bar command')
+        ;
     }
-    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
             try {
@@ -24,4 +27,3 @@ class Foo3Command extends \MolliePrefix\Symfony\Component\Console\Command\Comman
         }
     }
 }
-\class_alias('MolliePrefix\\Foo3Command', 'MolliePrefix\\Foo3Command', \false);

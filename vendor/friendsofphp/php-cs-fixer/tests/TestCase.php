@@ -9,21 +9,23 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tests;
 
-use MolliePrefix\PHPUnit\Framework\TestCase as BaseTestCase;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ExpectationViaCodeOverAnnotationTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ExpectOverSetExceptionTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\IdentityOverEqualityTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ProphecyOverMockObjectTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait;
-if (\trait_exists(\MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait::class)) {
+namespace PhpCsFixer\Tests;
+
+use PHPUnit\Framework\TestCase as BaseTestCase;
+use PHPUnitGoodPractices\Traits\ExpectationViaCodeOverAnnotationTrait;
+use PHPUnitGoodPractices\Traits\ExpectOverSetExceptionTrait;
+use PHPUnitGoodPractices\Traits\IdentityOverEqualityTrait;
+use PHPUnitGoodPractices\Traits\ProphecyOverMockObjectTrait;
+use PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait;
+
+if (trait_exists(ProphesizeOnlyInterfaceTrait::class)) {
     /**
      * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
      *
      * @internal
      */
-    abstract class TestCase extends \MolliePrefix\PHPUnit\Framework\TestCase
+    abstract class TestCase extends BaseTestCase
     {
         use ExpectationViaCodeOverAnnotationTrait;
         use ExpectOverSetExceptionTrait;
@@ -41,7 +43,7 @@ if (\trait_exists(\MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterf
      *
      * @todo 3.0 To be removed when we clean up composer prod-autoloader from dev-packages.
      */
-    abstract class TestCase extends \MolliePrefix\PHPUnit\Framework\TestCase
+    abstract class TestCase extends BaseTestCase
     {
     }
 }

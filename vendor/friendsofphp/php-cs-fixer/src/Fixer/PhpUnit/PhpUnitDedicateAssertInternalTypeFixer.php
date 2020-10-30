@@ -9,34 +9,57 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
-use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
+namespace PhpCsFixer\Fixer\PhpUnit;
+
+use PhpCsFixer\Fixer\AbstractPhpUnitFixer;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
+use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+use PhpCsFixer\Tokenizer\TokensAnalyzer;
+
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpUnitDedicateAssertInternalTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitDedicateAssertInternalTypeFixer extends AbstractPhpUnitFixer implements ConfigurationDefinitionFixerInterface
 {
     /**
      * @var array
      */
-    private $typeToDedicatedAssertMap = ['array' => 'assertIsArray', 'boolean' => 'assertIsBool', 'bool' => 'assertIsBool', 'double' => 'assertIsFloat', 'float' => 'assertIsFloat', 'integer' => 'assertIsInt', 'int' => 'assertIsInt', 'null' => 'assertNull', 'numeric' => 'assertIsNumeric', 'object' => 'assertIsObject', 'real' => 'assertIsFloat', 'resource' => 'assertIsResource', 'string' => 'assertIsString', 'scalar' => 'assertIsScalar', 'callable' => 'assertIsCallable', 'iterable' => 'assertIsIterable'];
+    private $typeToDedicatedAssertMap = [
+        'array' => 'assertIsArray',
+        'boolean' => 'assertIsBool',
+        'bool' => 'assertIsBool',
+        'double' => 'assertIsFloat',
+        'float' => 'assertIsFloat',
+        'integer' => 'assertIsInt',
+        'int' => 'assertIsInt',
+        'null' => 'assertNull',
+        'numeric' => 'assertIsNumeric',
+        'object' => 'assertIsObject',
+        'real' => 'assertIsFloat',
+        'resource' => 'assertIsResource',
+        'string' => 'assertIsString',
+        'scalar' => 'assertIsScalar',
+        'callable' => 'assertIsCallable',
+        'iterable' => 'assertIsIterable',
+    ];
+
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('PHPUnit assertions like `assertIsArray` should be used over `assertInternalType`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
-final class MyTest extends \\PHPUnit\\Framework\\TestCase
+        return new FixerDefinition(
+            'PHPUnit assertions like `assertIsArray` should be used over `assertInternalType`.',
+            [
+                new CodeSample(
+                    '<?php
+final class MyTest extends \PHPUnit\Framework\TestCase
 {
     public function testMe()
     {
@@ -44,22 +67,22 @@ final class MyTest extends \\PHPUnit\\Framework\\TestCase
         $this->assertInternalType("boolean", $var);
     }
 }
-')], null, 'Risky when PHPUnit methods are overridden or when project has PHPUnit incompatibilities.');
+'
+                ),
+            ],
+            null,
+            'Risky when PHPUnit methods are overridden or when project has PHPUnit incompatibilities.'
+        );
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_FUNCTION]);
-    }
+
     /**
      * {@inheritdoc}
      */
     public function isRisky()
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      *
@@ -69,75 +92,88 @@ final class MyTest extends \\PHPUnit\\Framework\\TestCase
     {
         return -16;
     }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->updateAssertInternalTypeMethods($tokens, $indexes[0], $indexes[1]);
-        }
-    }
+
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('target', 'Target version of PHPUnit.'))->setAllowedTypes(['string'])->setAllowedValues([\MolliePrefix\PhpCsFixer\Fixer\PhpUnit\PhpUnitTargetVersion::VERSION_7_5, \MolliePrefix\PhpCsFixer\Fixer\PhpUnit\PhpUnitTargetVersion::VERSION_NEWEST])->setDefault(\MolliePrefix\PhpCsFixer\Fixer\PhpUnit\PhpUnitTargetVersion::VERSION_NEWEST)->getOption()]);
+        return new FixerConfigurationResolver([
+            (new FixerOptionBuilder('target', 'Target version of PHPUnit.'))
+                ->setAllowedTypes(['string'])
+                ->setAllowedValues([PhpUnitTargetVersion::VERSION_7_5, PhpUnitTargetVersion::VERSION_NEWEST])
+                ->setDefault(PhpUnitTargetVersion::VERSION_NEWEST)
+                ->getOption(),
+        ]);
     }
+
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * {@inheritdoc}
      */
-    private function updateAssertInternalTypeMethods(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
+    protected function applyPhpUnitClassFix(Tokens $tokens, $startIndex, $endIndex)
     {
         $anonymousClassIndexes = [];
-        $tokenAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);
+        $tokenAnalyzer = new TokensAnalyzer($tokens);
         for ($index = $startIndex; $index < $endIndex; ++$index) {
             if (!$tokens[$index]->isClassy() || !$tokenAnalyzer->isAnonymousClass($index)) {
                 continue;
             }
+
             $openingBraceIndex = $tokens->getNextTokenOfKind($index, ['{']);
-            $closingBraceIndex = $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_CURLY_BRACE, $openingBraceIndex);
+            $closingBraceIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_CURLY_BRACE, $openingBraceIndex);
+
             $anonymousClassIndexes[$closingBraceIndex] = $openingBraceIndex;
         }
+
         for ($index = $endIndex - 1; $index > $startIndex; --$index) {
             if (isset($anonymousClassIndexes[$index])) {
                 $index = $anonymousClassIndexes[$index];
+
                 continue;
             }
-            if (!$tokens[$index]->isGivenKind(\T_STRING)) {
+
+            if (!$tokens[$index]->isGivenKind(T_STRING)) {
                 continue;
             }
-            $functionName = \strtolower($tokens[$index]->getContent());
+
+            $functionName = strtolower($tokens[$index]->getContent());
             if ('assertinternaltype' !== $functionName && 'assertnotinternaltype' !== $functionName) {
                 continue;
             }
+
             $bracketTokenIndex = $tokens->getNextMeaningfulToken($index);
             if (!$tokens[$bracketTokenIndex]->equals('(')) {
                 continue;
             }
+
             $expectedTypeTokenIndex = $tokens->getNextMeaningfulToken($bracketTokenIndex);
             $expectedTypeToken = $tokens[$expectedTypeTokenIndex];
-            if (!$expectedTypeToken->equals([\T_CONSTANT_ENCAPSED_STRING])) {
+            if (!$expectedTypeToken->equals([T_CONSTANT_ENCAPSED_STRING])) {
                 continue;
             }
-            $expectedType = \trim($expectedTypeToken->getContent(), '\'"');
+
+            $expectedType = trim($expectedTypeToken->getContent(), '\'"');
             if (!isset($this->typeToDedicatedAssertMap[$expectedType])) {
                 continue;
             }
+
             $commaTokenIndex = $tokens->getNextMeaningfulToken($expectedTypeTokenIndex);
             if (!$tokens[$commaTokenIndex]->equals(',')) {
                 continue;
             }
+
             $newAssertion = $this->typeToDedicatedAssertMap[$expectedType];
             if ('assertnotinternaltype' === $functionName) {
-                $newAssertion = \str_replace('Is', 'IsNot', $newAssertion);
-                $newAssertion = \str_replace('Null', 'NotNull', $newAssertion);
+                $newAssertion = str_replace('Is', 'IsNot', $newAssertion);
+                $newAssertion = str_replace('Null', 'NotNull', $newAssertion);
             }
+
             $nextMeaningfulTokenIndex = $tokens->getNextMeaningfulToken($commaTokenIndex);
-            $tokens->overrideRange($index, $nextMeaningfulTokenIndex - 1, [new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $newAssertion]), new \MolliePrefix\PhpCsFixer\Tokenizer\Token('(')]);
+
+            $tokens->overrideRange($index, $nextMeaningfulTokenIndex - 1, [
+                new Token([T_STRING, $newAssertion]),
+                new Token('('),
+            ]);
         }
     }
 }

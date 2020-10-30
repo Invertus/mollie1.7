@@ -9,19 +9,21 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Cache;
+
+namespace PhpCsFixer\Cache;
 
 /**
  * @author Andreas Möller <am@localheinz.com>
  *
  * @internal
  */
-final class NullCacheManager implements \MolliePrefix\PhpCsFixer\Cache\CacheManagerInterface
+final class NullCacheManager implements CacheManagerInterface
 {
     public function needFixing($file, $fileContent)
     {
-        return \true;
+        return true;
     }
+
     public function setFile($file, $fileContent)
     {
     }

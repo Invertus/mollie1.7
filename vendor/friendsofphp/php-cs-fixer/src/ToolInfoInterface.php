@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
+
+namespace PhpCsFixer;
 
 /**
  * @internal
@@ -17,9 +18,14 @@ namespace MolliePrefix\PhpCsFixer;
 interface ToolInfoInterface
 {
     public function getComposerInstallationDetails();
+
     public function getComposerVersion();
+
     public function getVersion();
+
     public function isInstalledAsPhar();
+
     public function isInstalledByComposer();
+
     public function getPharDownloadUri($version);
 }

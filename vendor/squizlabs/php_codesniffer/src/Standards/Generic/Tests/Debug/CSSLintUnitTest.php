@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Unit test class for the CSSLint sniff.
  *
@@ -7,12 +6,16 @@
  * @copyright 2019 Juliette Reinders Folmer. All rights reserved.
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Generic\Tests\Debug;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-use MolliePrefix\PHP_CodeSniffer\Config;
-class CSSLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
+namespace PHP_CodeSniffer\Standards\Generic\Tests\Debug;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+use PHP_CodeSniffer\Config;
+
+class CSSLintUnitTest extends AbstractSniffUnitTest
 {
+
+
     /**
      * Should this test be skipped for some reason.
      *
@@ -20,13 +23,16 @@ class CSSLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abst
      */
     protected function shouldSkipTest()
     {
-        $csslintPath = \MolliePrefix\PHP_CodeSniffer\Config::getExecutablePath('csslint');
+        $csslintPath = Config::getExecutablePath('csslint');
         if ($csslintPath === null) {
-            return \true;
+            return true;
         }
-        return \false;
-    }
-    //end shouldSkipTest()
+
+        return false;
+
+    }//end shouldSkipTest()
+
+
     /**
      * Returns the lines where errors should occur.
      *
@@ -38,8 +44,10 @@ class CSSLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abst
     public function getErrorList()
     {
         return [];
-    }
-    //end getErrorList()
+
+    }//end getErrorList()
+
+
     /**
      * Returns the lines where warnings should occur.
      *
@@ -50,8 +58,13 @@ class CSSLintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abst
      */
     public function getWarningList()
     {
-        return [3 => 1, 4 => 1, 5 => 1];
-    }
-    //end getWarningList()
-}
-//end class
+        return [
+            3 => 1,
+            4 => 1,
+            5 => 1,
+        ];
+
+    }//end getWarningList()
+
+
+}//end class

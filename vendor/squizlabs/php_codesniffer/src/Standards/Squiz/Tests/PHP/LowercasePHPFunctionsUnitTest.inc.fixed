@@ -1,5 +1,5 @@
 <?php
-if (function_exists('\MolliePrefix\myFunction') === TRUE) {
+if (function_exists('myFunction') === TRUE) {
     $retval = MyFunction(true);
     $keys = array_keys($array);
 }
@@ -39,3 +39,5 @@ $callToNamespacedFunction = MyNamespace /* phpcs:ignore Standard */ \STR_REPEAT(
 $callToNamespacedFunction = namespace\STR_REPEAT($a, 2); // Could potentially be false negative.
 
 $filePath = new \File($path);
+
+$count = $object?->Count();

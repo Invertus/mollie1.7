@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Console\Formatter;
+
+namespace Symfony\Component\Console\Formatter;
 
 /**
  * Formatter interface for console output.
@@ -23,19 +24,22 @@ interface OutputFormatterInterface
      * @param bool $decorated Whether to decorate the messages or not
      */
     public function setDecorated($decorated);
+
     /**
      * Gets the decorated flag.
      *
      * @return bool true if the output will decorate messages, false otherwise
      */
     public function isDecorated();
+
     /**
      * Sets a new style.
      *
      * @param string                        $name  The style name
      * @param OutputFormatterStyleInterface $style The style instance
      */
-    public function setStyle($name, \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterStyleInterface $style);
+    public function setStyle($name, OutputFormatterStyleInterface $style);
+
     /**
      * Checks if output formatter has style with specified name.
      *
@@ -44,6 +48,7 @@ interface OutputFormatterInterface
      * @return bool
      */
     public function hasStyle($name);
+
     /**
      * Gets style options from style with specified name.
      *
@@ -54,6 +59,7 @@ interface OutputFormatterInterface
      * @throws \InvalidArgumentException When style isn't defined
      */
     public function getStyle($name);
+
     /**
      * Formats a message according to the given styles.
      *

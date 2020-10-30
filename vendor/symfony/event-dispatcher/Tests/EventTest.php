@@ -8,27 +8,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher\Tests;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\EventDispatcher\Event;
+namespace Symfony\Component\EventDispatcher\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\Event;
+
 /**
  * Test class for Event.
  */
-class EventTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+class EventTest extends TestCase
 {
     /**
      * @var \Symfony\Component\EventDispatcher\Event
      */
     protected $event;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $this->event = new \MolliePrefix\Symfony\Component\EventDispatcher\Event();
+        $this->event = new Event();
     }
+
     /**
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
@@ -37,10 +41,12 @@ class EventTest extends \MolliePrefix\PHPUnit\Framework\TestCase
     {
         $this->event = null;
     }
+
     public function testIsPropagationStopped()
     {
         $this->assertFalse($this->event->isPropagationStopped());
     }
+
     public function testStopPropagationAndIsPropagationStopped()
     {
         $this->event->stopPropagation();

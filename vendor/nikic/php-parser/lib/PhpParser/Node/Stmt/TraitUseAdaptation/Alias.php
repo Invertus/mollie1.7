@@ -1,14 +1,16 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt\TraitUseAdaptation;
+namespace PhpParser\Node\Stmt\TraitUseAdaptation;
 
-use MolliePrefix\PhpParser\Node;
-class Alias extends \MolliePrefix\PhpParser\Node\Stmt\TraitUseAdaptation
+use PhpParser\Node;
+
+class Alias extends Node\Stmt\TraitUseAdaptation
 {
     /** @var null|int New modifier */
     public $newModifier;
     /** @var null|string New name */
     public $newName;
+
     /**
      * Constructs a trait use precedence adaptation node.
      *
@@ -18,16 +20,15 @@ class Alias extends \MolliePrefix\PhpParser\Node\Stmt\TraitUseAdaptation
      * @param null|string    $newName     New name
      * @param array          $attributes  Additional attributes
      */
-    public function __construct($trait, $method, $newModifier, $newName, array $attributes = array())
-    {
+    public function __construct($trait, $method, $newModifier, $newName, array $attributes = array()) {
         parent::__construct($attributes);
         $this->trait = $trait;
         $this->method = $method;
         $this->newModifier = $newModifier;
         $this->newName = $newName;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('trait', 'method', 'newModifier', 'newName');
     }
 }

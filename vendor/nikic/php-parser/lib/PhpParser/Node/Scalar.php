@@ -1,7 +1,7 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node;
+namespace PhpParser\Node;
 
-abstract class Scalar extends \MolliePrefix\PhpParser\Node\Expr
+abstract class Scalar extends Expr
 {
 }

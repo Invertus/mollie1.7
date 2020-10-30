@@ -9,16 +9,18 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer;
 
-use MolliePrefix\PhpCsFixer\ConfigurationException\InvalidFixerConfigurationException;
+namespace PhpCsFixer\Fixer;
+
+use PhpCsFixer\ConfigurationException\InvalidFixerConfigurationException;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  * @author SpacePossum
  *
  * @todo Will incorporate `ConfigurationDefinitionFixerInterface` in 3.0
  */
-interface ConfigurableFixerInterface extends \MolliePrefix\PhpCsFixer\Fixer\FixerInterface
+interface ConfigurableFixerInterface extends FixerInterface
 {
     /**
      * Set configuration.
@@ -37,6 +39,7 @@ interface ConfigurableFixerInterface extends \MolliePrefix\PhpCsFixer\Fixer\Fixe
      * @throws InvalidFixerConfigurationException
      */
     public function configure(array $configuration = null);
+
     /*
      * Defines the available configuration options of the fixer.
      *
