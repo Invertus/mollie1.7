@@ -49,7 +49,7 @@ use PrestaShopException;
  * @deprecated - outside code must always use interface. Use PaymentMethodRepositoryInterface instead.
  * In Containers use PaymentMethodRepositoryInterface::class
  */
-class PaymentMethodRepository extends  AbstractRepository implements PaymentMethodRepositoryInterface
+class PaymentMethodRepository extends AbstractRepository implements PaymentMethodRepositoryInterface
 {
     public function __construct()
     {

@@ -80,6 +80,9 @@ class SettingsSaveService
      * @var MolCarrierInformationService
      */
     private $carrierInformationService;
+    /**
+     * @var PaymentMethodPositionHandlerInterface
+     */
     private $paymentMethodPositionHandler;
 
     public function __construct(
@@ -115,7 +118,7 @@ class SettingsSaveService
         $mollieApiKey = Tools::getValue(Config::MOLLIE_API_KEY);
         $mollieApiKeyTest = Tools::getValue(Config::MOLLIE_API_KEY_TEST);
         $mollieProfileId = Tools::getValue(Config::MOLLIE_PROFILE_ID);
-        $paymentOptionPositions = Tools::getValue('payment_option_position');
+        $paymentOptionPositions = Tools::getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
 
         $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
 
