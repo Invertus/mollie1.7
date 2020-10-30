@@ -26,7 +26,7 @@ class PhoneNumberUtility
             );
         }
 
-        $normalizedNumber = self::normalizeNumber($number, $countryIsoCode);
+        $normalizedNumber = self::normalizeNumber($number, strtoupper($countryIsoCode));
 
         $phoneFormatter = self::getInstance();
 
