@@ -100,13 +100,12 @@ class PaymentMethodService
      * @var CreditCardLogoProvider
      */
     private $creditCardLogoProvider;
-<<<<<<< HEAD
+
     private $paymentMethodSortProvider;
 
     private $countryRepository;
-=======
+
     private $phoneNumberProvider;
->>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
 
     public function __construct(
         Mollie $module,
@@ -116,11 +115,8 @@ class PaymentMethodService
         PaymentsTranslationService $paymentsTranslationService,
         CustomerService $customerService,
         CreditCardLogoProvider $creditCardLogoProvider,
-<<<<<<< HEAD
-        PaymentMethodSortProviderInterface $paymentMethodSortProvider
-=======
+        PaymentMethodSortProviderInterface $paymentMethodSortProvider,
         PhoneNumberProviderInterface $phoneNumberProvider
->>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
     ) {
         $this->module = $module;
         $this->methodRepository = $methodRepository;
@@ -129,11 +125,8 @@ class PaymentMethodService
         $this->paymentsTranslationService = $paymentsTranslationService;
         $this->customerService = $customerService;
         $this->creditCardLogoProvider = $creditCardLogoProvider;
-<<<<<<< HEAD
         $this->paymentMethodSortProvider = $paymentMethodSortProvider;
-=======
         $this->phoneNumberProvider = $phoneNumberProvider;
->>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
     }
 
     public function savePaymentMethod($method)
