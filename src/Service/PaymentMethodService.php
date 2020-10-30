@@ -57,6 +57,7 @@ use Mollie\Utility\LocaleUtility;
 use Mollie\Utility\PaymentFeeUtility;
 use Mollie\Utility\TextFormatUtility;
 use Mollie\Utility\TextGeneratorUtility;
+use Mollie\Provider\PhoneNumberProviderInterface;
 use MolPaymentMethod;
 use Order;
 use PrestaShopDatabaseException;
@@ -99,9 +100,13 @@ class PaymentMethodService
      * @var CreditCardLogoProvider
      */
     private $creditCardLogoProvider;
+<<<<<<< HEAD
     private $paymentMethodSortProvider;
 
     private $countryRepository;
+=======
+    private $phoneNumberProvider;
+>>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
 
     public function __construct(
         Mollie $module,
@@ -111,7 +116,11 @@ class PaymentMethodService
         PaymentsTranslationService $paymentsTranslationService,
         CustomerService $customerService,
         CreditCardLogoProvider $creditCardLogoProvider,
+<<<<<<< HEAD
         PaymentMethodSortProviderInterface $paymentMethodSortProvider
+=======
+        PhoneNumberProviderInterface $phoneNumberProvider
+>>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
     ) {
         $this->module = $module;
         $this->methodRepository = $methodRepository;
@@ -120,7 +129,11 @@ class PaymentMethodService
         $this->paymentsTranslationService = $paymentsTranslationService;
         $this->customerService = $customerService;
         $this->creditCardLogoProvider = $creditCardLogoProvider;
+<<<<<<< HEAD
         $this->paymentMethodSortProvider = $paymentMethodSortProvider;
+=======
+        $this->phoneNumberProvider = $phoneNumberProvider;
+>>>>>>> f7352c4f... creates phone number provider for billin, delivery provider, uses it to make payment
     }
 
     public function savePaymentMethod($method)
@@ -369,19 +382,13 @@ class PaymentMethodService
             if (isset($cart->id_address_invoice)) {
                 $billing = new Address((int)$cart->id_address_invoice);
 
-                $billingCountry = $this->countryRepository->findOneBy([
-                    'id_country' => $billing->id_country
-                ]);
-
                 $orderData->setBillingAddress($billing);
-                // todo: service for phone number retrieval by address
-                if ($billingCountry) {
-                   // $orderData->setBillingPhoneNumber();
-                }
+                $orderData->setBillingPhoneNumber($this->phoneNumberProvider->getFromAddress($billing));
             }
             if (isset($cart->id_address_delivery)) {
                 $shipping = new Address((int)$cart->id_address_delivery);
                 $orderData->setShippingAddress($shipping);
+                $orderData->setDeliveryPhoneNumber($this->phoneNumberProvider->getFromAddress($shipping));
             }
             $orderData->setOrderNumber($orderReference);
             $orderData->setLocale($this->getLocale($molPaymentMethod->method));

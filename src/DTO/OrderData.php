@@ -411,7 +411,6 @@ class OrderData implements JsonSerializable
                 "givenName" => $this->getBillingAddress()->firstname,
                 "familyName" => $this->getBillingAddress()->lastname,
                 "email" => $this->getEmail(),
-                //"phone" => $this->getBillingAddress()->phone,
             ],
             'shippingAddress' => [
                 "organizationName" => $this->getShippingAddress()->company,
@@ -422,7 +421,6 @@ class OrderData implements JsonSerializable
                 "givenName" => $this->getShippingAddress()->firstname,
                 "familyName" => $this->getShippingAddress()->lastname,
                 "email" => $this->getEmail(),
-                //"phone" => $this->getShippingAddress()->phone,
             ],
             'redirectUrl' => $this->getRedirectUrl(),
             'webhookUrl' => $this->getWebhookUrl(),
@@ -434,6 +432,14 @@ class OrderData implements JsonSerializable
             'payment' => $this->getPayment()
         ];
 
+        if ($this->billingPhoneNumber) {
+            $result['billingAddress']['phone'] = $this->billingPhoneNumber;
+        }
 
+        if ($this->deliveryPhoneNumber) {
+            $result['shippingAddress']['phone'] = $this->deliveryPhoneNumber;
+        }
+
+        return $result;
     }
 }
