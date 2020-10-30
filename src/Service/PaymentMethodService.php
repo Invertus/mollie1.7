@@ -78,7 +78,7 @@ class PaymentMethodService
     /**
      * @var MethodCountryRepository
      */
-    private $countryRepository;
+    private $methodCountryRepository;
 
     /**
      * @var CartLinesService
@@ -101,10 +101,12 @@ class PaymentMethodService
     private $creditCardLogoProvider;
     private $paymentMethodSortProvider;
 
+    private $countryRepository;
+
     public function __construct(
         Mollie $module,
         PaymentMethodRepository $methodRepository,
-        MethodCountryRepository $countryRepository,
+        MethodCountryRepository $methodCountryRepository,
         CartLinesService $cartLinesService,
         PaymentsTranslationService $paymentsTranslationService,
         CustomerService $customerService,
@@ -113,7 +115,7 @@ class PaymentMethodService
     ) {
         $this->module = $module;
         $this->methodRepository = $methodRepository;
-        $this->countryRepository = $countryRepository;
+        $this->methodCountryRepository = $methodCountryRepository;
         $this->cartLinesService = $cartLinesService;
         $this->paymentsTranslationService = $paymentsTranslationService;
         $this->customerService = $customerService;
@@ -211,11 +213,11 @@ class PaymentMethodService
             foreach ($methods as $index => $methodId) {
                 $methodObj = new MolPaymentMethod($methodId['id_payment_method']);
                 if ($methodObj->is_countries_applicable) {
-                    if (!$this->countryRepository->checkIfMethodIsAvailableInCountry($methodObj->id_method, $country = Country::getByIso($countryCode))) {
+                    if (!$this->methodCountryRepository->checkIfMethodIsAvailableInCountry($methodObj->id_method, $country = Country::getByIso($countryCode))) {
                         unset($methods[$index]);
                     }
                 } else {
-                    if ($this->countryRepository->checkIfCountryIsExcluded($methodObj->id_method, $country = Country::getByIso($countryCode))) {
+                    if ($this->methodCountryRepository->checkIfCountryIsExcluded($methodObj->id_method, $country = Country::getByIso($countryCode))) {
                         unset($methods[$index]);
                     }
                 }
@@ -366,7 +368,16 @@ class PaymentMethodService
 
             if (isset($cart->id_address_invoice)) {
                 $billing = new Address((int)$cart->id_address_invoice);
+
+                $billingCountry = $this->countryRepository->findOneBy([
+                    'id_country' => $billing->id_country
+                ]);
+
                 $orderData->setBillingAddress($billing);
+                // todo: service for phone number retrieval by address
+                if ($billingCountry) {
+                   // $orderData->setBillingPhoneNumber();
+                }
             }
             if (isset($cart->id_address_delivery)) {
                 $shipping = new Address((int)$cart->id_address_delivery);

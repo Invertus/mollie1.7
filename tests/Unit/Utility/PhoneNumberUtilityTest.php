@@ -5,7 +5,7 @@ use Mollie\Exception\PhoneNumberException;
 use Mollie\Utility\PhoneNumberUtility;
 use PHPUnit\Framework\TestCase;
 
-class PhoneNumberUtilityTest extends TestCase
+class PhoneNumberUtilityTest extends TestCas
 {
     /**
      * @dataProvider provideFormatNumber
@@ -30,7 +30,7 @@ class PhoneNumberUtilityTest extends TestCase
                 'NL',
                 '+31 20 369 8545'
             ],
-            'UK London region phone number without country code and have wrapper' => [
+            'UK London region phone number without country code and have wrapping ()' => [
                 '(020) 1234 5678',
                 'GB',
                 '+44 20 1234 5678'
