@@ -3,7 +3,7 @@
 use Mollie\Service\PaymentMethod\PaymentMethodSortProvider;
 use PHPUnit\Framework\TestCase;
 
-class FakePaymentMethod extends MolPaymentMethod {
+class FakePaymentMethod {
 
     public $name;
     public $position;
