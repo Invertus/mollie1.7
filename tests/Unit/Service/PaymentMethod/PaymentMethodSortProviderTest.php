@@ -41,4 +41,29 @@ class PaymentMethodSortProviderTest extends TestCase
             $sorted
         );
     }
+
+    public function testItSortsPaymentMethodsAscendingWayForConfiguration()
+    {
+        $p1 = new FakePaymentMethod('extraSafe', 0);
+        $p2 = new FakePaymentMethod('superSafe', 2);
+        $p3 = new FakePaymentMethod('paySafe', 4);
+
+        $paymentMethods = [
+            [ 'obj' => $p3],
+            [ 'obj' => $p1 ],
+            [ 'obj' => $p2 ],
+        ];
+
+        $sort = new PaymentMethodSortProvider();
+        $sorted = $sort->getSortedInAscendingWayForConfiguration($paymentMethods);
+
+        $this->assertEquals(
+            [
+                [ 'obj' => $p1],
+                [ 'obj' => $p2 ],
+                [ 'obj' => $p3 ],
+            ],
+            $sorted
+        );
+    }
 }
