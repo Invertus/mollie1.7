@@ -40,10 +40,10 @@ final class PhoneNumberProvider implements PhoneNumberProviderInterface
             return PhoneNumberUtility::internationalizeNumber($phoneNumber, $country->iso_code);
         } catch (PhoneNumberException $e) {
             $this->logger->info(
-                "
-                    Error happened in mollie module when trying to send phone number to payment:
+                '
+                    Error occurred in mollie module when trying to send phone number to payment:
                     Seems like user entered incorrect phone number so we wont provide phone number for mollie payment
-                ",
+                ',
                 [
                     'userEnteredPhone' => $phoneNumber,
                     'countryCode' => $country->iso_code
