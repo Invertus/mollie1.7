@@ -1,6 +1,6 @@
 <?php
 
-use Mollie\Exception\PhoneNumberException;
+use Mollie\Exception\PhoneNumberParseException;
 use Mollie\Utility\PhoneNumberUtility;
 use MolliePrefix\libphonenumber\NumberParseException;
 use PHPUnit\Framework\TestCase;
@@ -61,7 +61,7 @@ class PhoneNumberUtilityTest extends TestCase
      */
     public function testInternationalizePhoneNumber_errors($number, $countryCode, $exceptionCode)
     {
-        $this->expectException(PhoneNumberException::class);
+        $this->expectException(PhoneNumberParseException::class);
         $this->expectExceptionCode($exceptionCode);
 
         PhoneNumberUtility::internationalizeNumber($number, $countryCode);

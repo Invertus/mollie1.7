@@ -4,7 +4,7 @@ namespace Mollie\Provider;
 
 use Address;
 use Country;
-use Mollie\Exception\PhoneNumberException;
+use Mollie\Exception\PhoneNumberParseException;
 use Mollie\Repository\ReadOnlyRepositoryInterface;
 use Mollie\Utility\PhoneNumberUtility;
 use MolliePrefix\Psr\Log\LoggerInterface;
@@ -38,7 +38,7 @@ final class PhoneNumberProvider implements PhoneNumberProviderInterface
 
         try {
             return PhoneNumberUtility::internationalizeNumber($phoneNumber, $country->iso_code);
-        } catch (PhoneNumberException $e) {
+        } catch (PhoneNumberParseException $e) {
             $this->logger->info(
                 '
                     Error occurred in mollie module when trying to send phone number to payment:

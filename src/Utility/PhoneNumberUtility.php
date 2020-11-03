@@ -2,7 +2,7 @@
 
 namespace Mollie\Utility;
 
-use Mollie\Exception\PhoneNumberException;
+use Mollie\Exception\PhoneNumberParseException;
 use MolliePrefix\libphonenumber\NumberParseException;
 use MolliePrefix\libphonenumber\PhoneNumber;
 use MolliePrefix\libphonenumber\PhoneNumberFormat;
@@ -15,12 +15,12 @@ class PhoneNumberUtility
      * @param string $number
      * @param string $countryIsoCode
      *
-     * @throws PhoneNumberException
+     * @throws PhoneNumberParseException
      */
     public static function internationalizeNumber($number, $countryIsoCode)
     {
         if (!Validate::isLanguageIsoCode($countryIsoCode)) {
-            throw new PhoneNumberException(
+            throw new PhoneNumberParseException(
                 'Invalid country code. Expected to match format "/^[a-zA-Z]{2,3}$/"',
                 NumberParseException::INVALID_COUNTRY_CODE
             );
@@ -38,7 +38,7 @@ class PhoneNumberUtility
      * @param $countryIsoCode
      * @return PhoneNumber
      *
-     * @throws PhoneNumberException
+     * @throws PhoneNumberParseException
      */
     private static function normalizeNumber($number, $countryIsoCode)
     {
@@ -47,7 +47,7 @@ class PhoneNumberUtility
         try {
             return $phoneFormatter->parse($number, $countryIsoCode);
         } catch (NumberParseException $exception) {
-            throw new PhoneNumberException($exception->getMessage(), $exception->getCode(), $exception);
+            throw new PhoneNumberParseException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
