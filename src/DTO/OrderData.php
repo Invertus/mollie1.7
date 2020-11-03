@@ -113,7 +113,14 @@ class OrderData implements JsonSerializable
      */
     private $payment;
 
+    /**
+     * @var string
+     */
     private $billingPhoneNumber;
+
+    /**
+     * @var string
+     */
     private $deliveryPhoneNumber;
 
     public function __construct(
