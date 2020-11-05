@@ -28,10 +28,6 @@ class PhoneNumberUtilityTest extends TestCase
                 false
             ],
             [
-                '+notnumber',
-                false
-            ],
-            [
                 '+1', // cant be but for now lets keep it as is.
                 true
             ]
