@@ -2,57 +2,26 @@
 
 namespace Mollie\Utility;
 
-use Mollie\Exception\PhoneNumberParseException;
-use MolliePrefix\libphonenumber\NumberParseException;
-use MolliePrefix\libphonenumber\PhoneNumber;
-use MolliePrefix\libphonenumber\PhoneNumberFormat;
-use MolliePrefix\libphonenumber\PhoneNumberUtil;
-use Validate;
-
 class PhoneNumberUtility
 {
     /**
-     * @param string $number
-     * @param string $countryIsoCode
+     * Simple and naive implementation of checking if phone number is international. This does only check if number
+     * is numeric and has + sign in front of it.
      *
-     * @throws PhoneNumberParseException
+     * @param $phoneNumber
+     *
+     * @return bool
      */
-    public static function internationalizeNumber($number, $countryIsoCode)
+    public static function isInternationalPhoneNumber($phoneNumber)
     {
-        if (!Validate::isLanguageIsoCode($countryIsoCode)) {
-            throw new PhoneNumberParseException(
-                'Invalid country code. Expected to match format "/^[a-zA-Z]{2,3}$/"',
-                NumberParseException::INVALID_COUNTRY_CODE
-            );
+        $hasPlusPrefix = strpos($phoneNumber, '+') === 0;
+
+        if (!$hasPlusPrefix) {
+            return false;
         }
 
-        $normalizedNumber = self::normalizeNumber($number, strtoupper($countryIsoCode));
+        $onlyPhoneNumber = str_replace('+', '', $phoneNumber);
 
-        $phoneFormatter = self::getInstance();
-
-        return $phoneFormatter->format($normalizedNumber, PhoneNumberFormat::INTERNATIONAL);
-    }
-
-    /**
-     * @param $number
-     * @param $countryIsoCode
-     * @return PhoneNumber
-     *
-     * @throws PhoneNumberParseException
-     */
-    private static function normalizeNumber($number, $countryIsoCode)
-    {
-        $phoneFormatter = self::getInstance();
-
-        try {
-            return $phoneFormatter->parse($number, $countryIsoCode);
-        } catch (NumberParseException $exception) {
-            throw new PhoneNumberParseException($exception->getMessage(), $exception->getCode(), $exception);
-        }
-    }
-
-    private static function getInstance()
-    {
-        return PhoneNumberUtil::getInstance();
+        return is_numeric($onlyPhoneNumber);
     }
 }
