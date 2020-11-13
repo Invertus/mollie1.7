@@ -140,7 +140,7 @@ class Uninstall
          * @var OrderStateRepository $orderStateRepository
          */
         $orderStateRepository = $this->module->getContainer(OrderStateRepository::class);
-        $orderStateRepository->deleteMollieStatuses($this->module->name);
+        $orderStateRepository->deleteStatuses();
     }
 
     private function uninstallTabs()
