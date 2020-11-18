@@ -103,6 +103,12 @@ services:
       - '@mollie'
 
   Mollie\Service\CartDuplicationService:
+    class: Mollie\Service\CartDuplicationService
+    arguments:
+      - '@Mollie\Service\CartRuleDuplicationService'
+
+  Mollie\Service\CartRuleDuplicationService:
+    class: Mollie\Service\CartRuleDuplicationService
 
   Mollie\Service\OrderCartAssociationService:
     arguments:

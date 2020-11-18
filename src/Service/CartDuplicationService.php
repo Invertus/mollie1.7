@@ -43,26 +43,40 @@ use Order;
 class CartDuplicationService
 {
     /**
-     *
-     *
+     * @var CartRuleDuplicationService
+     */
+    private $cartRuleDuplicationService;
+
+    public function __construct(CartRuleDuplicationService $cartRuleDuplicationService)
+    {
+        $this->cartRuleDuplicationService = $cartRuleDuplicationService;
+    }
+
+    /**
      * @param int $cartId
+     * @param string $backtraceLocation
      *
      * @return int
      *
      * @throws \PrestaShopDatabaseException
+     * @throws \PrestaShopException
      */
-    public function restoreCart($cartId)
+    public function restoreCart($cartId, $backtraceLocation)
     {
         $context = Context::getContext();
         $cart = new Cart($cartId);
+
+        $cartRules = $cart->getCartRules(CartRule::FILTER_ACTION_ALL, false);
+        $this->cartRuleDuplicationService->resetQuantities($cart, $backtraceLocation, $cartRules);
+
         $duplication = $cart->duplicate();
         if ($duplication['success']) {
             /** @var Cart $duplicatedCart */
             $duplicatedCart = $duplication['cart'];
-
             $context->cookie->id_cart = $duplicatedCart->id;
             $context->cart = $duplicatedCart;
             $context->cookie->write();
+            $this->cartRuleDuplicationService->restoreCartRules($cartRules);
 
             return  $duplicatedCart->id;
         }

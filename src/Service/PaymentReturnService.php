@@ -137,7 +137,7 @@ class PaymentReturnService
     {
         if(null !== $paymentMethod) {
 
-            $this->cartDuplicationService->restoreCart($order->id_cart);
+            $this->cartDuplicationService->restoreCart($order->id_cart, Config::RESTORE_CART_BACKTRACE_RETURN_CONTROLLER);
 
             $warning[] = $this->module->l('Your payment was not successful, please try again.');
 

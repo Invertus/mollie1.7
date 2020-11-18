@@ -265,6 +265,9 @@ class Config
         self::MOLLIE_VOUCHER_CATEGORY_ECO => 'eco'
     ];
     const MOLLIE_VOUCHER_MINIMAL_AMOUNT = 1;
+    const RESTORE_CART_BACKTRACE_MEMORIZATION_SERVICE = 'memo';
+    const RESTORE_CART_BACKTRACE_RETURN_CONTROLLER = 'return';
+
 
     /** @var array $methods */
     public static $methods = [

@@ -35,6 +35,7 @@
 
 namespace Mollie\Service;
 
+use Mollie\Config\Config;
 use MolPendingOrderCart;
 use Order;
 
@@ -58,7 +59,7 @@ class OrderCartAssociationService
     public function createPendingCart(Order $order)
     {
         // globally restores the cart.
-        $newCartId = $this->cartDuplication->restoreCart($order->id_cart);
+        $newCartId = $this->cartDuplication->restoreCart($order->id_cart, Config::RESTORE_CART_BACKTRACE_MEMORIZATION_SERVICE);
 
         $pendingOrderCart = new MolPendingOrderCart();
         $pendingOrderCart->cart_id = $newCartId;
