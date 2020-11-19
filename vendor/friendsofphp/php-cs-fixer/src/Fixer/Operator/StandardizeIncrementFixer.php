@@ -11,7 +11,7 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractIncrementOperatorFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 use MolliePrefix\PhpCsFixer\Tokenizer\CT;
@@ -20,7 +20,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author ntzm
  */
-final class StandardizeIncrementFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class StandardizeIncrementFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractIncrementOperatorFixer
 {
     /**
      * @internal
@@ -69,40 +69,10 @@ final class StandardizeIncrementFixer extends \MolliePrefix\PhpCsFixer\AbstractF
             if (!$operator->isGivenKind([\T_PLUS_EQUAL, \T_MINUS_EQUAL])) {
                 continue;
             }
-            $startIndex = $this->findStart($tokens, $tokens->getPrevMeaningfulToken($operatorIndex));
+            $startIndex = $this->findStart($tokens, $operatorIndex);
             $this->clearRangeLeaveComments($tokens, $tokens->getPrevMeaningfulToken($operatorIndex) + 1, $numberIndex);
             $tokens->insertAt($startIndex, new \MolliePrefix\PhpCsFixer\Tokenizer\Token($operator->isGivenKind(\T_PLUS_EQUAL) ? [\T_INC, '++'] : [\T_DEC, '--']));
         }
-    }
-    /**
-     * Find the start of a reference.
-     *
-     * @param int $index
-     *
-     * @return int
-     */
-    private function findStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        while (!$tokens[$index]->equalsAny(['$', [\T_VARIABLE]])) {
-            if ($tokens[$index]->equals(']')) {
-                $index = $tokens->findBlockStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_INDEX_SQUARE_BRACE, $index);
-            } elseif ($tokens[$index]->isGivenKind(\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_PROP_BRACE_CLOSE)) {
-                $index = $tokens->findBlockStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_DYNAMIC_PROP_BRACE, $index);
-            } elseif ($tokens[$index]->isGivenKind(\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_VAR_BRACE_CLOSE)) {
-                $index = $tokens->findBlockStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_DYNAMIC_VAR_BRACE, $index);
-            } elseif ($tokens[$index]->isGivenKind(\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_INDEX_CURLY_BRACE_CLOSE)) {
-                $index = $tokens->findBlockStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_ARRAY_INDEX_CURLY_BRACE, $index);
-            } else {
-                $index = $tokens->getPrevMeaningfulToken($index);
-            }
-        }
-        while ($tokens[$tokens->getPrevMeaningfulToken($index)]->equals('$')) {
-            $index = $tokens->getPrevMeaningfulToken($index);
-        }
-        if ($tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind(\T_OBJECT_OPERATOR)) {
-            return $this->findStart($tokens, $tokens->getPrevMeaningfulToken($index));
-        }
-        return $index;
     }
     /**
      * Clear tokens in the given range unless they are comments.

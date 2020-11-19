@@ -38,6 +38,7 @@ final class NativeFunctionTypeDeclarationCasingFixer extends \MolliePrefix\PhpCs
      * iterable PHP 7.1.0
      * void     PHP 7.1.0
      * object   PHP 7.2.0
+     * static   PHP 8.0.0 (return type only)
      *
      * @var array<string, true>
      */
@@ -58,6 +59,9 @@ final class NativeFunctionTypeDeclarationCasingFixer extends \MolliePrefix\PhpCs
         }
         if (\PHP_VERSION_ID >= 70200) {
             $this->hints = \array_merge($this->hints, ['object' => \true]);
+        }
+        if (\PHP_VERSION_ID >= 80000) {
+            $this->hints = \array_merge($this->hints, ['static' => \true]);
         }
         $this->functionsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer();
     }
@@ -110,16 +114,17 @@ final class NativeFunctionTypeDeclarationCasingFixer extends \MolliePrefix\PhpCs
         if (null === $type) {
             return;
         }
-        $argumentIndex = $type->getStartIndex();
-        if ($argumentIndex !== $type->getEndIndex()) {
+        $argumentStartIndex = $type->getStartIndex();
+        $argumentExpectedEndIndex = $type->isNullable() ? $tokens->getNextMeaningfulToken($argumentStartIndex) : $argumentStartIndex;
+        if ($argumentExpectedEndIndex !== $type->getEndIndex()) {
             return;
-            // the type to fix are always unqualified and so are always composed as one token
+            // the type to fix is always unqualified and so is always composed of one token and possible a nullable '?' one
         }
         $lowerCasedName = \strtolower($type->getName());
         if (!isset($this->hints[$lowerCasedName])) {
             return;
             // check of type is of interest based on name (slower check than previous index based)
         }
-        $tokens[$argumentIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$tokens[$argumentIndex]->getId(), $lowerCasedName]);
+        $tokens[$argumentExpectedEndIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$tokens[$argumentExpectedEndIndex]->getId(), $lowerCasedName]);
     }
 }

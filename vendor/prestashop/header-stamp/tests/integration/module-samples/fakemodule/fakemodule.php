@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * Copyright since 2006 PrestaShop SA and Contributors
@@ -23,7 +23,7 @@ namespace MolliePrefix;
 if (!\defined('_PS_VERSION_')) {
     exit;
 }
-class Fakemodule extends \MolliePrefix\Module
+class Fakemodule extends \test\Module
 {
 }
-\class_alias('MolliePrefix\\Fakemodule', 'MolliePrefix\\Fakemodule', \false);
+\class_alias('test\\Fakemodule', 'test\\Fakemodule', \false);

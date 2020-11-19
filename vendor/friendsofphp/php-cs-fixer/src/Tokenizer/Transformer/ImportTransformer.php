@@ -31,13 +31,6 @@ final class ImportTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abstrac
     /**
      * {@inheritdoc}
      */
-    public function getCustomTokens()
-    {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT];
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function getRequiredPhpVersionId()
     {
         return 50600;
@@ -54,5 +47,12 @@ final class ImportTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abstrac
         if ($prevToken->isGivenKind(\T_USE)) {
             $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->isGivenKind(\T_FUNCTION) ? \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT : \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT, $token->getContent()]);
         }
+    }
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDeprecatedCustomTokens()
+    {
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONST_IMPORT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_FUNCTION_IMPORT];
     }
 }

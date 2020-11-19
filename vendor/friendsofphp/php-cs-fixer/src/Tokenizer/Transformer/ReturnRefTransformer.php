@@ -27,13 +27,6 @@ final class ReturnRefTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abst
     /**
      * {@inheritdoc}
      */
-    public function getCustomTokens()
-    {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF];
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function getRequiredPhpVersionId()
     {
         return 50000;
@@ -50,5 +43,12 @@ final class ReturnRefTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abst
         if ($token->equals('&') && $tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind($prevKinds)) {
             $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF, '&']);
         }
+    }
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDeprecatedCustomTokens()
+    {
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF];
     }
 }

@@ -11,7 +11,7 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
@@ -25,7 +25,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  * @author SpacePossum
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpUnitDedicateAssertFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitDedicateAssertFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     private static $fixMap = ['array_key_exists' => ['assertArrayNotHasKey', 'assertArrayHasKey'], 'empty' => ['assertNotEmpty', 'assertEmpty'], 'file_exists' => ['assertFileNotExists', 'assertFileExists'], 'is_array' => \true, 'is_bool' => \true, 'is_callable' => \true, 'is_dir' => ['assertDirectoryNotExists', 'assertDirectoryExists'], 'is_double' => \true, 'is_float' => \true, 'is_infinite' => ['assertFinite', 'assertInfinite'], 'is_int' => \true, 'is_integer' => \true, 'is_long' => \true, 'is_nan' => [\false, 'assertNan'], 'is_null' => ['assertNotNull', 'assertNull'], 'is_numeric' => \true, 'is_object' => \true, 'is_readable' => ['assertNotIsReadable', 'assertIsReadable'], 'is_real' => \true, 'is_resource' => \true, 'is_scalar' => \true, 'is_string' => \true, 'is_writable' => ['assertNotIsWritable', 'assertIsWritable']];
     /**
@@ -60,13 +60,6 @@ final class PhpUnitDedicateAssertFixer extends \MolliePrefix\PhpCsFixer\Abstract
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isTokenKindFound(\T_STRING);
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function isRisky()
     {
         return \true;
@@ -77,12 +70,24 @@ final class PhpUnitDedicateAssertFixer extends \MolliePrefix\PhpCsFixer\Abstract
     public function getDefinition()
     {
         return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('PHPUnit assertions like `assertInternalType`, `assertFileExists`, should be used over `assertTrue`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
-$this->assertTrue(is_float( $a), "my message");
-$this->assertTrue(is_nan($a));
+final class MyTest extends \\PHPUnit_Framework_TestCase
+{
+    public function testSomeTest()
+    {
+        $this->assertTrue(is_float( $a), "my message");
+        $this->assertTrue(is_nan($a));
+    }
+}
 '), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
-$this->assertTrue(is_dir($a));
-$this->assertTrue(is_writable($a));
-$this->assertTrue(is_readable($a));
+final class MyTest extends \\PHPUnit_Framework_TestCase
+{
+    public function testSomeTest()
+    {
+        $this->assertTrue(is_dir($a));
+        $this->assertTrue(is_writable($a));
+        $this->assertTrue(is_readable($a));
+    }
+}
 ', ['target' => \MolliePrefix\PhpCsFixer\Fixer\PhpUnit\PhpUnitTargetVersion::VERSION_5_6])], null, 'Fixer could be risky if one is overriding PHPUnit\'s native methods.');
     }
     /**
@@ -98,9 +103,9 @@ $this->assertTrue(is_readable($a));
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
-        foreach ($this->getPreviousAssertCall($tokens) as $assertCall) {
+        foreach ($this->getPreviousAssertCall($tokens, $startIndex, $endIndex) as $assertCall) {
             // test and fix for assertTrue/False to dedicated asserts
             if ('asserttrue' === $assertCall['loweredName'] || 'assertfalse' === $assertCall['loweredName']) {
                 $this->fixAssertTrueFalse($tokens, $assertCall);
@@ -214,10 +219,14 @@ $this->assertTrue(is_readable($a));
         $this->removeFunctionCall($tokens, $defaultNamespaceTokenIndex, $countCallIndex, $countCallOpenBraceIndex, $countCallCloseBraceIndex);
         $tokens[$assertCall['index']] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, \false === \strpos($assertCall['loweredName'], 'not', 6) ? 'assertCount' : 'assertNotCount']);
     }
-    private function getPreviousAssertCall(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    /**
+     * @param int $startIndex
+     * @param int $endIndex
+     */
+    private function getPreviousAssertCall(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         $functionsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer();
-        for ($index = $tokens->count(); $index > 0; --$index) {
+        for ($index = $endIndex; $index > $startIndex; --$index) {
             $index = $tokens->getPrevTokenOfKind($index, [[\T_STRING]]);
             if (null === $index) {
                 return;

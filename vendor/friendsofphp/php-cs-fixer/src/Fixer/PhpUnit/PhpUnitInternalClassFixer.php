@@ -11,9 +11,9 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
 use MolliePrefix\PhpCsFixer\DocBlock\Line;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
@@ -21,13 +21,12 @@ use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Gert de Pagter <BackEndTea@gmail.com>
  */
-final class PhpUnitInternalClassFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitInternalClassFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * {@inheritdoc}
@@ -48,40 +47,26 @@ final class PhpUnitInternalClassFixer extends \MolliePrefix\PhpCsFixer\AbstractF
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isTokenKindFound(\T_CLASS);
-    }
-    /**
-     * {@inheritdoc}
-     */
     protected function createConfigurationDefinition()
     {
         $types = ['normal', 'final', 'abstract'];
         return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('types', 'What types of classes to mark as internal'))->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset($types)])->setAllowedTypes(['array'])->setDefault(['normal', 'final'])->getOption()]);
     }
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens, \true) as $indexes) {
-            $this->markClassInternal($tokens, $indexes[0]);
-        }
-    }
     /**
-     * @param int $startIndex
+     * {@inheritdoc}
      */
-    private function markClassInternal(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         $classIndex = $tokens->getPrevTokenOfKind($startIndex, [[\T_CLASS]]);
         if (!$this->isAllowedByConfiguration($tokens, $classIndex)) {
             return;
         }
         $docBlockIndex = $this->getDocBlockIndex($tokens, $classIndex);
-        if ($this->hasDocBlock($tokens, $classIndex)) {
+        if ($this->isPHPDoc($tokens, $docBlockIndex)) {
             $this->updateDocBlockIfNeeded($tokens, $docBlockIndex);
-            return;
+        } else {
+            $this->createDocBlock($tokens, $docBlockIndex);
         }
-        $this->createDocBlock($tokens, $docBlockIndex);
     }
     /**
      * @param int $i
@@ -117,28 +102,6 @@ final class PhpUnitInternalClassFixer extends \MolliePrefix\PhpCsFixer\AbstractF
         $lines = $this->addInternalAnnotation($doc, $tokens, $docBlockIndex);
         $lines = \implode('', $lines);
         $tokens[$docBlockIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $lines]);
-    }
-    /**
-     * @param int $index
-     *
-     * @return bool
-     */
-    private function hasDocBlock(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-        return $tokens[$docBlockIndex]->isGivenKind(\T_DOC_COMMENT);
-    }
-    /**
-     * @param int $index
-     *
-     * @return int
-     */
-    private function getDocBlockIndex(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        do {
-            $index = $tokens->getPrevNonWhitespace($index);
-        } while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT, \T_COMMENT]));
-        return $index;
     }
     /**
      * @param int $index

@@ -25,45 +25,45 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'M' => 
         array (
             'Mollie\\' => 7,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 104,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 111,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 104,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 100,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 106,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 104,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 112,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 103,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 107,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 115,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 112,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 116,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 102,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 104,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 103,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 102,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 94,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 86,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 95,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 92,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 88,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 97,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 105,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 88,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 89,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 89,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 94,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 97,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 89,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 100,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 106,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 101,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 94,
-            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 96,
+            'MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 36,
+            'MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 36,
+            'MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 39,
+            'MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 46,
+            'MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 39,
+            'MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 36,
+            'MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 35,
+            'MolliePrefix\\Symfony\\Component\\Yaml\\' => 36,
+            'MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 41,
+            'MolliePrefix\\Symfony\\Component\\Process\\' => 39,
+            'MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 47,
+            'MolliePrefix\\Symfony\\Component\\Finder\\' => 38,
+            'MolliePrefix\\Symfony\\Component\\Filesystem\\' => 42,
+            'MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 50,
+            'MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 47,
+            'MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 51,
+            'MolliePrefix\\Symfony\\Component\\Debug\\' => 37,
+            'MolliePrefix\\Symfony\\Component\\Console\\' => 39,
+            'MolliePrefix\\Symfony\\Component\\Config\\' => 38,
+            'MolliePrefix\\Symfony\\Component\\Cache\\' => 37,
+            'MolliePrefix\\PhpCsFixer\\' => 24,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 107,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 99,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 108,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 105,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 114,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 110,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 118,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 101,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 102,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 107,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 110,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 102,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 113,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 119,
+            'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 109,
+            'MolliePrefix\\Composer\\XdebugHandler\\' => 36,
+            'MolliePrefix\\Composer\\Semver\\' => 29,
         ),
     );
 
@@ -72,167 +72,167 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Php72\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Php70\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php70',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Intl\\Normalizer\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Intl\\Idn\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 
+        'MolliePrefix\\Symfony\\Polyfill\\Apcu\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-apcu',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Yaml\\' => 
+        'MolliePrefix\\Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 
+        'MolliePrefix\\Symfony\\Component\\Stopwatch\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/stopwatch',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Process\\' => 
+        'MolliePrefix\\Symfony\\Component\\Process\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/process',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 
+        'MolliePrefix\\Symfony\\Component\\OptionsResolver\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Finder\\' => 
+        'MolliePrefix\\Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Filesystem\\' => 
+        'MolliePrefix\\Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 
+        'MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/expression-language',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 
+        'MolliePrefix\\Symfony\\Component\\EventDispatcher\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 
+        'MolliePrefix\\Symfony\\Component\\DependencyInjection\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/dependency-injection',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Debug\\' => 
+        'MolliePrefix\\Symfony\\Component\\Debug\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/debug',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Console\\' => 
+        'MolliePrefix\\Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Config\\' => 
+        'MolliePrefix\\Symfony\\Component\\Config\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Symfony\\Component\\Cache\\' => 
+        'MolliePrefix\\Symfony\\Component\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/cache',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/container/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/cache/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/prestashop/header-stamp/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/prestashop/decimal/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/prestashop/php-dev-tools/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpCsFixer\\' => 
+        'MolliePrefix\\PhpCsFixer\\' => 
         array (
             0 => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\HeaderStamp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/prestashop/header-stamp/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\Decimal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/prestashop/decimal/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PrestaShop\\CodingStandards\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/prestashop/php-dev-tools/src',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\PhpParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Mollie\\Api\\' => 
         array (
             0 => __DIR__ . '/..' . '/mollie/mollie-api-php/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\Promise\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Doctrine\\Common\\Annotations\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\XdebugHandler\\' => 
+        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
+        ),
+        'MolliePrefix\\Composer\\XdebugHandler\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/xdebug-handler/src',
         ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\Semver\\' => 
+        'MolliePrefix\\Composer\\Semver\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/semver/src',
-        ),
-        'MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\MolliePrefix\\Composer\\CaBundle\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
     );
 
     public static $classMap = array (
-        'A' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Files/SideEffectsUnitTest.1.inc',
-        'ABC' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/PropertyDeclarationUnitTest.inc',
+        'A' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
+        'ABC' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.2.inc',
         'A\\B' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Classes/ClassDeclarationUnitTest.1.inc',
         'A\\B\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.3.inc',
         'A\\B\\MyInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.3.inc',
@@ -249,17 +249,19 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'AbstractEditingScreenModeWidgetActions' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/DisallowSelfActionsUnitTest.inc',
         'AdminMollieAjaxController' => __DIR__ . '/../..' . '/controllers/admin/AdminMollieAjaxController.php',
         'AdminMollieModuleController' => __DIR__ . '/../..' . '/controllers/admin/AdminMollieModuleController.php',
+        'AnonymousFn' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'Another_Class' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentUnitTest.inc',
         'App\\Controller\\MyController' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Files/FileHeaderUnitTest.6.inc',
         'AssetListingAssetType' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/UnusedSystemUnitTest.inc',
         'AssetListingUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/IncludeSystemUnitTest.inc',
-        'Bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Classes/ClassDeclarationUnitTest.1.inc',
+        'Bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/DisallowMultipleAssignmentsUnitTest.inc',
         'BarFoo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/CodeAnalysis/UselessOverridingMethodUnitTest.inc',
         'Bar\\Bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Files/SideEffectsUnitTest.6.inc',
         'Bar_Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/CodeAnalysis/UnnecessaryFinalModifierUnitTest.inc',
-        'Base' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
-        'Baz' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Namespaces/UseDeclarationUnitTest.11.inc',
+        'Base' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMemberPropertiesTest.inc',
+        'Baz' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentUnitTest.inc',
         'C' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Functions/FunctionCallSignatureUnitTest.inc',
+        'C0' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'C1' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
         'C2' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
         'C3' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
@@ -283,21 +285,18 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'ClassOpeningBraceTabIndented' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Classes/ClassDeclarationUnitTest.2.inc',
         'ClassUsingComplexTraits' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'ClassUsingSimpleTraits' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
-        'Closure_Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Methods/CamelCapsMethodNameUnitTest.inc',
+        'Closure_Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Scope/MethodScopeUnitTest.inc',
         'CodeSnifferFail' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Classes/ClassDeclarationUnitTest.1.inc',
         'Comment' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/ClassCommentUnitTest.inc',
         'CommentedOutCodeAtStartOfClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CommentedOutCodeAtStartOfClassNoBlankLine' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CompletelyWrongClassName' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
-        'ComposerAutoloaderInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_real.php',
-        'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'Composer\\Autoload\\ComposerStaticInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Controller' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'CorrectClassDeclaration' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
         'CorrectClassDeclarationWithExtends' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
         'CorrectClassDeclarationWithImplements' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
         'CustomChildCreator' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
-        'D\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.3.inc',
+        'D\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.5.inc',
         'DelProvider' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/ForbiddenFunctionsUnitTest.inc',
         'Empty_Class_Doc' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/ClassCommentUnitTest.inc',
         'Empty_Interface_Doc' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Commenting/ClassCommentUnitTest.inc',
@@ -306,19 +305,24 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'ExampleClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/DisallowSpaceIndentUnitTest.1.inc',
         'ExtraClassFileNameUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
         'Extra_Description_Newlines' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/ClassCommentUnitTest.inc',
-        'False\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/LowerCaseConstantUnitTest.inc',
-        'False\\True' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/LowerCaseConstantUnitTest.inc',
+        'False\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/UpperCaseConstantUnitTest.inc',
+        'False\\True' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/UpperCaseConstantUnitTest.inc',
         'File' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassDeclarationUnitTest.inc',
-        'Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Classes/ClassDeclarationUnitTest.1.inc',
+        'Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/BackfillFnTokenTest.inc',
         'Foo1' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Classes/ClosingBraceUnitTest.inc',
         'Foo2' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Classes/ClosingBraceUnitTest.inc',
         'Foo3' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Classes/ClosingBraceUnitTest.inc',
-        'FooBar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/CamelCapsFunctionNameUnitTest.inc',
+        'FooBar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/ScopeSettingWithNamespaceOperatorTest.inc',
         'Foo\\Bah\\BarFoo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'Foo\\Bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'Foo\\Bar\\Baz' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'Foo\\Bar\\Nested_Anon_Class' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'Foo\\Baz\\BarFoo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
+        'Foo\\Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
+        'Foo\\SomeClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
+        'Foo\\Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
+        'Foo\\Test123' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
+        'Foo\\foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'Foo_Bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/CodeAnalysis/UnnecessaryFinalModifierUnitTest.inc',
         'FunctionCommentThrowTagUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
         'GlobalNameSpaceClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
@@ -363,13 +367,20 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\APCuIterator' => __DIR__ . '/..' . '/symfony/polyfill-apcu/bootstrap.php',
         'MolliePrefix\\ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
         'MolliePrefix\\AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
+        'MolliePrefix\\ComposerAutoloaderInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_real.php',
+        'MolliePrefix\\Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
+        'MolliePrefix\\Composer\\Autoload\\ComposerStaticInite1092e3840753b3cdf13830847524190' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'MolliePrefix\\Composer\\CaBundle\\CaBundle' => __DIR__ . '/..' . '/composer/ca-bundle/src/CaBundle.php',
         'MolliePrefix\\Composer\\Semver\\Comparator' => __DIR__ . '/..' . '/composer/semver/src/Comparator.php',
-        'MolliePrefix\\Composer\\Semver\\Constraint\\AbstractConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/AbstractConstraint.php',
+        'MolliePrefix\\Composer\\Semver\\CompilingMatcher' => __DIR__ . '/..' . '/composer/semver/src/CompilingMatcher.php',
+        'MolliePrefix\\Composer\\Semver\\Constraint\\Bound' => __DIR__ . '/..' . '/composer/semver/src/Constraint/Bound.php',
         'MolliePrefix\\Composer\\Semver\\Constraint\\Constraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/Constraint.php',
         'MolliePrefix\\Composer\\Semver\\Constraint\\ConstraintInterface' => __DIR__ . '/..' . '/composer/semver/src/Constraint/ConstraintInterface.php',
-        'MolliePrefix\\Composer\\Semver\\Constraint\\EmptyConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/EmptyConstraint.php',
+        'MolliePrefix\\Composer\\Semver\\Constraint\\MatchAllConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/MatchAllConstraint.php',
+        'MolliePrefix\\Composer\\Semver\\Constraint\\MatchNoneConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/MatchNoneConstraint.php',
         'MolliePrefix\\Composer\\Semver\\Constraint\\MultiConstraint' => __DIR__ . '/..' . '/composer/semver/src/Constraint/MultiConstraint.php',
+        'MolliePrefix\\Composer\\Semver\\Interval' => __DIR__ . '/..' . '/composer/semver/src/Interval.php',
+        'MolliePrefix\\Composer\\Semver\\Intervals' => __DIR__ . '/..' . '/composer/semver/src/Intervals.php',
         'MolliePrefix\\Composer\\Semver\\Semver' => __DIR__ . '/..' . '/composer/semver/src/Semver.php',
         'MolliePrefix\\Composer\\Semver\\VersionParser' => __DIR__ . '/..' . '/composer/semver/src/VersionParser.php',
         'MolliePrefix\\Composer\\XdebugHandler\\PhpConfig' => __DIR__ . '/..' . '/composer/xdebug-handler/src/PhpConfig.php',
@@ -400,7 +411,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/lib/Doctrine/Common/Lexer/AbstractLexer.php',
         'MolliePrefix\\Doctrine\\Tests\\Common\\Lexer\\AbstractLexerTest' => __DIR__ . '/..' . '/doctrine/lexer/tests/Doctrine/Common/Lexer/AbstractLexerTest.php',
         'MolliePrefix\\Doctrine\\Tests\\Common\\Lexer\\ConcreteLexer' => __DIR__ . '/..' . '/doctrine/lexer/tests/Doctrine/Common/Lexer/ConcreteLexer.php',
-        'MolliePrefix\\Error' => __DIR__ . '/..' . '/paragonie/random_compat/lib/error_polyfill.php',
+        'MolliePrefix\\Error' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/Error.php',
         'MolliePrefix\\Fakemodule' => __DIR__ . '/..' . '/prestashop/header-stamp/tests/integration/expected/fakemodule/fakemodule.php',
         'MolliePrefix\\FolderComparator' => __DIR__ . '/..' . '/prestashop/header-stamp/tests/integration/runner/FolderComparator.php',
         'MolliePrefix\\Gsitemap' => __DIR__ . '/..' . '/prestashop/header-stamp/tests/integration/expected/gsitemap/gsitemap.php',
@@ -1108,6 +1119,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PHP_CodeSniffer\\Standards\\Zend\\Tests\\NamingConventions\\ValidVariableNameUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Zend/Tests/NamingConventions/ValidVariableNameUnitTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\AbstractMethodUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/AbstractMethodUnitTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\AllTests' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/AllTests.php',
+        'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Autoloader\\DetermineLoadedClassTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Autoloader/DetermineLoadedClassTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\ErrorSuppressionTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/ErrorSuppressionTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\File\\FindEndOfStatementTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindEndOfStatementTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\File\\FindExtendedClassNameTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.php',
@@ -1126,14 +1138,17 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\AnonClassParenthesisOwnerTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/AnonClassParenthesisOwnerTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\BackfillFnTokenTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/BackfillFnTokenTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\BackfillNumericSeparatorTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/BackfillNumericSeparatorTest.php',
+        'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\NullsafeObjectOperatorTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/NullsafeObjectOperatorTest.php',
+        'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\ScopeSettingWithNamespaceOperatorTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/ScopeSettingWithNamespaceOperatorTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\ShortArrayTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/ShortArrayTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\StableCommentWhitespaceTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/StableCommentWhitespaceTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\StableCommentWhitespaceWinTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/StableCommentWhitespaceWinTest.php',
+        'MolliePrefix\\PHP_CodeSniffer\\Tests\\Core\\Tokenizer\\UndoNamespacedNameSingleTokenTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/UndoNamespacedNameSingleTokenTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\FileList' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/FileList.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\PHP_CodeSniffer_AllTests' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/AllTests.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Standards\\AbstractSniffUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Standards/AbstractSniffUnitTest.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tests\\Standards\\AllSniffs' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Standards/AllSniffs.php',
-        'MolliePrefix\\PHP_CodeSniffer\\Tests\\TestSuite' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/TestSuite7.php',
+        'MolliePrefix\\PHP_CodeSniffer\\Tests\\TestSuite' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/TestSuite.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tokenizers\\CSS' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Tokenizers/CSS.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tokenizers\\Comment' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Tokenizers/Comment.php',
         'MolliePrefix\\PHP_CodeSniffer\\Tokenizers\\JS' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Tokenizers/JS.php',
@@ -1152,6 +1167,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\AbstractFunctionReferenceFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractFunctionReferenceFixer.php',
         'MolliePrefix\\PhpCsFixer\\AbstractLinesBeforeNamespaceFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractLinesBeforeNamespaceFixer.php',
         'MolliePrefix\\PhpCsFixer\\AbstractNoUselessElseFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractNoUselessElseFixer.php',
+        'MolliePrefix\\PhpCsFixer\\AbstractPhpdocToTypeDeclarationFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractPhpdocToTypeDeclarationFixer.php',
         'MolliePrefix\\PhpCsFixer\\AbstractPhpdocTypesFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractPhpdocTypesFixer.php',
         'MolliePrefix\\PhpCsFixer\\AbstractProxyFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractProxyFixer.php',
         'MolliePrefix\\PhpCsFixer\\AbstractPsrAutoloadingFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/AbstractPsrAutoloadingFixer.php',
@@ -1175,10 +1191,10 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\Console\\Application' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Application.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\DescribeCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/DescribeCommand.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\DescribeNameNotFoundException' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/DescribeNameNotFoundException.php',
+        'MolliePrefix\\PhpCsFixer\\Console\\Command\\DocumentationCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/DocumentationCommand.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\FixCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/FixCommand.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\FixCommandExitStatusCalculator' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/FixCommandExitStatusCalculator.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\HelpCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/HelpCommand.php',
-        'MolliePrefix\\PhpCsFixer\\Console\\Command\\ReadmeCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/ReadmeCommand.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Command\\SelfUpdateCommand' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Command/SelfUpdateCommand.php',
         'MolliePrefix\\PhpCsFixer\\Console\\ConfigurationResolver' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/ConfigurationResolver.php',
         'MolliePrefix\\PhpCsFixer\\Console\\Output\\ErrorOutput' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Console/Output/ErrorOutput.php',
@@ -1245,6 +1261,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\DocBlock\\TagComparator' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/DocBlock/TagComparator.php',
         'MolliePrefix\\PhpCsFixer\\Doctrine\\Annotation\\Token' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Doctrine/Annotation/Token.php',
         'MolliePrefix\\PhpCsFixer\\Doctrine\\Annotation\\Tokens' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Doctrine/Annotation/Tokens.php',
+        'MolliePrefix\\PhpCsFixer\\Documentation\\DocumentationGenerator' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Documentation/DocumentationGenerator.php',
         'MolliePrefix\\PhpCsFixer\\Error\\Error' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Error/Error.php',
         'MolliePrefix\\PhpCsFixer\\Error\\ErrorsManager' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Error/ErrorsManager.php',
         'MolliePrefix\\PhpCsFixer\\Event\\Event' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Event/Event.php',
@@ -1276,6 +1293,8 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\FixerFactory' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/FixerFactory.php',
         'MolliePrefix\\PhpCsFixer\\FixerFileProcessedEvent' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/FixerFileProcessedEvent.php',
         'MolliePrefix\\PhpCsFixer\\FixerNameValidator' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/FixerNameValidator.php',
+        'MolliePrefix\\PhpCsFixer\\Fixer\\AbstractIncrementOperatorFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Fixer/AbstractIncrementOperatorFixer.php',
+        'MolliePrefix\\PhpCsFixer\\Fixer\\AbstractPhpUnitFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Fixer/AbstractPhpUnitFixer.php',
         'MolliePrefix\\PhpCsFixer\\Fixer\\Alias\\BacktickToShellExecFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Fixer/Alias/BacktickToShellExecFixer.php',
         'MolliePrefix\\PhpCsFixer\\Fixer\\Alias\\EregToPregFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Fixer/Alias/EregToPregFixer.php',
         'MolliePrefix\\PhpCsFixer\\Fixer\\Alias\\MbStrFunctionsFixer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Fixer/Alias/MbStrFunctionsFixer.php',
@@ -1553,9 +1572,11 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\Tests\\Test\\IsIdenticalConstraint' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/tests/Test/IsIdenticalConstraint.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\AbstractTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/AbstractTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\ArgumentAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/ArgumentAnalysis.php',
+        'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\CaseAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/CaseAnalysis.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\NamespaceAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/NamespaceAnalysis.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\NamespaceUseAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/NamespaceUseAnalysis.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\StartEndTokenAwareAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/StartEndTokenAwareAnalysis.php',
+        'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\SwitchAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/SwitchAnalysis.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\Analysis\\TypeAnalysis' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/Analysis/TypeAnalysis.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\ArgumentsAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/ArgumentsAnalyzer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\BlocksAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/BlocksAnalyzer.php',
@@ -1564,6 +1585,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\FunctionsAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/FunctionsAnalyzer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\NamespaceUsesAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/NamespaceUsesAnalyzer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\NamespacesAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/NamespacesAnalyzer.php',
+        'MolliePrefix\\PhpCsFixer\\Tokenizer\\Analyzer\\SwitchAnalyzer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Analyzer/SwitchAnalyzer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\CT' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/CT.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\CodeHasher' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/CodeHasher.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Generator\\NamespacedStringTokenGenerator' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Generator/NamespacedStringTokenGenerator.php',
@@ -1577,6 +1599,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\ClassConstantTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/ClassConstantTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\CurlyBraceTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/CurlyBraceTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\ImportTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/ImportTransformer.php',
+        'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\NameQualifiedTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/NameQualifiedTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\NamespaceOperatorTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/NamespaceOperatorTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\NullableTypeTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/NullableTypeTransformer.php',
         'MolliePrefix\\PhpCsFixer\\Tokenizer\\Transformer\\ReturnRefTransformer' => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src/Tokenizer/Transformer/ReturnRefTransformer.php',
@@ -2386,7 +2409,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MolliePrefix\\Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'MolliePrefix\\Symfony\\Polyfill\\Php70\\Php70' => __DIR__ . '/..' . '/symfony/polyfill-php70/Php70.php',
         'MolliePrefix\\Symfony\\Polyfill\\Php72\\Php72' => __DIR__ . '/..' . '/symfony/polyfill-php72/Php72.php',
-        'MolliePrefix\\TypeError' => __DIR__ . '/..' . '/paragonie/random_compat/lib/error_polyfill.php',
+        'MolliePrefix\\TypeError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
         'MolliePrefix\\UseTest' => __DIR__ . '/..' . '/nikic/php-parser/test/PhpParser/Builder/UseTest.php',
         'MolliePrefix\\ValidatePEARPackageXML' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/scripts/ValidatePEAR/ValidatePEARPackageXML.php',
         'MolliePrefix\\dashproducts' => __DIR__ . '/..' . '/prestashop/header-stamp/tests/integration/expected/dashproducts/dashproducts.php',
@@ -2395,33 +2418,38 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'MollieSuccessModuleFrontController' => __DIR__ . '/../..' . '/controllers/front/success.php',
         'MollieWebhookModuleFrontController' => __DIR__ . '/../..' . '/controllers/front/webhook.php',
         'MyAbstractClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
-        'MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/PropertyDeclarationUnitTest.inc',
+        'MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMethodParametersTest.inc',
         'MyClass1' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/ScopeKeywordSpacingUnitTest.inc',
         'MyClass2' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/DocCommentAlignmentUnitTest.inc',
         'MyExtendedClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/CodeAnalysis/UnusedFunctionParameterUnitTest.inc',
-        'MyInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
+        'MyInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMethodPropertiesTest.inc',
         'MyLog' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/UnusedSystemUnitTest.inc',
-        'MyOtherClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
+        'MyOtherClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/ScopeKeywordSpacingUnitTest.inc',
         'MyOtherWidget' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/UnusedSystemUnitTest.inc',
         'MyParseError' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Classes/ClassDeclarationUnitTest.2.inc',
         'MyProject\\Container' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Namespaces/UseDeclarationUnitTest.1.inc',
         'MyProject\\Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Classes/ClassDeclarationUnitTest.2.inc',
         'MyProject\\HelloWorld' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Namespaces/UseDeclarationUnitTest.1.inc',
-        'MyTrait' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Methods/MethodDeclarationUnitTest.inc',
+        'MyTrait' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Scope/StaticThisUsageUnitTest.inc',
         'MyWidget' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/IncludeSystemUnitTest.inc',
         'My_Class' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Methods/CamelCapsMethodNameUnitTest.inc',
         'My_Interface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidFunctionNameUnitTest.inc',
+        'NSOperatorInType' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMemberPropertiesTest.inc',
         'NamespacedException' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
-        'Nested' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR1/Tests/Methods/CamelCapsMethodNameUnitTest.inc',
-        'Nested_Function' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Methods/MethodDeclarationUnitTest.inc',
+        'Nested' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Scope/MethodScopeUnitTest.inc',
+        'Nested_Function' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/SuperfluousWhitespaceUnitTest.1.inc',
         'No_Comment' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/Commenting/ClassCommentUnitTest.inc',
         'OldClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
         'OlderClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
         'OneBlankLineBeforeFirstFunctionClassInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/FunctionSpacingUnitTest.1.inc',
         'PHP8Mixed' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMemberPropertiesTest.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\Autoloader\\A' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Autoloader/TestFiles/A.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\Autoloader\\B' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Autoloader/TestFiles/B.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\Autoloader\\C' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Autoloader/TestFiles/C.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\Autoloader\\Sub\\C' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Autoloader/TestFiles/Sub/C.inc',
         'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
-        'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNClassThatExtendsAndImplements' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
-        'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNClassThatImplementsAndExtends' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNClassThatExtendsAndImplements' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindImplementedInterfaceNamesTest.inc',
+        'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNClassThatImplementsAndExtends' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindImplementedInterfaceNamesTest.inc',
         'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNExtendedClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
         'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
         'PHP_CodeSniffer\\Tests\\Core\\File\\testFECNNamespacedClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
@@ -2436,13 +2464,14 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'PHP_CodeSniffer\\Tests\\Core\\File\\testInterfaceThatExtendsFQCNInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
         'PHP_CodeSniffer\\Tests\\Core\\File\\testInterfaceThatExtendsInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/FindExtendedClassNameTest.inc',
         'PHP_CodeSniffer_File' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentUnitTest.inc',
+        'PHP_CodeSniffer_Tokenizers_JS' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'ReturnMe' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMethodPropertiesTest.inc',
         'RightSideTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/ForbiddenFunctionsUnitTest.inc',
         'RightSideVisTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/ForbiddenFunctionsUnitTest.inc',
         'Security' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/PHP/GetRequestDataUnitTest.inc',
         'SelfMemberReferenceUnitTestExample' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'SomeClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
-        'Something' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/LowerCaseKeywordUnitTest.inc',
+        'Something' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.2.inc',
         'SomethingActions' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/MySource/Tests/Channels/DisallowSelfActionsUnitTest.inc',
         'Something\\sizeof\\SizeOf' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/ForbiddenFunctionsUnitTest.inc',
         'Space_At_end' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/ClassCommentUnitTest.inc',
@@ -2452,11 +2481,11 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'TYPO3\\CMS\\Reports\\Report\\Status\\Status' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'TYPO3\\CMS\\Reports\\Status' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/SelfMemberReferenceUnitTest.inc',
         'TabTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/BlockCommentUnitTest.inc',
-        'Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
+        'Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
         'Test2' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/ScopeClosingBraceUnitTest.inc',
-        'Test3' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/WhiteSpace/ScopeIndentUnitTest.inc',
+        'Test3' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'TestAlternativeControlStructures' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.1.inc',
-        'TestClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/ConstructorNameUnitTest.inc',
+        'TestClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/PostStatementCommentUnitTest.inc',
         'TestMemberProperties' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/File/GetMemberPropertiesTest.inc',
         'TestReturnVoid' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentUnitTest.inc',
         'TestTokenizingOfNullableVsInlineThen' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Functions/NullableTypeDeclarationUnitTest.inc',
@@ -2473,7 +2502,7 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'Test_Interface_Bad_A' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/OpeningBraceSameLineUnitTest.inc',
         'Test_Interface_Bad_C' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/OpeningBraceSameLineUnitTest.inc',
         'Test_Interface_Ok_A' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/OpeningBraceSameLineUnitTest.inc',
-        'Testing' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/LowerCaseTypeUnitTest.inc',
+        'Testing' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ValidClassNameUnitTest.inc',
         'Trait_Test' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Scope/MethodScopeUnitTest.inc',
         'Unknown_Hello_Tag' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/ClassCommentUnitTest.inc',
         'VALIDUPPERCASECLASS' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ValidClassNameUnitTest.inc',
@@ -2503,8 +2532,10 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         'Vendor\\Package\\ClassName8' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Traits/UseDeclarationUnitTest.inc',
         'Vendor\\Package\\ClassName9' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Traits/UseDeclarationUnitTest.inc',
         'Vendor\\Package\\Foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Traits/UseDeclarationUnitTest.inc',
-        'Vendor\\Package\\FooBar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Files/FileHeaderUnitTest.2.inc',
+        'Vendor\\Package\\FooBar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Files/FileHeaderUnitTest.4.inc',
         'Vendor\\Package\\MyExample' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR12/Tests/Traits/UseDeclarationUnitTest.inc',
+        'Vendor\\SubLevel\\Domain\\MyClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/tests/Core/Tokenizer/UndoNamespacedNameSingleTokenTest.inc',
+        'Whatever' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/WhiteSpace/ScopeIndentUnitTest.1.inc',
         'X' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/PHP/LowerCaseKeywordUnitTest.inc',
         'YourClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.1.inc',
         'YourInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Classes/DuplicateClassNameUnitTest.1.inc',
@@ -2512,23 +2543,23 @@ class ComposerStaticInite1092e3840753b3cdf13830847524190
         '_Invalid_Name' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidClassNameUnitTest.inc',
         '___' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidClassNameUnitTest.inc',
         'a' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/NamingConventions/ValidVariableNameUnitTest.inc',
-        'bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Files/OneTraitPerFileUnitTest.inc',
+        'bar' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/ControlStructureSpacingUnitTest.inc',
         'barInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Files/OneObjectStructurePerFileUnitTest.inc',
         'barTrait' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Files/OneObjectStructurePerFileUnitTest.inc',
         'bar\\foo\\baz\\ClassConstBowOutTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/UpperCaseConstantNameUnitTest.inc',
         'bar\\foo\\baz\\TestClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/NamingConventions/UpperCaseConstantNameUnitTest.inc',
-        'baz' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Files/OneTraitPerFileUnitTest.inc',
+        'baz' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Files/OneObjectStructurePerFileUnitTest.inc',
         'bug\\Bug' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Namespaces/UseDeclarationUnitTest.3.inc',
         'classFileNameUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
         'classfilenameunittest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
-        'foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/PropertyDeclarationUnitTest.inc',
+        'foo' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Scope/MemberVarScopeUnitTest.inc',
         'invalidCamelCaseClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ValidClassNameUnitTest.inc',
         'invalid_Name' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidClassNameUnitTest.inc',
         'invalid_lowercase_class_with_underscores' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ValidClassNameUnitTest.inc',
         'invalid_name' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidClassNameUnitTest.inc',
         'invalidlowercaseclass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ValidClassNameUnitTest.inc',
         'mpgResponse' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PEAR/Tests/NamingConventions/ValidVariableNameUnitTest.inc',
-        'myClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Functions/OpeningFunctionBraceKernighanRitchieUnitTest.inc',
+        'myClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.2.inc',
         'myInterface' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.1.inc',
         'myclass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Generic/Tests/Functions/CallTimePassByReferenceUnitTest.inc',
         'phpcsCommentTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',

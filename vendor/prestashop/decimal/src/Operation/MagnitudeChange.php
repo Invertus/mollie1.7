@@ -6,9 +6,9 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Operation;
+namespace test\PrestaShop\Decimal\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\DecimalNumber;
 /**
  * Computes relative magnitude changes on a decimal number
  */
@@ -32,7 +32,7 @@ class MagnitudeChange
      *
      * @return DecimalNumber
      */
-    public function compute(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $exponent)
+    public function compute(\test\PrestaShop\Decimal\DecimalNumber $number, $exponent)
     {
         $exponent = (int) $exponent;
         if ($exponent === 0) {
@@ -40,10 +40,10 @@ class MagnitudeChange
         }
         $resultingExponent = $exponent - $number->getExponent();
         if ($resultingExponent <= 0) {
-            return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getCoefficient(), \abs($resultingExponent));
+            return new \test\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getCoefficient(), \abs($resultingExponent));
         }
         // add zeroes
         $targetLength = \strlen($number->getCoefficient()) + $resultingExponent;
-        return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number->getSign() . \str_pad($number->getCoefficient(), $targetLength, '0'));
+        return new \test\PrestaShop\Decimal\DecimalNumber($number->getSign() . \str_pad($number->getCoefficient(), $targetLength, '0'));
     }
 }

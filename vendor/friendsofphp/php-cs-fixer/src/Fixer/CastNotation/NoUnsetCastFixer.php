@@ -37,6 +37,15 @@ final class NoUnsetCastFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
     }
     /**
      * {@inheritdoc}
+     *
+     * Must run before BinaryOperatorSpacesFixer.
+     */
+    public function getPriority()
+    {
+        return 0;
+    }
+    /**
+     * {@inheritdoc}
      */
     protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {

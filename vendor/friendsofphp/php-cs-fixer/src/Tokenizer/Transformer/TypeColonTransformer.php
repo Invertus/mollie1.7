@@ -27,13 +27,6 @@ final class TypeColonTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abst
     /**
      * {@inheritdoc}
      */
-    public function getCustomTokens()
-    {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_COLON];
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority()
     {
         // needs to run after ReturnRefTransformer and UseTransformer
@@ -73,5 +66,12 @@ final class TypeColonTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abst
         if ($prevToken->isGivenKind($prevKinds)) {
             $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_COLON, ':']);
         }
+    }
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDeprecatedCustomTokens()
+    {
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_COLON];
     }
 }

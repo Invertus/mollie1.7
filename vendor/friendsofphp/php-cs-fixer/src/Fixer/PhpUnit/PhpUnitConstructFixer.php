@@ -11,7 +11,7 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
@@ -24,16 +24,9 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpUnitConstructFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitConstructFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     private static $assertionFixers = ['assertSame' => 'fixAssertPositive', 'assertEquals' => 'fixAssertPositive', 'assertNotEquals' => 'fixAssertNegative', 'assertNotSame' => 'fixAssertNegative'];
-    /**
-     * {@inheritdoc}
-     */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isTokenKindFound(\T_STRING);
-    }
     /**
      * {@inheritdoc}
      */
@@ -47,15 +40,23 @@ final class PhpUnitConstructFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
     public function getDefinition()
     {
         return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('PHPUnit assertion method calls like `->assertSame(true, $foo)` should be written with dedicated method like `->assertTrue($foo)`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
-$this->assertEquals(false, $b);
-$this->assertSame(true, $a);
-$this->assertNotEquals(null, $c);
-$this->assertNotSame(null, $d);
+final class FooTest extends \\PHPUnit_Framework_TestCase {
+    public function testSomething() {
+        $this->assertEquals(false, $b);
+        $this->assertSame(true, $a);
+        $this->assertNotEquals(null, $c);
+        $this->assertNotSame(null, $d);
+    }
+}
 '), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
-$this->assertEquals(false, $b);
-$this->assertSame(true, $a);
-$this->assertNotEquals(null, $c);
-$this->assertNotSame(null, $d);
+final class FooTest extends \\PHPUnit_Framework_TestCase {
+    public function testSomething() {
+        $this->assertEquals(false, $b);
+        $this->assertSame(true, $a);
+        $this->assertNotEquals(null, $c);
+        $this->assertNotSame(null, $d);
+    }
+}
 ', ['assertions' => ['assertSame', 'assertNotSame']])], null, 'Fixer could be risky if one is overriding PHPUnit\'s native methods.');
     }
     /**
@@ -70,7 +71,7 @@ $this->assertNotSame(null, $d);
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         // no assertions to be fixed - fast return
         if (empty($this->configuration['assertions'])) {
@@ -78,7 +79,7 @@ $this->assertNotSame(null, $d);
         }
         foreach ($this->configuration['assertions'] as $assertionMethod) {
             $assertionFixer = self::$assertionFixers[$assertionMethod];
-            for ($index = 0, $limit = $tokens->count(); $index < $limit; ++$index) {
+            for ($index = $startIndex; $index < $endIndex; ++$index) {
                 $index = $this->{$assertionFixer}($tokens, $index, $assertionMethod);
                 if (null === $index) {
                     break;

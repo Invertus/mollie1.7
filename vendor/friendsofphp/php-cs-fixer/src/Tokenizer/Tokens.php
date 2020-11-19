@@ -169,6 +169,7 @@ class Tokens extends \SplFixedArray
         }
         $tokens->generateCode();
         // regenerate code to calculate code hash
+        $tokens->clearChanged();
         return $tokens;
     }
     /**
@@ -364,7 +365,6 @@ class Tokens extends \SplFixedArray
      */
     public function findGivenKind($possibleKind, $start = 0, $end = null)
     {
-        $this->rewind();
         if (null === $end) {
             $end = $this->count();
         }
@@ -784,15 +784,6 @@ class Tokens extends \SplFixedArray
      */
     public function overrideRange($indexStart, $indexEnd, $items)
     {
-        $oldCode = $this->generatePartialCode($indexStart, $indexEnd);
-        $newCode = '';
-        foreach ($items as $item) {
-            $newCode .= $item->getContent();
-        }
-        // no changes, return
-        if ($oldCode === $newCode) {
-            return;
-        }
         $indexToChange = $indexEnd - $indexStart + 1;
         $itemsCount = \count($items);
         // If we want to add more items than passed range contains we need to
@@ -856,7 +847,9 @@ class Tokens extends \SplFixedArray
         foreach ($this as $token) {
             $this->registerFoundToken($token);
         }
-        $this->rewind();
+        if (\PHP_VERSION_ID < 80000) {
+            $this->rewind();
+        }
         $this->changeCodeHash(self::calculateCodeHash($code));
         $this->changed = \true;
     }
@@ -870,7 +863,9 @@ class Tokens extends \SplFixedArray
         foreach ($this as $index => $token) {
             $output[$index] = $token->toArray();
         }
-        $this->rewind();
+        if (\PHP_VERSION_ID < 80000) {
+            $this->rewind();
+        }
         return \json_encode($output, $options);
     }
     /**
@@ -983,6 +978,13 @@ class Tokens extends \SplFixedArray
         return \false;
     }
     /**
+     * @return bool
+     */
+    public function hasAlternativeSyntax()
+    {
+        return $this->isAnyTokenKindsFound([\T_ENDDECLARE, \T_ENDFOR, \T_ENDFOREACH, \T_ENDIF, \T_ENDSWITCH, \T_ENDWHILE]);
+    }
+    /**
      * @param int $index
      */
     public function clearTokenAndMergeSurroundingWhitespace($index)
@@ -1003,6 +1005,62 @@ class Tokens extends \SplFixedArray
             $this[$prevIndex + 1] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, $this[$nextIndex]->getContent()]);
         }
         $this->clearAt($nextIndex);
+    }
+    /**
+     * @internal
+     *
+     * @deprecated Do not call directly, not available on PHP8 and will be removed in the future
+     */
+    public function current()
+    {
+        $this->warnPhp8SplFixerArrayChange(__METHOD__);
+        return parent::current();
+    }
+    /**
+     * @internal
+     *
+     * @deprecated Do not call directly, not available on PHP8 and will be removed in the future
+     */
+    public function key()
+    {
+        $this->warnPhp8SplFixerArrayChange(__METHOD__);
+        return parent::key();
+    }
+    /**
+     * @internal
+     *
+     * @deprecated Do not call directly, not available on PHP8 and will be removed in the future
+     */
+    public function next()
+    {
+        $this->warnPhp8SplFixerArrayChange(__METHOD__);
+        parent::next();
+    }
+    /**
+     * @internal
+     *
+     * @deprecated Do not call directly, not available on PHP8 and will be removed in the future
+     */
+    public function rewind()
+    {
+        $this->warnPhp8SplFixerArrayChange(__METHOD__);
+        parent::rewind();
+    }
+    /**
+     * @internal
+     *
+     * @deprecated Do not call directly, not available on PHP8 and will be removed in the future
+     */
+    public function valid()
+    {
+        $this->warnPhp8SplFixerArrayChange(__METHOD__);
+        return parent::valid();
+    }
+    private function warnPhp8SplFixerArrayChange($method)
+    {
+        if (80000 <= \PHP_VERSION_ID) {
+            throw new \BadMethodCallException(\sprintf('"%s" has been removed on PHP8, use ::getIterator() in place.', $method));
+        }
     }
     private function removeWhitespaceSafely($index, $direction, $whitespaces = null)
     {

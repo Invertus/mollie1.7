@@ -11,20 +11,19 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
 use MolliePrefix\PhpCsFixer\DocBlock\Line;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Preg;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpUnitTestClassRequiresCoversFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
+final class PhpUnitTestClassRequiresCoversFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
@@ -44,21 +43,7 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isTokenKindFound(\T_CLASS);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->addRequiresCover($tokens, $indexes[0]);
-        }
-    }
-    private function addRequiresCover(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         $classIndex = $tokens->getPrevTokenOfKind($startIndex, [[\T_CLASS]]);
         $prevIndex = $tokens->getPrevMeaningfulToken($classIndex);

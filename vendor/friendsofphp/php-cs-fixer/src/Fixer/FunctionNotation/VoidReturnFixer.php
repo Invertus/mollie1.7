@@ -37,11 +37,11 @@ final class VoidReturnFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
      * {@inheritdoc}
      *
      * Must run before PhpdocNoEmptyReturnFixer, ReturnTypeDeclarationFixer.
-     * Must run after SimplifiedNullReturnFixer.
+     * Must run after NoSuperfluousPhpdocTagsFixer, SimplifiedNullReturnFixer.
      */
     public function getPriority()
     {
-        return 15;
+        return 5;
     }
     /**
      * {@inheritdoc}

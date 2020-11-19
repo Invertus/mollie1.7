@@ -27,9 +27,17 @@ final class ProcessLintingResult implements \MolliePrefix\PhpCsFixer\Linter\Lint
      * @var Process
      */
     private $process;
-    public function __construct(\MolliePrefix\Symfony\Component\Process\Process $process)
+    /**
+     * @var null|string
+     */
+    private $path;
+    /**
+     * @param null|string $path
+     */
+    public function __construct(\MolliePrefix\Symfony\Component\Process\Process $process, $path = null)
     {
         $this->process = $process;
+        $this->path = $path;
     }
     /**
      * {@inheritdoc}
@@ -38,8 +46,30 @@ final class ProcessLintingResult implements \MolliePrefix\PhpCsFixer\Linter\Lint
     {
         if (!$this->isSuccessful()) {
             // on some systems stderr is used, but on others, it's not
-            throw new \MolliePrefix\PhpCsFixer\Linter\LintingException($this->process->getErrorOutput() ?: $this->process->getOutput(), $this->process->getExitCode());
+            throw new \MolliePrefix\PhpCsFixer\Linter\LintingException($this->getProcessErrorMessage(), $this->process->getExitCode());
         }
+    }
+    private function getProcessErrorMessage()
+    {
+        $output = \strtok(\ltrim($this->process->getErrorOutput() ?: $this->process->getOutput()), "\n");
+        if (\false === $output) {
+            return 'Fatal error: Unable to lint file.';
+        }
+        if (null !== $this->path) {
+            $needle = \sprintf('in %s ', $this->path);
+            $pos = \strrpos($output, $needle);
+            if (\false !== $pos) {
+                $output = \sprintf('%s%s', \substr($output, 0, $pos), \substr($output, $pos + \strlen($needle)));
+            }
+        }
+        $prefix = \substr($output, 0, 18);
+        if ('PHP Parse error:  ' === $prefix) {
+            return \sprintf('Parse error: %s.', \substr($output, 18));
+        }
+        if ('PHP Fatal error:  ' === $prefix) {
+            return \sprintf('Fatal error: %s.', \substr($output, 18));
+        }
+        return \sprintf('%s.', $output);
     }
     private function isSuccessful()
     {

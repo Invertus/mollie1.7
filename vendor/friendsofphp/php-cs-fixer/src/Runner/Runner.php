@@ -171,9 +171,19 @@ final class Runner
                 return;
             }
             if (!$this->isDryRun) {
-                if (\false === @\file_put_contents($file->getRealPath(), $new)) {
+                $fileName = $file->getRealPath();
+                if (!\file_exists($fileName)) {
+                    throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Failed to write file "%s" (no longer) exists.', $file->getPathname()), 0, null, $file->getPathname());
+                }
+                if (\is_dir($fileName)) {
+                    throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Cannot write file "%s" as the location exists as directory.', $fileName), 0, null, $fileName);
+                }
+                if (!\is_writable($fileName)) {
+                    throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Cannot write to file "%s" as it is not writable.', $fileName), 0, null, $fileName);
+                }
+                if (\false === @\file_put_contents($fileName, $new)) {
                     $error = \error_get_last();
-                    throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Failed to write file "%s", "%s".', $file->getPathname(), $error ? $error['message'] : 'no reason available'), 0, null, $file->getRealPath());
+                    throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Failed to write file "%s", "%s".', $fileName, $error ? $error['message'] : 'no reason available'), 0, null, $file);
                 }
             }
         }

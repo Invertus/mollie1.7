@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * 2007-2016 PrestaShop SA and Contributors
@@ -32,24 +32,24 @@ namespace MolliePrefix;
 include \dirname(__FILE__) . '/../../config/config.inc.php';
 include \dirname(__FILE__) . '/../../init.php';
 /* Check security token */
-if (!\MolliePrefix\Tools::isPHPCLI()) {
-    if (\MolliePrefix\Tools::substr(\MolliePrefix\Tools::encrypt('gsitemap/cron'), 0, 10) != \MolliePrefix\Tools::getValue('token') || !\MolliePrefix\Module::isInstalled('gsitemap')) {
+if (!\test\Tools::isPHPCLI()) {
+    if (\test\Tools::substr(\test\Tools::encrypt('gsitemap/cron'), 0, 10) != \test\Tools::getValue('token') || !\test\Module::isInstalled('gsitemap')) {
         die('Bad token');
     }
 }
-$gsitemap = \MolliePrefix\Module::getInstanceByName('gsitemap');
+$gsitemap = \test\Module::getInstanceByName('gsitemap');
 /* Check if the module is enabled */
 if ($gsitemap->active) {
     /* Check if the requested shop exists */
-    $shops = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT id_shop FROM `' . \_DB_PREFIX_ . 'shop`');
+    $shops = \test\Db::getInstance()->ExecuteS('SELECT id_shop FROM `' . \_DB_PREFIX_ . 'shop`');
     $list_id_shop = array();
     foreach ($shops as $shop) {
         $list_id_shop[] = (int) $shop['id_shop'];
     }
-    $id_shop = \MolliePrefix\Tools::getIsset(\MolliePrefix\Tools::getValue('id_shop')) && \in_array(\MolliePrefix\Tools::getValue('id_shop'), $list_id_shop) ? (int) \MolliePrefix\Tools::getValue('id_shop') : (int) \MolliePrefix\Configuration::get('PS_SHOP_DEFAULT');
+    $id_shop = \test\Tools::getIsset(\test\Tools::getValue('id_shop')) && \in_array(\test\Tools::getValue('id_shop'), $list_id_shop) ? (int) \test\Tools::getValue('id_shop') : (int) \test\Configuration::get('PS_SHOP_DEFAULT');
     $gsitemap->cron = \true;
     /* for the main run initiat the sitemap's files name stored in the database */
-    if (!\MolliePrefix\Tools::getIsset(\MolliePrefix\Tools::getValue('continue'))) {
+    if (!\test\Tools::getIsset(\test\Tools::getValue('continue'))) {
         $gsitemap->emptySitemap((int) $id_shop);
     }
     /* Create the Google sitemap's files */

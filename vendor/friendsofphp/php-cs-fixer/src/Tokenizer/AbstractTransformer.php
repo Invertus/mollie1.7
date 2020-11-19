@@ -35,4 +35,16 @@ abstract class AbstractTransformer implements \MolliePrefix\PhpCsFixer\Tokenizer
     {
         return 0;
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function getCustomTokens()
+    {
+        @\trigger_error('PhpCsFixer\\Tokenizer\\TransformerInterface::getCustomTokens is deprecated and will be removed in 3.0.', \E_USER_DEPRECATED);
+        return $this->getDeprecatedCustomTokens();
+    }
+    /**
+     * @return int[]
+     */
+    protected abstract function getDeprecatedCustomTokens();
 }

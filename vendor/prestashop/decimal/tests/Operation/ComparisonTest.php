@@ -6,12 +6,12 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test\Operation;
+namespace test\PrestaShop\Decimal\Test\Operation;
 
-use MolliePrefix\PHPUnit_Framework_TestCase;
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\Comparison;
-class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use test\PHPUnit_Framework_TestCase;
+use test\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\Operation\Comparison;
+class ComparisonTest extends \test\PHPUnit_Framework_TestCase
 {
     /**
      * @var DecimalNumber
@@ -19,7 +19,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     private static $zero;
     public static function setUpBeforeClass()
     {
-        static::$zero = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0');
+        static::$zero = new \test\PrestaShop\Decimal\DecimalNumber('0');
     }
     /**
      * Given two numbers
@@ -37,9 +37,9 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItComparesNumbers($a, $b, $expected)
     {
-        $comparison = new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison();
-        $result1 = $comparison->compareUsingBcMath(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($a), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($b));
-        $result2 = $comparison->compareWithoutBcMath(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($a), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($b));
+        $comparison = new \test\PrestaShop\Decimal\Operation\Comparison();
+        $result1 = $comparison->compareUsingBcMath(new \test\PrestaShop\Decimal\DecimalNumber($a), new \test\PrestaShop\Decimal\DecimalNumber($b));
+        $result2 = $comparison->compareWithoutBcMath(new \test\PrestaShop\Decimal\DecimalNumber($a), new \test\PrestaShop\Decimal\DecimalNumber($b));
         $this->assertSame($expected, $result1, "Failed assertion (BC Math)");
         $this->assertSame($expected, $result2, "Failed assertion");
     }
@@ -84,7 +84,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDetectsEqualsZero($number, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, $n->equalsZero(), \sprintf("Failed to assert that %s %s equal to zero", $number, $this->getIsVerb($expected)));
         // double check
         $this->assertSame($expected, $n->equals(static::$zero), \sprintf("Failed to assert that %s %s equal to Number zero", $number, $this->getIsVerb($expected)));
@@ -104,7 +104,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDetectsGreaterThanZero($number, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, $n->isGreaterThanZero(), \sprintf("Failed to assert that %s %s greater than zero", $number, $this->getIsVerb($expected)));
         // double check
         $this->assertSame($expected, $n->isGreaterThan(static::$zero), \sprintf("Failed to assert that %s %s grater to Number zero", $number, $this->getIsVerb($expected)));
@@ -124,7 +124,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDetectsGreaterOrEqualThanZero($number, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, $n->isGreaterOrEqualThanZero(), \sprintf("Failed to assert that %s %s greater or equal than zero", $number, $this->getIsVerb($expected)));
         // double check
         $this->assertSame($expected, $n->isGreaterOrEqualThan(static::$zero), \sprintf("Failed to assert that %s %s greater or equal to Number zero", $number, $this->getIsVerb($expected)));
@@ -144,7 +144,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDetectsLowerThanZero($number, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, $n->isLowerThanZero(), \sprintf("Failed to assert that %s %s lower than zero", $number, $this->getIsVerb($expected)));
         // double check
         $this->assertSame($expected, $n->isLowerThan(static::$zero), \sprintf("Failed to assert that %s %s lower to Number zero", $number, $this->getIsVerb($expected)));
@@ -164,7 +164,7 @@ class ComparisonTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDetectsLowerOrEqualThanZero($number, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, $n->isLowerOrEqualThanZero(), \sprintf("Failed to assert that %s %s lower or equal than zero", $number, $this->getIsVerb($expected)));
         // double check
         $this->assertSame($expected, $n->isLowerOrEqualThan(static::$zero), \sprintf("Failed to assert that %s %s lower or equal to Number zero", $number, $this->getIsVerb($expected)));

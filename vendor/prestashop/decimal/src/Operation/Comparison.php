@@ -6,9 +6,9 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Operation;
+namespace test\PrestaShop\Decimal\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\DecimalNumber;
 /**
  * Compares two decimal numbers
  */
@@ -22,9 +22,9 @@ class Comparison
      *
      * @return int Returns 1 if $a > $b, -1 if $a < $b, and 0 if they are equal.
      */
-    public function compare(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function compare(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
-        if (\function_exists('MolliePrefix\\bccomp')) {
+        if (\function_exists('test\\bccomp')) {
             return $this->compareUsingBcMath($a, $b);
         }
         return $this->compareWithoutBcMath($a, $b);
@@ -37,7 +37,7 @@ class Comparison
      *
      * @return int Returns 1 if $a > $b, -1 if $a < $b, and 0 if they are equal.
      */
-    public function compareUsingBcMath(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function compareUsingBcMath(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         return bccomp((string) $a, (string) $b, \max($a->getExponent(), $b->getExponent()));
     }
@@ -49,7 +49,7 @@ class Comparison
      *
      * @return int Returns 1 if $a > $b, -1 if $a < $b, and 0 if they are equal.
      */
-    public function compareWithoutBcMath(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function compareWithoutBcMath(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         $signCompare = $this->compareSigns($a->getSign(), $b->getSign());
         if ($signCompare !== 0) {
@@ -71,7 +71,7 @@ class Comparison
      *
      * @return int Returns 1 if $a > $b, -1 if $a < $b, and 0 if they are equal.
      */
-    private function positiveCompare(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    private function positiveCompare(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         // compare integer length
         $intLengthCompare = $this->compareNumeric(\strlen($a->getIntegerPart()), \strlen($b->getIntegerPart()));

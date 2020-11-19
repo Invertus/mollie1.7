@@ -135,7 +135,7 @@ final class TernaryToNullCoalescingFixer extends \MolliePrefix\PhpCsFixer\Abstra
      */
     private function hasChangingContent(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        static $operatorsPerId = [\T_DEC, \T_INC, \T_STRING, \T_YIELD, \T_YIELD_FROM];
+        static $operatorsPerId = [\T_DEC, \T_INC, \T_YIELD, \T_YIELD_FROM];
         foreach ($tokens as $token) {
             if ($token->isGivenKind($operatorsPerId) || $token->equals('(')) {
                 return \true;

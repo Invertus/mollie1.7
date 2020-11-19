@@ -54,7 +54,7 @@ class UnconditionalIfStatementSniff implements \MolliePrefix\PHP_CodeSniffer\Sni
     {
         $tokens = $phpcsFile->getTokens();
         $token = $tokens[$stackPtr];
-        // Skip for-loop without body.
+        // Skip if statement without body.
         if (isset($token['parenthesis_opener']) === \false) {
             return;
         }

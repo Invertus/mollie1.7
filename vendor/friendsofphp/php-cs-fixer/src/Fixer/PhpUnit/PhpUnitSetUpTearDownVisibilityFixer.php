@@ -11,17 +11,16 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
 /**
  * @author Gert de Pagter
  */
-final class PhpUnitSetUpTearDownVisibilityFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpUnitSetUpTearDownVisibilityFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer
 {
     /**
      * {@inheritdoc}
@@ -47,13 +46,6 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_FUNCTION]);
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function isRisky()
     {
         return \true;
@@ -61,18 +53,7 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->fixSetUpAndTearDown($tokens, $indexes[0], $indexes[1]);
-        }
-    }
-    /**
-     * @param int $startIndex
-     * @param int $endIndex
-     */
-    private function fixSetUpAndTearDown(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         $counter = 0;
         $tokensAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);

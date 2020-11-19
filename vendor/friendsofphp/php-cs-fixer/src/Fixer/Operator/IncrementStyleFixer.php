@@ -11,7 +11,7 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractIncrementOperatorFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
@@ -24,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
  * @author Gregor Harlan <gharlan@web.de>
  * @author Kuba Werłos <werlos@gmail.com>
  */
-final class IncrementStyleFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class IncrementStyleFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractIncrementOperatorFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * @internal
@@ -109,7 +109,7 @@ final class IncrementStyleFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer i
     {
         $nextIndex = $tokens->getNextMeaningfulToken($index);
         $nextToken = $tokens[$nextIndex];
-        while ($nextToken->equalsAny(['$', '[', [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_PROP_BRACE_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_VAR_BRACE_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_INDEX_CURLY_BRACE_OPEN], [\T_NS_SEPARATOR], [\T_STATIC], [\T_STRING], [\T_VARIABLE]])) {
+        while ($nextToken->equalsAny(['$', '(', '[', [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_PROP_BRACE_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_DYNAMIC_VAR_BRACE_OPEN], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_INDEX_CURLY_BRACE_OPEN], [\T_NS_SEPARATOR], [\T_STATIC], [\T_STRING], [\T_VARIABLE]])) {
             $blockType = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::detectBlockType($nextToken);
             if (null !== $blockType) {
                 $nextIndex = $tokens->findBlockEnd($blockType['type'], $nextIndex);
@@ -123,42 +123,6 @@ final class IncrementStyleFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer i
         }
         if ($nextToken->isGivenKind(\T_PAAMAYIM_NEKUDOTAYIM)) {
             return $this->findEnd($tokens, $tokens->getNextMeaningfulToken($nextIndex));
-        }
-        return $index;
-    }
-    /**
-     * @param int $index
-     *
-     * @return int
-     */
-    private function findStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        do {
-            $index = $tokens->getPrevMeaningfulToken($index);
-            $token = $tokens[$index];
-            $blockType = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::detectBlockType($token);
-            if (null !== $blockType && !$blockType['isStart']) {
-                $index = $tokens->findBlockStart($blockType['type'], $index);
-                $token = $tokens[$index];
-            }
-        } while (!$token->equalsAny(['$', [\T_VARIABLE]]));
-        $prevIndex = $tokens->getPrevMeaningfulToken($index);
-        $prevToken = $tokens[$prevIndex];
-        if ($prevToken->equals('$')) {
-            $index = $prevIndex;
-            $prevIndex = $tokens->getPrevMeaningfulToken($index);
-            $prevToken = $tokens[$prevIndex];
-        }
-        if ($prevToken->isGivenKind(\T_OBJECT_OPERATOR)) {
-            return $this->findStart($tokens, $prevIndex);
-        }
-        if ($prevToken->isGivenKind(\T_PAAMAYIM_NEKUDOTAYIM)) {
-            $prevPrevIndex = $tokens->getPrevMeaningfulToken($prevIndex);
-            if (!$tokens[$prevPrevIndex]->isGivenKind([\T_STATIC, \T_STRING])) {
-                return $this->findStart($tokens, $prevIndex);
-            }
-            $index = $tokens->getTokenNotOfKindSibling($prevIndex, -1, [[\T_NS_SEPARATOR], [\T_STATIC], [\T_STRING]]);
-            $index = $tokens->getNextMeaningfulToken($index);
         }
         return $index;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
@@ -23,7 +23,7 @@ namespace MolliePrefix;
 if (!\defined('_PS_VERSION_')) {
     exit;
 }
-class Gsitemap extends \MolliePrefix\Module
+class Gsitemap extends \test\Module
 {
     const HOOK_ADD_URLS = 'gSitemapAppendUrls';
     public $cron = \false;
@@ -42,8 +42,8 @@ class Gsitemap extends \MolliePrefix\Module
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => \_PS_VERSION_);
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', array(), 'Admin.Notifications.Warning');
         $this->type_array = array('home', 'meta', 'product', 'category', 'cms', 'module');
-        $metas = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'meta` ORDER BY `id_meta` ASC');
-        $disabled_metas = \explode(',', \MolliePrefix\Configuration::get('GSITEMAP_DISABLE_LINKS'));
+        $metas = \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'meta` ORDER BY `id_meta` ASC');
+        $disabled_metas = \explode(',', \test\Configuration::get('GSITEMAP_DISABLE_LINKS'));
         foreach ($metas as $meta) {
             if (\in_array($meta['id_meta'], $disabled_metas)) {
                 if (($key = \array_search($meta['page'], $this->type_array)) !== \false) {
@@ -63,11 +63,11 @@ class Gsitemap extends \MolliePrefix\Module
     public function install()
     {
         foreach (array('GSITEMAP_PRIORITY_HOME' => 1.0, 'GSITEMAP_PRIORITY_PRODUCT' => 0.9, 'GSITEMAP_PRIORITY_CATEGORY' => 0.8, 'GSITEMAP_PRIORITY_CMS' => 0.7, 'GSITEMAP_FREQUENCY' => 'weekly', 'GSITEMAP_CHECK_IMAGE_FILE' => \false, 'GSITEMAP_LAST_EXPORT' => \false) as $key => $val) {
-            if (!\MolliePrefix\Configuration::updateValue($key, $val)) {
+            if (!\test\Configuration::updateValue($key, $val)) {
                 return \false;
             }
         }
-        return parent::install() && \MolliePrefix\Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . \_MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;') && $this->installHook();
+        return parent::install() && \test\Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . \_MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;') && $this->installHook();
     }
     /**
      * Registers hook(s)
@@ -76,7 +76,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function installHook()
     {
-        $hook = new \MolliePrefix\Hook();
+        $hook = new \test\Hook();
         $hook->name = self::HOOK_ADD_URLS;
         $hook->title = 'GSitemap Append URLs';
         $hook->description = 'This hook allows a module to add URLs to a generated sitemap';
@@ -95,12 +95,12 @@ class Gsitemap extends \MolliePrefix\Module
     public function uninstall()
     {
         foreach (array('GSITEMAP_PRIORITY_HOME' => '', 'GSITEMAP_PRIORITY_PRODUCT' => '', 'GSITEMAP_PRIORITY_CATEGORY' => '', 'GSITEMAP_PRIORITY_CMS' => '', 'GSITEMAP_FREQUENCY' => '', 'GSITEMAP_CHECK_IMAGE_FILE' => '', 'GSITEMAP_LAST_EXPORT' => '') as $key => $val) {
-            if (!\MolliePrefix\Configuration::deleteByName($key)) {
+            if (!\test\Configuration::deleteByName($key)) {
                 return \false;
             }
         }
-        $hook = new \MolliePrefix\Hook(\MolliePrefix\Hook::getIdByName(self::HOOK_ADD_URLS));
-        if (\MolliePrefix\Validate::isLoadedObject($hook)) {
+        $hook = new \test\Hook(\test\Hook::getIdByName(self::HOOK_ADD_URLS));
+        if (\test\Validate::isLoadedObject($hook)) {
             $hook->delete();
         }
         return parent::uninstall() && $this->removeSitemap();
@@ -112,7 +112,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     public function removeSitemap()
     {
-        $links = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap`');
+        $links = \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap`');
         if ($links) {
             foreach ($links as $link) {
                 if (!@\unlink($this->normalizeDirectory(\_PS_ROOT_DIR_) . $link['link'])) {
@@ -120,7 +120,7 @@ class Gsitemap extends \MolliePrefix\Module
                 }
             }
         }
-        if (!\MolliePrefix\Db::getInstance()->Execute('DROP TABLE `' . \_DB_PREFIX_ . 'gsitemap_sitemap`')) {
+        if (!\test\Db::getInstance()->Execute('DROP TABLE `' . \_DB_PREFIX_ . 'gsitemap_sitemap`')) {
             return \false;
         }
         return \true;
@@ -128,31 +128,31 @@ class Gsitemap extends \MolliePrefix\Module
     public function getContent()
     {
         /* Store the posted parameters and generate a new Google sitemap files for the current Shop */
-        if (\MolliePrefix\Tools::isSubmit('SubmitGsitemap')) {
-            \MolliePrefix\Configuration::updateValue('GSITEMAP_FREQUENCY', \MolliePrefix\pSQL(\MolliePrefix\Tools::getValue('gsitemap_frequency')));
-            \MolliePrefix\Configuration::updateValue('GSITEMAP_INDEX_CHECK', '');
-            \MolliePrefix\Configuration::updateValue('GSITEMAP_CHECK_IMAGE_FILE', \MolliePrefix\pSQL(\MolliePrefix\Tools::getValue('gsitemap_check_image_file')));
+        if (\test\Tools::isSubmit('SubmitGsitemap')) {
+            \test\Configuration::updateValue('GSITEMAP_FREQUENCY', \test\pSQL(\test\Tools::getValue('gsitemap_frequency')));
+            \test\Configuration::updateValue('GSITEMAP_INDEX_CHECK', '');
+            \test\Configuration::updateValue('GSITEMAP_CHECK_IMAGE_FILE', \test\pSQL(\test\Tools::getValue('gsitemap_check_image_file')));
             $meta = '';
-            if (\MolliePrefix\Tools::getValue('gsitemap_meta')) {
-                $meta .= \implode(', ', \MolliePrefix\Tools::getValue('gsitemap_meta'));
+            if (\test\Tools::getValue('gsitemap_meta')) {
+                $meta .= \implode(', ', \test\Tools::getValue('gsitemap_meta'));
             }
-            \MolliePrefix\Configuration::updateValue('GSITEMAP_DISABLE_LINKS', $meta);
+            \test\Configuration::updateValue('GSITEMAP_DISABLE_LINKS', $meta);
             $this->emptySitemap();
             $this->createSitemap();
             /* If no posted form and the variable [continue] is found in the HTTP request variable keep creating sitemap */
-        } elseif (\MolliePrefix\Tools::getValue('continue')) {
+        } elseif (\test\Tools::getValue('continue')) {
             $this->createSitemap();
         }
         /* Empty the Shop domain cache */
         if (\method_exists('ShopUrl', 'resetMainDomainCache')) {
-            \MolliePrefix\ShopUrl::resetMainDomainCache();
+            \test\ShopUrl::resetMainDomainCache();
         }
         /* Get Meta pages and remove index page it's managed elsewhere (@see $this->getHomeLink()) */
-        $store_metas = \array_filter(\MolliePrefix\Meta::getMetasByIdLang((int) $this->context->cookie->id_lang), function ($meta) {
+        $store_metas = \array_filter(\test\Meta::getMetasByIdLang((int) $this->context->cookie->id_lang), function ($meta) {
             return $meta['page'] != 'index';
         });
         $store_url = $this->context->link->getBaseLink();
-        $this->context->smarty->assign(array('gsitemap_form' => './index.php?tab=AdminModules&configure=gsitemap&token=' . \MolliePrefix\Tools::getAdminTokenLite('AdminModules') . '&tab_module=' . $this->tab . '&module_name=gsitemap', 'gsitemap_cron' => $store_url . 'modules/gsitemap/gsitemap-cron.php?token=' . \MolliePrefix\Tools::substr(\MolliePrefix\Tools::encrypt('gsitemap/cron'), 0, 10) . '&id_shop=' . $this->context->shop->id, 'gsitemap_feed_exists' => \file_exists($this->normalizeDirectory(\_PS_ROOT_DIR_) . 'index_sitemap.xml'), 'gsitemap_last_export' => \MolliePrefix\Configuration::get('GSITEMAP_LAST_EXPORT'), 'gsitemap_frequency' => \MolliePrefix\Configuration::get('GSITEMAP_FREQUENCY'), 'gsitemap_store_url' => $store_url, 'gsitemap_links' => \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id), 'store_metas' => $store_metas, 'gsitemap_disable_metas' => \explode(',', \MolliePrefix\Configuration::get('GSITEMAP_DISABLE_LINKS')), 'gsitemap_customer_limit' => array('max_exec_time' => (int) \ini_get('max_execution_time'), 'memory_limit' => (int) \ini_get('memory_limit')), 'prestashop_ssl' => \MolliePrefix\Configuration::get('PS_SSL_ENABLED'), 'gsitemap_check_image_file' => \MolliePrefix\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE'), 'shop' => $this->context->shop));
+        $this->context->smarty->assign(array('gsitemap_form' => './index.php?tab=AdminModules&configure=gsitemap&token=' . \test\Tools::getAdminTokenLite('AdminModules') . '&tab_module=' . $this->tab . '&module_name=gsitemap', 'gsitemap_cron' => $store_url . 'modules/gsitemap/gsitemap-cron.php?token=' . \test\Tools::substr(\test\Tools::encrypt('gsitemap/cron'), 0, 10) . '&id_shop=' . $this->context->shop->id, 'gsitemap_feed_exists' => \file_exists($this->normalizeDirectory(\_PS_ROOT_DIR_) . 'index_sitemap.xml'), 'gsitemap_last_export' => \test\Configuration::get('GSITEMAP_LAST_EXPORT'), 'gsitemap_frequency' => \test\Configuration::get('GSITEMAP_FREQUENCY'), 'gsitemap_store_url' => $store_url, 'gsitemap_links' => \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id), 'store_metas' => $store_metas, 'gsitemap_disable_metas' => \explode(',', \test\Configuration::get('GSITEMAP_DISABLE_LINKS')), 'gsitemap_customer_limit' => array('max_exec_time' => (int) \ini_get('max_execution_time'), 'memory_limit' => (int) \ini_get('memory_limit')), 'prestashop_ssl' => \test\Configuration::get('PS_SSL_ENABLED'), 'gsitemap_check_image_file' => \test\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE'), 'shop' => $this->context->shop));
         return $this->display(__FILE__, 'views/templates/admin/configuration.tpl');
     }
     /**
@@ -165,17 +165,17 @@ class Gsitemap extends \MolliePrefix\Module
     public function emptySitemap($id_shop = 0)
     {
         if (!isset($this->context)) {
-            $this->context = new \MolliePrefix\Context();
+            $this->context = new \test\Context();
         }
         if ($id_shop != 0) {
-            $this->context->shop = new \MolliePrefix\Shop((int) $id_shop);
+            $this->context->shop = new \test\Shop((int) $id_shop);
         }
-        $links = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id);
+        $links = \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id);
         if ($links) {
             foreach ($links as $link) {
                 @\unlink($this->normalizeDirectory(\_PS_ROOT_DIR_) . $link['link']);
             }
-            return \MolliePrefix\Db::getInstance()->Execute('DELETE FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id);
+            return \test\Db::getInstance()->Execute('DELETE FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . (int) $this->context->shop->id);
         }
         return \true;
     }
@@ -201,13 +201,13 @@ class Gsitemap extends \MolliePrefix\Module
                 $this->context->smarty->assign(array('gsitemap_number' => (int) $index, 'gsitemap_refresh_page' => $this->context->link->getAdminLink('AdminModules', \true, array(), array('tab_module' => $this->tab, 'module_name' => $this->name, 'continue' => 1, 'type' => $new_link['type'], 'lang' => $lang, 'index' => $index, 'id' => (int) $id_obj, 'id_shop' => $this->context->shop->id))));
                 return \false;
             } elseif ($index % 20 == 0 && $this->cron) {
-                \header('Refresh: 5; url=http' . (\MolliePrefix\Configuration::get('PS_SSL_ENABLED') ? 's' : '') . '://' . \MolliePrefix\Tools::getShopDomain(\false, \true) . \__PS_BASE_URI__ . 'modules/gsitemap/gsitemap-cron.php?continue=1&token=' . \MolliePrefix\Tools::substr(\MolliePrefix\Tools::encrypt('gsitemap/cron'), 0, 10) . '&type=' . $new_link['type'] . '&lang=' . $lang . '&index=' . $index . '&id=' . (int) $id_obj . '&id_shop=' . $this->context->shop->id);
+                \header('Refresh: 5; url=http' . (\test\Configuration::get('PS_SSL_ENABLED') ? 's' : '') . '://' . \test\Tools::getShopDomain(\false, \true) . \__PS_BASE_URI__ . 'modules/gsitemap/gsitemap-cron.php?continue=1&token=' . \test\Tools::substr(\test\Tools::encrypt('gsitemap/cron'), 0, 10) . '&type=' . $new_link['type'] . '&lang=' . $lang . '&index=' . $index . '&id=' . (int) $id_obj . '&id_shop=' . $this->context->shop->id);
                 die;
             } else {
                 if ($this->cron) {
-                    \MolliePrefix\Tools::redirect($this->context->link->getBaseLink() . 'modules/gsitemap/gsitemap-cron.php?continue=1&token=' . \MolliePrefix\Tools::substr(\MolliePrefix\Tools::encrypt('gsitemap/cron'), 0, 10) . '&type=' . $new_link['type'] . '&lang=' . $lang . '&index=' . $index . '&id=' . (int) $id_obj . '&id_shop=' . $this->context->shop->id);
+                    \test\Tools::redirect($this->context->link->getBaseLink() . 'modules/gsitemap/gsitemap-cron.php?continue=1&token=' . \test\Tools::substr(\test\Tools::encrypt('gsitemap/cron'), 0, 10) . '&type=' . $new_link['type'] . '&lang=' . $lang . '&index=' . $index . '&id=' . (int) $id_obj . '&id_shop=' . $this->context->shop->id);
                 } else {
-                    \MolliePrefix\Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', \true, array(), array('tab_module' => $this->tab, 'module_name' => $this->name, 'continue' => 1, 'type' => $new_link['type'], 'lang' => $lang, 'index' => $index, 'id' => (int) $id_obj, 'id_shop' => $this->context->shop->id)));
+                    \test\Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', \true, array(), array('tab_module' => $this->tab, 'module_name' => $this->name, 'continue' => 1, 'type' => $new_link['type'], 'lang' => $lang, 'index' => $index, 'id' => (int) $id_obj, 'id_shop' => $this->context->shop->id)));
                 }
                 die;
             }
@@ -225,7 +225,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getHomeLink(&$link_sitemap, $lang, &$index, &$i)
     {
-        $link = new \MolliePrefix\Link();
+        $link = new \test\Link();
         return $this->addLinkToSitemap($link_sitemap, array('type' => 'home', 'page' => 'home', 'link' => $link->getPageLink('index', null, $lang['id_lang']), 'image' => \false), $lang['iso_code'], $index, $i, -1);
     }
     /**
@@ -242,13 +242,13 @@ class Gsitemap extends \MolliePrefix\Module
     protected function getMetaLink(&$link_sitemap, $lang, &$index, &$i, $id_meta = 0)
     {
         if (\method_exists('ShopUrl', 'resetMainDomainCache')) {
-            \MolliePrefix\ShopUrl::resetMainDomainCache();
+            \test\ShopUrl::resetMainDomainCache();
         }
-        $link = new \MolliePrefix\Link();
-        $metas = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'meta` WHERE `configurable` > 0 AND `id_meta` >= ' . (int) $id_meta . ' AND page <> \'index\' ORDER BY `id_meta` ASC');
+        $link = new \test\Link();
+        $metas = \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . \_DB_PREFIX_ . 'meta` WHERE `configurable` > 0 AND `id_meta` >= ' . (int) $id_meta . ' AND page <> \'index\' ORDER BY `id_meta` ASC');
         foreach ($metas as $meta) {
             $url = '';
-            if (!\in_array($meta['id_meta'], \explode(',', \MolliePrefix\Configuration::get('GSITEMAP_DISABLE_LINKS')))) {
+            if (!\in_array($meta['id_meta'], \explode(',', \test\Configuration::get('GSITEMAP_DISABLE_LINKS')))) {
                 $url = $link->getPageLink($meta['page'], null, $lang['id_lang']);
                 if (!$this->addLinkToSitemap($link_sitemap, array('type' => 'meta', 'page' => $meta['page'], 'link' => $url, 'image' => \false), $lang['iso_code'], $index, $i, $meta['id_meta'])) {
                     return \false;
@@ -270,20 +270,20 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getProductLink(&$link_sitemap, $lang, &$index, &$i, $id_product = 0)
     {
-        $link = new \MolliePrefix\Link();
+        $link = new \test\Link();
         if (\method_exists('ShopUrl', 'resetMainDomainCache')) {
-            \MolliePrefix\ShopUrl::resetMainDomainCache();
+            \test\ShopUrl::resetMainDomainCache();
         }
-        $products_id = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT `id_product` FROM `' . \_DB_PREFIX_ . 'product_shop` WHERE `id_product` >= ' . (int) $id_product . ' AND `active` = 1 AND `visibility` != \'none\' AND `id_shop`=' . $this->context->shop->id . ' ORDER BY `id_product` ASC');
+        $products_id = \test\Db::getInstance()->ExecuteS('SELECT `id_product` FROM `' . \_DB_PREFIX_ . 'product_shop` WHERE `id_product` >= ' . (int) $id_product . ' AND `active` = 1 AND `visibility` != \'none\' AND `id_shop`=' . $this->context->shop->id . ' ORDER BY `id_product` ASC');
         foreach ($products_id as $product_id) {
-            $product = new \MolliePrefix\Product((int) $product_id['id_product'], \false, (int) $lang['id_lang']);
+            $product = new \test\Product((int) $product_id['id_product'], \false, (int) $lang['id_lang']);
             $url = $link->getProductLink($product, $product->link_rewrite, \htmlspecialchars(\strip_tags($product->category)), $product->ean13, (int) $lang['id_lang'], (int) $this->context->shop->id, 0);
-            $id_image = \MolliePrefix\Product::getCover((int) $product_id['id_product']);
+            $id_image = \test\Product::getCover((int) $product_id['id_product']);
             if (isset($id_image['id_image'])) {
-                $image_link = $this->context->link->getImageLink($product->link_rewrite, $product->id . '-' . (int) $id_image['id_image'], \MolliePrefix\ImageType::getFormattedName('large'));
-                $image_link = !\in_array(\rtrim(\MolliePrefix\Context::getContext()->shop->virtual_uri, '/'), \explode('/', $image_link)) ? \str_replace(array('https', \MolliePrefix\Context::getContext()->shop->domain . \MolliePrefix\Context::getContext()->shop->physical_uri), array('http', \MolliePrefix\Context::getContext()->shop->domain . \MolliePrefix\Context::getContext()->shop->physical_uri . \MolliePrefix\Context::getContext()->shop->virtual_uri), $image_link) : $image_link;
+                $image_link = $this->context->link->getImageLink($product->link_rewrite, $product->id . '-' . (int) $id_image['id_image'], \test\ImageType::getFormattedName('large'));
+                $image_link = !\in_array(\rtrim(\test\Context::getContext()->shop->virtual_uri, '/'), \explode('/', $image_link)) ? \str_replace(array('https', \test\Context::getContext()->shop->domain . \test\Context::getContext()->shop->physical_uri), array('http', \test\Context::getContext()->shop->domain . \test\Context::getContext()->shop->physical_uri . \test\Context::getContext()->shop->virtual_uri), $image_link) : $image_link;
             }
-            $file_headers = \MolliePrefix\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE') ? @\get_headers($image_link) : \true;
+            $file_headers = \test\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE') ? @\get_headers($image_link) : \true;
             $image_product = array();
             if (isset($image_link) && ($file_headers[0] != 'HTTP/1.1 404 Not Found' || $file_headers === \true)) {
                 $image_product = array('title_img' => \htmlspecialchars(\strip_tags($product->name)), 'caption' => \htmlspecialchars(\strip_tags($product->description_short)), 'link' => $image_link);
@@ -308,24 +308,24 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getCategoryLink(&$link_sitemap, $lang, &$index, &$i, $id_category = 0)
     {
-        $link = new \MolliePrefix\Link();
+        $link = new \test\Link();
         if (\method_exists('ShopUrl', 'resetMainDomainCache')) {
-            \MolliePrefix\ShopUrl::resetMainDomainCache();
+            \test\ShopUrl::resetMainDomainCache();
         }
-        $categories_id = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT c.id_category FROM `' . \_DB_PREFIX_ . 'category` c
+        $categories_id = \test\Db::getInstance()->ExecuteS('SELECT c.id_category FROM `' . \_DB_PREFIX_ . 'category` c
                 INNER JOIN `' . \_DB_PREFIX_ . 'category_shop` cs ON c.`id_category` = cs.`id_category`
-                WHERE c.`id_category` >= ' . (int) $id_category . ' AND c.`active` = 1 AND c.`id_category` != ' . (int) \MolliePrefix\Configuration::get('PS_ROOT_CATEGORY') . ' AND c.id_category != ' . (int) \MolliePrefix\Configuration::get('PS_HOME_CATEGORY') . ' AND c.id_parent > 0 AND c.`id_category` > 0 AND cs.`id_shop` = ' . (int) $this->context->shop->id . ' ORDER BY c.`id_category` ASC');
+                WHERE c.`id_category` >= ' . (int) $id_category . ' AND c.`active` = 1 AND c.`id_category` != ' . (int) \test\Configuration::get('PS_ROOT_CATEGORY') . ' AND c.id_category != ' . (int) \test\Configuration::get('PS_HOME_CATEGORY') . ' AND c.id_parent > 0 AND c.`id_category` > 0 AND cs.`id_shop` = ' . (int) $this->context->shop->id . ' ORDER BY c.`id_category` ASC');
         foreach ($categories_id as $category_id) {
-            $category = new \MolliePrefix\Category((int) $category_id['id_category'], (int) $lang['id_lang']);
+            $category = new \test\Category((int) $category_id['id_category'], (int) $lang['id_lang']);
             $url = $link->getCategoryLink($category, \urlencode($category->link_rewrite), (int) $lang['id_lang']);
             if ($category->id_image) {
-                $image_link = $this->context->link->getCatImageLink($category->link_rewrite, (int) $category->id_image, \MolliePrefix\ImageType::getFormattedName('category'));
-                $image_link = !\in_array(\rtrim(\MolliePrefix\Context::getContext()->shop->virtual_uri, '/'), \explode('/', $image_link)) ? \str_replace(array('https', \MolliePrefix\Context::getContext()->shop->domain . \MolliePrefix\Context::getContext()->shop->physical_uri), array('http', \MolliePrefix\Context::getContext()->shop->domain . \MolliePrefix\Context::getContext()->shop->physical_uri . \MolliePrefix\Context::getContext()->shop->virtual_uri), $image_link) : $image_link;
+                $image_link = $this->context->link->getCatImageLink($category->link_rewrite, (int) $category->id_image, \test\ImageType::getFormattedName('category'));
+                $image_link = !\in_array(\rtrim(\test\Context::getContext()->shop->virtual_uri, '/'), \explode('/', $image_link)) ? \str_replace(array('https', \test\Context::getContext()->shop->domain . \test\Context::getContext()->shop->physical_uri), array('http', \test\Context::getContext()->shop->domain . \test\Context::getContext()->shop->physical_uri . \test\Context::getContext()->shop->virtual_uri), $image_link) : $image_link;
             }
-            $file_headers = \MolliePrefix\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE') ? @\get_headers($image_link) : \true;
+            $file_headers = \test\Configuration::get('GSITEMAP_CHECK_IMAGE_FILE') ? @\get_headers($image_link) : \true;
             $image_category = array();
             if (isset($image_link) && ($file_headers[0] != 'HTTP/1.1 404 Not Found' || $file_headers === \true)) {
-                $image_category = array('title_img' => \htmlspecialchars(\strip_tags($category->name)), 'caption' => \MolliePrefix\Tools::substr(\htmlspecialchars(\strip_tags($category->description)), 0, 350), 'link' => $image_link);
+                $image_category = array('title_img' => \htmlspecialchars(\strip_tags($category->name)), 'caption' => \test\Tools::substr(\htmlspecialchars(\strip_tags($category->description)), 0, 350), 'link' => $image_link);
             }
             if (!$this->addLinkToSitemap($link_sitemap, array('type' => 'category', 'page' => 'category', 'lastmod' => $category->date_upd, 'link' => $url, 'image' => $image_category), $lang['iso_code'], $index, $i, (int) $category_id['id_category'])) {
                 return \false;
@@ -347,15 +347,15 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getCmsLink(&$link_sitemap, $lang, &$index, &$i, $id_cms = 0)
     {
-        $link = new \MolliePrefix\Link();
+        $link = new \test\Link();
         if (\method_exists('ShopUrl', 'resetMainDomainCache')) {
-            \MolliePrefix\ShopUrl::resetMainDomainCache();
+            \test\ShopUrl::resetMainDomainCache();
         }
-        $cmss_id = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT c.`id_cms` FROM `' . \_DB_PREFIX_ . 'cms` c INNER JOIN `' . \_DB_PREFIX_ . 'cms_lang` cl ON c.`id_cms` = cl.`id_cms` ' . ($this->tableColumnExists(\_DB_PREFIX_ . 'supplier_shop') ? 'INNER JOIN `' . \_DB_PREFIX_ . 'cms_shop` cs ON c.`id_cms` = cs.`id_cms` ' : '') . 'INNER JOIN `' . \_DB_PREFIX_ . 'cms_category` cc ON c.id_cms_category = cc.id_cms_category AND cc.active = 1
+        $cmss_id = \test\Db::getInstance()->ExecuteS('SELECT c.`id_cms` FROM `' . \_DB_PREFIX_ . 'cms` c INNER JOIN `' . \_DB_PREFIX_ . 'cms_lang` cl ON c.`id_cms` = cl.`id_cms` ' . ($this->tableColumnExists(\_DB_PREFIX_ . 'supplier_shop') ? 'INNER JOIN `' . \_DB_PREFIX_ . 'cms_shop` cs ON c.`id_cms` = cs.`id_cms` ' : '') . 'INNER JOIN `' . \_DB_PREFIX_ . 'cms_category` cc ON c.id_cms_category = cc.id_cms_category AND cc.active = 1
             WHERE c.`active` =1 AND c.`indexation` =1 AND c.`id_cms` >= ' . (int) $id_cms . ($this->tableColumnExists(\_DB_PREFIX_ . 'supplier_shop') ? ' AND cs.id_shop = ' . (int) $this->context->shop->id : '') . ' AND cl.`id_lang` = ' . (int) $lang['id_lang'] . ' GROUP BY  c.`id_cms` ORDER BY c.`id_cms` ASC');
         if (\is_array($cmss_id)) {
             foreach ($cmss_id as $cms_id) {
-                $cms = new \MolliePrefix\CMS((int) $cms_id['id_cms'], $lang['id_lang']);
+                $cms = new \test\CMS((int) $cms_id['id_cms'], $lang['id_lang']);
                 $cms->link_rewrite = \urlencode(\is_array($cms->link_rewrite) ? $cms->link_rewrite[(int) $lang['id_lang']] : $cms->link_rewrite);
                 $url = $link->getCMSLink($cms, null, null, $lang['id_lang']);
                 if (!$this->addLinkToSitemap($link_sitemap, array('type' => 'cms', 'page' => 'cms', 'link' => $url, 'image' => \false), $lang['iso_code'], $index, $i, $cms_id['id_cms'])) {
@@ -382,7 +382,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getModuleLink(&$link_sitemap, $lang, &$index, &$i, $num_link = 0)
     {
-        $modules_links = \MolliePrefix\Hook::exec(self::HOOK_ADD_URLS, array('lang' => $lang), null, \true);
+        $modules_links = \test\Hook::exec(self::HOOK_ADD_URLS, array('lang' => $lang), null, \true);
         if (empty($modules_links) || !\is_array($modules_links)) {
             return \true;
         }
@@ -417,24 +417,24 @@ class Gsitemap extends \MolliePrefix\Module
             @\unlink($this->normalizeDirectory(\_PS_ROOT_DIR_) . 'test.txt');
         }
         if ($id_shop != 0) {
-            $this->context->shop = new \MolliePrefix\Shop((int) $id_shop);
+            $this->context->shop = new \test\Shop((int) $id_shop);
         }
-        $type = \MolliePrefix\Tools::getValue('type') ? \MolliePrefix\Tools::getValue('type') : '';
-        $languages = \MolliePrefix\Language::getLanguages(\true, $this->context->shop->id);
-        $lang_stop = \MolliePrefix\Tools::getValue('lang') ? \true : \false;
-        $id_obj = \MolliePrefix\Tools::getValue('id') ? (int) \MolliePrefix\Tools::getValue('id') : 0;
+        $type = \test\Tools::getValue('type') ? \test\Tools::getValue('type') : '';
+        $languages = \test\Language::getLanguages(\true, $this->context->shop->id);
+        $lang_stop = \test\Tools::getValue('lang') ? \true : \false;
+        $id_obj = \test\Tools::getValue('id') ? (int) \test\Tools::getValue('id') : 0;
         foreach ($languages as $lang) {
             $i = 0;
-            $index = \MolliePrefix\Tools::getValue('index') && \MolliePrefix\Tools::getValue('lang') == $lang['iso_code'] ? (int) \MolliePrefix\Tools::getValue('index') : 0;
-            if ($lang_stop && $lang['iso_code'] != \MolliePrefix\Tools::getValue('lang')) {
+            $index = \test\Tools::getValue('index') && \test\Tools::getValue('lang') == $lang['iso_code'] ? (int) \test\Tools::getValue('index') : 0;
+            if ($lang_stop && $lang['iso_code'] != \test\Tools::getValue('lang')) {
                 continue;
-            } elseif ($lang_stop && $lang['iso_code'] == \MolliePrefix\Tools::getValue('lang')) {
+            } elseif ($lang_stop && $lang['iso_code'] == \test\Tools::getValue('lang')) {
                 $lang_stop = \false;
             }
             $link_sitemap = array();
             foreach ($this->type_array as $type_val) {
                 if ($type == '' || $type == $type_val) {
-                    $function = 'get' . \MolliePrefix\Tools::ucfirst($type_val) . 'Link';
+                    $function = 'get' . \test\Tools::ucfirst($type_val) . 'Link';
                     if (!$this->{$function}($link_sitemap, $lang, $index, $i, $id_obj)) {
                         return \false;
                     }
@@ -447,12 +447,12 @@ class Gsitemap extends \MolliePrefix\Module
             $index = 0;
         }
         $this->createIndexSitemap();
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_LAST_EXPORT', \date('r'));
-        \MolliePrefix\Tools::file_get_contents('https://www.google.com/webmasters/sitemaps/ping?sitemap=' . \urlencode($this->context->link->getBaseLink() . $this->context->shop->physical_uri . $this->context->shop->virtual_uri . $this->context->shop->id));
+        \test\Configuration::updateValue('GSITEMAP_LAST_EXPORT', \date('r'));
+        \test\Tools::file_get_contents('https://www.google.com/webmasters/sitemaps/ping?sitemap=' . \urlencode($this->context->link->getBaseLink() . $this->context->shop->physical_uri . $this->context->shop->virtual_uri . $this->context->shop->id));
         if ($this->cron) {
             die;
         }
-        \MolliePrefix\Tools::redirectAdmin('index.php?tab=AdminModules&configure=gsitemap&token=' . \MolliePrefix\Tools::getAdminTokenLite('AdminModules') . '&tab_module=' . $this->tab . '&module_name=gsitemap&validation');
+        \test\Tools::redirectAdmin('index.php?tab=AdminModules&configure=gsitemap&token=' . \test\Tools::getAdminTokenLite('AdminModules') . '&tab_module=' . $this->tab . '&module_name=gsitemap&validation');
         die;
     }
     /**
@@ -465,7 +465,7 @@ class Gsitemap extends \MolliePrefix\Module
     protected function saveSitemapLink($sitemap)
     {
         if ($sitemap) {
-            return \MolliePrefix\Db::getInstance()->Execute('INSERT INTO `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link`, id_shop) VALUES (\'' . \MolliePrefix\pSQL($sitemap) . '\', ' . (int) $this->context->shop->id . ')');
+            return \test\Db::getInstance()->Execute('INSERT INTO `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link`, id_shop) VALUES (\'' . \test\pSQL($sitemap) . '\', ' . (int) $this->context->shop->id . ')');
         }
         return \false;
     }
@@ -487,7 +487,7 @@ class Gsitemap extends \MolliePrefix\Module
         foreach ($link_sitemap as $key => $file) {
             \fwrite($write_fd, '<url>' . \PHP_EOL);
             $lastmod = isset($file['lastmod']) && !empty($file['lastmod']) ? \date('c', \strtotime($file['lastmod'])) : null;
-            $this->addSitemapNode($write_fd, \htmlspecialchars(\strip_tags($file['link'])), $this->getPriorityPage($file['page']), \MolliePrefix\Configuration::get('GSITEMAP_FREQUENCY'), $lastmod);
+            $this->addSitemapNode($write_fd, \htmlspecialchars(\strip_tags($file['link'])), $this->getPriorityPage($file['page']), \test\Configuration::get('GSITEMAP_FREQUENCY'), $lastmod);
             if ($file['image']) {
                 $this->addSitemapNodeImage($write_fd, \htmlspecialchars(\strip_tags($file['image']['link'])), isset($file['image']['title_img']) ? \htmlspecialchars(\str_replace(array("\r\n", "\r", "\n"), '', $this->removeControlCharacters(\strip_tags($file['image']['title_img'])))) : '', isset($file['image']['caption']) ? \htmlspecialchars(\str_replace(array("\r\n", "\r", "\n"), '', \strip_tags($file['image']['caption']))) : '');
             }
@@ -508,7 +508,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function getPriorityPage($page)
     {
-        return \MolliePrefix\Configuration::get('GSITEMAP_PRIORITY_' . \MolliePrefix\Tools::strtoupper($page)) ? \MolliePrefix\Configuration::get('GSITEMAP_PRIORITY_' . \MolliePrefix\Tools::strtoupper($page)) : 0.1;
+        return \test\Configuration::get('GSITEMAP_PRIORITY_' . \test\Tools::strtoupper($page)) ? \test\Configuration::get('GSITEMAP_PRIORITY_' . \test\Tools::strtoupper($page)) : 0.1;
     }
     /**
      * Add a new line to the sitemap file
@@ -521,11 +521,11 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function addSitemapNode($fd, $loc, $priority, $change_freq, $last_mod = null)
     {
-        \fwrite($fd, '<loc>' . (\MolliePrefix\Configuration::get('PS_REWRITING_SETTINGS') ? '<![CDATA[' . $loc . ']]>' : $loc) . '</loc>' . \PHP_EOL . ($last_mod ? '<lastmod>' . \date('c', \strtotime($last_mod)) . '</lastmod>' : '') . \PHP_EOL . '<changefreq>' . $change_freq . '</changefreq>' . \PHP_EOL . '<priority>' . \number_format($priority, 1, '.', '') . '</priority>' . \PHP_EOL);
+        \fwrite($fd, '<loc>' . (\test\Configuration::get('PS_REWRITING_SETTINGS') ? '<![CDATA[' . $loc . ']]>' : $loc) . '</loc>' . \PHP_EOL . ($last_mod ? '<lastmod>' . \date('c', \strtotime($last_mod)) . '</lastmod>' : '') . \PHP_EOL . '<changefreq>' . $change_freq . '</changefreq>' . \PHP_EOL . '<priority>' . \number_format($priority, 1, '.', '') . '</priority>' . \PHP_EOL);
     }
     protected function addSitemapNodeImage($fd, $link, $title, $caption)
     {
-        \fwrite($fd, '<image:image>' . \PHP_EOL . '<image:loc>' . (\MolliePrefix\Configuration::get('PS_REWRITING_SETTINGS') ? '<![CDATA[' . $link . ']]>' : $link) . '</image:loc>' . \PHP_EOL . '<image:caption><![CDATA[' . $caption . ']]></image:caption>' . \PHP_EOL . '<image:title><![CDATA[' . $title . ']]></image:title>' . \PHP_EOL . '</image:image>' . \PHP_EOL);
+        \fwrite($fd, '<image:image>' . \PHP_EOL . '<image:loc>' . (\test\Configuration::get('PS_REWRITING_SETTINGS') ? '<![CDATA[' . $link . ']]>' : $link) . '</image:loc>' . \PHP_EOL . '<image:caption><![CDATA[' . $caption . ']]></image:caption>' . \PHP_EOL . '<image:title><![CDATA[' . $title . ']]></image:title>' . \PHP_EOL . '</image:image>' . \PHP_EOL);
     }
     /**
      * Create the index file for all generated sitemaps
@@ -534,7 +534,7 @@ class Gsitemap extends \MolliePrefix\Module
      */
     protected function createIndexSitemap()
     {
-        $sitemaps = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT `link` FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . $this->context->shop->id);
+        $sitemaps = \test\Db::getInstance()->ExecuteS('SELECT `link` FROM `' . \_DB_PREFIX_ . 'gsitemap_sitemap` WHERE id_shop = ' . $this->context->shop->id);
         if (!$sitemaps) {
             return \false;
         }
@@ -557,7 +557,7 @@ class Gsitemap extends \MolliePrefix\Module
                 return $this->sql_checks[$table_name];
             }
         }
-        $table = \MolliePrefix\Db::getInstance()->ExecuteS('SHOW TABLES LIKE \'' . $table_name . '\'');
+        $table = \test\Db::getInstance()->ExecuteS('SHOW TABLES LIKE \'' . $table_name . '\'');
         if (empty($column)) {
             if (\count($table) < 1) {
                 return $this->sql_checks[$table_name] = \false;
@@ -565,16 +565,16 @@ class Gsitemap extends \MolliePrefix\Module
                 $this->sql_checks[$table_name] = \true;
             }
         } else {
-            $table = \MolliePrefix\Db::getInstance()->ExecuteS('SELECT * FROM `' . $table_name . '` LIMIT 1');
+            $table = \test\Db::getInstance()->ExecuteS('SELECT * FROM `' . $table_name . '` LIMIT 1');
             return $this->sql_checks[$table_name][$column] = \array_key_exists($column, \current($table));
         }
         return \true;
     }
     protected function normalizeDirectory($directory)
     {
-        $last = $directory[\MolliePrefix\Tools::strlen($directory) - 1];
+        $last = $directory[\test\Tools::strlen($directory) - 1];
         if (\in_array($last, array('/', '\\'))) {
-            $directory[\MolliePrefix\Tools::strlen($directory) - 1] = \DIRECTORY_SEPARATOR;
+            $directory[\test\Tools::strlen($directory) - 1] = \DIRECTORY_SEPARATOR;
             return $directory;
         }
         $directory .= \DIRECTORY_SEPARATOR;
@@ -587,4 +587,4 @@ class Gsitemap extends \MolliePrefix\Module
         return $text;
     }
 }
-\class_alias('MolliePrefix\\Gsitemap', 'MolliePrefix\\Gsitemap', \false);
+\class_alias('test\\Gsitemap', 'test\\Gsitemap', \false);

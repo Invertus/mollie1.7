@@ -11,8 +11,8 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 use MolliePrefix\PhpCsFixer\Preg;
@@ -21,7 +21,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpUnitOrderedCoversFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpUnitOrderedCoversFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer
 {
     /**
      * {@inheritdoc}
@@ -49,16 +49,11 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_DOC_COMMENT]);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        for ($index = $tokens->count() - 1; $index > 0; --$index) {
+        $classIndex = $tokens->getPrevTokenOfKind($startIndex, [[\T_CLASS]]);
+        $docBlockIndex = $this->getDocBlockIndex($tokens, $classIndex);
+        for ($index = $endIndex; $index >= $docBlockIndex; --$index) {
             if (!$tokens[$index]->isGivenKind(\T_DOC_COMMENT) || 0 === \MolliePrefix\PhpCsFixer\Preg::match('/@covers\\s.+@covers\\s/s', $tokens[$index]->getContent())) {
                 continue;
             }

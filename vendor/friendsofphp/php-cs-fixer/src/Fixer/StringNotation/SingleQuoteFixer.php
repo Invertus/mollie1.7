@@ -44,7 +44,7 @@ EOF;
     /**
      * {@inheritdoc}
      *
-     * Must run after EscapeImplicitBackslashesFixer.
+     * Must run after BacktickToShellExecFixer, EscapeImplicitBackslashesFixer.
      */
     public function getPriority()
     {

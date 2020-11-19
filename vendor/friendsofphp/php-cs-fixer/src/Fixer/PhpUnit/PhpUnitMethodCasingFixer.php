@@ -11,15 +11,14 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
 use MolliePrefix\PhpCsFixer\DocBlock\Line;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Preg;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
@@ -28,7 +27,7 @@ use MolliePrefix\PhpCsFixer\Utils;
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpUnitMethodCasingFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitMethodCasingFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * @internal
@@ -67,32 +66,14 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_FUNCTION]);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->applyCasing($tokens, $indexes[0], $indexes[1]);
-        }
-    }
-    /**
-     * {@inheritdoc}
-     */
     protected function createConfigurationDefinition()
     {
         return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('case', 'Apply camel or snake case to test methods'))->setAllowedValues([self::CAMEL_CASE, self::SNAKE_CASE])->setDefault(self::CAMEL_CASE)->getOption()]);
     }
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * {@inheritdoc}
      */
-    private function applyCasing(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         for ($index = $endIndex - 1; $index > $startIndex; --$index) {
             if (!$this->isTestMethod($tokens, $index)) {
@@ -105,7 +86,7 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
                 $tokens[$functionNameIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $newFunctionName]);
             }
             $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-            if ($this->hasDocBlock($tokens, $index)) {
+            if ($this->isPHPDoc($tokens, $docBlockIndex)) {
                 $this->updateDocBlock($tokens, $docBlockIndex);
             }
         }
@@ -144,16 +125,8 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
         if ($this->startsWith('test', $functionName)) {
             return \true;
         }
-        // If the function doesn't have test in its name, and no doc block, it's not a test
-        if (!$this->hasDocBlock($tokens, $index)) {
-            return \false;
-        }
         $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-        $doc = $tokens[$docBlockIndex]->getContent();
-        if (\false === \strpos($doc, '@test')) {
-            return \false;
-        }
-        return \true;
+        return $this->isPHPDoc($tokens, $docBlockIndex) && \false !== \strpos($tokens[$docBlockIndex]->getContent(), '@test');
     }
     /**
      * @param int $index
@@ -174,28 +147,6 @@ class MyTest extends \\PhpUnit\\FrameWork\\TestCase
     private function startsWith($needle, $haystack)
     {
         return \substr($haystack, 0, \strlen($needle)) === $needle;
-    }
-    /**
-     * @param int $index
-     *
-     * @return bool
-     */
-    private function hasDocBlock(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-        return $tokens[$docBlockIndex]->isGivenKind(\T_DOC_COMMENT);
-    }
-    /**
-     * @param int $index
-     *
-     * @return int
-     */
-    private function getDocBlockIndex(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        do {
-            $index = $tokens->getPrevNonWhitespace($index);
-        } while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT, \T_COMMENT]));
-        return $index;
     }
     /**
      * @param int $docBlockIndex

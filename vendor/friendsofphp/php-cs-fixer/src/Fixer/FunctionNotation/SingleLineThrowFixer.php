@@ -39,7 +39,7 @@ final class SingleLineThrowFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Throwing exception must be done in single line.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nthrow new Exception(\n    'Error',\n    500\n);\n")]);
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Throwing exception must be done in single line.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nthrow new Exception(\n    'Error.',\n    500\n);\n")]);
     }
     /**
      * {@inheritdoc}

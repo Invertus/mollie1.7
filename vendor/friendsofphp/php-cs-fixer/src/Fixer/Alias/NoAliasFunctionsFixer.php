@@ -18,6 +18,7 @@ use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\ArgumentsAnalyzer;
 use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
@@ -35,6 +36,8 @@ final class NoAliasFunctionsFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
     private static $imapSet = ['imap_create' => 'imap_createmailbox', 'imap_fetchtext' => 'imap_body', 'imap_header' => 'imap_headerinfo', 'imap_listmailbox' => 'imap_list', 'imap_listsubscribed' => 'imap_lsub', 'imap_rename' => 'imap_renamemailbox', 'imap_scan' => 'imap_listscan', 'imap_scanmailbox' => 'imap_listscan'];
     /** @var array<string, string> stores alias (key) - master (value) functions mapping */
     private static $mbregSet = ['mbereg' => 'mb_ereg', 'mbereg_match' => 'mb_ereg_match', 'mbereg_replace' => 'mb_ereg_replace', 'mbereg_search' => 'mb_ereg_search', 'mbereg_search_getpos' => 'mb_ereg_search_getpos', 'mbereg_search_getregs' => 'mb_ereg_search_getregs', 'mbereg_search_init' => 'mb_ereg_search_init', 'mbereg_search_pos' => 'mb_ereg_search_pos', 'mbereg_search_regs' => 'mb_ereg_search_regs', 'mbereg_search_setpos' => 'mb_ereg_search_setpos', 'mberegi' => 'mb_eregi', 'mberegi_replace' => 'mb_eregi_replace', 'mbregex_encoding' => 'mb_regex_encoding', 'mbsplit' => 'mb_split'];
+    private static $exifSet = ['read_exif_data' => 'exif_read_data'];
+    private static $timeSet = ['mktime' => ['time', 0], 'gmmktime' => ['time', 0]];
     public function configure(array $configuration = null)
     {
         parent::configure($configuration);
@@ -44,6 +47,8 @@ final class NoAliasFunctionsFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
                 $this->aliases = self::$internalSet;
                 $this->aliases = \array_merge($this->aliases, self::$imapSet);
                 $this->aliases = \array_merge($this->aliases, self::$mbregSet);
+                $this->aliases = \array_merge($this->aliases, self::$timeSet);
+                $this->aliases = \array_merge($this->aliases, self::$exifSet);
                 break;
             }
             if ('@internal' === $set) {
@@ -52,6 +57,10 @@ final class NoAliasFunctionsFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
                 $this->aliases = \array_merge($this->aliases, self::$imapSet);
             } elseif ('@mbreg' === $set) {
                 $this->aliases = \array_merge($this->aliases, self::$mbregSet);
+            } elseif ('@time' === $set) {
+                $this->aliases = \array_merge($this->aliases, self::$timeSet);
+            } elseif ('@exif' === $set) {
+                $this->aliases = \array_merge($this->aliases, self::$exifSet);
             }
         }
     }
@@ -116,6 +125,7 @@ mbereg_search_getregs();
     protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         $functionsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer();
+        $argumentsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\ArgumentsAnalyzer();
         /** @var Token $token */
         foreach ($tokens->findGivenKind(\T_STRING) as $index => $token) {
             // check mapping hit
@@ -124,14 +134,23 @@ mbereg_search_getregs();
                 continue;
             }
             // skip expressions without parameters list
-            $nextToken = $tokens[$tokens->getNextMeaningfulToken($index)];
-            if (!$nextToken->equals('(')) {
+            $openParenthesis = $tokens->getNextMeaningfulToken($index);
+            if (!$tokens[$openParenthesis]->equals('(')) {
                 continue;
             }
             if (!$functionsAnalyzer->isGlobalFunctionCall($tokens, $index)) {
                 continue;
             }
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $this->aliases[$tokenContent]]);
+            if (\is_array($this->aliases[$tokenContent])) {
+                list($alias, $numberOfArguments) = $this->aliases[$tokenContent];
+                $count = $argumentsAnalyzer->countArguments($tokens, $openParenthesis, $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openParenthesis));
+                if ($numberOfArguments !== $count) {
+                    continue;
+                }
+            } else {
+                $alias = $this->aliases[$tokenContent];
+            }
+            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $alias]);
         }
     }
     /**
@@ -139,7 +158,7 @@ mbereg_search_getregs();
      */
     protected function createConfigurationDefinition()
     {
-        $sets = ['@internal', '@IMAP', '@mbreg', '@all'];
+        $sets = ['@internal', '@IMAP', '@mbreg', '@all', '@time', '@exif'];
         return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('sets', 'List of sets to fix. Defined sets are `@internal` (native functions), `@IMAP` (IMAP functions), `@mbreg` (from `ext-mbstring`) `@all` (all listed sets).'))->setAllowedTypes(['array'])->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset($sets)])->setDefault(['@internal', '@IMAP'])->getOption()]);
     }
 }

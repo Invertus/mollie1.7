@@ -15,6 +15,7 @@ use MolliePrefix\PhpCsFixer\Doctrine\Annotation\Tokens as DoctrineAnnotationToke
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use MolliePrefix\PhpCsFixer\Tokenizer\CT;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token as PhpToken;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens as PhpTokens;
 use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
@@ -183,7 +184,7 @@ abstract class AbstractDoctrineAnnotationFixer extends \MolliePrefix\PhpCsFixer\
         if ($tokens[$index]->isClassy()) {
             return \true;
         }
-        while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT])) {
+        while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT, \T_NS_SEPARATOR, \T_STRING, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NULLABLE_TYPE])) {
             $index = $tokens->getNextMeaningfulToken($index);
         }
         return isset($this->classyElements[$index]);

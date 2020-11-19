@@ -14,7 +14,6 @@ namespace MolliePrefix\PhpCsFixer\Console;
 use MolliePrefix\PhpCsFixer\Console\Command\DescribeCommand;
 use MolliePrefix\PhpCsFixer\Console\Command\FixCommand;
 use MolliePrefix\PhpCsFixer\Console\Command\HelpCommand;
-use MolliePrefix\PhpCsFixer\Console\Command\ReadmeCommand;
 use MolliePrefix\PhpCsFixer\Console\Command\SelfUpdateCommand;
 use MolliePrefix\PhpCsFixer\Console\SelfUpdate\GithubClient;
 use MolliePrefix\PhpCsFixer\Console\SelfUpdate\NewVersionChecker;
@@ -33,7 +32,7 @@ use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
  */
 final class Application extends \MolliePrefix\Symfony\Component\Console\Application
 {
-    const VERSION = '2.16.4';
+    const VERSION = '2.16.5';
     const VERSION_CODENAME = 'Yellow Bird';
     /**
      * @var ToolInfo
@@ -48,7 +47,6 @@ final class Application extends \MolliePrefix\Symfony\Component\Console\Applicat
         $this->toolInfo = new \MolliePrefix\PhpCsFixer\ToolInfo();
         $this->add(new \MolliePrefix\PhpCsFixer\Console\Command\DescribeCommand());
         $this->add(new \MolliePrefix\PhpCsFixer\Console\Command\FixCommand($this->toolInfo));
-        $this->add(new \MolliePrefix\PhpCsFixer\Console\Command\ReadmeCommand());
         $this->add(new \MolliePrefix\PhpCsFixer\Console\Command\SelfUpdateCommand(new \MolliePrefix\PhpCsFixer\Console\SelfUpdate\NewVersionChecker(new \MolliePrefix\PhpCsFixer\Console\SelfUpdate\GithubClient()), $this->toolInfo, new \MolliePrefix\PhpCsFixer\PharChecker()));
     }
     /**

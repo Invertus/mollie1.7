@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
@@ -97,4 +97,4 @@ class FolderComparator
 /**
  * @see https://github.com/sureshdotariya/folder-compare/
  */
-\class_alias('MolliePrefix\\FolderComparator', 'MolliePrefix\\FolderComparator', \false);
+\class_alias('test\\FolderComparator', 'test\\FolderComparator', \false);

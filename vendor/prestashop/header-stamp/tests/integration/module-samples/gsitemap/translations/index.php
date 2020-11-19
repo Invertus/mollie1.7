@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * Copyright since 2005 PrestaShop SA and Contributors

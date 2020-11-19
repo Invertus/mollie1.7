@@ -21,6 +21,7 @@ use MolliePrefix\PhpCsFixer\FixerFactory;
 use MolliePrefix\PhpCsFixer\Linter\CachingLinter;
 use MolliePrefix\PhpCsFixer\Linter\Linter;
 use MolliePrefix\PhpCsFixer\Linter\LinterInterface;
+use MolliePrefix\PhpCsFixer\Linter\ProcessLinter;
 use MolliePrefix\PhpCsFixer\Runner\Runner;
 use MolliePrefix\PhpCsFixer\Tests\TestCase;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
@@ -266,7 +267,7 @@ abstract class AbstractIntegrationTestCase extends \MolliePrefix\PhpCsFixer\Test
                 $linterProphecy->isAsync()->willReturn(\false);
                 $linter = $linterProphecy->reveal();
             } else {
-                $linter = new \MolliePrefix\PhpCsFixer\Linter\CachingLinter(new \MolliePrefix\PhpCsFixer\Linter\Linter());
+                $linter = new \MolliePrefix\PhpCsFixer\Linter\CachingLinter(\getenv('FAST_LINT_TEST_CASES') ? new \MolliePrefix\PhpCsFixer\Linter\Linter() : new \MolliePrefix\PhpCsFixer\Linter\ProcessLinter());
             }
         }
         return $linter;

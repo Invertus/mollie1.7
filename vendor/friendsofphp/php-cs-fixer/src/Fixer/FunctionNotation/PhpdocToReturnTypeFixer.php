@@ -11,7 +11,7 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\FunctionNotation;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\AbstractPhpdocToTypeDeclarationFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\Annotation;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
@@ -27,7 +27,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpdocToReturnTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpdocToReturnTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractPhpdocToTypeDeclarationFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * @var array<int, array<int, int|string>>
@@ -49,10 +49,6 @@ final class PhpdocToReturnTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractFix
      * @var string
      */
     private $classRegex = '/^\\\\?[a-zA-Z_\\x7f-\\xff](?:\\\\?[a-zA-Z0-9_\\x7f-\\xff]+)*(?<array>\\[\\])*$/';
-    /**
-     * @var array<string, bool>
-     */
-    private $returnTypeCache = [];
     /**
      * {@inheritdoc}
      */
@@ -78,7 +74,16 @@ function my_foo()
 function foo() {}
 /** @return string */
 function bar() {}
-', new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification(70100), ['scalar_types' => \false])], null, 'This rule is EXPERIMENTAL and [1] is not covered with backward compatibility promise. [2] `@return` annotation is mandatory for the fixer to make changes, signatures of methods without it (no docblock, inheritdocs) will not be fixed. [3] Manual actions are required if inherited signatures are not properly documented. [4] `@inheritdocs` support is under construction.');
+', new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification(70100), ['scalar_types' => \false]), new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample('<?php
+final class Foo {
+    /**
+     * @return static
+     */
+    public function create($prototype) {
+        return new static($prototype);
+    }
+}
+', new \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification(80000))], null, 'This rule is EXPERIMENTAL and [1] is not covered with backward compatibility promise. [2] `@return` annotation is mandatory for the fixer to make changes, signatures of methods without it (no docblock, inheritdocs) will not be fixed. [3] Manual actions are required if inherited signatures are not properly documented. [4] `@inheritdocs` support is under construction.');
     }
     /**
      * {@inheritdoc}
@@ -158,7 +163,7 @@ function bar() {}
                 }
             }
             if ('static' === $returnType) {
-                $returnType = 'self';
+                $returnType = \PHP_VERSION_ID < 80000 ? 'self' : 'static';
             }
             if (isset($this->skippedTypes[$returnType])) {
                 continue;
@@ -183,7 +188,7 @@ function bar() {}
             if ($this->hasReturnTypeHint($tokens, $startIndex)) {
                 continue;
             }
-            if (!$this->isValidType($returnType)) {
+            if (!$this->isValidSyntax(\sprintf('<?php function f():%s {}', $returnType))) {
                 continue;
             }
             $this->fixFunctionDefinition($tokens, $startIndex, $isNullable, $returnType);
@@ -209,7 +214,7 @@ function bar() {}
      */
     private function fixFunctionDefinition(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index, $isNullable, $returnType)
     {
-        static $specialTypes = ['array' => [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT, 'array'], 'callable' => [\T_CALLABLE, 'callable']];
+        static $specialTypes = ['array' => [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT, 'array'], 'callable' => [\T_CALLABLE, 'callable'], 'static' => [\T_STATIC, 'static']];
         $newTokens = [new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_COLON, ':']), new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' '])];
         if (\true === $isNullable) {
             $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NULLABLE_TYPE, '?']);
@@ -217,14 +222,20 @@ function bar() {}
         if (isset($specialTypes[$returnType])) {
             $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token($specialTypes[$returnType]);
         } else {
-            foreach (\explode('\\', $returnType) as $nsIndex => $value) {
-                if (0 === $nsIndex && '' === $value) {
-                    continue;
+            $returnTypeUnqualified = \ltrim($returnType, '\\');
+            if (isset($this->scalarTypes[$returnTypeUnqualified]) || isset($this->versionSpecificTypes[$returnTypeUnqualified])) {
+                // 'scalar's, 'void', 'iterable' and 'object' must be unqualified
+                $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $returnTypeUnqualified]);
+            } else {
+                foreach (\explode('\\', $returnType) as $nsIndex => $value) {
+                    if (0 === $nsIndex && '' === $value) {
+                        continue;
+                    }
+                    if (0 < $nsIndex) {
+                        $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_NS_SEPARATOR, '\\']);
+                    }
+                    $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $value]);
                 }
-                if (0 < $nsIndex) {
-                    $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_NS_SEPARATOR, '\\']);
-                }
-                $newTokens[] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $value]);
             }
         }
         $endFuncIndex = $tokens->getPrevTokenOfKind($index, [')']);
@@ -247,22 +258,5 @@ function bar() {}
         }
         $doc = new \MolliePrefix\PhpCsFixer\DocBlock\DocBlock($tokens[$index]->getContent());
         return $doc->getAnnotationsOfType('return');
-    }
-    /**
-     * @param string $returnType
-     *
-     * @return bool
-     */
-    private function isValidType($returnType)
-    {
-        if (!\array_key_exists($returnType, $this->returnTypeCache)) {
-            try {
-                \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::fromCode(\sprintf('<?php function f():%s {}', $returnType));
-                $this->returnTypeCache[$returnType] = \true;
-            } catch (\ParseError $e) {
-                $this->returnTypeCache[$returnType] = \false;
-            }
-        }
-        return $this->returnTypeCache[$returnType];
     }
 }

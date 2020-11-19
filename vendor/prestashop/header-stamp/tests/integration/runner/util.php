@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * @param string $moduleName
@@ -39,8 +39,8 @@ function printSuccessMessage($message)
  */
 function buildTestApplication()
 {
-    $application = new \MolliePrefix\Symfony\Component\Console\Application('header-stamp', '9.9.9');
-    $command = new \MolliePrefix\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand();
+    $application = new \test\Symfony\Component\Console\Application('header-stamp', '9.9.9');
+    $command = new \test\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand();
     $application->add($command);
     $application->setDefaultCommand($command->getName());
     $application->setAutoExit(\false);

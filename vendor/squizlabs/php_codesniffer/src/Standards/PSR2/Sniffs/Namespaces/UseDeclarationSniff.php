@@ -64,6 +64,9 @@ class UseDeclarationSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\Sniff
                         default:
                             $baseUse = 'use';
                     }
+                    if ($tokens[$next + 1]['code'] !== \T_WHITESPACE) {
+                        $baseUse .= ' ';
+                    }
                     $phpcsFile->fixer->replaceToken($next, ';' . $phpcsFile->eolChar . $baseUse);
                 }
             } else {

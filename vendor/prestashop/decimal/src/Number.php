@@ -6,14 +6,14 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal;
+namespace test\PrestaShop\Decimal;
 
 /**
  * Retrocompatible name for DecimalNumber
  *
  * @deprecated use DecimalNumber instead
  */
-class Number extends \MolliePrefix\PrestaShop\Decimal\DecimalNumber
+class Number extends \test\PrestaShop\Decimal\DecimalNumber
 {
     /**
      * {@inheritdoc}

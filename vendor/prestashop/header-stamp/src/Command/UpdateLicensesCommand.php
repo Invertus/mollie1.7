@@ -24,20 +24,20 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-namespace MolliePrefix\PrestaShop\HeaderStamp\Command;
+namespace test\PrestaShop\HeaderStamp\Command;
 
-use MolliePrefix\PhpParser\ParserFactory;
-use MolliePrefix\PrestaShop\HeaderStamp\LicenseHeader;
-use MolliePrefix\PrestaShop\HeaderStamp\Reporter;
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-use MolliePrefix\Symfony\Component\Console\Helper\ProgressBar;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Input\InputOption;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
-use MolliePrefix\Symfony\Component\Console\Style\SymfonyStyle;
-use MolliePrefix\Symfony\Component\Finder\Finder;
-use MolliePrefix\Symfony\Component\Finder\SplFileInfo;
-class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
+use test\PhpParser\ParserFactory;
+use test\PrestaShop\HeaderStamp\LicenseHeader;
+use test\PrestaShop\HeaderStamp\Reporter;
+use test\Symfony\Component\Console\Command\Command;
+use test\Symfony\Component\Console\Helper\ProgressBar;
+use test\Symfony\Component\Console\Input\InputInterface;
+use test\Symfony\Component\Console\Input\InputOption;
+use test\Symfony\Component\Console\Output\OutputInterface;
+use test\Symfony\Component\Console\Style\SymfonyStyle;
+use test\Symfony\Component\Finder\Finder;
+use test\Symfony\Component\Finder\SplFileInfo;
+class UpdateLicensesCommand extends \test\Symfony\Component\Console\Command\Command
 {
     const DEFAULT_LICENSE_FILE = __DIR__ . '/../../assets/osl3.txt';
     const DEFAULT_EXTENSIONS = ['php', 'js', 'css', 'scss', 'tpl', 'html.twig', 'json', 'vue'];
@@ -91,9 +91,9 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
     private $reporter;
     protected function configure()
     {
-        $this->setName('prestashop:licenses:update')->setDescription('Rewrite your file headers to add the license or to make them up-to-date')->addOption('license', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'License file to apply', \realpath(static::DEFAULT_LICENSE_FILE))->addOption('target', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Folder to work in (default: current dir)')->addOption('exclude', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Comma-separated list of folders and files to exclude from the update', \implode(',', static::DEFAULT_FILTERS))->addOption('extensions', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Comma-separated list of file extensions to update', \implode(',', static::DEFAULT_EXTENSIONS))->addOption('display-report', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Whether or not to display a report')->addOption('dry-run', null, \MolliePrefix\Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Dry-run mode does not modify files');
+        $this->setName('prestashop:licenses:update')->setDescription('Rewrite your file headers to add the license or to make them up-to-date')->addOption('license', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'License file to apply', \realpath(static::DEFAULT_LICENSE_FILE))->addOption('target', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Folder to work in (default: current dir)')->addOption('exclude', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Comma-separated list of folders and files to exclude from the update', \implode(',', static::DEFAULT_FILTERS))->addOption('extensions', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Comma-separated list of file extensions to update', \implode(',', static::DEFAULT_EXTENSIONS))->addOption('display-report', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Whether or not to display a report')->addOption('dry-run', null, \test\Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Dry-run mode does not modify files');
     }
-    protected function initialize(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function initialize(\test\Symfony\Component\Console\Input\InputInterface $input, \test\Symfony\Component\Console\Output\OutputInterface $output)
     {
         $this->extensions = \explode(',', $input->getOption('extensions'));
         $this->filters = \explode(',', $input->getOption('exclude'));
@@ -106,10 +106,10 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
         $this->runAsDry = $input->getOption('dry-run') === \true;
         $this->displayReport = $input->getOption('display-report') === \true;
     }
-    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+    protected function execute(\test\Symfony\Component\Console\Input\InputInterface $input, \test\Symfony\Component\Console\Output\OutputInterface $output)
     {
-        $this->text = \trim((new \MolliePrefix\PrestaShop\HeaderStamp\LicenseHeader($this->license))->getContent(), \PHP_EOL);
-        $this->reporter = new \MolliePrefix\PrestaShop\HeaderStamp\Reporter();
+        $this->text = \trim((new \test\PrestaShop\HeaderStamp\LicenseHeader($this->license))->getContent(), \PHP_EOL);
+        $this->reporter = new \test\PrestaShop\HeaderStamp\Reporter();
         foreach ($this->extensions as $extension) {
             $this->findAndCheckExtension($input, $output, $extension);
         }
@@ -125,16 +125,16 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
         }
         return 0;
     }
-    private function findAndCheckExtension(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output, $ext)
+    private function findAndCheckExtension(\test\Symfony\Component\Console\Input\InputInterface $input, \test\Symfony\Component\Console\Output\OutputInterface $output, $ext)
     {
         if ($this->targetDirectory === \false) {
             throw new \Exception('Could not get target directory. Check your permissions.');
         }
-        $finder = new \MolliePrefix\Symfony\Component\Finder\Finder();
+        $finder = new \test\Symfony\Component\Finder\Finder();
         $finder->files()->name('*.' . $ext)->in($this->targetDirectory)->exclude($this->filters);
-        $parser = (new \MolliePrefix\PhpParser\ParserFactory())->create(\MolliePrefix\PhpParser\ParserFactory::PREFER_PHP7);
+        $parser = (new \test\PhpParser\ParserFactory())->create(\test\PhpParser\ParserFactory::PREFER_PHP7);
         $output->writeln('Updating license in ' . \strtoupper($ext) . ' files ...');
-        $progress = new \MolliePrefix\Symfony\Component\Console\Helper\ProgressBar($output, \count($finder));
+        $progress = new \test\Symfony\Component\Console\Helper\ProgressBar($output, \count($finder));
         $progress->start();
         $progress->setRedrawFrequency(20);
         foreach ($finder as $file) {
@@ -145,7 +145,7 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
                         if ($nodes !== null && \count($nodes)) {
                             $this->addLicenseToNode($nodes[0], $file);
                         }
-                    } catch (\MolliePrefix\PhpParser\Error $exception) {
+                    } catch (\test\PhpParser\Error $exception) {
                         $output->writeln('Syntax error on file ' . $file->getRelativePathname() . '. Continue ...');
                         $this->reporter->reportLicenseCouldNotBeFixed($file->getFilename());
                     }
@@ -208,7 +208,7 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
     /**
      * @param \PhpParser\Node\Stmt $node
      */
-    private function addLicenseToNode($node, \MolliePrefix\Symfony\Component\Finder\SplFileInfo $file)
+    private function addLicenseToNode($node, \test\Symfony\Component\Finder\SplFileInfo $file)
     {
         if (!$node->hasAttribute('comments')) {
             $needle = '<?php';
@@ -227,7 +227,7 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
         }
         $comments = $node->getAttribute('comments');
         foreach ($comments as $comment) {
-            if ($comment instanceof \MolliePrefix\PhpParser\Comment && \strpos($comment->getText(), 'prestashop') !== \false) {
+            if ($comment instanceof \test\PhpParser\Comment && \strpos($comment->getText(), 'prestashop') !== \false) {
                 $newContent = \str_replace($comment->getText(), $this->text, $file->getContents());
                 if (!$this->runAsDry) {
                     \file_put_contents($this->targetDirectory . '/' . $file->getRelativePathname(), $newContent);
@@ -236,24 +236,24 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
             }
         }
     }
-    private function addLicenseToSmartyTemplate(\MolliePrefix\Symfony\Component\Finder\SplFileInfo $file)
+    private function addLicenseToSmartyTemplate(\test\Symfony\Component\Finder\SplFileInfo $file)
     {
         $this->addLicenseToFile($file, '{', '}');
     }
-    private function addLicenseToTwigTemplate(\MolliePrefix\Symfony\Component\Finder\SplFileInfo $file)
+    private function addLicenseToTwigTemplate(\test\Symfony\Component\Finder\SplFileInfo $file)
     {
         if (\strrpos($file->getRelativePathName(), 'html.twig') !== \false) {
             $this->addLicenseToFile($file, '{#', '#}');
         }
     }
-    private function addLicenseToHtmlFile(\MolliePrefix\Symfony\Component\Finder\SplFileInfo $file)
+    private function addLicenseToHtmlFile(\test\Symfony\Component\Finder\SplFileInfo $file)
     {
         $this->addLicenseToFile($file, '<!--', '-->');
     }
     /**
      * @return bool
      */
-    private function addLicenseToJsonFile(\MolliePrefix\Symfony\Component\Finder\SplFileInfo $file)
+    private function addLicenseToJsonFile(\test\Symfony\Component\Finder\SplFileInfo $file)
     {
         if (!\in_array($file->getFilename(), ['composer.json', 'package.json'])) {
             return \false;
@@ -278,9 +278,9 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
             $this->reporter->reportLicenseWasFine($filename);
         }
     }
-    private function printPrettyReport(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+    private function printPrettyReport(\test\Symfony\Component\Console\Input\InputInterface $input, \test\Symfony\Component\Console\Output\OutputInterface $output)
     {
-        $style = new \MolliePrefix\Symfony\Component\Console\Style\SymfonyStyle($input, $output);
+        $style = new \test\Symfony\Component\Console\Style\SymfonyStyle($input, $output);
         $style->section('Header Stamp Report');
         $report = $this->reporter->getReport();
         $sections = ['fixed', 'nothing to fix', 'failed'];
@@ -292,9 +292,9 @@ class UpdateLicensesCommand extends \MolliePrefix\Symfony\Component\Console\Comm
             $style->listing($report[$section]);
         }
     }
-    private function printDryRunPrettyReport(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+    private function printDryRunPrettyReport(\test\Symfony\Component\Console\Input\InputInterface $input, \test\Symfony\Component\Console\Output\OutputInterface $output)
     {
-        $style = new \MolliePrefix\Symfony\Component\Console\Style\SymfonyStyle($input, $output);
+        $style = new \test\Symfony\Component\Console\Style\SymfonyStyle($input, $output);
         $style->section('Header Stamp Dry Run Report');
         $report = $this->reporter->getReport();
         if (empty($report['fixed'])) {

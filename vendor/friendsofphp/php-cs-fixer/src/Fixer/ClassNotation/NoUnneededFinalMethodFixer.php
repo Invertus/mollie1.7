@@ -86,13 +86,13 @@ class Bar
             if (!$tokens[$index]->isGivenKind(\T_FINAL)) {
                 continue;
             }
-            if (!$classIsFinal && !$this->isPrivateMethod($tokens, $index, $classOpenIndex)) {
+            if (!$classIsFinal && !$this->isPrivateMethodOtherThanConstructor($tokens, $index, $classOpenIndex)) {
                 continue;
             }
             $tokens->clearAt($index);
-            $nextTokenIndex = $index + 1;
-            if ($tokens[$nextTokenIndex]->isWhitespace()) {
-                $tokens->clearAt($nextTokenIndex);
+            ++$index;
+            if ($tokens[$index]->isWhitespace()) {
+                $tokens->clearAt($index);
             }
         }
     }
@@ -102,15 +102,16 @@ class Bar
      *
      * @return bool
      */
-    private function isPrivateMethod(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index, $classOpenIndex)
+    private function isPrivateMethodOtherThanConstructor(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index, $classOpenIndex)
     {
         $index = \max($classOpenIndex + 1, $tokens->getPrevTokenOfKind($index, [';', '{', '}']));
+        $private = \false;
         while (!$tokens[$index]->isGivenKind(\T_FUNCTION)) {
             if ($tokens[$index]->isGivenKind(\T_PRIVATE)) {
-                return \true;
+                $private = \true;
             }
-            ++$index;
+            $index = $tokens->getNextMeaningfulToken($index);
         }
-        return \false;
+        return $private && '__construct' !== \strtolower($tokens[$tokens->getNextMeaningfulToken($index)]->getContent());
     }
 }

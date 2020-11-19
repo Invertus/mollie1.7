@@ -6,9 +6,9 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Operation;
+namespace test\PrestaShop\Decimal\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\DecimalNumber;
 /**
  * Computes the subtraction of two decimal numbers
  */
@@ -35,9 +35,9 @@ class Subtraction
      *
      * @return DecimalNumber Result of the subtraction
      */
-    public function compute(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function compute(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
-        if (\function_exists('MolliePrefix\\bcsub')) {
+        if (\function_exists('test\\bcsub')) {
             return $this->computeUsingBcMath($a, $b);
         }
         return $this->computeWithoutBcMath($a, $b);
@@ -50,11 +50,11 @@ class Subtraction
      *
      * @return DecimalNumber Result of the subtraction
      */
-    public function computeUsingBcMath(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function computeUsingBcMath(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         $precision1 = $a->getPrecision();
         $precision2 = $b->getPrecision();
-        return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber((string) bcsub($a, $b, \max($precision1, $precision2)));
+        return new \test\PrestaShop\Decimal\DecimalNumber((string) bcsub($a, $b, \max($precision1, $precision2)));
     }
     /**
      * Performs the subtraction without using BC Math
@@ -64,7 +64,7 @@ class Subtraction
      *
      * @return DecimalNumber Result of the subtraction
      */
-    public function computeWithoutBcMath(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    public function computeWithoutBcMath(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         if ($a->isNegative()) {
             if ($b->isNegative()) {
@@ -110,7 +110,7 @@ class Subtraction
         }
         // keep the bigger exponent
         $exponent = \max($a->getExponent(), $b->getExponent());
-        return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($sign . $sub, $exponent);
+        return new \test\PrestaShop\Decimal\DecimalNumber($sign . $sub, $exponent);
     }
     /**
      * Normalizes coefficients by adding leading or trailing zeroes as needed so that both are the same length
@@ -120,7 +120,7 @@ class Subtraction
      *
      * @return array An array containing the normalized coefficients
      */
-    private function normalizeCoefficients(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $a, \MolliePrefix\PrestaShop\Decimal\DecimalNumber $b)
+    private function normalizeCoefficients(\test\PrestaShop\Decimal\DecimalNumber $a, \test\PrestaShop\Decimal\DecimalNumber $b)
     {
         $exp1 = $a->getExponent();
         $exp2 = $b->getExponent();

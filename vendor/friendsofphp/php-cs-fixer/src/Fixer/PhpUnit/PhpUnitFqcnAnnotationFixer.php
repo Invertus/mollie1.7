@@ -11,17 +11,16 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Preg;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Roland Franssen <franssen.roland@gmail.com>
  */
-final class PhpUnitFqcnAnnotationFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpUnitFqcnAnnotationFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer
 {
     /**
      * {@inheritdoc}
@@ -55,24 +54,13 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_DOC_COMMENT]);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $startIndex = $indexes[0];
-            $prevDocCommentIndex = $tokens->getPrevTokenOfKind($startIndex, [[\T_DOC_COMMENT]]);
-            if (null !== $prevDocCommentIndex) {
-                $startIndex = $prevDocCommentIndex;
-            }
-            $this->fixPhpUnitClass($tokens, $startIndex, $indexes[1]);
+        $prevDocCommentIndex = $tokens->getPrevTokenOfKind($startIndex, [[\T_DOC_COMMENT]]);
+        if (null !== $prevDocCommentIndex) {
+            $startIndex = $prevDocCommentIndex;
         }
+        $this->fixPhpUnitClass($tokens, $startIndex, $endIndex);
     }
     /**
      * @param int $startIndex

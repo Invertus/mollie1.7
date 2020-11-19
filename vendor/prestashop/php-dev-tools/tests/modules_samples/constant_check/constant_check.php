@@ -1,8 +1,8 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
-class Constant_Check extends \MolliePrefix\Module
+class Constant_Check extends \test\Module
 {
     public function __construct()
     {
@@ -15,4 +15,4 @@ class Constant_Check extends \MolliePrefix\Module
         $value = \_PS_PRICE_COMPUTE_PRECISION_;
     }
 }
-\class_alias('MolliePrefix\\Constant_Check', 'MolliePrefix\\Constant_Check', \false);
+\class_alias('test\\Constant_Check', 'test\\Constant_Check', \false);

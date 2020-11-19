@@ -83,7 +83,7 @@ final class FixerFactory
         if (null === $builtInFixers) {
             $builtInFixers = [];
             /** @var SplFileInfo $file */
-            foreach (\MolliePrefix\Symfony\Component\Finder\Finder::create()->files()->in(__DIR__ . '/Fixer') as $file) {
+            foreach (\MolliePrefix\Symfony\Component\Finder\Finder::create()->files()->in(__DIR__ . '/Fixer')->depth(1) as $file) {
                 $relativeNamespace = $file->getRelativePath();
                 $fixerClass = 'PhpCsFixer\\Fixer\\' . ($relativeNamespace ? $relativeNamespace . '\\' : '') . $file->getBasename('.php');
                 if ('Fixer' === \substr($fixerClass, -5)) {

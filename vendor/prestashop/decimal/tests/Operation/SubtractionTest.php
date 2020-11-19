@@ -6,11 +6,11 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test\Operation;
+namespace test\PrestaShop\Decimal\Test\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\Subtraction;
-class SubtractionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use test\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\Operation\Subtraction;
+class SubtractionTest extends \test\PHPUnit_Framework_TestCase
 {
     /**
      * Given two decimal numbers
@@ -25,9 +25,9 @@ class SubtractionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItSubtractsNumbers($number1, $number2, $expectedResult)
     {
-        $n1 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number1);
-        $n2 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number2);
-        $operation = new \MolliePrefix\PrestaShop\Decimal\Operation\Subtraction();
+        $n1 = new \test\PrestaShop\Decimal\DecimalNumber($number1);
+        $n2 = new \test\PrestaShop\Decimal\DecimalNumber($number2);
+        $operation = new \test\PrestaShop\Decimal\Operation\Subtraction();
         $result1 = $operation->computeUsingBcMath($n1, $n2);
         $result2 = $operation->computeWithoutBcMath($n1, $n2);
         $this->assertSame($expectedResult, (string) $result1, "Failed asserting {$number1} - {$number2} = {$expectedResult} (BC Math)");

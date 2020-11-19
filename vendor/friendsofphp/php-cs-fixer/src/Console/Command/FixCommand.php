@@ -105,6 +105,9 @@ final class FixCommand extends \MolliePrefix\Symfony\Component\Console\Command\C
             }
             $configFile = $resolver->getConfigFile();
             $stdErr->writeln(\sprintf('Loaded config <comment>%s</comment>%s.', $resolver->getConfig()->getName(), null === $configFile ? '' : ' from "' . $configFile . '"'));
+            if (\MolliePrefix\Symfony\Component\Console\Output\OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+                $stdErr->writeln(\sprintf('Runtime: <info>PHP %s</info>', \PHP_VERSION));
+            }
             if ($resolver->getUsingCache()) {
                 $cacheFile = $resolver->getCacheFile();
                 if (\is_file($cacheFile)) {

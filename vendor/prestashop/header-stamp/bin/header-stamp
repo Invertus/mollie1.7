@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * 2007-2020 PrestaShop and Contributors
@@ -32,10 +32,10 @@ foreach ($autoloadFiles as $autoloadFile) {
         require_once $autoloadFile;
     }
 }
-use MolliePrefix\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand;
-use MolliePrefix\Symfony\Component\Console\Application;
-$application = new \MolliePrefix\Symfony\Component\Console\Application('header-stamp', '1.4.0');
-$command = new \MolliePrefix\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand();
+use test\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand;
+use test\Symfony\Component\Console\Application;
+$application = new \test\Symfony\Component\Console\Application('header-stamp', '1.4.0');
+$command = new \test\PrestaShop\HeaderStamp\Command\UpdateLicensesCommand();
 $application->add($command);
 $application->setDefaultCommand($command->getName());
 $application->run();

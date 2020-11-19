@@ -14,6 +14,8 @@ namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\CaseAnalysis;
+use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\SwitchAnalyzer;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
@@ -49,17 +51,31 @@ final class TernaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\Abstract
      */
     protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
-        $ternaryLevel = 0;
+        $ternaryOperatorIndices = [];
+        $excludedIndices = [];
         foreach ($tokens as $index => $token) {
+            if ($token->isGivenKind(\T_SWITCH)) {
+                $excludedIndices = \array_merge($excludedIndices, $this->getColonIndicesForSwitch($tokens, $index));
+                continue;
+            }
+            if (!$token->equalsAny(['?', ':'])) {
+                continue;
+            }
+            if (\in_array($index, $excludedIndices, \true)) {
+                continue;
+            }
+            if ($this->belongsToGoToLabel($tokens, $index)) {
+                continue;
+            }
+            $ternaryOperatorIndices[] = $index;
+        }
+        foreach (\array_reverse($ternaryOperatorIndices) as $index) {
+            $token = $tokens[$index];
             if ($token->equals('?')) {
-                ++$ternaryLevel;
                 $nextNonWhitespaceIndex = $tokens->getNextNonWhitespace($index);
-                $nextNonWhitespaceToken = $tokens[$nextNonWhitespaceIndex];
-                if ($nextNonWhitespaceToken->equals(':')) {
+                if ($tokens[$nextNonWhitespaceIndex]->equals(':')) {
                     // for `$a ?: $b` remove spaces between `?` and `:`
-                    if ($tokens[$index + 1]->isWhitespace()) {
-                        $tokens->clearAt($index + 1);
-                    }
+                    $tokens->ensureWhitespaceAtIndex($index + 1, 0, '');
                 } else {
                     // for `$a ? $b : $c` ensure space after `?`
                     $this->ensureWhitespaceExistence($tokens, $index + 1, \true);
@@ -68,7 +84,7 @@ final class TernaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\Abstract
                 $this->ensureWhitespaceExistence($tokens, $index - 1, \false);
                 continue;
             }
-            if ($ternaryLevel && $token->equals(':')) {
+            if ($token->equals(':')) {
                 // for `$a ? $b : $c` ensure space after `:`
                 $this->ensureWhitespaceExistence($tokens, $index + 1, \true);
                 $prevNonWhitespaceToken = $tokens[$tokens->getPrevNonWhitespace($index)];
@@ -76,9 +92,36 @@ final class TernaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\Abstract
                     // for `$a ? $b : $c` ensure space before `:`
                     $this->ensureWhitespaceExistence($tokens, $index - 1, \false);
                 }
-                --$ternaryLevel;
             }
         }
+    }
+    /**
+     * @param int $index
+     *
+     * @return bool
+     */
+    private function belongsToGoToLabel(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    {
+        if (!$tokens[$index]->equals(':')) {
+            return \false;
+        }
+        $prevMeaningfulTokenIndex = $tokens->getPrevMeaningfulToken($index);
+        if (!$tokens[$prevMeaningfulTokenIndex]->isGivenKind(\T_STRING)) {
+            return \false;
+        }
+        $prevMeaningfulTokenIndex = $tokens->getPrevMeaningfulToken($prevMeaningfulTokenIndex);
+        return $tokens[$prevMeaningfulTokenIndex]->equalsAny([';', '{', '}', [\T_OPEN_TAG]]);
+    }
+    /**
+     * @param int $switchIndex
+     *
+     * @return int[]
+     */
+    private function getColonIndicesForSwitch(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $switchIndex)
+    {
+        return \array_map(static function (\MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\CaseAnalysis $caseAnalysis) {
+            return $caseAnalysis->getColonIndex();
+        }, (new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\SwitchAnalyzer())->getSwitchAnalysis($tokens, $switchIndex)->getCases());
     }
     /**
      * @param int  $index

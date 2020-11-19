@@ -11,12 +11,9 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\FunctionNotation;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\AbstractPhpdocToTypeDeclarationFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\Annotation;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecification;
 use MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSample;
@@ -27,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Jan Gantzert <jan@familie-gantzert.de>
  */
-final class PhpdocToParamTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpdocToParamTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractPhpdocToTypeDeclarationFixer
 {
     /** @internal */
     const CLASS_REGEX = '/^\\\\?[a-zA-Z_\\x7f-\\xff](?:\\\\?[a-zA-Z0-9_\\x7f-\\xff]+)*(?<array>\\[\\])*$/';
@@ -36,7 +33,7 @@ final class PhpdocToParamTypeFixer extends \MolliePrefix\PhpCsFixer\AbstractFixe
     /**
      * @var array{int, string}[]
      */
-    private $blacklistFuncNames = [[\T_STRING, '__clone'], [\T_STRING, '__destruct']];
+    private $excludeFuncNames = [[\T_STRING, '__clone'], [\T_STRING, '__destruct']];
     /**
      * @var array<string, true>
      */
@@ -85,13 +82,6 @@ function my_foo($bar)
     /**
      * {@inheritdoc}
      */
-    protected function createConfigurationDefinition()
-    {
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('scalar_types', 'Fix also scalar types; may have unexpected behaviour due to PHP bad type coercion system.'))->setAllowedTypes(['bool'])->setDefault(\true)->getOption()]);
-    }
-    /**
-     * {@inheritdoc}
-     */
     protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
     {
         for ($index = $tokens->count() - 1; 0 < $index; --$index) {
@@ -99,7 +89,7 @@ function my_foo($bar)
                 continue;
             }
             $funcName = $tokens->getNextMeaningfulToken($index);
-            if ($tokens[$funcName]->equalsAny($this->blacklistFuncNames, \false)) {
+            if ($tokens[$funcName]->equalsAny($this->excludeFuncNames, \false)) {
                 continue;
             }
             $paramTypeAnnotations = $this->findParamAnnotations($tokens, $index);
@@ -192,6 +182,9 @@ function my_foo($bar)
                     $variableIndex = $byRefIndex;
                 }
                 if (!('(' === $tokens[$variableIndex - 1]->getContent()) && $this->hasParamTypeHint($tokens, $variableIndex - 2)) {
+                    continue;
+                }
+                if (!$this->isValidSyntax(\sprintf('<?php function f(%s $x) {}', $paramType))) {
                     continue;
                 }
                 $this->fixFunctionDefinition($paramType, $tokens, $variableIndex, $hasNull, $hasArray, $hasIterable, $hasString, $hasInt, $hasFloat, $hasBool, $hasCallable, $hasObject);

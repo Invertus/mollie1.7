@@ -48,6 +48,10 @@ class ConcatenationSpacingSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\
     public function process(\MolliePrefix\PHP_CodeSniffer\Files\File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
+        if (isset($tokens[$stackPtr + 2]) === \false) {
+            // Syntax error or live coding, bow out.
+            return;
+        }
         $ignoreBefore = \false;
         $prev = $phpcsFile->findPrevious(\MolliePrefix\PHP_CodeSniffer\Util\Tokens::$emptyTokens, $stackPtr - 1, null, \true);
         if ($tokens[$prev]['code'] === \T_END_HEREDOC || $tokens[$prev]['code'] === T_END_NOWDOC) {

@@ -154,7 +154,8 @@ final class PowToExponentiationFixer extends \MolliePrefix\PhpCsFixer\AbstractFu
             if ($tokens[$i]->isGivenKind($allowedKinds) || $tokens->isEmptyAt($i)) {
                 continue;
             }
-            if (null !== ($blockType = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::detectBlockType($tokens[$i]))) {
+            $blockType = \MolliePrefix\PhpCsFixer\Tokenizer\Tokens::detectBlockType($tokens[$i]);
+            if (null !== $blockType) {
                 $i = $tokens->findBlockEnd($blockType['type'], $i);
                 continue;
             }

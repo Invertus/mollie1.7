@@ -6,9 +6,9 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal;
+namespace test\PrestaShop\Decimal;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\DecimalNumber;
 /**
  * Builds Number instances
  */
@@ -63,7 +63,7 @@ class Builder
                 $fractionalDigits = 0;
             }
         }
-        return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($numberParts['sign'] . $coefficient, $fractionalDigits);
+        return new \test\PrestaShop\Decimal\DecimalNumber($numberParts['sign'] . $coefficient, $fractionalDigits);
     }
     /**
      * @param string $number

@@ -21,6 +21,6 @@ class Finder extends \MolliePrefix\Symfony\Component\Finder\Finder
     public function __construct()
     {
         parent::__construct();
-        $this->files()->name('*.php')->ignoreDotFiles(\true)->ignoreVCS(\true)->exclude('vendor');
+        $this->files()->name('*.php')->exclude('vendor');
     }
 }

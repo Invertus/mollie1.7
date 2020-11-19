@@ -11,17 +11,16 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Michał Adamski <michal.adamski@gmail.com>
  * @author Kuba Werłos <werlos@gmail.com>
  */
-final class PhpUnitMockShortWillReturnFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class PhpUnitMockShortWillReturnFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer
 {
     /**
      * @internal
@@ -50,13 +49,6 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_OBJECT_OPERATOR, \T_STRING]);
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function isRisky()
     {
         return \true;
@@ -64,18 +56,7 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->fixWillReturn($tokens, $indexes[0], $indexes[1]);
-        }
-    }
-    /**
-     * @param int $startIndex
-     * @param int $endIndex
-     */
-    private function fixWillReturn(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         for ($index = $startIndex; $index < $endIndex; ++$index) {
             if (!$tokens[$index]->isGivenKind(\T_OBJECT_OPERATOR)) {

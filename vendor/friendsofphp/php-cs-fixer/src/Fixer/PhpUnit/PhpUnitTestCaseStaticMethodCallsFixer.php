@@ -11,13 +11,12 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
@@ -26,7 +25,7 @@ use MolliePrefix\Symfony\Component\OptionsResolver\Exception\InvalidOptionsExcep
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
 {
     /**
      * @internal
@@ -84,17 +83,21 @@ final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFix
         'assertDirectoryNotIsReadable' => \true,
         'assertDirectoryNotIsWritable' => \true,
         'assertEmpty' => \true,
-        'assertEqualXMLStructure' => \true,
         'assertEquals' => \true,
         'assertEqualsCanonicalizing' => \true,
         'assertEqualsIgnoringCase' => \true,
         'assertEqualsWithDelta' => \true,
+        'assertEqualXMLStructure' => \true,
         'assertFalse' => \true,
         'assertFileEquals' => \true,
+        'assertFileEqualsCanonicalizing' => \true,
+        'assertFileEqualsIgnoringCase' => \true,
         'assertFileExists' => \true,
         'assertFileIsReadable' => \true,
         'assertFileIsWritable' => \true,
         'assertFileNotEquals' => \true,
+        'assertFileNotEqualsCanonicalizing' => \true,
+        'assertFileNotEqualsIgnoringCase' => \true,
         'assertFileNotExists' => \true,
         'assertFileNotIsReadable' => \true,
         'assertFileNotIsWritable' => \true,
@@ -168,11 +171,15 @@ final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFix
         'assertStringEndsNotWith' => \true,
         'assertStringEndsWith' => \true,
         'assertStringEqualsFile' => \true,
+        'assertStringEqualsFileCanonicalizing' => \true,
+        'assertStringEqualsFileIgnoringCase' => \true,
         'assertStringMatchesFormat' => \true,
         'assertStringMatchesFormatFile' => \true,
         'assertStringNotContainsString' => \true,
         'assertStringNotContainsStringIgnoringCase' => \true,
         'assertStringNotEqualsFile' => \true,
+        'assertStringNotEqualsFileCanonicalizing' => \true,
+        'assertStringNotEqualsFileIgnoringCase' => \true,
         'assertStringNotMatchesFormat' => \true,
         'assertStringNotMatchesFormatFile' => \true,
         'assertStringStartsNotWith' => \true,
@@ -191,6 +198,8 @@ final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFix
         'classHasAttribute' => \true,
         'classHasStaticAttribute' => \true,
         'contains' => \true,
+        'containsEqual' => \true,
+        'containsIdentical' => \true,
         'containsOnly' => \true,
         'containsOnlyInstancesOf' => \true,
         'countOf' => \true,
@@ -240,8 +249,8 @@ final class PhpUnitTestCaseStaticMethodCallsFixer extends \MolliePrefix\PhpCsFix
         'atMost' => \true,
         'exactly' => \true,
         'never' => \true,
-        'onConsecutiveCalls' => \true,
         'once' => \true,
+        'onConsecutiveCalls' => \true,
         'returnArgument' => \true,
         'returnCallback' => \true,
         'returnSelf' => \true,
@@ -282,26 +291,9 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_STRING]);
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function isRisky()
     {
         return \true;
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            $this->fixPhpUnitClass($tokens, $indexes[0], $indexes[1]);
-        }
     }
     /**
      * {@inheritdoc}
@@ -322,10 +314,9 @@ final class MyTest extends \\PHPUnit_Framework_TestCase
         }])->setDefault([])->getOption()]);
     }
     /**
-     * @param int $startIndex
-     * @param int $endIndex
+     * {@inheritdoc}
      */
-    private function fixPhpUnitClass(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
         $analyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);
         for ($index = $startIndex; $index < $endIndex; ++$index) {

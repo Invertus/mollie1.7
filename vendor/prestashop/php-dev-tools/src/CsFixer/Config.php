@@ -1,9 +1,9 @@
 <?php
 
-namespace MolliePrefix\PrestaShop\CodingStandards\CsFixer;
+namespace test\PrestaShop\CodingStandards\CsFixer;
 
-use MolliePrefix\PhpCsFixer\Config as BaseConfig;
-class Config extends \MolliePrefix\PhpCsFixer\Config
+use test\PhpCsFixer\Config as BaseConfig;
+class Config extends \test\PhpCsFixer\Config
 {
     public function __construct($name = 'default')
     {

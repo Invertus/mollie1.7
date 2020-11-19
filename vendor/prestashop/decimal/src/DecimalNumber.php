@@ -6,10 +6,10 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal;
+namespace test\PrestaShop\Decimal;
 
 use InvalidArgumentException;
-use MolliePrefix\PrestaShop\Decimal\Operation\Rounding;
+use test\PrestaShop\Decimal\Operation\Rounding;
 /**
  * Decimal number.
  *
@@ -62,7 +62,7 @@ class DecimalNumber
             throw new \InvalidArgumentException(\sprintf('Invalid type - expected string, but got (%s) "%s"', \gettype($number), \print_r($number, \true)));
         }
         if (null === $exponent) {
-            $decimalNumber = \MolliePrefix\PrestaShop\Decimal\Builder::parseNumber($number);
+            $decimalNumber = \test\PrestaShop\Decimal\Builder::parseNumber($number);
             $number = $decimalNumber->getSign() . $decimalNumber->getCoefficient();
             $exponent = $decimalNumber->getExponent();
         }
@@ -185,7 +185,7 @@ class DecimalNumber
      *
      * @return string
      */
-    public function toPrecision($precision, $roundingMode = \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
+    public function toPrecision($precision, $roundingMode = \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
     {
         $currentPrecision = $this->getPrecision();
         if ($precision === $currentPrecision) {
@@ -193,7 +193,7 @@ class DecimalNumber
         }
         $return = $this;
         if ($precision < $currentPrecision) {
-            $return = (new \MolliePrefix\PrestaShop\Decimal\Operation\Rounding())->compute($this, $precision, $roundingMode);
+            $return = (new \test\PrestaShop\Decimal\Operation\Rounding())->compute($this, $precision, $roundingMode);
         }
         if ($precision > $return->getPrecision()) {
             return $return->getSign() . $return->getIntegerPart() . '.' . \str_pad($return->getFractionalPart(), $precision, '0');
@@ -218,11 +218,11 @@ class DecimalNumber
      *
      * @return string
      */
-    public function round($maxDecimals, $roundingMode = \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
+    public function round($maxDecimals, $roundingMode = \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
     {
         $currentPrecision = $this->getPrecision();
         if ($maxDecimals < $currentPrecision) {
-            return (string) (new \MolliePrefix\PrestaShop\Decimal\Operation\Rounding())->compute($this, $maxDecimals, $roundingMode);
+            return (string) (new \test\PrestaShop\Decimal\Operation\Rounding())->compute($this, $maxDecimals, $roundingMode);
         }
         return (string) $this;
     }
@@ -259,7 +259,7 @@ class DecimalNumber
      */
     public function plus(self $addend)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Addition())->compute($this, $addend);
+        return (new \test\PrestaShop\Decimal\Operation\Addition())->compute($this, $addend);
     }
     /**
      * Returns the computed result of subtracting another number to this one
@@ -270,7 +270,7 @@ class DecimalNumber
      */
     public function minus(self $subtrahend)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Subtraction())->compute($this, $subtrahend);
+        return (new \test\PrestaShop\Decimal\Operation\Subtraction())->compute($this, $subtrahend);
     }
     /**
      * Returns the computed result of multiplying this number with another one
@@ -281,7 +281,7 @@ class DecimalNumber
      */
     public function times(self $factor)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Multiplication())->compute($this, $factor);
+        return (new \test\PrestaShop\Decimal\Operation\Multiplication())->compute($this, $factor);
     }
     /**
      * Returns the computed result of dividing this number by another one, with up to $precision number of decimals.
@@ -299,9 +299,9 @@ class DecimalNumber
      *
      * @throws Exception\DivisionByZeroException
      */
-    public function dividedBy(self $divisor, $precision = \MolliePrefix\PrestaShop\Decimal\Operation\Division::DEFAULT_PRECISION)
+    public function dividedBy(self $divisor, $precision = \test\PrestaShop\Decimal\Operation\Division::DEFAULT_PRECISION)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Division())->compute($this, $divisor, $precision);
+        return (new \test\PrestaShop\Decimal\Operation\Division())->compute($this, $divisor, $precision);
     }
     /**
      * Indicates if this number equals zero
@@ -321,7 +321,7 @@ class DecimalNumber
      */
     public function isGreaterThan(self $number)
     {
-        return 1 === (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return 1 === (new \test\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
     }
     /**
      * Indicates if this number is greater than zero
@@ -350,7 +350,7 @@ class DecimalNumber
      */
     public function isGreaterOrEqualThan(self $number)
     {
-        return 0 <= (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return 0 <= (new \test\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
     }
     /**
      * Indicates if this number is lower than zero
@@ -379,7 +379,7 @@ class DecimalNumber
      */
     public function isLowerThan(self $number)
     {
-        return -1 === (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return -1 === (new \test\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
     }
     /**
      * Indicates if this number is lower or equal compared to the provided one
@@ -390,7 +390,7 @@ class DecimalNumber
      */
     public function isLowerOrEqualThan(self $number)
     {
-        return 0 >= (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return 0 >= (new \test\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
     }
     /**
      * Indicates if this number is positive
@@ -441,7 +441,7 @@ class DecimalNumber
      */
     public function toMagnitude($exponent)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\MagnitudeChange())->compute($this, $exponent);
+        return (new \test\PrestaShop\Decimal\Operation\MagnitudeChange())->compute($this, $exponent);
     }
     /**
      * Initializes the number using a coefficient and exponent

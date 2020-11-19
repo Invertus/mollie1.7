@@ -16,7 +16,6 @@ use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
 use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis;
 use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -57,14 +56,7 @@ final class FunctionTypehintSpaceFixer extends \MolliePrefix\PhpCsFixer\Abstract
                 if (!$type instanceof \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis) {
                     continue;
                 }
-                $whitespaceTokenIndex = $type->getEndIndex() + 1;
-                if ($tokens[$whitespaceTokenIndex]->equals([\T_WHITESPACE])) {
-                    if (' ' === $tokens[$whitespaceTokenIndex]->getContent()) {
-                        continue;
-                    }
-                    $tokens->clearAt($whitespaceTokenIndex);
-                }
-                $tokens->insertAt($whitespaceTokenIndex, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']));
+                $tokens->ensureWhitespaceAtIndex($type->getEndIndex() + 1, 0, ' ');
             }
         }
     }

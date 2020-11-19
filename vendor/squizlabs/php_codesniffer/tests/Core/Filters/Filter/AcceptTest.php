@@ -92,7 +92,7 @@ class AcceptTest extends \MolliePrefix\PHPUnit\Framework\TestCase
     {
         $testCases = [
             // Test top-level exclude patterns.
-            [['/path/to/src/Main.php', '/path/to/src/Something/Main.php', '/path/to/src/Somethingelse/Main.php', '/path/to/src/Other/Main.php'], ['/path/to/src/Main.php']],
+            [['/path/to/src/Main.php', '/path/to/src/Something/Main.php', '/path/to/src/Somethingelse/Main.php', '/path/to/src/SomethingelseEvenLonger/Main.php', '/path/to/src/Other/Main.php'], ['/path/to/src/Main.php', '/path/to/src/SomethingelseEvenLonger/Main.php']],
             // Test ignoring standard/sniff specific exclude patterns.
             [['/path/to/src/generic-project/Main.php', '/path/to/src/generic/Main.php', '/path/to/src/anything-generic/Main.php'], ['/path/to/src/generic-project/Main.php', '/path/to/src/generic/Main.php', '/path/to/src/anything-generic/Main.php']],
         ];

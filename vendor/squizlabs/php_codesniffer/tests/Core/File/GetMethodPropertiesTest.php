@@ -222,6 +222,17 @@ class GetMethodPropertiesTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Core\A
     }
     //end testPHP8MixedTypeHintNullable()
     /**
+     * Test a function with return type using the namespace operator.
+     *
+     * @return void
+     */
+    public function testNamespaceOperatorTypeHint()
+    {
+        $expected = ['scope' => 'public', 'scope_specified' => \false, 'return_type' => 'MolliePrefix\\?namespace\\Name', 'nullable_return_type' => \true, 'is_abstract' => \false, 'is_final' => \false, 'is_static' => \false, 'has_body' => \true];
+        $this->getMethodPropertiesTestHelper('/* ' . __FUNCTION__ . ' */', $expected);
+    }
+    //end testNamespaceOperatorTypeHint()
+    /**
      * Test helper.
      *
      * @param string $commentString The comment which preceeds the test.

@@ -16,6 +16,8 @@ namespace MolliePrefix\PhpCsFixer\DocBlock;
  * together, or kept apart.
  *
  * @author Graham Campbell <graham@alt-three.com>
+ *
+ * @final
  */
 class TagComparator
 {

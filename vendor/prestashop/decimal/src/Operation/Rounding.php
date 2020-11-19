@@ -6,9 +6,9 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Operation;
+namespace test\PrestaShop\Decimal\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\DecimalNumber;
 /**
  * Allows transforming a decimal number's precision
  */
@@ -29,7 +29,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function compute(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision, $roundingMode)
+    public function compute(\test\PrestaShop\Decimal\DecimalNumber $number, $precision, $roundingMode)
     {
         switch ($roundingMode) {
             case self::ROUND_HALF_UP:
@@ -61,16 +61,16 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function truncate(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function truncate(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         $precision = $this->sanitizePrecision($precision);
         if ($number->getPrecision() <= $precision) {
             return $number;
         }
         if (0 === $precision) {
-            return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getIntegerPart());
+            return new \test\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getIntegerPart());
         }
-        return new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getIntegerPart() . '.' . \substr($number->getFractionalPart(), 0, $precision));
+        return new \test\PrestaShop\Decimal\DecimalNumber($number->getSign() . $number->getIntegerPart() . '.' . \substr($number->getFractionalPart(), 0, $precision));
     }
     /**
      * Rounds a number up if its precision is greater than the target one.
@@ -96,7 +96,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function ceil(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function ceil(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         $precision = $this->sanitizePrecision($precision);
         if ($number->getPrecision() <= $precision) {
@@ -123,7 +123,7 @@ class Rounding
         } else {
             $numberToAdd = '1';
         }
-        return $this->truncate($number, $precision)->plus(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($numberToAdd));
+        return $this->truncate($number, $precision)->plus(new \test\PrestaShop\Decimal\DecimalNumber($numberToAdd));
     }
     /**
      * Rounds a number down if its precision is greater than the target one.
@@ -149,7 +149,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function floor(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function floor(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         $precision = $this->sanitizePrecision($precision);
         if ($number->getPrecision() <= $precision) {
@@ -176,7 +176,7 @@ class Rounding
         } else {
             $numberToSubtract = '1';
         }
-        return $this->truncate($number, $precision)->minus(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($numberToSubtract));
+        return $this->truncate($number, $precision)->minus(new \test\PrestaShop\Decimal\DecimalNumber($numberToSubtract));
     }
     /**
      * Rounds the number according to the digit D located at precision P.
@@ -202,7 +202,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function roundHalfUp(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function roundHalfUp(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         return $this->roundHalf($number, $precision, 5);
     }
@@ -230,7 +230,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function roundHalfDown(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function roundHalfDown(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         return $this->roundHalf($number, $precision, 6);
     }
@@ -276,7 +276,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    public function roundHalfEven(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision)
+    public function roundHalfEven(\test\PrestaShop\Decimal\DecimalNumber $number, $precision)
     {
         $precision = $this->sanitizePrecision($precision);
         if ($number->getPrecision() <= $precision) {
@@ -327,7 +327,7 @@ class Rounding
      *
      * @return DecimalNumber
      */
-    private function roundHalf(\MolliePrefix\PrestaShop\Decimal\DecimalNumber $number, $precision, $halfwayValue)
+    private function roundHalf(\test\PrestaShop\Decimal\DecimalNumber $number, $precision, $halfwayValue)
     {
         $precision = $this->sanitizePrecision($precision);
         if ($number->getPrecision() <= $precision) {

@@ -24,7 +24,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-namespace MolliePrefix\PrestaShop\HeaderStamp;
+namespace test\PrestaShop\HeaderStamp;
 
 /**
  * Class responsible of loading license file in memory and returning its content

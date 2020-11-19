@@ -6,11 +6,11 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test;
+namespace test\PrestaShop\Decimal\Test;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\Rounding;
-class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use test\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\Operation\Rounding;
+class DecimalNumberTest extends \test\PHPUnit_Framework_TestCase
 {
     /**
      * Given a valid number in a string
@@ -27,7 +27,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItInterpretsNumbers($number, $expectedSign, $expectedInteger, $expectedFraction, $expectedStr)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expectedSign, $decimalNumber->getSign(), 'The sign is not as expected');
         $this->assertSame($expectedInteger, $decimalNumber->getIntegerPart(), 'The integer part is not as expected');
         $this->assertSame($expectedFraction, $decimalNumber->getFractionalPart(), 'The fraction part is not as expected');
@@ -46,7 +46,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItInterpretsExponents($coefficient, $exponent, $expectedStr)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($coefficient, $exponent);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($coefficient, $exponent);
         $this->assertSame($expectedStr, (string) $decimalNumber);
     }
     /**
@@ -61,7 +61,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItThrowsExceptionWhenGivenInvalidNumber($number)
     {
-        new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        new \test\PrestaShop\Decimal\DecimalNumber($number);
     }
     /**
      * Given an invalid coefficient or exponent
@@ -76,7 +76,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItThrowsExceptionWhenGivenInvalidCoefficientOrExponent($coefficient, $exponent)
     {
-        new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($coefficient, $exponent);
+        new \test\PrestaShop\Decimal\DecimalNumber($coefficient, $exponent);
     }
     /**
      * Given a Number constructed with a valid number
@@ -90,7 +90,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDropsNonSignificantDigits($number, $expected)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, (string) $decimalNumber);
     }
     /**
@@ -107,7 +107,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testPrecision($number, $precision, $mode, $expected)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, (string) $decimalNumber->toPrecision($precision, $mode));
     }
     /**
@@ -124,7 +124,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testRounding($number, $precision, $mode, $expected)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, (string) $decimalNumber->round($precision, $mode), "Failed to assert that round {$number} to {$precision} decimals = {$expected}");
     }
     /**
@@ -140,7 +140,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItExtendsPrecisionAsNeeded($number, $precision, $expected)
     {
-        $decimalNumber = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
+        $decimalNumber = new \test\PrestaShop\Decimal\DecimalNumber($number);
         $this->assertSame($expected, (string) $decimalNumber->toPrecision($precision), "Failed to assert that fixing {$number} to {$precision} decimals = {$expected}");
     }
     /**
@@ -172,8 +172,8 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function testIsAbleToTellIfGreaterThan($number1, $number2, $expected)
     {
         $shouldBeGreater = 1 === $expected;
-        $number1 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number1);
-        $number2 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number2);
+        $number1 = new \test\PrestaShop\Decimal\DecimalNumber($number1);
+        $number2 = new \test\PrestaShop\Decimal\DecimalNumber($number2);
         $this->assertSame($number1->isGreaterThan($number2), $shouldBeGreater);
     }
     /**
@@ -190,8 +190,8 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function testIsAbleToTellIfLowerThan($number1, $number2, $expected)
     {
         $shouldBeLower = -1 === $expected;
-        $number1 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number1);
-        $number2 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number2);
+        $number1 = new \test\PrestaShop\Decimal\DecimalNumber($number1);
+        $number2 = new \test\PrestaShop\Decimal\DecimalNumber($number2);
         $this->assertSame($number1->isLowerThan($number2), $shouldBeLower);
     }
     /**
@@ -206,7 +206,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItTransformsPositiveToNegative($number, $expected)
     {
-        $number = (new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number))->toNegative();
+        $number = (new \test\PrestaShop\Decimal\DecimalNumber($number))->toNegative();
         $this->assertSame((string) $number, $expected);
     }
     /**
@@ -221,7 +221,7 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItTransformsNegativeToPositive($number, $expected)
     {
-        $number = (new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number))->toPositive();
+        $number = (new \test\PrestaShop\Decimal\DecimalNumber($number))->toPositive();
         $this->assertSame((string) $number, $expected);
     }
     public function provideValidNumbers()
@@ -280,94 +280,94 @@ class DecimalNumberTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function provideRoundingTestCases()
     {
         return [
-            'truncate 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
-            'truncate 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2'],
-            'truncate 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23'],
-            'truncate 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234'],
-            'truncate 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345'],
-            'truncate 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456'],
-            'truncate 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567'],
-            'truncate 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678'],
-            'truncate 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
+            'truncate 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
+            'truncate 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2'],
+            'truncate 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23'],
+            'truncate 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234'],
+            'truncate 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345'],
+            'truncate 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456'],
+            'truncate 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567'],
+            'truncate 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678'],
+            'truncate 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
             // does not add trailing zeroes
-            'truncate 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
-            'truncate 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
-            'truncate zeroes 1' => ['1.00000001', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
-            'truncate zeroes 2' => ['1.00000001', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.00000001'],
-            'ceil 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '2'],
-            'ceil 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.3'],
-            'ceil 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.24'],
-            'ceil 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.235'],
-            'ceil 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2346'],
-            'ceil 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23457'],
-            'ceil 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234568'],
-            'ceil 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345679'],
-            'ceil 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
+            'truncate 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
+            'truncate 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
+            'truncate zeroes 1' => ['1.00000001', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
+            'truncate zeroes 2' => ['1.00000001', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.00000001'],
+            'ceil 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '2'],
+            'ceil 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.3'],
+            'ceil 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.24'],
+            'ceil 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.235'],
+            'ceil 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2346'],
+            'ceil 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23457'],
+            'ceil 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234568'],
+            'ceil 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345679'],
+            'ceil 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
             // does not add trailing zeroes
-            'ceil 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
-            'ceil 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
-            'round half up 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1'],
-            'round half up 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2'],
-            'round half up 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23'],
-            'round half up 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.235'],
-            'round half up 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2346'],
-            'round half up 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23457'],
-            'round half up 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234568'],
-            'round half up 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345679'],
-            'round half up 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
+            'ceil 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
+            'ceil 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
+            'round half up 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1'],
+            'round half up 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2'],
+            'round half up 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23'],
+            'round half up 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.235'],
+            'round half up 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2346'],
+            'round half up 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23457'],
+            'round half up 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234568'],
+            'round half up 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345679'],
+            'round half up 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
             // does not add trailing zeroes
-            'round half up 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
-            'round half up 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
+            'round half up 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
+            'round half up 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
         ];
     }
     public function providePrecisionTestCases()
     {
         return [
-            'truncate 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
-            'truncate 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2'],
-            'truncate 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23'],
-            'truncate 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234'],
-            'truncate 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345'],
-            'truncate 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456'],
-            'truncate 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567'],
-            'truncate 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678'],
-            'truncate 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
+            'truncate 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1'],
+            'truncate 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2'],
+            'truncate 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23'],
+            'truncate 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234'],
+            'truncate 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345'],
+            'truncate 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456'],
+            'truncate 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567'],
+            'truncate 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678'],
+            'truncate 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.23456789'],
             // adds trailing zeroes
-            'truncate 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567890'],
-            'truncate 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678900'],
+            'truncate 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.234567890'],
+            'truncate 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.2345678900'],
             // keeps trailing zeroes
-            'truncate zeroes 1' => ['1.00000001', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.000'],
-            'truncate zeroes 2' => ['1.00000001', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.00000001'],
-            'ceil 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '2'],
-            'ceil 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.3'],
-            'ceil 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.24'],
-            'ceil 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.235'],
-            'ceil 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2346'],
-            'ceil 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23457'],
-            'ceil 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234568'],
-            'ceil 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345679'],
-            'ceil 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
-            'ceil zeroes' => ['1.00000001', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.0000001'],
+            'truncate zeroes 1' => ['1.00000001', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.000'],
+            'truncate zeroes 2' => ['1.00000001', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE, '1.00000001'],
+            'ceil 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '2'],
+            'ceil 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.3'],
+            'ceil 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.24'],
+            'ceil 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.235'],
+            'ceil 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2346'],
+            'ceil 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23457'],
+            'ceil 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234568'],
+            'ceil 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345679'],
+            'ceil 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.23456789'],
+            'ceil zeroes' => ['1.00000001', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.0000001'],
             // adds trailing zeroes
-            'ceil 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234567890'],
-            'ceil 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345678900'],
-            'round half up 0' => ['1.23456789', 0, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1'],
-            'round half up 1' => ['1.23456789', 1, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2'],
-            'round half up 2' => ['1.23456789', 2, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23'],
-            'round half up 3' => ['1.23456789', 3, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.235'],
-            'round half up 4' => ['1.23456789', 4, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2346'],
-            'round half up 5' => ['1.23456789', 5, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23457'],
-            'round half up 6' => ['1.23456789', 6, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234568'],
-            'round half up 7' => ['1.23456789', 7, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345679'],
-            'round half up 8' => ['1.23456789', 8, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
+            'ceil 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.234567890'],
+            'ceil 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_CEIL, '1.2345678900'],
+            'round half up 0' => ['1.23456789', 0, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1'],
+            'round half up 1' => ['1.23456789', 1, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2'],
+            'round half up 2' => ['1.23456789', 2, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23'],
+            'round half up 3' => ['1.23456789', 3, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.235'],
+            'round half up 4' => ['1.23456789', 4, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2346'],
+            'round half up 5' => ['1.23456789', 5, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23457'],
+            'round half up 6' => ['1.23456789', 6, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234568'],
+            'round half up 7' => ['1.23456789', 7, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345679'],
+            'round half up 8' => ['1.23456789', 8, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.23456789'],
             // adds trailing zeroes
-            'round half up 9' => ['1.23456789', 9, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234567890'],
-            'round half up 10' => ['1.23456789', 10, \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345678900'],
+            'round half up 9' => ['1.23456789', 9, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.234567890'],
+            'round half up 10' => ['1.23456789', 10, \test\PrestaShop\Decimal\Operation\Rounding::ROUND_HALF_UP, '1.2345678900'],
         ];
     }
     public function provideEqualityTestCases()
     {
-        return [[new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0', 5), \true], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0.1234'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1234', 4), \true], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1234.01'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('123401', 2), \true], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-0'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0'), \true], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-1234.01'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-123401', 2), \true], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-1234.01'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('123401', 2), \false], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1234.01'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-123401', 2), \false], [new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1234.01'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('-1234.01'), \false]];
+        return [[new \test\PrestaShop\Decimal\DecimalNumber('0'), new \test\PrestaShop\Decimal\DecimalNumber('0', 5), \true], [new \test\PrestaShop\Decimal\DecimalNumber('0.1234'), new \test\PrestaShop\Decimal\DecimalNumber('1234', 4), \true], [new \test\PrestaShop\Decimal\DecimalNumber('1234.01'), new \test\PrestaShop\Decimal\DecimalNumber('123401', 2), \true], [new \test\PrestaShop\Decimal\DecimalNumber('-0'), new \test\PrestaShop\Decimal\DecimalNumber('0'), \true], [new \test\PrestaShop\Decimal\DecimalNumber('-1234.01'), new \test\PrestaShop\Decimal\DecimalNumber('-123401', 2), \true], [new \test\PrestaShop\Decimal\DecimalNumber('-1234.01'), new \test\PrestaShop\Decimal\DecimalNumber('123401', 2), \false], [new \test\PrestaShop\Decimal\DecimalNumber('1234.01'), new \test\PrestaShop\Decimal\DecimalNumber('-123401', 2), \false], [new \test\PrestaShop\Decimal\DecimalNumber('1234.01'), new \test\PrestaShop\Decimal\DecimalNumber('-1234.01'), \false]];
     }
     public function provideComparisonTestCases()
     {

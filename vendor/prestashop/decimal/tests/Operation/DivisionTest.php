@@ -6,11 +6,11 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test\Operation;
+namespace test\PrestaShop\Decimal\Test\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\Division;
-class DivisionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use test\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\Operation\Division;
+class DivisionTest extends \test\PHPUnit_Framework_TestCase
 {
     /**
      * Given two decimal numbers
@@ -25,9 +25,9 @@ class DivisionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItDividesNumbers($number1, $number2, $expectedResult)
     {
-        $n1 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number1);
-        $n2 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number2);
-        $operation = new \MolliePrefix\PrestaShop\Decimal\Operation\Division();
+        $n1 = new \test\PrestaShop\Decimal\DecimalNumber($number1);
+        $n2 = new \test\PrestaShop\Decimal\DecimalNumber($number2);
+        $operation = new \test\PrestaShop\Decimal\Operation\Division();
         $result1 = $operation->computeUsingBcMath($n1, $n2, 20);
         $result2 = $operation->computeWithoutBcMath($n1, $n2, 20);
         $this->assertSame($expectedResult, (string) $result1, "Failed asserting {$number1} / {$number2} = {$expectedResult} (BC Math)");
@@ -42,7 +42,7 @@ class DivisionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testDivisionByZeroUsingBcMathThrowsException()
     {
-        (new \MolliePrefix\PrestaShop\Decimal\Operation\Division())->computeUsingBcMath(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0'));
+        (new \test\PrestaShop\Decimal\Operation\Division())->computeUsingBcMath(new \test\PrestaShop\Decimal\DecimalNumber('1'), new \test\PrestaShop\Decimal\DecimalNumber('0'));
     }
     /**
      * Given a decimal number which is not zero
@@ -53,7 +53,7 @@ class DivisionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testDivisionByZeroWithoutBcMathThrowsException()
     {
-        (new \MolliePrefix\PrestaShop\Decimal\Operation\Division())->computeWithoutBcMath(new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('1'), new \MolliePrefix\PrestaShop\Decimal\DecimalNumber('0'));
+        (new \test\PrestaShop\Decimal\Operation\Division())->computeWithoutBcMath(new \test\PrestaShop\Decimal\DecimalNumber('1'), new \test\PrestaShop\Decimal\DecimalNumber('0'));
     }
     public function provideNumbersToDivide()
     {

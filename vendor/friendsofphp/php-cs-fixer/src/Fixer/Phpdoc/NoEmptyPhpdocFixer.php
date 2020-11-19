@@ -36,7 +36,7 @@ final class NoEmptyPhpdocFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
      */
     public function getPriority()
     {
-        return 5;
+        return 3;
     }
     /**
      * {@inheritdoc}

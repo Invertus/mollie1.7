@@ -256,7 +256,7 @@ final class ConfigurationResolver
                     return $fixer->isRisky();
                 }));
                 if (\count($riskyFixers)) {
-                    throw new \MolliePrefix\PhpCsFixer\ConfigurationException\InvalidConfigurationException(\sprintf('The rules contain risky fixers (%s), but they are not allowed to run. Perhaps you forget to use --allow-risky=yes option?', \implode(', ', $riskyFixers)));
+                    throw new \MolliePrefix\PhpCsFixer\ConfigurationException\InvalidConfigurationException(\sprintf('The rules contain risky fixers (%s), but they are not allowed to run. Perhaps you forget to use --allow-risky=yes option?', \implode('", "', $riskyFixers)));
                 }
             }
         }
@@ -446,10 +446,11 @@ final class ConfigurationResolver
             $configDir = $this->cwd;
         } elseif (1 < \count($path)) {
             throw new \MolliePrefix\PhpCsFixer\ConfigurationException\InvalidConfigurationException('For multiple paths config parameter is required.');
-        } elseif (\is_file($path[0]) && ($dirName = \pathinfo($path[0], \PATHINFO_DIRNAME))) {
-            $configDir = $dirName;
-        } else {
+        } elseif (!\is_file($path[0])) {
             $configDir = $path[0];
+        } else {
+            $dirName = \pathinfo($path[0], \PATHINFO_DIRNAME);
+            $configDir = $dirName ?: $path[0];
         }
         $candidates = [$configDir . \DIRECTORY_SEPARATOR . '.php_cs', $configDir . \DIRECTORY_SEPARATOR . '.php_cs.dist'];
         if ($configDir !== $this->cwd) {

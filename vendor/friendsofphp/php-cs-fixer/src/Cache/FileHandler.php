@@ -58,6 +58,10 @@ final class FileHandler implements \MolliePrefix\PhpCsFixer\Cache\FileHandlerInt
                 throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Cannot write to file "%s" as it is not writable.', \realpath($this->file)), 0, null, $this->file);
             }
         } else {
+            $dir = \dirname($this->file);
+            if (!\is_dir($dir)) {
+                throw new \MolliePrefix\Symfony\Component\Filesystem\Exception\IOException(\sprintf('Directory of cache file "%s" does not exists.', $this->file), 0, null, $this->file);
+            }
             @\touch($this->file);
             @\chmod($this->file, 0666);
         }

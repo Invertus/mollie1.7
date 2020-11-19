@@ -27,7 +27,7 @@ final class NoUnsetOnPropertyFixer extends \MolliePrefix\PhpCsFixer\AbstractFixe
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Properties should be set to `null` instead of using `unset`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nunset(\$this->a);\n")], null, 'Changing variables to `null` instead of unsetting them will mean they still show up ' . 'when looping over class variables. With PHP 7.4, this rule might introduce `null` assignments to ' . 'property whose type declaration does not allow it.');
+        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Properties should be set to `null` instead of using `unset`.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nunset(\$this->a);\n")], null, 'Risky when relying on attributes to be removed using `unset` rather than be set to `null`.' . ' Changing variables to `null` instead of unsetting means these still show up when looping over class variables' . ' and reference properties remain unbroken.' . ' With PHP 7.4, this rule might introduce `null` assignments to properties whose type declaration does not allow it.');
     }
     /**
      * {@inheritdoc}

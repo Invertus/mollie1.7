@@ -29,13 +29,6 @@ final class UseTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTr
     /**
      * {@inheritdoc}
      */
-    public function getCustomTokens()
-    {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_USE_TRAIT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_USE_LAMBDA];
-    }
-    /**
-     * {@inheritdoc}
-     */
     public function getPriority()
     {
         // Should run after CurlyBraceTransformer and before TypeColonTransformer
@@ -78,6 +71,13 @@ final class UseTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTr
                 $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_USE_TRAIT, $token->getContent()]);
             }
         }
+    }
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDeprecatedCustomTokens()
+    {
+        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_USE_TRAIT, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_USE_LAMBDA];
     }
     /**
      * Check if token under given index is `use` statement for lambda function.

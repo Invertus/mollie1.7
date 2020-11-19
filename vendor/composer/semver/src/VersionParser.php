@@ -11,7 +11,7 @@
 namespace MolliePrefix\Composer\Semver;
 
 use MolliePrefix\Composer\Semver\Constraint\ConstraintInterface;
-use MolliePrefix\Composer\Semver\Constraint\EmptyConstraint;
+use MolliePrefix\Composer\Semver\Constraint\MatchAllConstraint;
 use MolliePrefix\Composer\Semver\Constraint\MultiConstraint;
 use MolliePrefix\Composer\Semver\Constraint\Constraint;
 /**
@@ -46,7 +46,7 @@ class VersionParser
      */
     public static function parseStability($version)
     {
-        $version = \preg_replace('{#.+$}i', '', $version);
+        $version = \preg_replace('{#.+$}', '', $version);
         if (\strpos($version, 'dev-') === 0 || '-dev' === \substr($version, -4)) {
             return 'dev';
         }
@@ -102,9 +102,9 @@ class VersionParser
         if (\preg_match('{@(?:' . self::$stabilitiesRegex . ')$}i', $version, $match)) {
             $version = \substr($version, 0, \strlen($version) - \strlen($match[0]));
         }
-        // match master-like branches
-        if (\preg_match('{^(?:dev-)?(?:master|trunk|default)$}i', $version)) {
-            return '9999999-dev';
+        // normalize master/trunk/default branches to dev-name for BC with 1.x as these used to be valid constraints
+        if (\in_array($version, array('master', 'trunk', 'default'), \true)) {
+            $version = 'dev-' . $version;
         }
         // if requirement is branch-like, use full name
         if (\stripos($version, 'dev-') === 0) {
@@ -181,9 +181,6 @@ class VersionParser
     public function normalizeBranch($name)
     {
         $name = \trim($name);
-        if (\in_array($name, array('master', 'trunk', 'default'))) {
-            return $this->normalize($name);
-        }
         if (\preg_match('{^v?(\\d++)(\\.(?:\\d++|[xX*]))?(\\.(?:\\d++|[xX*]))?(\\.(?:\\d++|[xX*]))?$}i', $name, $matches)) {
             $version = '';
             for ($i = 1; $i < 5; ++$i) {
@@ -192,6 +189,20 @@ class VersionParser
             return \str_replace('x', '9999999', $version) . '-dev';
         }
         return 'dev-' . $name;
+    }
+    /**
+     * Normalizes a default branch name (i.e. master on git) to 9999999-dev.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function normalizeDefaultBranch($name)
+    {
+        if ($name === 'dev-master' || $name === 'dev-default' || $name === 'dev-trunk') {
+            return '9999999-dev';
+        }
+        return $name;
     }
     /**
      * Parses a constraint string into MultiConstraint and/or Constraint objects.
@@ -224,13 +235,7 @@ class VersionParser
             }
             $orGroups[] = $constraint;
         }
-        if (1 === \count($orGroups)) {
-            $constraint = $orGroups[0];
-        } elseif (2 === \count($orGroups) && $orGroups[0] instanceof \MolliePrefix\Composer\Semver\Constraint\MultiConstraint && $orGroups[1] instanceof \MolliePrefix\Composer\Semver\Constraint\MultiConstraint && 2 === \count($orGroups[0]->getConstraints()) && 2 === \count($orGroups[1]->getConstraints()) && ($a = (string) $orGroups[0]) && \strpos($a, '[>=') === 0 && \false !== ($posA = \strpos($a, '<', 4)) && ($b = (string) $orGroups[1]) && \strpos($b, '[>=') === 0 && \false !== ($posB = \strpos($b, '<', 4)) && \substr($a, $posA + 2, -1) === \substr($b, 4, $posB - 5)) {
-            $constraint = new \MolliePrefix\Composer\Semver\Constraint\MultiConstraint(array(new \MolliePrefix\Composer\Semver\Constraint\Constraint('>=', \substr($a, 4, $posA - 5)), new \MolliePrefix\Composer\Semver\Constraint\Constraint('<', \substr($b, $posB + 2, -1))));
-        } else {
-            $constraint = new \MolliePrefix\Composer\Semver\Constraint\MultiConstraint($orGroups, \false);
-        }
+        $constraint = \MolliePrefix\Composer\Semver\Constraint\MultiConstraint::create($orGroups, \false);
         $constraint->setPrettyString($prettyConstraint);
         return $constraint;
     }
@@ -258,8 +263,11 @@ class VersionParser
         if (\preg_match('{^(dev-[^,\\s@]+?|[^,\\s@]+?\\.x-dev)#.+$}i', $constraint, $match)) {
             $constraint = $match[1];
         }
-        if (\preg_match('{^v?[xX*](\\.[xX*])*$}i', $constraint)) {
-            return array(new \MolliePrefix\Composer\Semver\Constraint\EmptyConstraint());
+        if (\preg_match('{^(v)?[xX*](\\.[xX*])*$}i', $constraint, $match)) {
+            if (!empty($match[1]) || !empty($match[2])) {
+                return array(new \MolliePrefix\Composer\Semver\Constraint\Constraint('>=', '0.0.0.0-dev'));
+            }
+            return array(new \MolliePrefix\Composer\Semver\Constraint\MatchAllConstraint());
         }
         $versionRegex = 'v?(\\d++)(?:\\.(\\d++))?(?:\\.(\\d++))?(?:\\.(\\d++))?(?:' . self::$modifierRegex . '|\\.([xX*][.-]?dev))(?:\\+[^\\s]+)?';
         // Tilde Range

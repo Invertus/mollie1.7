@@ -6,11 +6,11 @@
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test\Operation;
+namespace test\PrestaShop\Decimal\Test\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\MagnitudeChange;
-class MagnitudeChangeTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use test\PrestaShop\Decimal\DecimalNumber;
+use test\PrestaShop\Decimal\Operation\MagnitudeChange;
+class MagnitudeChangeTest extends \test\PHPUnit_Framework_TestCase
 {
     /**
      * Given a decimal number
@@ -26,8 +26,8 @@ class MagnitudeChangeTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItChangesMagnitude($number, $exponent, $expected)
     {
-        $n = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number);
-        $result = (new \MolliePrefix\PrestaShop\Decimal\Operation\MagnitudeChange())->compute($n, $exponent);
+        $n = new \test\PrestaShop\Decimal\DecimalNumber($number);
+        $result = (new \test\PrestaShop\Decimal\Operation\MagnitudeChange())->compute($n, $exponent);
         $this->assertSame($expected, (string) $result);
     }
     public function provideTestCases()

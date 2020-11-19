@@ -41,7 +41,6 @@ final class TokensAnalyzer
      */
     public function getClassyElements()
     {
-        $this->tokens->rewind();
         $elements = [];
         for ($index = 1, $count = \count($this->tokens) - 2; $index < $count; ++$index) {
             if ($this->tokens[$index]->isClassy()) {
@@ -62,7 +61,6 @@ final class TokensAnalyzer
     public function getImportUseIndexes($perNamespace = \false)
     {
         $tokens = $this->tokens;
-        $tokens->rewind();
         $uses = [];
         $namespaceIndex = 0;
         for ($index = 0, $limit = $tokens->count(); $index < $limit; ++$index) {
@@ -150,7 +148,7 @@ final class TokensAnalyzer
         $tokens = $this->tokens;
         $token = $tokens[$index];
         if (!$token->isGivenKind(\T_FUNCTION)) {
-            throw new \LogicException(\sprintf('No T_FUNCTION at given index %d, got %s.', $index, $token->getName()));
+            throw new \LogicException(\sprintf('No T_FUNCTION at given index %d, got "%s".', $index, $token->getName()));
         }
         $attributes = ['visibility' => null, 'static' => \false, 'abstract' => \false, 'final' => \false];
         for ($i = $index; $i >= 0; --$i) {
@@ -217,7 +215,7 @@ final class TokensAnalyzer
     public function isLambda($index)
     {
         if (!$this->tokens[$index]->isGivenKind(\T_FUNCTION) && (\PHP_VERSION_ID < 70400 || !$this->tokens[$index]->isGivenKind(T_FN))) {
-            throw new \LogicException(\sprintf('No T_FUNCTION or T_FN at given index %d, got %s.', $index, $this->tokens[$index]->getName()));
+            throw new \LogicException(\sprintf('No T_FUNCTION or T_FN at given index %d, got "%s".', $index, $this->tokens[$index]->getName()));
         }
         $startParenthesisIndex = $this->tokens->getNextMeaningfulToken($index);
         $startParenthesisToken = $this->tokens[$startParenthesisIndex];
@@ -238,7 +236,7 @@ final class TokensAnalyzer
     public function isConstantInvocation($index)
     {
         if (!$this->tokens[$index]->isGivenKind(\T_STRING)) {
-            throw new \LogicException(\sprintf('No T_STRING at given index %d, got %s.', $index, $this->tokens[$index]->getName()));
+            throw new \LogicException(\sprintf('No T_STRING at given index %d, got "%s".', $index, $this->tokens[$index]->getName()));
         }
         $nextIndex = $this->tokens->getNextMeaningfulToken($index);
         if ($this->tokens[$nextIndex]->equalsAny(['(', '{']) || $this->tokens[$nextIndex]->isGivenKind([\T_AS, \T_DOUBLE_COLON, \T_ELLIPSIS, \T_NS_SEPARATOR, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_TYPE_ALTERNATION, \T_VARIABLE])) {
@@ -454,7 +452,7 @@ final class TokensAnalyzer
         $tokens = $this->tokens;
         $token = $tokens[$index];
         if (!$token->isGivenKind(\T_WHILE)) {
-            throw new \LogicException(\sprintf('No T_WHILE at given index %d, got %s.', $index, $token->getName()));
+            throw new \LogicException(\sprintf('No T_WHILE at given index %d, got "%s".', $index, $token->getName()));
         }
         $endIndex = $tokens->getPrevMeaningfulToken($index);
         if (!$tokens[$endIndex]->equals('}')) {

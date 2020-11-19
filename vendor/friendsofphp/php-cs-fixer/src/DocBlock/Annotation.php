@@ -17,6 +17,8 @@ use MolliePrefix\PhpCsFixer\Preg;
  *
  * @author Graham Campbell <graham@alt-three.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
+ *
+ * @final
  */
 class Annotation
 {

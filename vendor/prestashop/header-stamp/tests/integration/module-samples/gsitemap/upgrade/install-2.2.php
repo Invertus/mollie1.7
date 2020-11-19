@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix;
+namespace test;
 
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
@@ -26,13 +26,13 @@ if (!\defined('_PS_VERSION_')) {
 function upgrade_module_2_2($object, $install = \false)
 {
     if ($object->active || $install) {
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_HOME', 1.0);
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_PRODUCT', 0.9);
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_CATEGORY', 0.8);
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_PRIORITY_CMS', 0.7);
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_FREQUENCY', 'weekly');
-        \MolliePrefix\Configuration::updateValue('GSITEMAP_LAST_EXPORT', \false);
-        return \MolliePrefix\Db::getInstance()->Execute('DROP TABLE IF  EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap`') && \MolliePrefix\Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . \_MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;');
+        \test\Configuration::updateValue('GSITEMAP_PRIORITY_HOME', 1.0);
+        \test\Configuration::updateValue('GSITEMAP_PRIORITY_PRODUCT', 0.9);
+        \test\Configuration::updateValue('GSITEMAP_PRIORITY_CATEGORY', 0.8);
+        \test\Configuration::updateValue('GSITEMAP_PRIORITY_CMS', 0.7);
+        \test\Configuration::updateValue('GSITEMAP_FREQUENCY', 'weekly');
+        \test\Configuration::updateValue('GSITEMAP_LAST_EXPORT', \false);
+        return \test\Db::getInstance()->Execute('DROP TABLE IF  EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap`') && \test\Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `' . \_DB_PREFIX_ . 'gsitemap_sitemap` (`link` varchar(255) DEFAULT NULL, `id_shop` int(11) DEFAULT 0) ENGINE=' . \_MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;');
     }
     $object->upgrade_detail['2.2'][] = 'GSitemap upgrade error !';
     return \false;

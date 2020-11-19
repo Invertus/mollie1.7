@@ -11,16 +11,15 @@
  */
 namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
 use MolliePrefix\PhpCsFixer\DocBlock\DocBlock;
 use MolliePrefix\PhpCsFixer\DocBlock\Line;
+use MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer;
 use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
 use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
 use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
 use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
 use MolliePrefix\PhpCsFixer\Preg;
 use MolliePrefix\PhpCsFixer\Tokenizer\Token;
 use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
@@ -28,7 +27,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer;
 /**
  * @author Gert de Pagter
  */
-final class PhpUnitTestAnnotationFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
+final class PhpUnitTestAnnotationFixer extends \MolliePrefix\PhpCsFixer\Fixer\AbstractPhpUnitFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
@@ -65,22 +64,12 @@ public function testItDoesSomething() {}}' . $this->whitespacesConfig->getLineEn
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex)
     {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_FUNCTION]);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
-    {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
-        foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indexes) {
-            if ('annotation' === $this->configuration['style']) {
-                $this->applyTestAnnotation($tokens, $indexes[0], $indexes[1]);
-            } else {
-                $this->applyTestPrefix($tokens, $indexes[0], $indexes[1]);
-            }
+        if ('annotation' === $this->configuration['style']) {
+            $this->applyTestAnnotation($tokens, $startIndex, $endIndex);
+        } else {
+            $this->applyTestPrefix($tokens, $startIndex, $endIndex);
         }
     }
     /**
@@ -107,15 +96,15 @@ public function testItDoesSomething() {}}' . $this->whitespacesConfig->getLineEn
                 $tokens[$functionNameIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_STRING, $newFunctionName]);
             }
             $docBlockIndex = $this->getDocBlockIndex($tokens, $i);
-            // Create a new docblock if it didn't have one before;
-            if (!$this->hasDocBlock($tokens, $i)) {
+            if ($this->isPHPDoc($tokens, $docBlockIndex)) {
+                $lines = $this->updateDocBlock($tokens, $docBlockIndex);
+                $lines = $this->addTestAnnotation($lines, $tokens, $docBlockIndex);
+                $lines = \implode('', $lines);
+                $tokens[$docBlockIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $lines]);
+            } else {
+                // Create a new docblock if it didn't have one before;
                 $this->createDocBlock($tokens, $docBlockIndex);
-                continue;
             }
-            $lines = $this->updateDocBlock($tokens, $docBlockIndex);
-            $lines = $this->addTestAnnotation($lines, $tokens, $docBlockIndex);
-            $lines = \implode('', $lines);
-            $tokens[$docBlockIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $lines]);
         }
     }
     /**
@@ -126,10 +115,13 @@ public function testItDoesSomething() {}}' . $this->whitespacesConfig->getLineEn
     {
         for ($i = $endIndex - 1; $i > $startIndex; --$i) {
             // We explicitly check again if the function has a doc block to save some time.
-            if (!$this->isTestMethod($tokens, $i) || !$this->hasDocBlock($tokens, $i)) {
+            if (!$this->isTestMethod($tokens, $i)) {
                 continue;
             }
             $docBlockIndex = $this->getDocBlockIndex($tokens, $i);
+            if (!$this->isPHPDoc($tokens, $docBlockIndex)) {
+                continue;
+            }
             $lines = $this->updateDocBlock($tokens, $docBlockIndex);
             $lines = \implode('', $lines);
             $tokens[$docBlockIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_DOC_COMMENT, $lines]);
@@ -159,16 +151,9 @@ public function testItDoesSomething() {}}' . $this->whitespacesConfig->getLineEn
         if ($this->hasTestPrefix($functionName)) {
             return \true;
         }
-        // If the function doesn't have test in its name, and no doc block, its not a test
-        if (!$this->hasDocBlock($tokens, $index)) {
-            return \false;
-        }
         $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-        $doc = $tokens[$docBlockIndex]->getContent();
-        if (\false === \strpos($doc, '@test')) {
-            return \false;
-        }
-        return \true;
+        // If the function doesn't have test in its name, and no doc block, its not a test
+        return $this->isPHPDoc($tokens, $docBlockIndex) && \false !== \strpos($tokens[$docBlockIndex]->getContent(), '@test');
     }
     /**
      * @param int $index
@@ -179,28 +164,6 @@ public function testItDoesSomething() {}}' . $this->whitespacesConfig->getLineEn
     {
         $tokensAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\TokensAnalyzer($tokens);
         return $tokens[$index]->isGivenKind(\T_FUNCTION) && !$tokensAnalyzer->isLambda($index);
-    }
-    /**
-     * @param int $index
-     *
-     * @return bool
-     */
-    private function hasDocBlock(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        $docBlockIndex = $this->getDocBlockIndex($tokens, $index);
-        return $tokens[$docBlockIndex]->isGivenKind(\T_DOC_COMMENT);
-    }
-    /**
-     * @param int $index
-     *
-     * @return int
-     */
-    private function getDocBlockIndex(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
-    {
-        do {
-            $index = $tokens->getPrevNonWhitespace($index);
-        } while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT, \T_COMMENT]));
-        return $index;
     }
     /**
      * @param string $functionName

@@ -82,14 +82,14 @@ final class ProcessLinter implements \MolliePrefix\PhpCsFixer\Linter\LinterInter
      */
     public function lintFile($path)
     {
-        return new \MolliePrefix\PhpCsFixer\Linter\ProcessLintingResult($this->createProcessForFile($path));
+        return new \MolliePrefix\PhpCsFixer\Linter\ProcessLintingResult($this->createProcessForFile($path), $path);
     }
     /**
      * {@inheritdoc}
      */
     public function lintSource($source)
     {
-        return new \MolliePrefix\PhpCsFixer\Linter\ProcessLintingResult($this->createProcessForSource($source));
+        return new \MolliePrefix\PhpCsFixer\Linter\ProcessLintingResult($this->createProcessForSource($source), $this->temporaryFile);
     }
     /**
      * @param string $path path to file
@@ -117,7 +117,7 @@ final class ProcessLinter implements \MolliePrefix\PhpCsFixer\Linter\LinterInter
     private function createProcessForSource($source)
     {
         if (null === $this->temporaryFile) {
-            $this->temporaryFile = \tempnam('.', 'cs_fixer_tmp_');
+            $this->temporaryFile = \tempnam(\sys_get_temp_dir(), 'cs_fixer_tmp_');
             $this->fileRemoval->observe($this->temporaryFile);
         }
         if (\false === @\file_put_contents($this->temporaryFile, $source)) {
