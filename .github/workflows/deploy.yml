@@ -11,13 +11,12 @@ jobs:
       - name: build
         run: |
           mkdir mollie
-          cp -R * mollie
+          find . ! -regex '.*/mollie' ! -regex '.' -exec cp -r '{}' mollie \;
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
           name: mollie
           path: |
-            mollie
             !.
             !mollie/.git
             !mollie/.github
@@ -25,5 +24,6 @@ jobs:
             !mollie/node_modules
             !mollie/tests
             !mollie/views/js/node_modules
+            mollie
 
 
