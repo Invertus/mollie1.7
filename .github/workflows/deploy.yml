@@ -21,6 +21,7 @@ jobs:
           rsync -Rr ./ ./mollie
           shopt -s extglob
           rm -r !(mollie)
+          rm *
           cd mollie && rm -rf mollie
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
