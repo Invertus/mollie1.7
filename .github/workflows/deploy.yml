@@ -18,7 +18,7 @@ jobs:
           rm -rf views/js/node_modules
           rm -rf vendor
           mkdir mollie
-          find . ! -regex '.*/mollie' ! -regex '.' -exec cp -r * mollie \;
+          mv * mollie ; cp -r mollie/* .
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
