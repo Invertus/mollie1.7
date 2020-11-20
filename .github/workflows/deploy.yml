@@ -19,12 +19,13 @@ jobs:
           rm -rf vendor
           mkdir mollie
           rsync -Rr ./ ./mollie
+          find . \! -name 'mollie' -delete
           cd mollie && rm -rf mollie
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
           name: mollie
           path: |
-            mollie
+            .
 
 
