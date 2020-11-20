@@ -10,6 +10,7 @@ jobs:
         uses: actions/checkout@v2
       - name: build
         run: |
+          make bvn
           rm -rf .git
           rm -rf .github
           rm -rf vendorBuilder
