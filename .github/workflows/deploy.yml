@@ -1,28 +1,21 @@
 name: Deploy
 
-on: [ 'push' ]
+on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Build production build and remove unused files
-      run: |
-        make bvn
-#        rm -rf node_modules
-#        rm -rf vendorBuilder
-#        rm -rf /view/js/node_modules
-#        rm -rf tests
-
-    - name: Archive production build
-      uses: actions/upload-artifact@v2
-      with:
-        name: mollie
-        path: |
-          .
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: build
+        run: |
+          make bvn
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: creating artifact
+          path: |
+            .
 
 
