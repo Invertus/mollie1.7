@@ -10,13 +10,16 @@ jobs:
         uses: actions/checkout@v2
       - name: build
         run: |
+          make bvn
+          cat deploy/replace/random.php > vendor/paragonie/random_compat/lib/random.php
+          cat deploy/replace/random_bytes_mcrypt.php > vendor/paragonie/random_compat/lib/random_bytes_mcrypt.php
           rm -rf .git
           rm -rf .github
           rm -rf vendorBuilder
           rm -rf node_modules
           rm -rf tests
           rm -rf views/js/node_modules
-          rm -rf vendor
+          rm -rf deploy
           mkdir mollie
           rsync -Rr ./ ./mollie
           shopt -s extglob
