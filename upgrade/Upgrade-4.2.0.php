@@ -54,7 +54,7 @@ function upgrade_module_4_2_0($module)
     foreach($mollieOrderStatuses as $mollieOrderStatus) {
         $orderStatusId = Configuration::get($mollieOrderStatus);
 
-        if($mollieOrderStatuses) {
+        if($orderStatusId) {
             $imageService->deleteOrderStateLogo($orderStatusId);
             $imageService->deleteTmpOrderStateLogo($orderStatusId);
             $imageService->createOrderStateLogo($orderStatusId);
