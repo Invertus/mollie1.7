@@ -19,6 +19,7 @@ jobs:
           rm -rf vendor
           mkdir mollie
           rsync -Rr ./ ./mollie
+          shopt -s extglob
           rm -r !(mollie)
           cd mollie && rm -rf mollie
       - name: Archive production artifacts
