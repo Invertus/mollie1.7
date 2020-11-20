@@ -33,7 +33,7 @@
  */
 
 use Mollie\Config\Config;
-use Mollie\Service\ImageService;
+use Mollie\Service\OrderStateImageService;
 
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -46,9 +46,9 @@ if (!defined('_PS_VERSION_')) {
 function upgrade_module_4_2_0($module)
 {
     /**
-     * @var ImageService $imageService
+     * @var OrderStateImageService $imageService
      */
-    $imageService = $module->getContainer(ImageService::class);
+    $imageService = $module->getContainer(OrderStateImageService::class);
     $mollieOrderStatuses = Config::getMollieOrderStatuses();
 
     foreach($mollieOrderStatuses as $mollieOrderStatus) {

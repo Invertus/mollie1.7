@@ -34,7 +34,7 @@
 
 use Mollie\Config\Config;
 use Mollie\Install\Installer;
-use Mollie\Service\imageService;
+use Mollie\Service\OrderStateImageService;
 
 if (!defined('_PS_VERSION_')) {
     exit;

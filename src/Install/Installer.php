@@ -44,7 +44,7 @@ use FeatureValue;
 use Language;
 use Mollie;
 use Mollie\Config\Config;
-use Mollie\Service\ImageService;
+use Mollie\Service\OrderStateImageService;
 use Mollie\Utility\MultiLangUtility;
 use OrderState;
 use PrestaShopDatabaseException;
@@ -68,7 +68,7 @@ class Installer implements InstallerInterface
     private $module;
 
     /**
-     * @var ImageService
+     * @var OrderStateImageService
      */
     private $imageService;
 
@@ -79,7 +79,7 @@ class Installer implements InstallerInterface
 
     public function __construct(
         Mollie $module,
-        ImageService $imageService,
+        OrderStateImageService $imageService,
         InstallerInterface $databaseTableInstaller
     ) {
         $this->module = $module;
