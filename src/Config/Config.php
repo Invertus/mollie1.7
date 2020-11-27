@@ -275,6 +275,11 @@ class Config
         PaymentMethod::KLARNA_SLICE_IT,
     ];
 
+    const KLARNA_STATUSES = [
+        self::MOLLIE_STATUS_KLARNA_ACCEPTED,
+        self::MOLLIE_STATUS_KLARNA_SHIPPED,
+    ];
+
     /** @var array $methods */
     public static $methods = [
         'banktransfer' => 'Bank',
@@ -307,6 +312,7 @@ class Config
             PaymentStatus::STATUS_PAID => Configuration::get(self::MOLLIE_STATUS_PAID),
             OrderStatus::STATUS_COMPLETED => Configuration::get(self::MOLLIE_STATUS_COMPLETED),
             PaymentStatus::STATUS_AUTHORIZED => Configuration::get(self::MOLLIE_STATUS_KLARNA_ACCEPTED),
+            Config::MOLLIE_STATUS_KLARNA_SHIPPED => Configuration::get(self::MOLLIE_STATUS_KLARNA_SHIPPED),
             PaymentStatus::STATUS_CANCELED => Configuration::get(self::MOLLIE_STATUS_CANCELED),
             PaymentStatus::STATUS_EXPIRED => Configuration::get(self::MOLLIE_STATUS_EXPIRED),
             RefundStatus::STATUS_REFUNDED => Configuration::get(self::MOLLIE_STATUS_REFUNDED),

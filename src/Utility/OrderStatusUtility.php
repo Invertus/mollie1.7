@@ -38,6 +38,7 @@ namespace Mollie\Utility;
 use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
 use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
+use MolliePrefix\Mollie\Api\Types\OrderStatus;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Mollie\Config\Config;
@@ -63,6 +64,11 @@ class OrderStatusUtility
      */
     public static function transformPaymentStatusToRefunded($transaction)
     {
+        $isKlarnaPayment = in_array($transaction->method, Config::KLARNA_PAYMENTS, false);
+        if ($transaction->status === OrderStatus::STATUS_COMPLETED && $isKlarnaPayment) {
+            return Config::MOLLIE_STATUS_KLARNA_SHIPPED;
+        }
+
         if ($transaction->amountRefunded === null ||
             $transaction->amountCaptured === null) {
             return $transaction->status;

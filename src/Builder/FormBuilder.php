@@ -538,6 +538,14 @@ class FormBuilder
                 ];
             }
         }
+
+        $messageStatus = $this->module->l('Status for %s payments', self::FILE_NAME);
+        $descriptionStatus = $this->module->l('`%s` payments get status `%s`', self::FILE_NAME);
+        $messageMail = $this->module->l('Send mails when %s', self::FILE_NAME);
+        $descriptionMail = $this->module->l('Send mails when transaction status becomes %s?, self::FILE_NAME', self::FILE_NAME);
+        $allStatuses =  OrderState::getOrderStates($this->lang->id);
+        $allStatusesWithSkipOption = array_merge([['id_order_state' => 0, 'name' => $this->module->l('Skip this status', self::FILE_NAME), 'color' => '#565656']], $allStatuses);
+
         $input[] = [
             'type' => 'select',
             'label' => $this->module->l('Create Klarna invoice on:', self::FILE_NAME),
@@ -559,12 +567,6 @@ class FormBuilder
             ],
         ];
 
-        $messageStatus = $this->module->l('Status for %s payments', self::FILE_NAME);
-        $descriptionStatus = $this->module->l('`%s` payments get status `%s`', self::FILE_NAME);
-        $messageMail = $this->module->l('Send mails when %s', self::FILE_NAME);
-        $descriptionMail = $this->module->l('Send mails when transaction status becomes %s?, self::FILE_NAME', self::FILE_NAME);
-        $allStatuses =  OrderState::getOrderStates($this->lang->id);
-        $allStatusesWithSkipOption = array_merge([['id_order_state' => 0, 'name' => $this->module->l('Skip this status', self::FILE_NAME), 'color' => '#565656']], $allStatuses);
 
         $statuses = [];
         foreach (Config::getStatuses() as $name => $val) {

@@ -52,6 +52,7 @@ use PrestaShopException;
 use Tab;
 use Tools;
 use Validate;
+use function MolliePrefix\GuzzleHttp\uri_template;
 
 class Installer implements InstallerInterface
 {
@@ -308,6 +309,7 @@ class Installer implements InstallerInterface
         $orderState->delivery = false;
         $orderState->logable = false;
         $orderState->invoice = false;
+        $orderState->template = '';
         $orderState->module_name = $this->module->name;
         $orderState->name = MultiLangUtility::createMultiLangField('Klarna payment accepted');
 

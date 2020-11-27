@@ -132,7 +132,8 @@ class OrderStatusService
             $this->mailService->sendNewOrderMail($order, $statusId);
         }
 
-        if (Configuration::get('MOLLIE_MAIL_WHEN_' . Tools::strtoupper($status))) {
+        $isKlarnaStatus = in_array($status, Config::KLARNA_STATUSES, false);
+        if (Configuration::get('MOLLIE_MAIL_WHEN_' . Tools::strtoupper($status)) || $isKlarnaStatus) {
             $history->addWithemail(true, $templateVars);
         } else {
             $history->add();
