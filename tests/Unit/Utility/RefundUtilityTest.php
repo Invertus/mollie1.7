@@ -339,4 +339,28 @@ class RefundUtilityTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider getRefundableAmountProvider
+     *
+     * @param $paymentAmount
+     * @param $refundedAmount
+     * @param $result
+     */
+    public function testGetRefundableAmount($paymentAmount, $refundedAmount, $result)
+    {
+        $refundableAmount = RefundUtility::getRefundableAmount($paymentAmount, $refundedAmount);
+
+        self::assertEquals($result, $refundableAmount);
+    }
+
+    public function getRefundableAmountProvider()
+    {
+        return [
+            'should return refundable amount' => [
+                'paymentAmount' => '54.00',
+                'refundedAmount' => '15.00',
+                'result' => '39.00'
+            ]
+        ];
+    }
 }

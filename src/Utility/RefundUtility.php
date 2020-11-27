@@ -78,4 +78,9 @@ class RefundUtility
 
         return $refundAmount;
     }
+
+    public static function getRefundableAmount($paymentAmount, $refundedAmount)
+    {
+        return NumberUtility::minus((float) $paymentAmount, (float) $refundedAmount);
+    }
 }
