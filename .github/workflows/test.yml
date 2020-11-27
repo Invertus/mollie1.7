@@ -12,6 +12,8 @@ jobs:
 
       - name: Run PHP-CS-Fixer
         uses: prestashopcorp/github-action-php-cs-fixer@master
+        with:
+          other-cmds: 'fix'
 
   test:
     runs-on: ubuntu-latest
