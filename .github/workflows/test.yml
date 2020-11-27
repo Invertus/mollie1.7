@@ -13,7 +13,7 @@ jobs:
       - name: Run PHP-CS-Fixer
         uses: prestashopcorp/github-action-php-cs-fixer@master
 
-      - name: Appying PHP-CS-Fixer
+      - name: Apply PHP-CS-Fixer
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Apply php-cs-fixer changes
