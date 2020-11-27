@@ -30,6 +30,7 @@ class RefundUtilityTest extends TestCase
     public function testIsOrderLinesRefundPossible($lines, $availableRefund, $result)
     {
         $refunds = RefundUtility::isOrderLinesRefundPossible($lines, $availableRefund);
+
         self::assertEquals($result, $refunds);
     }
 
