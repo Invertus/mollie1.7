@@ -29,7 +29,6 @@ use PrestaShop\PrestaShop\Adapter\Order\OrderPresenter;
 
 class MollieSuccessModuleFrontController extends ModuleFrontController
 {
-
     /** @var Mollie */
     public $module;
 
@@ -41,7 +40,6 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
     public $secure_key;
     /** @var OrderPresenter */
     public $order_presenter;
-
 
     /**
      * Initialize order confirmation controller.
@@ -111,14 +109,14 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
             $fee = $orderFee->order_fee;
         }
 
-        $this->context->smarty->assign(array(
+        $this->context->smarty->assign([
             'HOOK_ORDER_CONFIRMATION' => $this->displayOrderConfirmation($order),
             'HOOK_PAYMENT_RETURN' => $this->displayPaymentReturn($order),
             'order' => $presentedOrder,
             'register_form' => $register_form,
             'link' => sprintf('module:%s/views/templates/front/order-confirmation-table.tpl', $moduleName),
-            'payment_fee' => Tools::displayPrice($fee)
-        ));
+            'payment_fee' => Tools::displayPrice($fee),
+        ]);
 
         if ($this->context->customer->is_guest) {
             /* If guest we clear the cookie for security reason */
@@ -138,7 +136,7 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
             return false;
         }
 
-        return Hook::exec('displayPaymentReturn', array('order' => $order), $this->id_module);
+        return Hook::exec('displayPaymentReturn', ['order' => $order], $this->id_module);
     }
 
     /**
@@ -146,7 +144,7 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
      */
     public function displayOrderConfirmation($order)
     {
-        return Hook::exec('displayOrderConfirmation', array('order' => $order));
+        return Hook::exec('displayOrderConfirmation', ['order' => $order]);
     }
 
     /**
@@ -174,9 +172,9 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
             $cart->id,
             (int) Configuration::get('PS_OS_PAYMENT'),
             0,
-            $this->trans('Free order', array(), 'Admin.Orderscustomers.Feature'),
+            $this->trans('Free order', [], 'Admin.Orderscustomers.Feature'),
             null,
-            array(),
+            [],
             null,
             false,
             (bool) $cart->secure_key

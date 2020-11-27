@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -38,7 +39,8 @@ namespace Mollie\Handler\Settings;
 interface PaymentMethodPositionHandlerInterface
 {
     /**
-     * @param array $positions - key is id of MolPaymentMethod and value is numeric position.
+     * @param array $positions - key is id of MolPaymentMethod and value is numeric position
+     *
      * @return mixed
      */
     public function savePositions(array $positions);

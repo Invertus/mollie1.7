@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -68,7 +69,7 @@ class MolCarrierInformationService
             Carrier::ALL_CARRIERS
         );
 
-        $configCarriers = array();
+        $configCarriers = [];
         /** @var Carrier $carrier */
         foreach ($carriers as $carrier) {
             $carrier = new Carrier($carrier['id_carrier']);
@@ -87,7 +88,7 @@ class MolCarrierInformationService
                 $configCarriers[] = [
                     'id_carrier' => $carrier->id,
                     'name' => $carrier->name,
-                    'source' =>$carrier->external_module_name ? Config::MOLLIE_CARRIER_MODULE : Config::MOLLIE_CARRIER_CARRIER,
+                    'source' => $carrier->external_module_name ? Config::MOLLIE_CARRIER_MODULE : Config::MOLLIE_CARRIER_CARRIER,
                     'module' => $carrier->external_module_name,
                     'module_name' => $carrier->external_module_name,
                     'custom_url' => '',

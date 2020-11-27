@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -37,7 +38,6 @@ use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 
 class MolliePayScreenModuleFrontController extends ModuleFrontController
 {
-
     public function postProcess()
     {
         $method = Tools::getValue('method');
@@ -46,7 +46,7 @@ class MolliePayScreenModuleFrontController extends ModuleFrontController
         $validateUrl = Context::getContext()->link->getModuleLink(
             'mollie',
             'payment',
-            array('method' => PaymentMethod::CREDITCARD, 'rand' => time(), 'cardToken' => $cardToken),
+            ['method' => PaymentMethod::CREDITCARD, 'rand' => time(), 'cardToken' => $cardToken],
             true
         );
 
@@ -60,7 +60,7 @@ class MolliePayScreenModuleFrontController extends ModuleFrontController
         $this->context->smarty->assign([
             'mollieIFrameJS' => 'https://js.mollie.com/v1/mollie.js',
             'price' => $this->context->cart->getOrderTotal(),
-            'priceSign' => $this->context->currency->getSign()
+            'priceSign' => $this->context->currency->getSign(),
         ]);
         $this->setTemplate('module:mollie/views/templates/' . 'front/mollie_iframe.tpl');
     }

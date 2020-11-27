@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -47,7 +48,6 @@ use Mollie\Utility\TextFormatUtility;
 
 class CartLinesService
 {
-
     /**
      * @var VoucherService
      */
@@ -91,8 +91,7 @@ class CartLinesService
         $cartItems,
         $psGiftWrapping,
         $selectedVoucherCategory
-    )
-    {
+    ) {
         $apiRoundingPrecision = Config::API_ROUNDING_PRECISION;
         $vatRatePrecision = Config::VAT_RATE_ROUNDING_PRECISION;
 
@@ -118,7 +117,7 @@ class CartLinesService
             $roundedTotalWithTax = round($cartItem['total_wt'], $apiRoundingPrecision);
 
             // Skip if no qty
-            $quantity = (int)$cartItem['cart_quantity'];
+            $quantity = (int) $cartItem['cart_quantity'];
             if ($quantity <= 0 || $cartItem['price_wt'] <= 0) {
                 continue;
             }
@@ -133,14 +132,13 @@ class CartLinesService
 
             foreach ($cartSummary['gift_products'] as $gift_product) {
                 if ($gift_product['id_product'] === $cartItem['id_product']) {
-
                     $quantity = NumberUtility::minus($quantity, $gift_product['cart_quantity']);
 
                     $productHashGift = "{$idProduct}¤{$idProductAttribute}¤{$idCustomization}gift";
                     $aItems[$productHashGift][] = [
                         'name' => $cartItem['name'],
                         'sku' => $productHashGift,
-                        'targetVat' => (float)$cartItem['rate'],
+                        'targetVat' => (float) $cartItem['rate'],
                         'quantity' => $gift_product['cart_quantity'],
                         'unitPrice' => 0,
                         'totalAmount' => 0,
@@ -155,13 +153,13 @@ class CartLinesService
                 $aItems[$productHash][] = [
                     'name' => $cartItem['name'],
                     'sku' => $productHash,
-                    'targetVat' => (float)$cartItem['rate'],
+                    'targetVat' => (float) $cartItem['rate'],
                     'quantity' => $qty,
                     'unitPrice' => $unitPrice,
-                    'totalAmount' => (float)NumberUtility::times($unitPrice, $qty),
+                    'totalAmount' => (float) NumberUtility::times($unitPrice, $qty),
                     'category' => $this->voucherService->getVoucherCategory($cartItem, $selectedVoucherCategory),
                 ];
-                $remaining -= round((float)NumberUtility::times($unitPrice, $qty), $apiRoundingPrecision);
+                $remaining -= round((float) NumberUtility::times($unitPrice, $qty), $apiRoundingPrecision);
             }
         }
 
@@ -175,7 +173,7 @@ class CartLinesService
                     'unitPrice' => -round($totalDiscounts, $apiRoundingPrecision),
                     'totalAmount' => -round($totalDiscounts, $apiRoundingPrecision),
                     'targetVat' => 0,
-                    'category' => ''
+                    'category' => '',
                 ],
             ];
             $remaining = NumberUtility::plus($remaining, $totalDiscounts);
@@ -214,7 +212,7 @@ class CartLinesService
         // Fill the order lines with the rest of the data (tax, total amount, etc.)
         foreach ($aItems as $productHash => $aItem) {
             $aItems[$productHash] = array_map(function ($line) use ($apiRoundingPrecision, $vatRatePrecision) {
-                $quantity = (int)$line['quantity'];
+                $quantity = (int) $line['quantity'];
                 $targetVat = $line['targetVat'];
                 $unitPrice = $line['unitPrice'];
                 $unitPriceNoTax = round(CalculationUtility::getUnitPriceNoTax(
@@ -226,7 +224,7 @@ class CartLinesService
 
                 // Calculate VAT
                 $totalAmount = round(NumberUtility::times($unitPrice, $quantity), $apiRoundingPrecision);
-                $actualVatRate = 0;//
+                $actualVatRate = 0;
                 if ($unitPriceNoTax > 0) {
                     $actualVatRate = round(
                         $vatAmount = CalculationUtility::getActualVatRate($unitPrice, $unitPriceNoTax, $quantity),
@@ -242,7 +240,7 @@ class CartLinesService
                 $newItem = [
                     'name' => $line['name'],
                     'category' => $line['category'],
-                    'quantity' => (int)$quantity,
+                    'quantity' => (int) $quantity,
                     'unitPrice' => round($unitPrice, $apiRoundingPrecision),
                     'totalAmount' => round($totalAmount, $apiRoundingPrecision),
                     'vatRate' => round($actualVatRate, $apiRoundingPrecision),
@@ -320,7 +318,7 @@ class CartLinesService
         foreach ($newItems as $index => $item) {
             $line = new Line();
             $line->setName($item['name'] ?: $item['sku']);
-            $line->setQuantity((int)$item['quantity']);
+            $line->setQuantity((int) $item['quantity']);
             $line->setSku(isset($item['sku']) ? $item['sku'] : '');
 
             $currency = $this->tools->strtoupper($currencyIsoCode);
@@ -384,15 +382,14 @@ class CartLinesService
             $newCartLineGroup[] = [
                 'name' => $cartLineGroup[0]['name'],
                 'quantity' => $qty,
-                'unitPrice' => (float)$unitPrice,
-                'totalAmount' => (float)$unitPrice * $qty,
+                'unitPrice' => (float) $unitPrice,
+                'totalAmount' => (float) $unitPrice * $qty,
                 'sku' => isset($cartLineGroup[0]['sku']) ? $cartLineGroup[0]['sku'] : '',
                 'targetVat' => $cartLineGroup[0]['targetVat'],
-                'category' => $cartLineGroup[0]['category']
+                'category' => $cartLineGroup[0]['category'],
             ];
         }
 
         return $newCartLineGroup;
     }
-
 }

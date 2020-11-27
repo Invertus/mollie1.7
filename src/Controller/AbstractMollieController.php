@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  */
 
 namespace Mollie\Controller;
@@ -40,12 +41,12 @@ class AbstractMollieController extends \ModuleFrontControllerCore
 {
     public function redirectWithNotifications()
     {
-        $notifications = json_encode(array(
+        $notifications = json_encode([
             'error' => $this->errors,
             'warning' => $this->warning,
             'success' => $this->success,
             'info' => $this->info,
-        ));
+        ]);
 
         if (session_status() == PHP_SESSION_ACTIVE) {
             $_SESSION['notifications'] = $notifications;
@@ -58,6 +59,7 @@ class AbstractMollieController extends \ModuleFrontControllerCore
         if (!Config::isVersion17()) {
             $this->context->cookie->mollie_payment_canceled_error = json_encode($this->warning);
         }
+
         return call_user_func_array(['Tools', 'redirect'], func_get_args());
     }
 }

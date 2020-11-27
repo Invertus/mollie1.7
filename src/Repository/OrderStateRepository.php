@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,7 +43,7 @@ class OrderStateRepository
 {
     public function deleteStatuses()
     {
-        $sql = 'UPDATE '. _DB_PREFIX_ . 'order_state SET deleted = 1 WHERE module_name = "' . Config::NAME . '"';
+        $sql = 'UPDATE ' . _DB_PREFIX_ . 'order_state SET deleted = 1 WHERE module_name = "' . Config::NAME . '"';
 
         return Db::getInstance()->execute($sql);
     }

@@ -27,26 +27,28 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Utility;
 
+use Mollie\Config\Config;
 use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
 use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\Mollie\Api\Types\RefundStatus;
-use Mollie\Config\Config;
 
 class OrderStatusUtility
 {
     /**
      * @param string $status
      * @param string $comparedStatus
+     *
      * @return string
      */
     public static function transformPaymentStatusToPaid($status, $comparedStatus)

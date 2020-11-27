@@ -27,16 +27,15 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use Mollie\Utility\NumberUtility;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use Address;
 use Cart;
 use Configuration;
@@ -49,16 +48,18 @@ use Mollie\DTO\Object\Amount;
 use Mollie\DTO\OrderData;
 use Mollie\DTO\PaymentData;
 use Mollie\Provider\CreditCardLogoProvider;
+use Mollie\Provider\PhoneNumberProviderInterface;
 use Mollie\Repository\MethodCountryRepository;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Service\PaymentMethod\PaymentMethodSortProviderInterface;
 use Mollie\Utility\CustomLogoUtility;
 use Mollie\Utility\EnvironmentUtility;
 use Mollie\Utility\LocaleUtility;
+use Mollie\Utility\NumberUtility;
 use Mollie\Utility\PaymentFeeUtility;
 use Mollie\Utility\TextFormatUtility;
 use Mollie\Utility\TextGeneratorUtility;
-use Mollie\Provider\PhoneNumberProviderInterface;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use MolPaymentMethod;
 use Order;
 use PrestaShopDatabaseException;
@@ -166,6 +167,7 @@ class PaymentMethodService
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
+     *
      * @since 3.0.0
      * @since 3.4.0 public
      *
@@ -261,7 +263,7 @@ class PaymentMethodService
      * Get payment data
      *
      * @param float|string $amount
-     * @param              $currency
+     * @param $currency
      * @param string $method
      * @param string|null $issuer
      * @param int|Cart $cartId
@@ -271,6 +273,7 @@ class PaymentMethodService
      * @param string $orderReference
      *
      * @return PaymentData|OrderData
+     *
      * @since 3.3.0 Order reference
      */
     public function getPaymentData(
@@ -297,8 +300,8 @@ class PaymentMethodService
         $paymentFee = PaymentFeeUtility::getPaymentFee($molPaymentMethod, $totalAmount);
         $totalAmount += $paymentFee;
 
-        $currency = (string)($currency ? Tools::strtoupper($currency) : 'EUR');
-        $value = (float)TextFormatUtility::formatNumber($totalAmount, 2);
+        $currency = (string) ($currency ? Tools::strtoupper($currency) : 'EUR');
+        $value = (float) TextFormatUtility::formatNumber($totalAmount, 2);
         $amountObj = new Amount($currency, $value);
 
         $redirectUrl = ($qrCode
@@ -316,7 +319,7 @@ class PaymentMethodService
                     'utm_nooverride' => 1,
                     'rand' => time(),
                     'key' => $secureKey,
-                    'customerId' => $customer->id
+                    'customerId' => $customer->id,
                 ],
                 true
             )
@@ -354,11 +357,11 @@ class PaymentMethodService
             $paymentData->setIssuer($issuer);
 
             if (isset($cart->id_address_invoice)) {
-                $billing = new Address((int)$cart->id_address_invoice);
+                $billing = new Address((int) $cart->id_address_invoice);
                 $paymentData->setBillingAddress($billing);
             }
             if (isset($cart->id_address_delivery)) {
-                $shipping = new Address((int)$cart->id_address_delivery);
+                $shipping = new Address((int) $cart->id_address_delivery);
                 $paymentData->setShippingAddress($shipping);
             }
 
@@ -383,13 +386,13 @@ class PaymentMethodService
             $orderData = new OrderData($amountObj, $redirectUrl, $webhookUrl);
 
             if (isset($cart->id_address_invoice)) {
-                $billing = new Address((int)$cart->id_address_invoice);
+                $billing = new Address((int) $cart->id_address_invoice);
 
                 $orderData->setBillingAddress($billing);
                 $orderData->setBillingPhoneNumber($this->phoneNumberProvider->getFromAddress($billing));
             }
             if (isset($cart->id_address_delivery)) {
-                $shipping = new Address((int)$cart->id_address_delivery);
+                $shipping = new Address((int) $cart->id_address_delivery);
                 $orderData->setShippingAddress($shipping);
                 $orderData->setDeliveryPhoneNumber($this->phoneNumberProvider->getFromAddress($shipping));
             }

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -38,32 +39,31 @@ use PrestaShop\PrestaShop\Adapter\Order\OrderPresenter;
 
 class MollieFailModuleFrontController extends ModuleFrontController
 {
-
     /**
      * ID Order Variable Declaration.
      *
-     * @var int $id_order
+     * @var int
      */
     private $id_order;
 
     /**
      * Security Key Variable Declaration.
      *
-     * @var string $secure_key
+     * @var string
      */
     private $secure_key;
 
     /**
      * ID Cart Variable Declaration.
      *
-     * @var int $id_cart
+     * @var int
      */
     private $id_cart;
 
     /**
      * Order Presenter Variable Declaration.
      *
-     * @var OrderPresenter $order_presenter
+     * @var OrderPresenter
      */
     private $order_presenter;
 

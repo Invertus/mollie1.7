@@ -27,24 +27,22 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use Context;
 use Exception;
 use Mollie;
 use Mollie\Repository\PaymentMethodRepository;
 use PrestaShopLogger;
-use Profile;
 
 class MollieOrderInfoService
 {
-
     /**
      * @var PaymentMethodRepository
      */
@@ -94,7 +92,9 @@ class MollieOrderInfoService
 
     /**
      * @param $input
+     *
      * @return array
+     *
      * @since 3.3.0
      */
     public function displayMollieOrderInfo($input)
@@ -118,7 +118,7 @@ class MollieOrderInfoService
                     case 'retrieve':
                         return [
                             'success' => true,
-                            'payment' => $this->apiService->getFilteredApiPayment($this->module->api, $input['transactionId'], false)
+                            'payment' => $this->apiService->getFilteredApiPayment($this->module->api, $input['transactionId'], false),
                         ];
                     default:
                         return ['success' => false];
@@ -139,12 +139,15 @@ class MollieOrderInfoService
                         ];
                     case 'ship':
                         $status = $this->shipService->doShipOrderLines($input['transactionId'], isset($input['orderLines']) ? $input['orderLines'] : [], isset($input['tracking']) ? $input['tracking'] : null);
+
                         return array_merge($status, ['order' => $this->apiService->getFilteredApiOrder($this->module->api, $input['transactionId'])]);
                     case 'refund':
                         $status = $this->refundService->doRefundOrderLines($input['order'], isset($input['orderLines']) ? $input['orderLines'] : []);
+
                         return array_merge($status, ['order' => $this->apiService->getFilteredApiOrder($this->module->api, $input['order']['id'])]);
                     case 'cancel':
                         $status = $this->cancelService->doCancelOrderLines($input['transactionId'], isset($input['orderLines']) ? $input['orderLines'] : []);
+
                         return array_merge($status, ['order' => $this->apiService->getFilteredApiOrder($this->module->api, $input['transactionId'])]);
                     default:
                         return ['success' => false];
@@ -152,6 +155,7 @@ class MollieOrderInfoService
             }
         } catch (Exception $e) {
             PrestaShopLogger::addLog("Mollie module error: {$e->getMessage()}");
+
             return ['success' => false];
         }
 

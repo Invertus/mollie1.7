@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -48,7 +49,6 @@ class AbstractRepository implements ReadOnlyRepositoryInterface
 
     /**
      * @param string $fullyClassifiedClassName
-     *
      */
     public function __construct($fullyClassifiedClassName)
     {
@@ -62,6 +62,7 @@ class AbstractRepository implements ReadOnlyRepositoryInterface
 
     /**
      * @param array $keyValueCriteria
+     *
      * @return ObjectModel|null
      *
      * @throws PrestaShopException
@@ -76,6 +77,6 @@ class AbstractRepository implements ReadOnlyRepositoryInterface
 
         $first = $psCollection->getFirst();
 
-        return false === $first ? null: $first;
+        return false === $first ? null : $first;
     }
 }

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -84,7 +85,7 @@ class MailService
                 '{checkoutUrl}' => $checkoutUrl,
                 '{firstName}' => $customer->firstname,
                 '{lastName}' => $customer->lastname,
-                '{paymentMethod}' => $methodName
+                '{paymentMethod}' => $methodName,
             ],
             $customer->email,
             null,
@@ -99,18 +100,19 @@ class MailService
     /**
      * @param Order $order
      * @param $orderStateId
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
     public function sendOrderConfMail(Order $order, $orderStateId)
     {
-        $orderLanguage = new Language((int)$order->id_lang);
+        $orderLanguage = new Language((int) $order->id_lang);
 
         $data = $this->getOrderConfData($order, $orderStateId);
         $fileAttachment = $this->getFileAttachment($orderStateId, $order);
         $customer = $order->getCustomer();
         Mail::Send(
-            (int)$order->id_lang,
+            (int) $order->id_lang,
             'order_conf',
             $this->context->getTranslator()->trans(
                 'Order confirmation',
@@ -124,13 +126,14 @@ class MailService
             null,
             null,
             $fileAttachment,
-            null, _PS_MAIL_DIR_, false, (int)$order->id_shop
+            null, _PS_MAIL_DIR_, false, (int) $order->id_shop
         );
     }
 
     /**
      * @param Order $order
      * @param $orderStateId
+     *
      * @throws \PrestaShopDatabaseException
      * @throws \PrestaShopException
      */
@@ -161,8 +164,8 @@ class MailService
         $product_var_tpl_list = [];
         foreach ($order->getProducts() as $product) {
             $specific_price = null;
-            $price = Product::getPriceStatic((int)$product['id_product'], false, ($product['product_attribute_id'] ? (int)$product['product_attribute_id'] : null), 6, null, false, true, $product['product_quantity'], false, (int)$order->id_customer, (int)$order->id_cart, (int)$order->{Configuration::get('PS_TAX_ADDRESS_TYPE')}, $specific_price, true, true, null, true, $product['id_customization']);
-            $price_wt = Product::getPriceStatic((int)$product['id_product'], true, ($product['product_attribute_id'] ? (int)$product['product_attribute_id'] : null), 2, null, false, true, $product['product_quantity'], false, (int)$order->id_customer, (int)$order->id_cart, (int)$order->{Configuration::get('PS_TAX_ADDRESS_TYPE')}, $specific_price, true, true, null, true, $product['id_customization']);
+            $price = Product::getPriceStatic((int) $product['id_product'], false, ($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null), 6, null, false, true, $product['product_quantity'], false, (int) $order->id_customer, (int) $order->id_cart, (int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')}, $specific_price, true, true, null, true, $product['id_customization']);
+            $price_wt = Product::getPriceStatic((int) $product['id_product'], true, ($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null), 2, null, false, true, $product['product_quantity'], false, (int) $order->id_customer, (int) $order->id_cart, (int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')}, $specific_price, true, true, null, true, $product['id_customization']);
 
             $product_price = Product::getTaxCalculationMethod() == PS_TAX_EXC ? Tools::ps_round($price, 2) : $price_wt;
 
@@ -184,7 +187,7 @@ class MailService
                 $product_var_tpl['unit_price'] = $product_var_tpl['unit_price_full'] = '';
             }
 
-            $customized_datas = Product::getAllCustomizedDatas((int)$order->id_cart, null, true, null, (int)$product['id_customization']);
+            $customized_datas = Product::getAllCustomizedDatas((int) $order->id_cart, null, true, null, (int) $product['id_customization']);
             if (isset($customized_datas[$product['id_product']][$product['product_attribute_id']])) {
                 $product_var_tpl['customization'] = [];
                 foreach ($customized_datas[$product['id_product']][$product['product_attribute_id']][$order->id_address_delivery] as $customization) {
@@ -199,7 +202,7 @@ class MailService
                         $customization_text .= $this->trans('%d image(s)', [count($customization['datas'][Product::CUSTOMIZE_FILE])], 'Admin.Payment.Notification') . '<br />';
                     }
 
-                    $customization_quantity = (int)$customization['quantity'];
+                    $customization_quantity = (int) $customization['quantity'];
 
                     $product_var_tpl['customization'][] = [
                         'customization_text' => $customization_text,
@@ -216,11 +219,10 @@ class MailService
             }
         }
 
-        $invoice = new Address((int)$order->id_address_invoice);
-        $delivery = new Address((int)$order->id_address_delivery);
-        $delivery_state = $delivery->id_state ? new State((int)$delivery->id_state) : false;
-        $invoice_state = $invoice->id_state ? new State((int)$invoice->id_state) : false;
-
+        $invoice = new Address((int) $order->id_address_invoice);
+        $delivery = new Address((int) $order->id_address_delivery);
+        $delivery_state = $delivery->id_state ? new State((int) $delivery->id_state) : false;
+        $invoice_state = $invoice->id_state ? new State((int) $invoice->id_state) : false;
 
         $product_list_txt = '';
         $product_list_html = '';
@@ -322,7 +324,7 @@ class MailService
             //  The voucher is cloned with a new value corresponding to the remainder
             if (count($order_list) == 1 && $values['tax_incl'] > ($order->total_products_wt - $total_reduction_value_ti) && $cart_rule['obj']->partial_use == 1 && $cart_rule['obj']->reduction_amount > 0) {
                 // Create a new voucher from the original
-                $voucher = new CartRule((int)$cart_rule['obj']->id); // We need to instantiate the CartRule without lang parameter to allow saving it
+                $voucher = new CartRule((int) $cart_rule['obj']->id); // We need to instantiate the CartRule without lang parameter to allow saving it
                 unset($voucher->id);
 
                 // Set a new voucher code
@@ -363,7 +365,7 @@ class MailService
                 if ($voucher->add()) {
                     // If the voucher has conditions, they are now copied to the new voucher
                     CartRule::copyConditions($cart_rule['obj']->id, $voucher->id);
-                    $orderLanguage = new Language((int)$order->id_lang);
+                    $orderLanguage = new Language((int) $order->id_lang);
 
                     $params = [
                         '{voucher_amount}' => Tools::displayPrice($voucher->reduction_amount, $this->context->currency, false),
@@ -374,7 +376,7 @@ class MailService
                         '{order_name}' => $order->getUniqReference(),
                     ];
                     Mail::Send(
-                        (int)$order->id_lang,
+                        (int) $order->id_lang,
                         'voucher',
                         Context::getContext()->getTranslator()->trans(
                             'New voucher for your order %s',
@@ -385,7 +387,7 @@ class MailService
                         $params,
                         $this->context->customer->email,
                         $this->context->customer->firstname . ' ' . $this->context->customer->lastname,
-                        null, null, null, null, _PS_MAIL_DIR_, false, (int)$order->id_shop
+                        null, null, null, null, _PS_MAIL_DIR_, false, (int) $order->id_shop
                     );
                 }
 
@@ -406,7 +408,7 @@ class MailService
                 $cart_rule_used[] = $cart_rule['obj']->id;
 
                 // Create a new instance of Cart Rule without id_lang, in order to update its quantity
-                $cart_rule_to_update = new CartRule((int)$cart_rule['obj']->id);
+                $cart_rule_to_update = new CartRule((int) $cart_rule['obj']->id);
                 $cart_rule_to_update->quantity = max(0, $cart_rule_to_update->quantity - 1);
                 $cart_rule_to_update->update();
             }
@@ -422,16 +424,16 @@ class MailService
 
     private function getFileAttachment($orderStatusId, Order $order)
     {
-        $order_status = new OrderState((int)$orderStatusId, (int)$this->context->language->id);
+        $order_status = new OrderState((int) $orderStatusId, (int) $this->context->language->id);
 
         // Join PDF invoice
-        if ((int)Configuration::get('PS_INVOICE') && $order_status->invoice && $order->invoice_number) {
+        if ((int) Configuration::get('PS_INVOICE') && $order_status->invoice && $order->invoice_number) {
             $fileAttachment = [];
             $order_invoice_list = $order->getInvoicesCollection();
             Hook::exec('actionPDFInvoiceRender', ['order_invoice_list' => $order_invoice_list]);
             $pdf = new PDF($order_invoice_list, PDF::TEMPLATE_INVOICE, $this->context->smarty);
             $fileAttachment['content'] = $pdf->render(false);
-            $fileAttachment['name'] = Configuration::get('PS_INVOICE_PREFIX', (int)$order->id_lang, null, $order->id_shop) . sprintf('%06d', $order->invoice_number) . '.pdf';
+            $fileAttachment['name'] = Configuration::get('PS_INVOICE_PREFIX', (int) $order->id_lang, null, $order->id_shop) . sprintf('%06d', $order->invoice_number) . '.pdf';
             $fileAttachment['mime'] = 'application/pdf';
         } else {
             $fileAttachment = null;

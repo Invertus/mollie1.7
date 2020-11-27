@@ -27,19 +27,20 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
+use Mollie;
 use Mollie\Config\Config;
 use MolliePrefix\Mollie\Api\Types\OrderStatus;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\Mollie\Api\Types\RefundStatus;
-use Mollie;
 
 class LanguageService
 {
@@ -55,7 +56,8 @@ class LanguageService
         $this->module = $module;
     }
 
-    public function getLang() {
+    public function getLang()
+    {
         return [
             PaymentStatus::STATUS_PAID => $this->module->l('Paid', self::FILE_NAME),
             OrderStatus::STATUS_COMPLETED => $this->module->l('Completed', self::FILE_NAME),

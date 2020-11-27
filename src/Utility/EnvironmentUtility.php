@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -66,7 +67,7 @@ class EnvironmentUtility
     public static function getApiKey()
     {
         $environment = Configuration::get(Config::MOLLIE_ENVIRONMENT);
-        $apiKeyConfig = (int)$environment === Config::ENVIRONMENT_LIVE ?
+        $apiKeyConfig = (int) $environment === Config::ENVIRONMENT_LIVE ?
             Config::MOLLIE_API_KEY : Config::MOLLIE_API_KEY_TEST;
 
         return Configuration::get($apiKeyConfig);

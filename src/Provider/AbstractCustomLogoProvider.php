@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,7 +43,7 @@ abstract class AbstractCustomLogoProvider implements CustomLogoProviderInterface
      */
     public function getLocalLogoPath()
     {
-        return "{$this->getLocalPath()}views/img/customLogo/{$this->getName()}.jpg" ;
+        return "{$this->getLocalPath()}views/img/customLogo/{$this->getName()}.jpg";
     }
 
     /**
@@ -50,7 +51,7 @@ abstract class AbstractCustomLogoProvider implements CustomLogoProviderInterface
      */
     public function getLogoPathUri()
     {
-        return "{$this->getPathUri()}views/img/customLogo/{$this->getName()}.jpg" ;
+        return "{$this->getPathUri()}views/img/customLogo/{$this->getName()}.jpg";
     }
 
     /**

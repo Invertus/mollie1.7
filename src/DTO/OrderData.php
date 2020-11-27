@@ -27,13 +27,14 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
-NameSpace Mollie\DTO;
+namespace Mollie\DTO;
 
 use Address;
 use Country;
@@ -42,7 +43,6 @@ use Mollie\DTO\Object\Amount;
 
 class OrderData implements JsonSerializable
 {
-
     /**
      * @var Amount
      */
@@ -407,27 +407,27 @@ class OrderData implements JsonSerializable
         $result = [
             'amount' => [
                 'currency' => $this->getAmount()->getCurrency(),
-                'value' => (string)$this->getAmount()->getValue(),
+                'value' => (string) $this->getAmount()->getValue(),
             ],
             'billingAddress' => [
-                "organizationName" => ltrim($this->getBillingAddress()->company),
-                "streetAndNumber" => $this->getBillingAddress()->address1,
-                "city" => $this->getBillingAddress()->city,
-                "postalCode" => $this->getBillingAddress()->postcode,
-                "country" => (string)Country::getIsoById($this->getBillingAddress()->id_country),
-                "givenName" => $this->getBillingAddress()->firstname,
-                "familyName" => $this->getBillingAddress()->lastname,
-                "email" => $this->getEmail(),
+                'organizationName' => ltrim($this->getBillingAddress()->company),
+                'streetAndNumber' => $this->getBillingAddress()->address1,
+                'city' => $this->getBillingAddress()->city,
+                'postalCode' => $this->getBillingAddress()->postcode,
+                'country' => (string) Country::getIsoById($this->getBillingAddress()->id_country),
+                'givenName' => $this->getBillingAddress()->firstname,
+                'familyName' => $this->getBillingAddress()->lastname,
+                'email' => $this->getEmail(),
             ],
             'shippingAddress' => [
-                "organizationName" => ltrim($this->getShippingAddress()->company),
-                "streetAndNumber" => $this->getShippingAddress()->address1,
-                "city" => $this->getShippingAddress()->city,
-                "postalCode" => $this->getShippingAddress()->postcode,
-                "country" => (string)Country::getIsoById($this->getShippingAddress()->id_country),
-                "givenName" => $this->getShippingAddress()->firstname,
-                "familyName" => $this->getShippingAddress()->lastname,
-                "email" => $this->getEmail(),
+                'organizationName' => ltrim($this->getShippingAddress()->company),
+                'streetAndNumber' => $this->getShippingAddress()->address1,
+                'city' => $this->getShippingAddress()->city,
+                'postalCode' => $this->getShippingAddress()->postcode,
+                'country' => (string) Country::getIsoById($this->getShippingAddress()->id_country),
+                'givenName' => $this->getShippingAddress()->firstname,
+                'familyName' => $this->getShippingAddress()->lastname,
+                'email' => $this->getEmail(),
             ],
             'redirectUrl' => $this->getRedirectUrl(),
             'webhookUrl' => $this->getWebhookUrl(),
@@ -436,7 +436,7 @@ class OrderData implements JsonSerializable
             'locale' => $this->getLocale(),
             'orderNumber' => $this->getOrderNumber(),
             'lines' => $lines,
-            'payment' => $this->getPayment()
+            'payment' => $this->getPayment(),
         ];
 
         if ($this->billingPhoneNumber) {

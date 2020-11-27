@@ -27,20 +27,21 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use Cart;
 use Mollie;
 use Mollie\Config\Config;
 use Mollie\Exception\MollieException;
 use Mollie\Repository\MolCustomerRepository;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 
 class CustomerService
 {
@@ -72,7 +73,7 @@ class CustomerService
         $molCustomer = $this->customerRepository->findOneBy(
             [
                 'name' => $fullName,
-                'email' => $customer->email
+                'email' => $customer->email,
             ]
         );
 
@@ -99,15 +100,11 @@ class CustomerService
             return $this->mollie->api->customers->create(
                 [
                     'name' => $name,
-                    'email' => $email
+                    'email' => $email,
                 ]
             );
         } catch (\Exception $e) {
-            throw new MollieException(
-                'Failed to create Mollie customer',
-                MollieException::CUSTOMER_EXCEPTION,
-                $e
-            );
+            throw new MollieException('Failed to create Mollie customer', MollieException::CUSTOMER_EXCEPTION, $e);
         }
     }
 

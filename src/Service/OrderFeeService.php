@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -44,7 +45,7 @@ class OrderFeeService
     public function getPaymentFees($methods, $totalPrice)
     {
         foreach ($methods as $index => $method) {
-            if ((int)$method['surcharge'] === 0) {
+            if ((int) $method['surcharge'] === 0) {
                 $methods[$index]['fee'] = false;
                 $methods[$index]['fee_display'] = false;
                 continue;

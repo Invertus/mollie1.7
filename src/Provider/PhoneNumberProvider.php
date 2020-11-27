@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -43,15 +44,15 @@ final class PhoneNumberProvider implements PhoneNumberProviderInterface
     {
         $phoneNumber = $this->getMobileOrPhone($address);
 
-        $phoneNumber = str_replace(" ", "", $phoneNumber);
-        $phoneNumber = str_replace("+", "", $phoneNumber);
+        $phoneNumber = str_replace(' ', '', $phoneNumber);
+        $phoneNumber = str_replace('+', '', $phoneNumber);
 
-        while ($phoneNumber[0] === "0") {
+        while ($phoneNumber[0] === '0') {
             $phoneNumber = substr($phoneNumber, 1);
         }
 
-        if ($phoneNumber[0] !== "+") {
-            $phoneNumber = "+" . $phoneNumber;
+        if ($phoneNumber[0] !== '+') {
+            $phoneNumber = '+' . $phoneNumber;
         }
 
         $regex = "/^\+\d{3,18}$/";

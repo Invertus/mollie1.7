@@ -27,17 +27,18 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Utility;
 
-use MolliePrefix\PrestaShop\Decimal\Number;
 use Configuration;
 use Mollie\Config\Config;
+use MolliePrefix\PrestaShop\Decimal\Number;
 
 class CartPriceUtility
 {
@@ -53,11 +54,11 @@ class CartPriceUtility
      */
     public static function spreadAmountEvenly($amount, $qty)
     {
-        if ((int)$qty <= 0) {
+        if ((int) $qty <= 0) {
             return [];
         }
         // Start with a freshly rounded amount
-        $amount = (float)round($amount, Config::API_ROUNDING_PRECISION);
+        $amount = (float) round($amount, Config::API_ROUNDING_PRECISION);
         // Estimate a target spread amount to begin with
         $spreadTotals = array_fill(1, $qty, round($amount / $qty, Config::API_ROUNDING_PRECISION));
         $newTotal = $spreadTotals[1] * $qty;
@@ -94,6 +95,6 @@ class CartPriceUtility
      */
     public static function checkRoundingMode()
     {
-        return (int)Configuration::get('PS_PRICE_ROUND_MODE') !== 2;
+        return (int) Configuration::get('PS_PRICE_ROUND_MODE') !== 2;
     }
 }

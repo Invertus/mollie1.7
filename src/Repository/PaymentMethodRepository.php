@@ -27,18 +27,19 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Repository;
 
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Db;
 use DbQuery;
 use Exception;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolPaymentMethod;
 use mysqli_result;
 use PDOStatement;
@@ -58,6 +59,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 
     /**
      * @param $paymentMethodId
+     *
      * @return false|string|null
      */
     public function getPaymentMethodIssuersByPaymentMethodId($paymentMethodId)
@@ -69,6 +71,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 
     /**
      * @param $paymentMethodId
+     *
      * @return bool
      */
     public function deletePaymentMethodIssuersByPaymentMethodId($paymentMethodId)
@@ -81,6 +84,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
     /**
      * @param array $savedPaymentMethods
      * @param $environment
+     *
      * @return bool
      */
     public function deleteOldPaymentMethods(array $savedPaymentMethods, $environment)
@@ -90,19 +94,20 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
         return Db::getInstance()->delete(
             'mol_payment_method',
             'id_method NOT IN ("' . implode('", "', $escapedMethods) . '")
-            AND `live_environment` = ' . (int)$environment
+            AND `live_environment` = ' . (int) $environment
         );
     }
 
     /**
      * @param $paymentMethodId
      * @param $environment
+     *
      * @return false|string|null
      */
     public function getPaymentMethodIdByMethodId($paymentMethodId, $environment)
     {
         $sql = 'SELECT id_payment_method FROM `' . _DB_PREFIX_ . 'mol_payment_method`
-        WHERE id_method = "' . pSQL($paymentMethodId) . '" AND live_environment = "' . (int)$environment . '"';
+        WHERE id_method = "' . pSQL($paymentMethodId) . '" AND live_environment = "' . (int) $environment . '"';
 
         return Db::getInstance()->getValue($sql);
     }
@@ -112,6 +117,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
      * @param string $id
      *
      * @return array
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      *
@@ -184,6 +190,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 
     /**
      * @return array|false|mysqli_result|PDOStatement|resource|null
+     *
      * @throws PrestaShopDatabaseException
      */
     public function getMethodsForCheckout($environment)
@@ -199,6 +206,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
     /**
      * @param $oldTransactionId
      * @param $newTransactionId
+     *
      * @return bool
      */
     public function updateTransactionId($oldTransactionId, $newTransactionId)
@@ -207,7 +215,6 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
             'mollie_payments',
             [
                 'transaction_id' => pSQL($newTransactionId),
-
             ],
             '`transaction_id` = \'' . pSQL($oldTransactionId) . '\''
         );
@@ -221,7 +228,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
                 [
                     'updated_at' => ['type' => 'sql', 'value' => 'NOW()'],
                     'bank_status' => pSQL($status),
-                    'order_id' => (int)$orderId,
+                    'order_id' => (int) $orderId,
                     'method' => pSQL($paymentMethod),
                 ],
                 '`transaction_id` = \'' . pSQL($transactionId) . '\''
@@ -237,11 +244,11 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
         return Db::getInstance()->insert(
             'mollie_payments',
             [
-                'cart_id' => (int)$cartId,
+                'cart_id' => (int) $cartId,
                 'method' => pSQL($orderPayment),
                 'transaction_id' => pSQL($transactionId),
                 'bank_status' => PaymentStatus::STATUS_OPEN,
-                'order_id' => (int)$orderId,
+                'order_id' => (int) $orderId,
                 'order_reference' => psql($orderReference),
                 'created_at' => ['type' => 'sql', 'value' => 'NOW()'],
             ]

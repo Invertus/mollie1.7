@@ -27,21 +27,22 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
 use Mollie;
-use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
-use MolliePrefix\Mollie\Api\Resources\Payment;
 use Mollie\Utility\EnvironmentUtility;
 use Mollie\Utility\RefundUtility;
 use Mollie\Utility\TextFormatUtility;
+use MolliePrefix\Mollie\Api\Exceptions\ApiException;
+use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
+use MolliePrefix\Mollie\Api\Resources\Payment;
 use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
 use MollieWebhookModuleFrontController;
 use PrestaShop\PrestaShop\Adapter\CoreException;
@@ -74,6 +75,7 @@ class RefundService
      * @throws PrestaShopException
      * @throws CoreException
      * @throws ApiException
+     *
      * @since 3.3.0 Renamed `doRefund` to `doPaymentRefund`, added `$amount`
      * @since 3.3.2 Omit $orderId
      */
@@ -85,16 +87,16 @@ class RefundService
             if ($amount) {
                 $payment->refund([
                     'amount' => [
-                        'currency' => (string)$payment->amount->currency,
-                        'value' => (string)TextFormatUtility::formatNumber($amount, 2),
+                        'currency' => (string) $payment->amount->currency,
+                        'value' => (string) TextFormatUtility::formatNumber($amount, 2),
                     ],
                 ]);
-            } elseif ((float)$payment->settlementAmount->value - (float)$payment->amountRefunded->value > 0) {
+            } elseif ((float) $payment->settlementAmount->value - (float) $payment->amountRefunded->value > 0) {
                 $payment->refund([
                     'amount' => [
-                        'currency' => (string)$payment->amount->currency,
-                        'value' => (string)TextFormatUtility::formatNumber(
-                            (float)$payment->settlementAmount->value - (float)$payment->amountRefunded->value,
+                        'currency' => (string) $payment->amount->currency,
+                        'value' => (string) TextFormatUtility::formatNumber(
+                            (float) $payment->settlementAmount->value - (float) $payment->amountRefunded->value,
                             2
                         ),
                     ],
@@ -136,6 +138,7 @@ class RefundService
      * @throws PrestaShopException
      * @throws CoreException
      * @throws SmartyException
+     *
      * @since 3.3.0
      */
     public function doRefundOrderLines(array $orderData, $lines = [])
@@ -156,7 +159,7 @@ class RefundService
                 foreach ($orderPayments as $orderPayment) {
                     $orderPayment->refund(
                         [
-                            'amount' => $availableRefund
+                            'amount' => $availableRefund,
                         ]
                     );
                     continue;
@@ -187,5 +190,4 @@ class RefundService
             'detailed' => '',
         ];
     }
-
 }

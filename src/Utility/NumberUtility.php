@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -55,9 +56,9 @@ class NumberUtility
         }
         $numberTransformed = self::toObject($number);
         $totalDecrease = self::toPercentageIncrease($percentage);
-        $decrement = (string)$numberTransformed->dividedBy(self::toObject($totalDecrease));
+        $decrement = (string) $numberTransformed->dividedBy(self::toObject($totalDecrease));
 
-        return (float)$decrement;
+        return (float) $decrement;
     }
 
     public static function increaseByPercentage($number, $percentage)
@@ -68,9 +69,9 @@ class NumberUtility
         $numberTransformed = self::toObject($number);
         $percentageIncrease = self::toPercentageIncrease($percentage);
         $percentageIncreaseTransformed = self::toObject($percentageIncrease);
-        $result = (string)$numberTransformed->times($percentageIncreaseTransformed);
+        $result = (string) $numberTransformed->times($percentageIncreaseTransformed);
 
-        return (float)$result;
+        return (float) $result;
     }
 
     /**
@@ -84,11 +85,10 @@ class NumberUtility
     {
         $percentageNumber = self::toObject($percentage);
         $smallerNumber = $percentageNumber->dividedBy(self::toObject(100));
-        $result = (string)$smallerNumber->plus(self::toObject(1));
+        $result = (string) $smallerNumber->plus(self::toObject(1));
 
-        return (float)$result;
+        return (float) $result;
     }
-
 
     /**
      * ($a*$b)
@@ -102,9 +102,9 @@ class NumberUtility
     {
         $firstNumber = self::toObject($a);
         $secondNumber = self::toObject($b);
-        $result = (string)$firstNumber->times($secondNumber);
+        $result = (string) $firstNumber->times($secondNumber);
 
-        return (float)$result;
+        return (float) $result;
     }
 
     /**
@@ -119,9 +119,9 @@ class NumberUtility
     {
         $firstNumber = self::toObject($a);
         $secondNumber = self::toObject($b);
-        $result = (string)$firstNumber->dividedBy($secondNumber);
+        $result = (string) $firstNumber->dividedBy($secondNumber);
 
-        return (float)$result;
+        return (float) $result;
     }
 
     public static function isEqual($a, $b)
@@ -153,7 +153,7 @@ class NumberUtility
         $firstNumber = self::toObject($a);
         $secondNumber = self::toObject($b);
 
-        return (float)((string)$firstNumber->minus($secondNumber));
+        return (float) ((string) $firstNumber->minus($secondNumber));
     }
 
     public static function plus($a, $b)
@@ -161,7 +161,7 @@ class NumberUtility
         $firstNumber = self::toObject($a);
         $secondNumber = self::toObject($b);
 
-        return (float)((string)$firstNumber->plus($secondNumber));
+        return (float) ((string) $firstNumber->plus($secondNumber));
     }
 
     /**
@@ -171,6 +171,6 @@ class NumberUtility
      */
     private static function toObject($number)
     {
-        return new Number((string)$number);
+        return new Number((string) $number);
     }
 }

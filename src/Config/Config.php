@@ -27,19 +27,20 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Config;
 
+use Configuration;
+use Mollie\Utility\EnvironmentUtility;
 use MolliePrefix\Mollie\Api\Types\OrderStatus;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\Mollie\Api\Types\RefundStatus;
-use Configuration;
-use Mollie\Utility\EnvironmentUtility;
 
 class Config
 {
@@ -71,7 +72,6 @@ class Config
         'mybank' => ['eur'],
         'voucher' => ['eur'],
     ];
-
 
     /**
      * Default payment method availability
@@ -212,11 +212,11 @@ class Config
     const API_ROUNDING_PRECISION = 2;
     const VAT_RATE_ROUNDING_PRECISION = 0;
 
-    const STATUS_PAID_ON_BACKORDER = "paid_backorder";
-    const STATUS_PENDING_ON_BACKORDER = "pending_backorder";
+    const STATUS_PAID_ON_BACKORDER = 'paid_backorder';
+    const STATUS_PENDING_ON_BACKORDER = 'pending_backorder';
     const STATUS_MOLLIE_AWAITING = 'mollie_awaiting';
-    const STATUS_ON_BACKORDER = "on_backorder";
-    const MOLLIE_AWAITING_PAYMENT = "awaiting";
+    const STATUS_ON_BACKORDER = 'on_backorder';
+    const MOLLIE_AWAITING_PAYMENT = 'awaiting';
     const PRICE_DISPLAY_METHOD_NO_TAXES = '1';
     const APPLEPAY = 'applepay';
     const MOLLIE_COUNTRIES = 'country_';
@@ -228,8 +228,8 @@ class Config
     const FEE_PERCENTAGE = 2;
     const FEE_FIXED_FEE_AND_PERCENTAGE = 3;
 
-    const MOLLIE_API_STATUS_PAYMENT = "payment";
-    const MOLLIE_API_STATUS_ORDER = "order";
+    const MOLLIE_API_STATUS_PAYMENT = 'payment';
+    const MOLLIE_API_STATUS_ORDER = 'order';
 
     const ORDER_CONF_MAIL_SEND_ON_CREATION = 0;
     const ORDER_CONF_MAIL_SEND_ON_PAID = 1;
@@ -262,11 +262,11 @@ class Config
     const MOLLIE_VOUCHER_CATEGORIES = [
         self::MOLLIE_VOUCHER_CATEGORY_MEAL => 'meal',
         self::MOLLIE_VOUCHER_CATEGORY_GIFT => 'gift',
-        self::MOLLIE_VOUCHER_CATEGORY_ECO => 'eco'
+        self::MOLLIE_VOUCHER_CATEGORY_ECO => 'eco',
     ];
     const MOLLIE_VOUCHER_MINIMAL_AMOUNT = 1;
 
-    /** @var array $methods */
+    /** @var array */
     public static $methods = [
         'banktransfer' => 'Bank',
         'belfius' => 'Belfius',
@@ -315,7 +315,7 @@ class Config
 
     public static function isVersion17()
     {
-        return (bool)version_compare(_PS_VERSION_, '1.7', '>=');
+        return (bool) version_compare(_PS_VERSION_, '1.7', '>=');
     }
 
     public static function isTestMode()

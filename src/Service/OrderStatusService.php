@@ -27,17 +27,16 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Configuration;
-use Context;
 use Mollie\Config\Config;
 use Mollie\Utility\OrderStatusUtility;
 use Order;
@@ -70,6 +69,7 @@ class OrderStatusService
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
+     *
      * @since 3.3.2 Accept both Order ID and Order object
      * @since 3.3.2 Accept both Mollie status string and PrestaShop status ID
      * @since 3.3.2 $useExistingPayment option

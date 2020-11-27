@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -39,7 +40,6 @@ use Mollie;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UploadTranslationsFromCsvFileConsoleCommand extends Command
 {
@@ -74,7 +74,7 @@ class UploadTranslationsFromCsvFileConsoleCommand extends Command
 
         $csvHeader = "<?php \n\nglobal \$_MODULE;\n\$_MODULE = array();\n";
         try {
-            $handle = fopen("translation.csv", "r");
+            $handle = fopen('translation.csv', 'r');
             if ($handle) {
                 $en = 'en.php';
                 $nl = 'nl.php';
@@ -86,7 +86,7 @@ class UploadTranslationsFromCsvFileConsoleCommand extends Command
                 file_put_contents($fr, $csvHeader);
 
                 while (($line = fgets($handle)) !== false) {
-                    $line = preg_replace("/\r|\n/", "", $line);
+                    $line = preg_replace("/\r|\n/", '', $line);
                     $values = explode(';', $line);
                     if ($values[self::CSV_POSITION_ID] === 'ID' ||
                         $values[self::CSV_POSITION_ID] === ''

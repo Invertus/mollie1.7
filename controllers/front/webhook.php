@@ -27,42 +27,43 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Utility\PaymentMethodUtility;
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
-use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
-use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
-use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
-use MolliePrefix\Mollie\Api\Types\OrderStatus;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
-use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Mollie\Config\Config;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Service\OrderStatusService;
 use Mollie\Utility\OrderStatusUtility;
+use Mollie\Utility\PaymentMethodUtility;
 use Mollie\Utility\TransactionUtility;
+use MolliePrefix\Mollie\Api\Exceptions\ApiException;
+use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
+use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
+use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
+use MolliePrefix\Mollie\Api\Types\OrderStatus;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
+use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use PrestaShop\PrestaShop\Adapter\CoreException;
 
 if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once dirname(__FILE__).'/../../mollie.php';
+require_once dirname(__FILE__) . '/../../mollie.php';
 
 class MollieWebhookModuleFrontController extends ModuleFrontController
 {
     /** @var Mollie */
     public $module;
-    /** @var bool $ssl */
+    /** @var bool */
     public $ssl = true;
-    /** @var bool $display_column_left */
+    /** @var bool */
     public $display_column_left = false;
-    /** @var bool $display_column_right */
+    /** @var bool */
     public $display_column_right = false;
 
     /**
@@ -84,7 +85,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG)) {
-            PrestaShopLogger::addLog('Mollie incoming webhook: '.Tools::file_get_contents('php://input'));
+            PrestaShopLogger::addLog('Mollie incoming webhook: ' . Tools::file_get_contents('php://input'));
         }
 
         die($this->executeWebhook());
@@ -92,6 +93,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
 
     /**
      * @return string
+     *
      * @throws ApiException
      * @throws CoreException
      * @throws PrestaShopDatabaseException
@@ -101,7 +103,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
     {
         if (Tools::getValue('testByMollie')) {
             if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) >= Mollie\Config\Config::DEBUG_LOG_ERRORS) {
-                PrestaShopLogger::addLog(__METHOD__.' said: Mollie webhook tester successfully communicated with the shop.', Mollie\Config\Config::NOTICE);
+                PrestaShopLogger::addLog(__METHOD__ . ' said: Mollie webhook tester successfully communicated with the shop.', Mollie\Config\Config::NOTICE);
             }
 
             return 'OK';
@@ -109,7 +111,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
 
         $transactionId = Tools::getValue('id');
         if (TransactionUtility::isOrderTransaction($transactionId)) {
-            $payment = $this->processTransaction($this->module->api->orders->get($transactionId, array('embed' => 'payments')));
+            $payment = $this->processTransaction($this->module->api->orders->get($transactionId, ['embed' => 'payments']));
         } else {
             $payment = $this->processTransaction($this->module->api->payments->get($transactionId));
         }
@@ -129,6 +131,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
      * @throws PrestaShopException
      * @throws CoreException
      * @throws ApiException
+     *
      * @since 3.3.0
      * @since 3.3.2 Returns the ApiPayment / ApiOrder instead of OK string, NOT OK/NO ID stays the same
      * @since 3.3.2 Returns the ApiPayment instead of ApiPayment / ApiOrder
@@ -137,7 +140,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
     {
         if (empty($transaction)) {
             if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) >= Mollie\Config\Config::DEBUG_LOG_ERRORS) {
-                PrestaShopLogger::addLog(__METHOD__.' said: Received webhook request without proper transaction ID.', Mollie\Config\Config::WARNING);
+                PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request without proper transaction ID.', Mollie\Config\Config::WARNING);
             }
 
             return $this->module->l('Transaction failed', 'webhook');
@@ -147,7 +150,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         if ($transaction instanceof MolliePaymentAlias) {
             if (!empty($transaction->orderId) && TransactionUtility::isOrderTransaction($transaction->orderId)) {
                 // Part of order
-                $transaction = $this->module->api->orders->get($transaction->orderId, array('embed' => 'payments'));
+                $transaction = $this->module->api->orders->get($transaction->orderId, ['embed' => 'payments']);
             } else {
                 // Single payment
                 $apiPayment = $transaction;
@@ -155,7 +158,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         }
 
         if (!empty($transaction->id) && TransactionUtility::isOrderTransaction(($transaction->id))) {
-            $apiPayment = $this->module->api->orders->get($transaction->id, array('embed' => 'payments'));
+            $apiPayment = $this->module->api->orders->get($transaction->id, ['embed' => 'payments']);
         }
 
         if (!isset($apiPayment)) {
@@ -176,7 +179,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
             [
                 'updated_at' => ['type' => 'sql', 'value' => 'NOW()'],
                 'bank_status' => pSQL(\Mollie\Config\Config::getStatuses()[$apiPayment->status]),
-                'order_id' => (int)$orderId,
+                'order_id' => (int) $orderId,
             ],
             '`transaction_id` = \'' . pSQL($transaction->id) . '\''
         );
@@ -205,19 +208,19 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
                         && ($apiPayment->isPaid() || $apiPayment->isAuthorized() || $apiPayment->isExpired())
                         && Tools::encrypt($cart->secure_key) === $apiPayment->metadata->secure_key
                     ) {
-                        $paymentStatus = (int)Mollie\Config\Config::getStatuses()[$apiPayment->status];
+                        $paymentStatus = (int) Mollie\Config\Config::getStatuses()[$apiPayment->status];
 
                         /** @var OrderStatusService $orderStatusService */
                         $orderStatusService = $this->module->getContainer(OrderStatusService::class);
                         $orderStatusService->setOrderStatus($orderId, $paymentStatus);
 
-                        $orderId = Order::getOrderByCartId((int)$apiPayment->metadata->cart_id);
+                        $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
                     }
                 }
                 break;
             case Mollie\Config\Config::MOLLIE_API_STATUS_ORDER:
                 if ($apiPayment->metadata->cart_id) {
-                    /** todo: investigate if banktransfer logic is needed here */
+                    /* todo: investigate if banktransfer logic is needed here */
                     if ($psPayment['method'] === PaymentMethod::BANKTRANSFER
                     ) {
                         $order = new Order($orderId);
@@ -237,13 +240,13 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
                         foreach ($orderPayments as $orderPayment) {
                             $paymentStatus = $orderPayment->status;
                         }
-                        $paymentStatus = (int)Mollie\Config\Config::getStatuses()[$paymentStatus];
+                        $paymentStatus = (int) Mollie\Config\Config::getStatuses()[$paymentStatus];
 
                         /** @var OrderStatusService $orderStatusService */
                         $orderStatusService = $this->module->getContainer(OrderStatusService::class);
                         $orderStatusService->setOrderStatus($orderId, $paymentStatus);
 
-                        $orderId = Order::getOrderByCartId((int)$apiPayment->metadata->cart_id);
+                        $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
                     } elseif ($psPayment['method'] !== PaymentMethod::BANKTRANSFER
                         && Tools::encrypt($cart->secure_key) === $apiPayment->metadata->secure_key
                     ) {
@@ -259,7 +262,7 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
                         $orderStatusService = $this->module->getContainer(OrderStatusService::class);
                         $orderStatusService->setOrderStatus($orderId, $paymentStatus, null, [], $transactionInfo);
 
-                        $orderId = Order::getOrderByCartId((int)$apiPayment->metadata->cart_id);
+                        $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
                     }
                 }
                 break;
@@ -271,13 +274,13 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
 
         if (!$this->savePaymentStatus($transaction->id, $apiPayment->status, $orderId)) {
             if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) >= Mollie\Config\Config::DEBUG_LOG_ERRORS) {
-                PrestaShopLogger::addLog(__METHOD__.' said: Could not save Mollie payment status for transaction "'.$transaction->id.'". Reason: '.Db::getInstance()->getMsgError(), Mollie\Config\Config::WARNING);
+                PrestaShopLogger::addLog(__METHOD__ . ' said: Could not save Mollie payment status for transaction "' . $transaction->id . '". Reason: ' . Db::getInstance()->getMsgError(), Mollie\Config\Config::WARNING);
             }
         }
 
         // Log successful webhook requests in extended log mode only
         if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) == Mollie\Config\Config::DEBUG_LOG_ALL) {
-            PrestaShopLogger::addLog(__METHOD__.' said: Received webhook request for order '.(int) $orderId.' / transaction '.$transaction->id, Mollie\Config\Config::NOTICE);
+            PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request for order ' . (int) $orderId . ' / transaction ' . $transaction->id, Mollie\Config\Config::NOTICE);
         }
 
         return $apiPayment;
@@ -288,9 +291,10 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
      *
      * @param string $molliePaymentId
      * @param string $molliePaymentMethod
-     * @param int    $orderId
+     * @param int $orderId
      *
      * @return void
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -316,10 +320,11 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
 
     /**
      * @param string $transactionId
-     * @param string    $status
-     * @param int    $orderId
+     * @param string $status
+     * @param int $orderId
      *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -328,12 +333,12 @@ class MollieWebhookModuleFrontController extends ModuleFrontController
         try {
             return Db::getInstance()->update(
                 'mollie_payments',
-                array(
-                    'updated_at'  => array('type' => 'sql', 'value' => 'NOW()'),
+                [
+                    'updated_at' => ['type' => 'sql', 'value' => 'NOW()'],
                     'bank_status' => pSQL($status),
-                    'order_id'    => (int) $orderId,
-                ),
-                '`transaction_id` = \''.pSQL($transactionId).'\''
+                    'order_id' => (int) $orderId,
+                ],
+                '`transaction_id` = \'' . pSQL($transactionId) . '\''
             );
         } catch (PrestaShopDatabaseException $e) {
             /** @var PaymentMethodRepository $paymentMethodRepo */

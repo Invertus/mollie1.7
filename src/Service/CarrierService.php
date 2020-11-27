@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -39,8 +40,6 @@ use Carrier;
 use Configuration;
 use Context;
 use Mollie\Config\Config;
-use Order;
-use Validate;
 
 class CarrierService
 {
@@ -68,7 +67,7 @@ class CarrierService
 
         $configCarriers = [];
         foreach ($carriers as $carrier) {
-            $idCarrier = (int)$carrier['id_carrier'];
+            $idCarrier = (int) $carrier['id_carrier'];
             $configCarriers[] = [
                 'id_carrier' => $idCarrier,
                 'name' => $carrier['name'],

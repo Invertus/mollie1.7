@@ -27,24 +27,21 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Builder;
 
-use MolliePrefix\Mollie\Api\Types\OrderStatus;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
-use MolliePrefix\Mollie\Api\Types\RefundStatus;
+use AttributeCore as Attribute;
 use Configuration;
 use HelperFormCore as HelperForm;
 use ModuleCore as Module;
 use Mollie;
 use Mollie\Config\Config;
-use Mollie\Provider\CreditCardLogoProvider;
 use Mollie\Provider\CustomLogoProviderInterface;
 use Mollie\Repository\CountryRepository;
 use Mollie\Service\ApiService;
@@ -54,14 +51,16 @@ use Mollie\Service\MolCarrierInformationService;
 use Mollie\Utility\AssortUtility;
 use Mollie\Utility\EnvironmentUtility;
 use Mollie\Utility\TagsUtility;
+use MolliePrefix\Mollie\Api\Types\OrderStatus;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
+use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use OrderStateCore as OrderState;
 use Smarty;
 use ToolsCore as Tools;
-use AttributeCore as Attribute;
 
 class FormBuilder
 {
-
     const FILE_NAME = 'FormBuilder';
 
     /**
@@ -185,7 +184,7 @@ class FormBuilder
                 'type' => 'mollie-support',
                 'tab' => $generalSettings,
                 'name' => '',
-            ]
+            ],
         ];
         if ($isApiKeyProvided) {
             $input[] =
@@ -220,7 +219,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_API_KEY_TEST,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-test-api-group'
+                'form_group_class' => 'js-test-api-group',
             ];
             $input[] = [
                 'type' => 'mollie-password',
@@ -229,7 +228,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_API_KEY,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-live-api-group'
+                'form_group_class' => 'js-live-api-group',
             ];
             $input[] = [
                 'type' => 'mollie-password',
@@ -242,7 +241,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_PROFILE_ID,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-api-profile-id'
+                'form_group_class' => 'js-api-profile-id',
             ];
             $input[] = [
                 'type' => 'mollie-button',
@@ -251,7 +250,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_API_KEY_TESTING_BUTTON,
                 'text' => $this->module->l('Test ApiKey', self::FILE_NAME),
                 'class' => 'js-test-api-keys',
-                'form_group_class' => 'js-api-key-test'
+                'form_group_class' => 'js-api-key-test',
             ];
             $input[] =
                 [
@@ -315,7 +314,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_API_KEY_TEST,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-test-api-group'
+                'form_group_class' => 'js-test-api-group',
             ];
             $input[] = [
                 'type' => 'mollie-password',
@@ -324,7 +323,7 @@ class FormBuilder
                 'name' => Config::MOLLIE_API_KEY,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-live-api-group'
+                'form_group_class' => 'js-live-api-group',
             ];
         }
         if (!$isApiKeyProvided) {
@@ -363,7 +362,7 @@ class FormBuilder
             'desc' => TagsUtility::ppTags(
                 $this->module->l('Read more about [1]Single Click Payments[/1] and how it improves your conversion.', self::FILE_NAME),
                 [
-                    $this->module->display($this->module->getPathUri(), 'views/templates/admin/mollie_single_click_payment_info.tpl')
+                    $this->module->display($this->module->getPathUri(), 'views/templates/admin/mollie_single_click_payment_info.tpl'),
                 ]
             ),
             'is_bool' => true,
@@ -437,7 +436,7 @@ class FormBuilder
             'methodDescription' => TagsUtility::ppTags(
                 $this->module->l('Click [1]here[/1] to read more about the differences between the Payment and Orders API.', self::FILE_NAME),
                 [
-                    $this->module->display($this->module->getPathUri(), 'views/templates/admin/mollie_method_info.tpl')
+                    $this->module->display($this->module->getPathUri(), 'views/templates/admin/mollie_method_info.tpl'),
                 ]
             ),
             'showCustomLogo' => Configuration::get(Config::MOLLIE_SHOW_CUSTOM_LOGO),
@@ -476,7 +475,6 @@ class FormBuilder
                         'id' => Config::PAYMENTSCREEN_LOCALE_BROWSER_LOCALE,
                         'name' => $this->module->l('No, use browser\'s Locale', self::FILE_NAME),
                     ],
-
                 ],
                 'id' => 'id',
                 'name' => 'name',
@@ -545,7 +543,7 @@ class FormBuilder
         $descriptionStatus = $this->module->l('`%s` payments get status `%s`', self::FILE_NAME);
         $messageMail = $this->module->l('Send mails when %s', self::FILE_NAME);
         $descriptionMail = $this->module->l('Send mails when transaction status becomes %s?, self::FILE_NAME', self::FILE_NAME);
-        $allStatuses =  OrderState::getOrderStates($this->lang->id);
+        $allStatuses = OrderState::getOrderStates($this->lang->id);
         $allStatusesWithSkipOption = array_merge([['id_order_state' => 0, 'name' => $this->module->l('Skip this status', self::FILE_NAME), 'color' => '#565656']], $allStatuses);
 
         $statuses = [];
@@ -688,7 +686,7 @@ class FormBuilder
             'name' => Config::MOLLIE_TRACKING_URLS,
             'depends' => Config::MOLLIE_API,
             'depends_value' => Config::MOLLIE_ORDERS_API,
-            'carriers' => $this->carrierInformationService->getAllCarriersInformation($this->lang->id)
+            'carriers' => $this->carrierInformationService->getAllCarriersInformation($this->lang->id),
         ];
         $input[] = [
             'type' => 'mollie-carrier-switch',
@@ -716,8 +714,7 @@ class FormBuilder
             'type' => 'checkbox',
             'label' => $this->module->l('Automatically ship when one of these statuses is reached', self::FILE_NAME),
             'tab' => $advancedSettings,
-            'desc' =>
-                $this->module->l('If an order reaches one of these statuses the module will automatically send shipment information', self::FILE_NAME),
+            'desc' => $this->module->l('If an order reaches one of these statuses the module will automatically send shipment information', self::FILE_NAME),
             'name' => Config::MOLLIE_AUTO_SHIP_STATUSES,
             'multiple' => true,
             'values' => [
@@ -742,14 +739,14 @@ class FormBuilder
         ];
         $orderStatuses = array_merge($orderStatuses, OrderState::getOrderStates($this->lang->id));
         $orderStatusesCount = count($orderStatuses);
-        for ($i = 0; $i < $orderStatusesCount; $i++) {
+        for ($i = 0; $i < $orderStatusesCount; ++$i) {
             $orderStatuses[$i]['name'] = $orderStatuses[$i]['id_order_state'] . ' - ' . $orderStatuses[$i]['name'];
         }
 
         AssortUtility::aasort($orderStatuses, 'id_order_state');
 
         $this->smarty->assign([
-            'logs' => $this->link->getAdminLink('AdminLogs')
+            'logs' => $this->link->getAdminLink('AdminLogs'),
         ]);
         $input = array_merge(
             $input,
@@ -787,7 +784,7 @@ class FormBuilder
                     'desc' => TagsUtility::ppTags(
                         $this->module->l('Recommended level: Errors. Set to Everything to monitor incoming webhook requests. [1]View logs.[/1]', self::FILE_NAME),
                         [
-                            $this->module->display($this->module->getPathUri(), 'views/templates/admin/view_logs.tpl')
+                            $this->module->display($this->module->getPathUri(), 'views/templates/admin/view_logs.tpl'),
                         ]
                     ),
                     'name' => Config::MOLLIE_DEBUG_LOG,

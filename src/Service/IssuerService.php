@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -38,8 +39,8 @@ namespace Mollie\Service;
 use Configuration;
 use Context;
 use Mollie;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use Mollie\Repository\PaymentMethodRepository;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 
 class IssuerService
 {
@@ -71,7 +72,7 @@ class IssuerService
             $issuer['href'] = $context->link->getModuleLink(
                 $this->module->name,
                 'payment',
-                ['method' => $methodId , 'issuer' => $issuer['id'], 'rand' => time()],
+                ['method' => $methodId, 'issuer' => $issuer['id'], 'rand' => time()],
                 true
             );
             $issuerList[PaymentMethod::IDEAL][$issuer['id']] = $issuer;

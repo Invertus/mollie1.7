@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,6 +43,7 @@ class NewOrderMailValidator implements MailValidatorInterface
 {
     /**
      * @param $orderState int
+     *
      * @return bool
      */
     public function validate($orderState)
@@ -58,6 +60,7 @@ class NewOrderMailValidator implements MailValidatorInterface
 
     /**
      * @param int $orderState
+     *
      * @return bool
      */
     private function validateOrderState($orderState)
@@ -65,5 +68,4 @@ class NewOrderMailValidator implements MailValidatorInterface
         return (int) Configuration::get(Config::MOLLIE_STATUS_PAID) === $orderState ||
             (int) Configuration::get(Config::STATUS_PS_OS_OUTOFSTOCK_PAID) === $orderState;
     }
-
 }

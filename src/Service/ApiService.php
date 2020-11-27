@@ -27,28 +27,29 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use Mollie\Service\PaymentMethod\PaymentMethodSortProviderInterface;
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
-use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use Configuration;
 use Context;
 use ErrorException;
 use Exception;
-use MolliePrefix\Mollie\Api\Resources\Payment;
 use Mollie\Config\Config;
 use Mollie\Repository\CountryRepository;
 use Mollie\Repository\PaymentMethodRepository;
+use Mollie\Service\PaymentMethod\PaymentMethodSortProviderInterface;
 use Mollie\Utility\CartPriceUtility;
 use Mollie\Utility\UrlPathUtility;
+use MolliePrefix\Mollie\Api\Exceptions\ApiException;
 use MolliePrefix\Mollie\Api\MollieApiClient;
+use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
+use MolliePrefix\Mollie\Api\Resources\Payment;
 use MollieWebhookModuleFrontController;
 use MolPaymentMethod;
 use PrestaShop\PrestaShop\Adapter\CoreException;
@@ -59,7 +60,6 @@ use Tools;
 
 class ApiService
 {
-
     private $errors = [];
 
     /**
@@ -154,14 +154,14 @@ class ApiService
                     'name' => $apiMethod->description,
                     'enabled' => true,
                     'available' => !in_array($apiMethod->id, $notAvailable),
-                    'image' => (array)$apiMethod->image,
+                    'image' => (array) $apiMethod->image,
                     'issuers' => $apiMethod->issuers,
-                    'tipEnableSSL' => $tipEnableSSL
+                    'tipEnableSSL' => $tipEnableSSL,
                 ];
             }
         }
         $availableApiMethods = array_column(array_map(function ($apiMethod) {
-            return (array)$apiMethod;
+            return (array) $apiMethod;
         }, $apiMethods), 'id');
         if (in_array('creditcard', $availableApiMethods)) {
             foreach ([Config::CARTES_BANCAIRES => 'Cartes Bancaires'] as $id => $name) {
@@ -232,7 +232,7 @@ class ApiService
         }
 
         $availableApiMethods = array_column(array_map(function ($apiMethod) {
-            return (array)$apiMethod;
+            return (array) $apiMethod;
         }, $apiMethods), 'id');
         if (in_array('creditcard', $availableApiMethods)) {
             foreach ([Config::CARTES_BANCAIRES => 'Cartes Bancaires'] as $value => $apiMethod) {
@@ -280,6 +280,7 @@ class ApiService
      * @throws PrestaShopException
      * @throws CoreException
      * @throws SmartyException
+     *
      * @since 3.3.0
      * @since 3.3.2 $process option
      */
@@ -299,16 +300,16 @@ class ApiService
             }
             $refunds = array_map(function ($refund) {
                 return array_intersect_key(
-                    (array)$refund,
+                    (array) $refund,
                     array_flip([
                         'resource',
                         'id',
                         'amount',
                         'createdAt',
                     ]));
-            }, (array)$refunds);
+            }, (array) $refunds);
             $payment = array_intersect_key(
-                (array)$payment,
+                (array) $payment,
                 array_flip([
                     'resource',
                     'id',
@@ -329,7 +330,7 @@ class ApiService
                     'isCancelable',
                 ])
             );
-            $payment['refunds'] = (array)$refunds;
+            $payment['refunds'] = (array) $refunds;
         } else {
             $payment = null;
         }
@@ -340,10 +341,12 @@ class ApiService
     /**
      * @param $api
      * @param string $transactionId
+     *
      * @return array|null
      *
      * @throws ErrorException
      * @throws ApiException
+     *
      * @since 3.3.0
      * @since 3.3.2 $process option
      */
@@ -354,10 +357,9 @@ class ApiService
             $transactionId,
             [
                 'embed' => 'payments',
-                'include' =>
-                    [
-                        'details' => 'remainderDetails'
-                    ]
+                'include' => [
+                        'details' => 'remainderDetails',
+                    ],
             ]
         );
 
@@ -368,16 +370,16 @@ class ApiService
             }
             $refunds = array_map(function ($refund) {
                 return array_intersect_key(
-                    (array)$refund,
+                    (array) $refund,
                     array_flip([
                         'resource',
                         'id',
                         'amount',
                         'createdAt',
                     ]));
-            }, (array)$refunds);
+            }, (array) $refunds);
             $order = array_intersect_key(
-                (array)$mollieOrder,
+                (array) $mollieOrder,
                 array_flip([
                     'resource',
                     'id',
@@ -393,7 +395,7 @@ class ApiService
                     'lines',
                 ])
             );
-            $order['refunds'] = (array)$refunds;
+            $order['refunds'] = (array) $refunds;
         } else {
             $order = null;
         }
@@ -402,7 +404,7 @@ class ApiService
         foreach ($mollieOrder->payments() as $payment) {
             $amountRemaining = [
                 'value' => '0.00',
-                'currency' => $payment->amount->currency
+                'currency' => $payment->amount->currency,
             ];
             $order['availableRefundAmount'] = $payment->amountRemaining ?: $amountRemaining;
             $order['details'] = $payment->details ?: new \stdClass();
@@ -410,7 +412,6 @@ class ApiService
 
         return $order;
     }
-
 
     /**
      * Get the selected API
@@ -435,5 +436,4 @@ class ApiService
 
         return $selectedApi;
     }
-
 }

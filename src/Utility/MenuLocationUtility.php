@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -53,6 +54,7 @@ class MenuLocationUtility
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
+     *
      * @since 3.3.2
      */
     public static function getMenuLocation($class, $idLang = null)
@@ -75,6 +77,7 @@ class MenuLocationUtility
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
+     *
      * @since 3.3.2
      */
     public static function getTabTreeByClass($class)
@@ -83,7 +86,7 @@ class MenuLocationUtility
         $depth = 10;
         $tab = Tab::getInstanceFromClassName($class);
         while (Validate::isLoadedObject($tab) && $depth > 0) {
-            $depth--;
+            --$depth;
             $tabs[] = $tab;
             $tab = new Tab($tab->id_parent);
         }

@@ -27,23 +27,21 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use Configuration;
-use Feature;
 use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Config\Config;
 use Mollie\Repository\AttributeRepository;
 
 class VoucherService
 {
-
     /**
      * @var AttributeRepository
      */
@@ -72,6 +70,7 @@ class VoucherService
                 if ($productCategory) {
                     return $productCategory;
                 }
+
                 return $selectedVoucherCategory;
             case Config::MOLLIE_VOUCHER_CATEGORY_NULL:
             default:
@@ -81,8 +80,7 @@ class VoucherService
 
     public function getProductCategory(array $cartItem)
     {
-        if (!isset($cartItem['features']))
-        {
+        if (!isset($cartItem['features'])) {
             return '';
         }
         $idFeatureValue = false;
@@ -102,7 +100,7 @@ class VoucherService
 
     private function isVoucherFeature($featureId)
     {
-        return (int)$this->configuration->get(Config::MOLLIE_VOUCHER_FEATURE_ID) === (int)$featureId;
+        return (int) $this->configuration->get(Config::MOLLIE_VOUCHER_FEATURE_ID) === (int) $featureId;
     }
 
     private function getVoucherCategoryByFeatureValueId($idFeatureValue)

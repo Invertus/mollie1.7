@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -75,7 +76,6 @@ class PaymentReturnService
      * @var RepeatOrderLinkFactory
      */
     private $orderLinkFactory;
-
 
     public function __construct(
         Mollie $module,
@@ -136,8 +136,7 @@ class PaymentReturnService
 
     public function handleFailedStatus(Order $order, $transaction, $orderStatus, $paymentMethod)
     {
-        if(null !== $paymentMethod) {
-
+        if (null !== $paymentMethod) {
             $this->cartDuplicationService->restoreCart($order->id_cart);
 
             $warning[] = $this->module->l('Your payment was not successful, please try again.', self::FILE_NAME);
@@ -154,7 +153,7 @@ class PaymentReturnService
             'success' => true,
             'status' => static::DONE,
             'response' => json_encode($transaction),
-            'href' => $orderLink
+            'href' => $orderLink,
         ];
     }
 
@@ -165,11 +164,11 @@ class PaymentReturnService
             true,
             null,
             [
-                'id_cart' => (int)$cartId,
-                'id_module' => (int)$this->module->id,
-                'id_order' => (int)version_compare(_PS_VERSION_, '1.7.1.0', '>=')
-                    ? Order::getIdByCartId((int)$cartId)
-                    : Order::getOrderByCartId((int)$cartId),
+                'id_cart' => (int) $cartId,
+                'id_module' => (int) $this->module->id,
+                'id_order' => (int) version_compare(_PS_VERSION_, '1.7.1.0', '>=')
+                    ? Order::getIdByCartId((int) $cartId)
+                    : Order::getOrderByCartId((int) $cartId),
                 'key' => $cartSecureKey,
             ]
         );
@@ -178,7 +177,7 @@ class PaymentReturnService
             'success' => true,
             'status' => $status,
             'response' => json_encode($transaction),
-            'href' => $successUrl
+            'href' => $successUrl,
         ];
     }
 
@@ -187,7 +186,7 @@ class PaymentReturnService
         /** @var OrderStatusService $orderStatusService */
         $orderStatusService = $this->module->getContainer(OrderStatusService::class);
 
-        $orderStatusId = (int)Mollie\Config\Config::getStatuses()[$orderStatus];
+        $orderStatusId = (int) Mollie\Config\Config::getStatuses()[$orderStatus];
         $this->paymentMethodRepository->savePaymentStatus($transactionId, $orderStatus, $orderId, $paymentMethod);
 
         $order = new Order($orderId);

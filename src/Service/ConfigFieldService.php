@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -136,12 +137,11 @@ class ConfigFieldService
         }
 
         foreach ($checkConfs as $conf) {
-            $checkStatuses[Config::MOLLIE_AUTO_SHIP_STATUSES . '_' . (int)$conf] = true;
+            $checkStatuses[Config::MOLLIE_AUTO_SHIP_STATUSES . '_' . (int) $conf] = true;
         }
 
         $configFields = array_merge($configFields, $checkStatuses);
 
         return $configFields;
     }
-
 }

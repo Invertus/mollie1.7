@@ -27,23 +27,24 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Service\MemorizeCartService;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Mollie\Controller\AbstractMollieController;
 use Mollie\Factory\CustomerFactory;
 use Mollie\Repository\PaymentMethodRepository;
+use Mollie\Service\MemorizeCartService;
+use Mollie\Service\PaymentReturnService;
 use Mollie\Service\RestorePendingCartService;
+use Mollie\Utility\ArrayUtility;
 use Mollie\Utility\PaymentMethodUtility;
 use Mollie\Utility\TransactionUtility;
-use Mollie\Utility\ArrayUtility;
-use Mollie\Service\PaymentReturnService;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use PrestaShop\PrestaShop\Adapter\CoreException;
 
 if (!defined('_PS_VERSION_')) {
@@ -59,7 +60,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
     const FILE_NAME = 'return';
 
-    /** @var bool $ssl */
+    /** @var bool */
     public $ssl = true;
 
     /**
@@ -73,7 +74,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
         /** @var Context $context */
         $context = Context::getContext();
         /** @var Cart $cart */
-        $cart = new Cart((int)$this->context->cookie->__get('id_cart'));
+        $cart = new Cart((int) $this->context->cookie->__get('id_cart'));
         if (Validate::isLoadedObject($cart) && !$cart->orderExists()) {
             unset($context->cart);
             unset($context->cookie->id_cart);
@@ -110,13 +111,13 @@ class MollieReturnModuleFrontController extends AbstractMollieController
         /** @var PaymentMethodRepository $paymentMethodRepo */
         $paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
         if (Tools::getIsset('cart_id')) {
-            $idCart = (int)Tools::getValue('cart_id');
+            $idCart = (int) Tools::getValue('cart_id');
 
             // Check if user that's seeing this is the cart-owner
             $cart = new Cart($idCart);
-            $data['auth'] = (int)$cart->id_customer === $this->context->customer->id;
+            $data['auth'] = (int) $cart->id_customer === $this->context->customer->id;
             if ($data['auth']) {
-                $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('cart_id', (int)$idCart);
+                $data['mollie_info'] = $paymentMethodRepo->getPaymentBy('cart_id', (int) $idCart);
             }
         }
 
@@ -154,7 +155,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
                         'action' => 'getStatus',
                         'transaction_id' => $data['mollie_info']['transaction_id'],
                         'key' => $this->context->customer->secure_key,
-                        'customerId' => $this->context->customer->id
+                        'customerId' => $this->context->customer->id,
                     ],
                     true
                 )
@@ -223,8 +224,8 @@ class MollieReturnModuleFrontController extends AbstractMollieController
                 'success' => false,
             ]));
         }
-        $orderId = Order::getOrderByCartId((int)$cart->id);
-        $order = new Order((int)$orderId);
+        $orderId = Order::getOrderByCartId((int) $cart->id);
+        $order = new Order((int) $orderId);
 
         if (!Validate::isLoadedObject($cart)) {
             die(json_encode([
@@ -232,7 +233,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
             ]));
         }
 
-        if ((int)$cart->id_customer !== (int)$this->context->customer->id) {
+        if ((int) $cart->id_customer !== (int) $this->context->customer->id) {
             die(json_encode([
                 'success' => false,
             ]));
@@ -251,7 +252,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
         $orderStatus = $transaction->status;
 
-        if ($transaction->resource === "order") {
+        if ($transaction->resource === 'order') {
             $payments = ArrayUtility::getLastElement($transaction->_embedded->payments);
             $orderStatus = $payments->status;
         }

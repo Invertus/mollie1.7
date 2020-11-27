@@ -27,19 +27,20 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
+use Mollie;
+use Mollie\Utility\EnvironmentUtility;
 use MolliePrefix\Mollie\Api\Exceptions\ApiException;
 use MolliePrefix\Mollie\Api\Resources\Order;
-use Mollie;
 use MolliePrefix\Mollie\Api\Resources\Payment;
-use Mollie\Utility\EnvironmentUtility;
 use MollieWebhookModuleFrontController;
 use PrestaShop\PrestaShop\Adapter\CoreException;
 use PrestaShopDatabaseException;
@@ -69,6 +70,7 @@ class CancelService
      * @throws PrestaShopException
      * @throws CoreException
      * @throws SmartyException
+     *
      * @since 3.3.0
      */
     public function doCancelOrderLines($transactionId, $lines = [])
@@ -110,5 +112,4 @@ class CancelService
             'detailed' => '',
         ];
     }
-
 }

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -53,7 +54,6 @@ use Validate;
 
 class ShipmentService
 {
-
     /**
      * @var OrderShipmentRepository
      */
@@ -81,6 +81,7 @@ class ShipmentService
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
+     *
      * @since 3.3.0
      */
     public function getShipmentInformation($orderReference)
@@ -195,5 +196,4 @@ class ShipmentService
 
         return [];
     }
-
 }

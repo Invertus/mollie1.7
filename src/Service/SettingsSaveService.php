@@ -27,16 +27,15 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Carrier;
 use Configuration;
 use Context;
@@ -44,9 +43,11 @@ use Exception;
 use Mollie;
 use Mollie\Config\Config;
 use Mollie\Exception\MollieException;
+use Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface;
 use Mollie\Repository\CountryRepository;
 use Mollie\Repository\PaymentMethodRepository;
-use Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface;
+use MolliePrefix\Mollie\Api\Exceptions\ApiException;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolPaymentMethodIssuer;
 use OrderState;
 use PrestaShopDatabaseException;
@@ -55,7 +56,6 @@ use Tools;
 
 class SettingsSaveService
 {
-
     /**
      * @var Mollie
      */
@@ -107,6 +107,7 @@ class SettingsSaveService
      * @param array $errors
      *
      * @return string
+     *
      * @throws ApiException
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -120,11 +121,11 @@ class SettingsSaveService
         $mollieProfileId = Tools::getValue(Config::MOLLIE_PROFILE_ID);
         $paymentOptionPositions = Tools::getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
 
-        if ($paymentOptionPositions){
+        if ($paymentOptionPositions) {
             $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
         }
 
-        $apiKey = (int)$environment === Config::ENVIRONMENT_LIVE ? $mollieApiKey : $mollieApiKeyTest;
+        $apiKey = (int) $environment === Config::ENVIRONMENT_LIVE ? $mollieApiKey : $mollieApiKeyTest;
         $isApiKeyIncorrect = strpos($apiKey, 'live') !== 0 && strpos($apiKey, 'test') !== 0;
 
         if ($isApiKeyIncorrect) {
@@ -192,9 +193,9 @@ class SettingsSaveService
         }
         $mollieLogger = Tools::getValue(Config::MOLLIE_DEBUG_LOG);
         $mollieApi = Tools::getValue(Config::MOLLIE_API);
-        $mollieQrEnabled = (bool)Tools::getValue(Config::MOLLIE_QRENABLED);
-        $mollieMethodCountriesEnabled = (bool)Tools::getValue(Config::MOLLIE_METHOD_COUNTRIES);
-        $mollieMethodCountriesDisplayEnabled = (bool)Tools::getValue(Config::MOLLIE_METHOD_COUNTRIES_DISPLAY);
+        $mollieQrEnabled = (bool) Tools::getValue(Config::MOLLIE_QRENABLED);
+        $mollieMethodCountriesEnabled = (bool) Tools::getValue(Config::MOLLIE_METHOD_COUNTRIES);
+        $mollieMethodCountriesDisplayEnabled = (bool) Tools::getValue(Config::MOLLIE_METHOD_COUNTRIES_DISPLAY);
         $mollieErrors = Tools::getValue(Config::MOLLIE_DISPLAY_ERRORS);
         $voucherCategory = Tools::getValue(Config::MOLLIE_VOUCHER_CATEGORY);
 
@@ -205,7 +206,7 @@ class SettingsSaveService
             $mollieErrors = ($mollieErrors == 1);
         }
 
-        $apiKey = (int)$environment === Config::ENVIRONMENT_LIVE ?
+        $apiKey = (int) $environment === Config::ENVIRONMENT_LIVE ?
             $mollieApiKey : $mollieApiKeyTest;
 
         if ($apiKey) {
@@ -218,6 +219,7 @@ class SettingsSaveService
             } catch (Exception $e) {
                 $errors[] = $e->getMessage();
                 Configuration::updateValue(Config::MOLLIE_API_KEY, null);
+
                 return $this->module->l('Wrong API Key!');
             }
         }
@@ -234,19 +236,19 @@ class SettingsSaveService
             Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $mollieSingleClickPaymentEnabled);
             Configuration::updateValue(Config::MOLLIE_IMAGES, $mollieImages);
             Configuration::updateValue(Config::MOLLIE_ISSUERS, $mollieIssuers);
-            Configuration::updateValue(Config::MOLLIE_QRENABLED, (bool)$mollieQrEnabled);
-            Configuration::updateValue(Config::MOLLIE_METHOD_COUNTRIES, (bool)$mollieMethodCountriesEnabled);
-            Configuration::updateValue(Config::MOLLIE_METHOD_COUNTRIES_DISPLAY, (bool)$mollieMethodCountriesDisplayEnabled);
+            Configuration::updateValue(Config::MOLLIE_QRENABLED, (bool) $mollieQrEnabled);
+            Configuration::updateValue(Config::MOLLIE_METHOD_COUNTRIES, (bool) $mollieMethodCountriesEnabled);
+            Configuration::updateValue(Config::MOLLIE_METHOD_COUNTRIES_DISPLAY, (bool) $mollieMethodCountriesDisplayEnabled);
             Configuration::updateValue(Config::MOLLIE_CSS, $mollieCss);
-            Configuration::updateValue(Config::MOLLIE_DISPLAY_ERRORS, (int)$mollieErrors);
-            Configuration::updateValue(Config::MOLLIE_DEBUG_LOG, (int)$mollieLogger);
+            Configuration::updateValue(Config::MOLLIE_DISPLAY_ERRORS, (int) $mollieErrors);
+            Configuration::updateValue(Config::MOLLIE_DEBUG_LOG, (int) $mollieLogger);
             Configuration::updateValue(Config::MOLLIE_API, $mollieApi);
             Configuration::updateValue(Config::MOLLIE_VOUCHER_CATEGORY, $voucherCategory);
             Configuration::updateValue(
                 Config::MOLLIE_AUTO_SHIP_STATUSES,
                 json_encode($this->getStatusesValue(Config::MOLLIE_AUTO_SHIP_STATUSES))
             );
-            Configuration::updateValue(Config::MOLLIE_AUTO_SHIP_MAIN, (bool)$mollieShipMain);
+            Configuration::updateValue(Config::MOLLIE_AUTO_SHIP_MAIN, (bool) $mollieShipMain);
             Configuration::updateValue(
                 Config::MOLLIE_TRACKING_URLS,
                 json_encode(@json_decode(Tools::getValue(Config::MOLLIE_TRACKING_URLS)))
@@ -270,7 +272,7 @@ class SettingsSaveService
                 if (Tools::getValue("MOLLIE_STATUS_{$name}") === false) {
                     continue;
                 }
-                $new = (int)Tools::getValue("MOLLIE_STATUS_{$name}");
+                $new = (int) Tools::getValue("MOLLIE_STATUS_{$name}");
                 Configuration::updateValue("MOLLIE_STATUS_{$name}", $new);
                 Config::getStatuses()[Tools::strtolower($name)] = $new;
 

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -101,6 +102,7 @@ class Installer implements InstallerInterface
             $this->createMollieStatuses();
         } catch (Exception $e) {
             $this->errors[] = $this->module->l('Unable to install Mollie statuses', self::FILE_NAME);
+
             return false;
         }
 
@@ -108,12 +110,14 @@ class Installer implements InstallerInterface
             $this->initConfig();
         } catch (Exception $e) {
             $this->errors[] = $this->module->l('Unable to install config', self::FILE_NAME);
+
             return false;
         }
         try {
             $this->setDefaultCarrierStatuses();
         } catch (Exception $e) {
             $this->errors[] = $this->module->l('Unable to install default carrier statuses', self::FILE_NAME);
+
             return false;
         }
 
@@ -122,6 +126,7 @@ class Installer implements InstallerInterface
             $this->installTab('AdminMollieModule', 'IMPROVE', 'Mollie', true, 'mollie');
         } catch (Exception $e) {
             $this->errors[] = $this->module->l('Unable to install new controllers', self::FILE_NAME);
+
             return false;
         }
 
@@ -129,6 +134,7 @@ class Installer implements InstallerInterface
             $this->installVoucherFeatures();
         } catch (Exception $e) {
             $this->errors[] = $this->module->l('Unable to install voucher attributes', self::FILE_NAME);
+
             return false;
         }
 
@@ -165,12 +171,13 @@ class Installer implements InstallerInterface
     /**
      * Create new order state for partial refunds.
      *
-     * @return boolean
+     * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      * @throws Adapter_Exception
-     * @since 2.0.0
      *
+     * @since 2.0.0
      */
     private function createPartialRefundOrderState()
     {
@@ -186,15 +193,16 @@ class Installer implements InstallerInterface
         if ($orderState->add()) {
             $this->imageService->createOrderStateLogo($orderState->id);
         }
-        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_PARTIAL_REFUND, (int)$orderState->id);
-
+        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_PARTIAL_REFUND, (int) $orderState->id);
 
         return true;
     }
 
     /**
      * @param $languageId
+     *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -213,7 +221,7 @@ class Installer implements InstallerInterface
         if ($orderState->add()) {
             $this->imageService->createOrderStateLogo($orderState->id);
         }
-        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_PARTIALLY_SHIPPED, (int)$orderState->id);
+        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_PARTIALLY_SHIPPED, (int) $orderState->id);
 
         return true;
     }
@@ -226,20 +234,21 @@ class Installer implements InstallerInterface
         if (!$this->createAwaitingMollieOrderState()) {
             return false;
         }
-        if(!$this->createPartialShippedOrderState()) {
+        if (!$this->createPartialShippedOrderState()) {
             return false;
         }
-        if(!$this->createOrderCompletedOrderState()) {
+        if (!$this->createOrderCompletedOrderState()) {
             return false;
         }
 
         return true;
-
     }
 
     /**
      * @param $languageId
+     *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -258,14 +267,16 @@ class Installer implements InstallerInterface
         if ($orderState->add()) {
             $this->imageService->createOrderStateLogo($orderState->id);
         }
-        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_AWAITING, (int)$orderState->id);
+        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_AWAITING, (int) $orderState->id);
 
         return true;
     }
 
     /**
      * @param $languageId
+     *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -284,14 +295,13 @@ class Installer implements InstallerInterface
         if ($orderState->add()) {
             $this->imageService->createOrderStateLogo($orderState->id);
         }
-        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_ORDER_COMPLETED, (int)$orderState->id);
+        Configuration::updateValue(Mollie\Config\Config::MOLLIE_STATUS_ORDER_COMPLETED, (int) $orderState->id);
 
         return true;
     }
 
     /**
      * @return void
-     *
      */
     protected function initConfig()
     {
@@ -335,9 +345,6 @@ class Installer implements InstallerInterface
         Configuration::updateValue(Mollie\Config\Config::MOLLIE_API, Mollie\Config\Config::MOLLIE_ORDERS_API);
     }
 
-    /***
-     *
-     */
     public function setDefaultCarrierStatuses()
     {
         $sql = new DbQuery();
@@ -353,8 +360,8 @@ class Installer implements InstallerInterface
         Configuration::updateValue(Mollie\Config\Config::MOLLIE_AUTO_SHIP_STATUSES, json_encode($defaultStatuses));
     }
 
-    public function installTab($className, $parent, $name, $active = true, $icon = '') {
-
+    public function installTab($className, $parent, $name, $active = true, $icon = '')
+    {
         $idParent = is_int($parent) ? $parent : Tab::getIdFromClassName($parent);
 
         $moduleTab = new Tab();
@@ -381,6 +388,7 @@ class Installer implements InstallerInterface
      * Collects error messages if email templates copy process is unsuccessful
      *
      * @param Module $module Module object
+     *
      * @return bool Email templates copied successfully or not
      */
     public function copyEmailTemplates()
@@ -392,17 +400,17 @@ class Installer implements InstallerInterface
                 continue;
             }
 
-            if (file_exists($this->module->getLocalPath() . 'mails/'.$language['iso_code'])) {
+            if (file_exists($this->module->getLocalPath() . 'mails/' . $language['iso_code'])) {
                 continue;
             }
 
             try {
                 Tools::recurseCopy(
-                    $this->module->getLocalPath() . 'mails/'.Config::DEFAULT_EMAIL_LANGUAGE_ISO_CODE,
-                    $this->module->getLocalPath() . 'mails/'.$language['iso_code']
+                    $this->module->getLocalPath() . 'mails/' . Config::DEFAULT_EMAIL_LANGUAGE_ISO_CODE,
+                    $this->module->getLocalPath() . 'mails/' . $language['iso_code']
                 );
             } catch (PrestaShopException $e) {
-                $this->errors[] = $this->module->l('Could not copy email templates:', self::FILE_NAME).' '.$e->getMessage();
+                $this->errors[] = $this->module->l('Could not copy email templates:', self::FILE_NAME) . ' ' . $e->getMessage();
 
                 return false;
             }
@@ -417,7 +425,7 @@ class Installer implements InstallerInterface
         if ($mollieVoucherId) {
             $mollieFeature = new Feature($mollieVoucherId);
             $doesFeatureExist = Validate::isLoadedObject($mollieFeature);
-            if($doesFeatureExist) {
+            if ($doesFeatureExist) {
                 return;
             }
         }

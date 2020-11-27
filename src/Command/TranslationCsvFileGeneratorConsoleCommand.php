@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,7 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TranslationCsvFileGeneratorConsoleCommand extends Command
 {
-
     /**
      * @var Mollie
      */
@@ -73,12 +73,12 @@ class TranslationCsvFileGeneratorConsoleCommand extends Command
             'DE',
             'FR',
         ];
-        $translations = $GLOBALS["_MODULE"];
+        $translations = $GLOBALS['_MODULE'];
         try {
             $fp = fopen('translation.csv', 'w');
             fputcsv($fp, $csvHeader);
             foreach ($translations as $id => $text) {
-                $field = array_map("utf8_decode", [$id, $text]);
+                $field = array_map('utf8_decode', [$id, $text]);
                 fputcsv($fp, $field);
             }
             fclose($fp);

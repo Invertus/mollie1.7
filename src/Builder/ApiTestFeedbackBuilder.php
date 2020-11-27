@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -107,13 +108,14 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 
         return [
             'testKeyInfo' => $testKeyInfo,
-            'liveKeyInfo' => $liveKeyInfo
+            'liveKeyInfo' => $liveKeyInfo,
         ];
     }
 
     /**
      * @param $testKey string
      * @param $liveKey string
+     *
      * @return array
      */
     public function getApiKeysTestResult($testKey, $liveKey)
@@ -123,39 +125,41 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 
         return  [
             'testKeyInfo' => $testKeyInfo,
-            'liveKeyInfo' => $liveKeyInfo
+            'liveKeyInfo' => $liveKeyInfo,
         ];
     }
 
     /**
      * @param $apiKey string
+     *
      * @return array
      */
     public function getApiKeyInfo($apiKey)
     {
         if (!$apiKey) {
             return [
-                'status' => false
+                'status' => false,
             ];
         }
         $api = $this->apiService->setApiKey($apiKey, $this->moduleVersion);
         if (!$api) {
             return [
-                'status' => false
+                'status' => false,
             ];
         }
-        /** @var  $methods */
+        /** @var $methods */
         $methods = $api->methods->allAvailable();
         $methodsASArray = $methods->getArrayCopy();
 
         return [
             'status' => true,
-            'methods' => $this->getPaymentMethodsAsArray($methodsASArray)
+            'methods' => $this->getPaymentMethodsAsArray($methodsASArray),
         ];
     }
 
     /**
      * @param $methods
+     *
      * @return array
      */
     private function getPaymentMethodsAsArray($methods)

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  */
 
 namespace Mollie\Service;
@@ -55,14 +56,10 @@ class ExceptionService
     public function getErrorMessages()
     {
         return [
-            OrderCreationException::class =>
-                [
-                    OrderCreationException::DEFAULT_ORDER_CREATION_EXCEPTION =>
-                        $this->module->l('An error occurred while initializing your payment. Please contact our customer support.', self::SHORT_CLASS_NAME),
-                    OrderCreationException::WRONG_BILLING_PHONE_NUMBER_EXCEPTION =>
-                        $this->module->l('It looks like you have entered incorrect phone number format in billing address step. Please change the number and try again.', self::SHORT_CLASS_NAME),
-                    OrderCreationException::WRONG_SHIPPING_PHONE_NUMBER_EXCEPTION =>
-                        $this->module->l('It looks like you have entered incorrect phone number format in shipping address step. Please change the number and try again.', self::SHORT_CLASS_NAME),
+            OrderCreationException::class => [
+                    OrderCreationException::DEFAULT_ORDER_CREATION_EXCEPTION => $this->module->l('An error occurred while initializing your payment. Please contact our customer support.', self::SHORT_CLASS_NAME),
+                    OrderCreationException::WRONG_BILLING_PHONE_NUMBER_EXCEPTION => $this->module->l('It looks like you have entered incorrect phone number format in billing address step. Please change the number and try again.', self::SHORT_CLASS_NAME),
+                    OrderCreationException::WRONG_SHIPPING_PHONE_NUMBER_EXCEPTION => $this->module->l('It looks like you have entered incorrect phone number format in shipping address step. Please change the number and try again.', self::SHORT_CLASS_NAME),
                 ],
         ];
     }

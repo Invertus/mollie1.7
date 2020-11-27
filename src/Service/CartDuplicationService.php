@@ -27,24 +27,20 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  */
 
 namespace Mollie\Service;
 
 use Cart;
-use CartRule;
 use Context;
-use Db;
-use Order;
 
 class CartDuplicationService
 {
     /**
-     *
-     *
      * @param int $cartId
      *
      * @return int

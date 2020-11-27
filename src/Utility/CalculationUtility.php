@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -41,6 +42,7 @@ class CalculationUtility
      * @param $productPrice
      * @param $shippingPrice
      * @param $wrappingPrice
+     *
      * @return float
      */
     public static function getCartRemainingPrice($productPrice, $shippingPrice, $wrappingPrice)
@@ -55,6 +57,7 @@ class CalculationUtility
     /**
      * @param $unitPrice
      * @param $targetVat
+     *
      * @return float
      */
     public static function getUnitPriceNoTax($unitPrice, $targetVat)

@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -66,7 +67,7 @@ class MemorizeCartService
     {
         /** @var MolPendingOrderCart|null $pendingOrderCart */
         $pendingOrderCart = $this->pendingOrderCartRepository->findOneBy([
-            'order_id' => $successfulProcessedOrder->id
+            'order_id' => $successfulProcessedOrder->id,
         ]);
 
         if (null === $pendingOrderCart) {

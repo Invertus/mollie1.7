@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  */
 
 namespace Mollie\DTO;
@@ -114,6 +115,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $type
+     *
      * @return Line
      */
     public function setType($type)
@@ -133,6 +135,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $sku
+     *
      * @return Line
      */
     public function setSku($sku)
@@ -152,6 +155,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $name
+     *
      * @return Line
      */
     public function setName($name)
@@ -171,6 +175,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $productUrl
+     *
      * @return Line
      */
     public function setProductUrl($productUrl)
@@ -190,6 +195,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $imageUrl
+     *
      * @return Line
      */
     public function setImageUrl($imageUrl)
@@ -209,6 +215,7 @@ class Line implements JsonSerializable
 
     /**
      * @param array $metaData
+     *
      * @return Line
      */
     public function setMetaData($metaData)
@@ -228,6 +235,7 @@ class Line implements JsonSerializable
 
     /**
      * @param int $quantity
+     *
      * @return Line
      */
     public function setQuantity($quantity)
@@ -247,6 +255,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $vatRate
+     *
      * @return Line
      */
     public function setVatRate($vatRate)
@@ -266,6 +275,7 @@ class Line implements JsonSerializable
 
     /**
      * @param Amount $unitPrice
+     *
      * @return Line
      */
     public function setUnitPrice($unitPrice)
@@ -285,6 +295,7 @@ class Line implements JsonSerializable
 
     /**
      * @param Amount $totalPrice
+     *
      * @return Line
      */
     public function setTotalPrice($totalPrice)
@@ -304,6 +315,7 @@ class Line implements JsonSerializable
 
     /**
      * @param Amount $discountAmount
+     *
      * @return Line
      */
     public function setDiscountAmount($discountAmount)
@@ -323,6 +335,7 @@ class Line implements JsonSerializable
 
     /**
      * @param Amount $vatAmount
+     *
      * @return Line
      */
     public function setVatAmount($vatAmount)
@@ -342,6 +355,7 @@ class Line implements JsonSerializable
 
     /**
      * @param string $category
+     *
      * @return Line
      */
     public function setCategory($category)
@@ -354,33 +368,33 @@ class Line implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            "sku" => $this->getSku(),
-            "name" => $this->getName(),
-            "productUrl" => $this->getProductUrl(),
-            "imageUrl" => $this->getImageUrl(),
-            "metadata" => $this->getMetaData(),
-            "quantity" => $this->getQuantity(),
-            "vatRate" => $this->getVatRate(),
-            "category" => $this->getCategory(),
-            "unitPrice" => [
-                "currency" => $this->getUnitPrice()->getCurrency(),
-                "value" => $this->getUnitPrice()->getValue()
+            'sku' => $this->getSku(),
+            'name' => $this->getName(),
+            'productUrl' => $this->getProductUrl(),
+            'imageUrl' => $this->getImageUrl(),
+            'metadata' => $this->getMetaData(),
+            'quantity' => $this->getQuantity(),
+            'vatRate' => $this->getVatRate(),
+            'category' => $this->getCategory(),
+            'unitPrice' => [
+                'currency' => $this->getUnitPrice()->getCurrency(),
+                'value' => $this->getUnitPrice()->getValue(),
             ],
-            "totalAmount" => [
-                "currency" => $this->getTotalPrice()->getCurrency(),
-                "value" => $this->getTotalPrice()->getValue()
+            'totalAmount' => [
+                'currency' => $this->getTotalPrice()->getCurrency(),
+                'value' => $this->getTotalPrice()->getValue(),
             ],
-            "discountAmount" => $this->getDiscountAmount() ?
+            'discountAmount' => $this->getDiscountAmount() ?
                 [
-                    "currency" => $this->getDiscountAmount()->getCurrency(),
-                    "value" => $this->getDiscountAmount()->getValue()
+                    'currency' => $this->getDiscountAmount()->getCurrency(),
+                    'value' => $this->getDiscountAmount()->getValue(),
                 ]
                 :
                 [],
-            "vatAmount" => [
-                "currency" => $this->getVatAmount()->getCurrency(),
-                "value" => $this->getVatAmount()->getValue()
-            ]
+            'vatAmount' => [
+                'currency' => $this->getVatAmount()->getCurrency(),
+                'value' => $this->getVatAmount()->getValue(),
+            ],
         ];
     }
 }

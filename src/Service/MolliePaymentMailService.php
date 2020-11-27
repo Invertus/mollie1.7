@@ -27,30 +27,29 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\MollieApiClient;
-use MolliePrefix\Mollie\Api\Resources\Payment;
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Cart;
 use Context;
 use Customer;
-use Mail;
 use Mollie;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Utility\EnvironmentUtility;
 use Mollie\Utility\TransactionUtility;
+use MolliePrefix\Mollie\Api\MollieApiClient;
+use MolliePrefix\Mollie\Api\Resources\Payment;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use Order;
 
 class MolliePaymentMailService
 {
-
     /**
      * @var PaymentMethodRepository
      */
@@ -86,7 +85,7 @@ class MolliePaymentMailService
 
         $response = [
             'success' => false,
-            'message' => $this->module->l('Failed to created second chance email!')
+            'message' => $this->module->l('Failed to created second chance email!'),
         ];
 
         $transactionId = $payment['transaction_id'];
@@ -115,7 +114,7 @@ class MolliePaymentMailService
             return
                 [
                     'success' => false,
-                    'message' => $this->module->l('Failed to send second chance email! Order is already paid!')
+                    'message' => $this->module->l('Failed to send second chance email! Order is already paid!'),
                 ];
         }
 
@@ -126,7 +125,6 @@ class MolliePaymentMailService
             /** @var Payment $newPayment */
             $newPayment = $api->orders->get($transactionId)->createPayment(
                 [
-
                 ]
             );
             $checkoutUrl = $newPayment->getCheckoutUrl();
@@ -135,7 +133,7 @@ class MolliePaymentMailService
         return [
             'success' => true,
             'message' => $this->module->l('Second chance email was successfully send!'),
-            'checkoutUrl' => $checkoutUrl
+            'checkoutUrl' => $checkoutUrl,
         ];
     }
 
@@ -148,8 +146,7 @@ class MolliePaymentMailService
             return
                 [
                     'success' => false,
-                    'message' =>
-                        $this->module->l('Failed to send second chance email! Order is already paid or expired!')
+                    'message' => $this->module->l('Failed to send second chance email! Order is already paid or expired!'),
                 ];
         }
 
@@ -159,7 +156,7 @@ class MolliePaymentMailService
             return [
                 'success' => true,
                 'message' => $this->module->l('Second chance email was successfully send!'),
-                'checkoutUrl' => $checkoutUrl
+                'checkoutUrl' => $checkoutUrl,
             ];
         }
 
@@ -178,16 +175,15 @@ class MolliePaymentMailService
                     'utm_nooverride' => 1,
                     'rand' => time(),
                     'key' => $customer->secure_key,
-                    'customerId' => $customer->id
+                    'customerId' => $customer->id,
                 ],
                 true
-
             ),
             'description' => $paymentApi->description,
             'metadata' => [
                 'cart_id' => $paymentApi->metadata->cart_id,
                 'order_reference' => $paymentApi->metadata->order_reference,
-                'secure_key' => $paymentApi->metadata->secure_key
+                'secure_key' => $paymentApi->metadata->secure_key,
             ],
         ];
 
@@ -206,10 +202,11 @@ class MolliePaymentMailService
 
             if ($updateTransactionId) {
                 $checkoutUrl = $newPayment->getCheckoutUrl();
+
                 return [
                     'success' => true,
                     'message' => $this->module->l('Second chance email was successfully send!'),
-                    'checkoutUrl' => $checkoutUrl
+                    'checkoutUrl' => $checkoutUrl,
                 ];
             }
         }
@@ -217,8 +214,7 @@ class MolliePaymentMailService
         return
             [
                 'success' => false,
-                'message' =>
-                    $this->module->l('Failed to send second chance email!')
+                'message' => $this->module->l('Failed to send second chance email!'),
             ];
     }
 

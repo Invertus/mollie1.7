@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -96,7 +97,7 @@ class AdminMollieAjaxController extends ModuleAdminController
         $this->ajaxDie(json_encode(
             [
                 'success' => true,
-                'paymentStatus' => $method->enabled
+                'paymentStatus' => $method->enabled,
             ]
         ));
     }
@@ -134,8 +135,7 @@ class AdminMollieAjaxController extends ModuleAdminController
         $this->context->smarty->assign($apiKeysTestInfo);
         $this->ajaxDie(json_encode(
             [
-                'template' => $this->context->smarty->fetch($this->module->getLocalPath() . 'views/templates/admin/api_test_results.tpl')
-
+                'template' => $this->context->smarty->fetch($this->module->getLocalPath() . 'views/templates/admin/api_test_results.tpl'),
             ]
         ));
     }
@@ -154,21 +154,21 @@ class AdminMollieAjaxController extends ModuleAdminController
         $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
         $returnText = '';
         // Check image format
-        if ($imageFileType !== "jpg" && $imageFileType !== "png") {
+        if ($imageFileType !== 'jpg' && $imageFileType !== 'png') {
             $returnText = $this->l('Sorry, only JPG, PNG files are allowed.');
             $isUploaded = 0;
         }
 
         if ($isUploaded === 1) {
             //  if everything is ok, try to upload file
-            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                $returnText = basename($_FILES["fileToUpload"]["name"]);
+            if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file)) {
+                $returnText = basename($_FILES['fileToUpload']['name']);
             } else {
                 $isUploaded = 0;
-                $returnText = $this->l("Sorry, there was an error uploading your logo.");
+                $returnText = $this->l('Sorry, there was an error uploading your logo.');
             }
         }
 
-        echo json_encode(["status" => $isUploaded, "message" => $returnText]);
+        echo json_encode(['status' => $isUploaded, 'message' => $returnText]);
     }
 }

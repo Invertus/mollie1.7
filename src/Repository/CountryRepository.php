@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -60,7 +61,6 @@ final class CountryRepository extends AbstractRepository
 
     public function updatePaymentMethodCountries($idMethod, $idCountries)
     {
-
         $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'mol_country WHERE `id_method` = "' . $idMethod . '"';
         if (!Db::getInstance()->execute($sql)) {
             return false;
@@ -78,7 +78,7 @@ final class CountryRepository extends AbstractRepository
             if ($idCountry === '0') {
                 $allCountries = 1;
             }
-            $sql .= '"' . pSQL($idMethod) . '", ' . (int)$idCountry . ', ' . (int)$allCountries . ')';
+            $sql .= '"' . pSQL($idMethod) . '", ' . (int) $idCountry . ', ' . (int) $allCountries . ')';
 
             if (!Db::getInstance()->execute($sql)) {
                 $response = false;
@@ -105,7 +105,6 @@ final class CountryRepository extends AbstractRepository
 
     public function updatePaymentMethodExcludedCountries($idMethod, $idCountries)
     {
-
         $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'mol_excluded_country WHERE `id_method` = "' . $idMethod . '"';
         if (!Db::getInstance()->execute($sql)) {
             return false;
@@ -124,7 +123,7 @@ final class CountryRepository extends AbstractRepository
             if ($idCountry === '0') {
                 $allCountries = 1;
             }
-            $sql .= '"' . pSQL($idMethod) . '", ' . (int)$idCountry . ', ' . (int)$allCountries . ')';
+            $sql .= '"' . pSQL($idMethod) . '", ' . (int) $idCountry . ', ' . (int) $allCountries . ')';
 
             if (!Db::getInstance()->execute($sql)) {
                 $response = false;

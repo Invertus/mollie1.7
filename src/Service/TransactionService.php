@@ -27,22 +27,15 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
-use MolliePrefix\Mollie\Api\Resources\Payment;
-use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
-use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
-use MolliePrefix\Mollie\Api\Resources\ResourceFactory;
-use MolliePrefix\Mollie\Api\Types\PaymentMethod;
-use MolliePrefix\Mollie\Api\Types\PaymentStatus;
-use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Address;
 use Cart;
 use Configuration;
@@ -52,6 +45,14 @@ use Db;
 use Mollie;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Utility\TransactionUtility;
+use MolliePrefix\Mollie\Api\Exceptions\ApiException;
+use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
+use MolliePrefix\Mollie\Api\Resources\Payment;
+use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
+use MolliePrefix\Mollie\Api\Resources\ResourceFactory;
+use MolliePrefix\Mollie\Api\Types\PaymentMethod;
+use MolliePrefix\Mollie\Api\Types\PaymentStatus;
+use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Order;
 use OrderPayment;
 use PrestaShop\PrestaShop\Adapter\CoreException;
@@ -61,7 +62,6 @@ use Tools;
 
 class TransactionService
 {
-
     /**
      * @var Mollie
      */
@@ -99,6 +99,7 @@ class TransactionService
      * @throws PrestaShopException
      * @throws CoreException
      * @throws ApiException
+     *
      * @since 3.3.0
      * @since 3.3.2 Returns the ApiPayment / ApiOrder instead of OK string, NOT OK/NO ID stays the same
      * @since 3.3.2 Returns the ApiPayment instead of ApiPayment / ApiOrder
@@ -180,7 +181,7 @@ class TransactionService
 
         $psPayment = $this->paymentMethodRepository->getPaymentBy('transaction_id', $transaction->id);
         $this->setCountryContextIfNotSet($apiPayment);
-        $orderId = Order::getOrderByCartId((int)$apiPayment->metadata->cart_id);
+        $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
         $cart = new Cart($apiPayment->metadata->cart_id);
 
         Db::getInstance()->update(
@@ -188,7 +189,7 @@ class TransactionService
             [
                 'updated_at' => ['type' => 'sql', 'value' => 'NOW()'],
                 'bank_status' => pSQL(\Mollie\Config\Config::getStatuses()[$apiPayment->status]),
-                'order_id' => (int)$orderId,
+                'order_id' => (int) $orderId,
             ],
             '`transaction_id` = \'' . pSQL($transaction->id) . '\''
         );
@@ -217,11 +218,11 @@ class TransactionService
                 && ($apiPayment->isPaid() || $apiPayment->isAuthorized() || $apiPayment->isExpired())
                 && Tools::encrypt($cart->secure_key) === $apiPayment->metadata->secure_key
             ) {
-                $paymentStatus = (int)Mollie\Config\Config::getStatuses()[$apiPayment->status];
+                $paymentStatus = (int) Mollie\Config\Config::getStatuses()[$apiPayment->status];
 
                 $this->orderStatusService->setOrderStatus($orderId, $paymentStatus);
 
-                $orderId = Order::getOrderByCartId((int)$apiPayment->metadata->cart_id);
+                $orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
             }
         }
 
@@ -237,7 +238,7 @@ class TransactionService
 
         // Log successful webhook requests in extended log mode only
         if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) == Mollie\Config\Config::DEBUG_LOG_ALL) {
-            PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request for order ' . (int)$orderId . ' / transaction ' . $transaction->id, Mollie\Config\Config::NOTICE);
+            PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request for order ' . (int) $orderId . ' / transaction ' . $transaction->id, Mollie\Config\Config::NOTICE);
         }
 
         return $apiPayment;
@@ -251,6 +252,7 @@ class TransactionService
      * @param int $orderId
      *
      * @return void
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -259,7 +261,7 @@ class TransactionService
         // retrieve ALL payments of order.
         // in the case of a cancel or expired on banktransfer, this will fire too.
         // if no OrderPayment objects is retrieved in the collection, do nothing.
-        $order = new Order((int)$orderId);
+        $order = new Order((int) $orderId);
         $collection = OrderPayment::getByOrderReference($order->reference);
         if (count($collection) > 0) {
             /** @var OrderPayment $orderPayment */
@@ -280,6 +282,7 @@ class TransactionService
      * @param int $orderId
      *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -291,7 +294,7 @@ class TransactionService
                 [
                     'updated_at' => ['type' => 'sql', 'value' => 'NOW()'],
                     'bank_status' => pSQL($status),
-                    'order_id' => (int)$orderId,
+                    'order_id' => (int) $orderId,
                 ],
                 '`transaction_id` = \'' . pSQL($transactionId) . '\''
             );
@@ -320,7 +323,7 @@ class TransactionService
     {
         if (empty($this->country) || !$this->country->active) {
             if ($payment->metadata->cart_id) {
-                $cart = new Cart((int)$payment->metadata->cart_id);
+                $cart = new Cart((int) $payment->metadata->cart_id);
                 if (!empty($cart)) {
                     $address = new Address($cart->id_address_delivery);
                     if (!empty($address)) {

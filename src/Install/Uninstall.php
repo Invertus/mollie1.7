@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -38,9 +39,7 @@ namespace Mollie\Install;
 use Configuration;
 use Mollie\Config\Config;
 use Mollie\Repository\OrderStateRepository;
-use OrderState;
 use Tab;
-use Validate;
 
 class Uninstall implements UninstallerInterface
 {
@@ -145,7 +144,7 @@ class Uninstall implements UninstallerInterface
     {
         $tabs = [
             'AdminMollieAjax',
-            'AdminMollieModule'
+            'AdminMollieModule',
         ];
 
         foreach ($tabs as $tab) {

@@ -27,12 +27,12 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
-
 if (!include_once(dirname(__FILE__) . '/vendor/autoload.php')) {
     return;
 }
@@ -68,13 +68,13 @@ class Mollie extends PaymentModule
     /** @var MolliePrefix\Mollie\Api\MollieApiClient|null */
     public $api = null;
 
-    /** @var string $currentOrderReference */
+    /** @var string */
     public $currentOrderReference;
 
-    /** @var string $selectedApi */
+    /** @var string */
     public static $selectedApi;
 
-    /** @var bool $cacheCleared Indicates whether the Smarty cache has been cleared during updates */
+    /** @var bool Indicates whether the Smarty cache has been cleared during updates */
     public static $cacheCleared;
 
     // The Addons version does not include the GitHub updater
@@ -147,7 +147,6 @@ class Mollie extends PaymentModule
 
     /**
      * @return bool
-     *
      */
     public function uninstall()
     {
@@ -280,7 +279,7 @@ class Mollie extends PaymentModule
             $this->context->controller->errors[] = $this->display(__FILE__, 'rounding_error.tpl');
         }
 
-        if(false === Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING) &&
+        if (false === Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING) &&
             !Tools::isSubmit("submit{$this->name}")
         ) {
             $this->context->controller->errors[] = $this->display(__FILE__, 'mollie_awaiting_order_status_error.tpl');
@@ -341,7 +340,7 @@ class Mollie extends PaymentModule
             'logo_url' => $this->getPathUri() . 'views/img/mollie_logo.png',
             'webpack_urls' => \Mollie\Utility\UrlPathUtility::getWebpackChunks('app'),
             'description_message' => $this->l('Description cannot be empty'),
-            'Profile_id_message' => $this->l('Wrong profile ID')
+            'Profile_id_message' => $this->l('Wrong profile ID'),
         ];
 
         Media::addJsDef([
@@ -352,7 +351,7 @@ class Mollie extends PaymentModule
             'ajaxUrl' => $this->context->link->getAdminLink('AdminMollieAjax'),
         ]);
 
-        /** Custom logo JS vars*/
+        /* Custom logo JS vars*/
         Media::addJsDef([
             'image_size_message' => $this->l('Image size must be %s%x%s1%'),
             'not_valid_file_message' => $this->l('not a valid file: %s%'),
@@ -384,9 +383,10 @@ class Mollie extends PaymentModule
 
     /**
      * @param string $str
-     * @return string
-     * @deprecated
      *
+     * @return string
+     *
+     * @deprecated
      */
     public function lang($str)
     {
@@ -404,6 +404,7 @@ class Mollie extends PaymentModule
      * @param string $url
      *
      * @return string|true
+     *
      * @throws Exception
      * @throws PrestaShopException
      * @throws SmartyException
@@ -416,11 +417,11 @@ class Mollie extends PaymentModule
             $updateMessage = $this->l('Warning: Could not retrieve update xml file from github.');
         } else {
             try {
-                /** @var SimpleXMLElement $tags */
+                /* @var SimpleXMLElement $tags */
                 @$tags = new SimpleXMLElement($updateXml);
                 if (!empty($tags) && isset($tags->entry, $tags->entry[0], $tags->entry[0]->id)) {
                     $title = $tags->entry[0]->id;
-                    $latestVersion = preg_replace("/[^0-9,.]/", '', Tools::substr($title, strrpos($title, '/')));
+                    $latestVersion = preg_replace('/[^0-9,.]/', '', Tools::substr($title, strrpos($title, '/')));
                     if (!version_compare($this->version, $latestVersion, '>=')) {
                         $this->context->smarty->assign([
                             'this_version' => $this->version,
@@ -432,9 +433,9 @@ class Mollie extends PaymentModule
                                     $latestVersion
                                 ),
                                 [
-                                    $this->display($this->getPathUri(), 'views/templates/admin/github_redirect.tpl')
+                                    $this->display($this->getPathUri(), 'views/templates/admin/github_redirect.tpl'),
                                 ]
-                            )
+                            ),
                         ]);
                         $updateMessage = $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'mollie/views/templates/admin/new_release.tpl');
                     }
@@ -480,7 +481,7 @@ class Mollie extends PaymentModule
             Media::addJsDef([
                 'profileId' => Configuration::get(Mollie\Config\Config::MOLLIE_PROFILE_ID),
                 'isoCode' => $this->context->language->language_code,
-                'isTestMode' => \Mollie\Config\Config::isTestMode()
+                'isTestMode' => \Mollie\Config\Config::isTestMode(),
             ]);
             if (\Mollie\Config\Config::isVersion17()) {
                 $this->context->controller->registerJavascript(
@@ -561,7 +562,7 @@ class Mollie extends PaymentModule
         if ($this->context->controller->controller_name === 'AdminOrders') {
             $this->context->smarty->assign([
                 'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=mollie&ajax=1',
-                'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int)Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),
+                'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int) Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),
             ]);
             $html .= $this->display(__FILE__, 'views/templates/admin/ordergrid.tpl');
             if (Tools::isSubmit('addorder')) {
@@ -590,8 +591,8 @@ class Mollie extends PaymentModule
         $paymentMethodRepo = $this->getContainer(\Mollie\Repository\PaymentMethodRepository::class);
         $shipmentService = $this->getContainer(\Mollie\Service\ShipmentService::class);
 
-        $cartId = Cart::getCartIdByOrderId((int)$params['id_order']);
-        $transaction = $paymentMethodRepo->getPaymentBy('cart_id', (int)$cartId);
+        $cartId = Cart::getCartIdByOrderId((int) $params['id_order']);
+        $transaction = $paymentMethodRepo->getPaymentBy('cart_id', (int) $cartId);
         if (empty($transaction)) {
             return false;
         }
@@ -601,9 +602,9 @@ class Mollie extends PaymentModule
                 'name' => $currency['name'],
                 'iso_code' => Tools::strtoupper($currency['iso_code']),
                 'sign' => $currency['sign'],
-                'blank' => (bool)isset($currency['blank']) ? $currency['blank'] : true,
-                'format' => (int)$currency['format'],
-                'decimals' => (bool)isset($currency['decimals']) ? $currency['decimals'] : true,
+                'blank' => (bool) isset($currency['blank']) ? $currency['blank'] : true,
+                'format' => (int) $currency['format'],
+                'decimals' => (bool) isset($currency['decimals']) ? $currency['decimals'] : true,
             ];
         }
 
@@ -615,7 +616,7 @@ class Mollie extends PaymentModule
             'tracking' => $shipmentService->getShipmentInformation($order->reference),
             'publicPath' => __PS_BASE_URI__ . 'modules/' . basename(__FILE__, '.php') . '/views/js/dist/',
             'webPackChunks' => \Mollie\Utility\UrlPathUtility::getWebpackChunks('app'),
-            'errorDisplay' => Configuration::get(Mollie\Config\Config::MOLLIE_DISPLAY_ERRORS)
+            'errorDisplay' => Configuration::get(Mollie\Config\Config::MOLLIE_DISPLAY_ERRORS),
         ]);
 
         return $this->display(__FILE__, 'order_info.tpl');
@@ -623,6 +624,7 @@ class Mollie extends PaymentModule
 
     /**
      * @return string
+     *
      * @throws Exception
      * @throws PrestaShopException
      * @throws SmartyException
@@ -654,7 +656,7 @@ class Mollie extends PaymentModule
         $smarty->assign([
             'mollieIframe' => $isIFrameEnabled,
             'link' => $this->context->link,
-            'cartAmount' => (int)($cart->getOrderTotal(true) * 100),
+            'cartAmount' => (int) ($cart->getOrderTotal(true) * 100),
             'methods' => $apiMethods,
             'issuers' => $issuerList,
             'issuer_setting' => $issuerSetting,
@@ -747,6 +749,7 @@ class Mollie extends PaymentModule
      * @param array $params
      *
      * @return array|null
+     *
      * @throws Exception
      * @throws PrestaShopException
      * @throws SmartyException
@@ -787,7 +790,7 @@ class Mollie extends PaymentModule
             'link' => $this->context->link,
             'qrCodeEnabled' => Configuration::get(Mollie\Config\Config::MOLLIE_QRENABLED),
             'qrAlign' => 'left',
-            'cartAmount' => (int)($cart->getOrderTotal(true) * 100),
+            'cartAmount' => (int) ($cart->getOrderTotal(true) * 100),
             'publicPath' => __PS_BASE_URI__ . 'modules/' . basename(__FILE__, '.php') . '/views/js/dist/',
         ]);
 
@@ -842,13 +845,13 @@ class Mollie extends PaymentModule
                         [
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price",
-                                'value' => $paymentFee
+                                'name' => 'payment-fee-price',
+                                'value' => $paymentFee,
                             ],
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price-display",
-                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee))
+                                'name' => 'payment-fee-price-display',
+                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
                             ],
                         ]
                     );
@@ -863,7 +866,7 @@ class Mollie extends PaymentModule
                     'mollieIFrameJS' => 'https://js.mollie.com/v1/mollie.js',
                     'price' => $this->context->cart->getOrderTotal(),
                     'priceSign' => $this->context->currency->getSign(),
-                    'methodId' => $methodObj->id_method
+                    'methodId' => $methodObj->id_method,
                 ]);
                 $newOption = new PrestaShop\PrestaShop\Core\Payment\PaymentOption();
                 $newOption
@@ -875,8 +878,8 @@ class Mollie extends PaymentModule
                             [
                                 'type' => 'hidden',
                                 'name' => "mollieCardToken{$methodObj->id_method}",
-                                'value' => ''
-                            ]
+                                'value' => '',
+                            ],
                         ]
                     )
                     ->setAction(Context::getContext()->link->getModuleLink(
@@ -895,17 +898,17 @@ class Mollie extends PaymentModule
                             [
                                 'type' => 'hidden',
                                 'name' => "mollieCardToken{$methodObj->id_method}",
-                                'value' => ''
+                                'value' => '',
                             ],
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price",
-                                'value' => $paymentFee
+                                'name' => 'payment-fee-price',
+                                'value' => $paymentFee,
                             ],
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price-display",
-                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee))
+                                'name' => 'payment-fee-price-display',
+                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
                             ],
                         ]
                     );
@@ -915,7 +918,7 @@ class Mollie extends PaymentModule
                             [
                                 'type' => 'hidden',
                                 'name' => "mollieCardToken{$methodObj->id_method}",
-                                'value' => ''
+                                'value' => '',
                             ],
                         ]
                     );
@@ -942,13 +945,13 @@ class Mollie extends PaymentModule
                         [
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price",
-                                'value' => $paymentFee
+                                'name' => 'payment-fee-price',
+                                'value' => $paymentFee,
                             ],
                             [
                                 'type' => 'hidden',
-                                'name' => "payment-fee-price-display",
-                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee))
+                                'name' => 'payment-fee-price-display',
+                                'value' => sprintf($this->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
                             ],
                         ]
                     );
@@ -973,7 +976,7 @@ class Mollie extends PaymentModule
     {
         /** @var \Mollie\Repository\PaymentMethodRepository $paymentMethodRepo */
         $paymentMethodRepo = $this->getContainer(\Mollie\Repository\PaymentMethodRepository::class);
-        $payment = $paymentMethodRepo->getPaymentBy('cart_id', (int)Tools::getValue('id_cart'));
+        $payment = $paymentMethodRepo->getPaymentBy('cart_id', (int) Tools::getValue('id_cart'));
         if ($payment && $payment['bank_status'] == MolliePrefix\Mollie\Api\Types\PaymentStatus::STATUS_PAID) {
             $this->context->smarty->assign('okMessage', $this->l('Thank you. Your payment has been received.'));
 
@@ -985,6 +988,7 @@ class Mollie extends PaymentModule
 
     /**
      * @return array
+     *
      * @throws PrestaShopException
      *
      * @since 3.3.0
@@ -1070,6 +1074,7 @@ class Mollie extends PaymentModule
 
     /**
      * @return array
+     *
      * @throws PrestaShopException
      *
      * @since 3.3.0
@@ -1086,6 +1091,7 @@ class Mollie extends PaymentModule
 
     /**
      * @return array
+     *
      * @throws Adapter_Exception
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -1158,7 +1164,7 @@ class Mollie extends PaymentModule
         try {
             /** @var \Mollie\Repository\PaymentMethodRepository $paymentMethodRepo */
             $paymentMethodRepo = $this->getContainer(\Mollie\Repository\PaymentMethodRepository::class);
-            $dbPayment = $paymentMethodRepo->getPaymentBy('order_id', (int)$idOrder);
+            $dbPayment = $paymentMethodRepo->getPaymentBy('order_id', (int) $idOrder);
         } catch (PrestaShopDatabaseException $e) {
             PrestaShopLogger::addLog("Mollie module error: {$e->getMessage()}");
 
@@ -1220,11 +1226,11 @@ class Mollie extends PaymentModule
         $newOrderMailValidator = $this->getContainer(\Mollie\Validator\NewOrderMailValidator::class);
 
         if ($params['template'] === 'order_conf') {
-            return $orderConfMailValidator->validate((int)$order->current_state);
+            return $orderConfMailValidator->validate((int) $order->current_state);
         }
 
         if ($params['template'] === 'new_order') {
-            return $newOrderMailValidator->validate((int)$order->current_state);
+            return $newOrderMailValidator->validate((int) $order->current_state);
         }
 
         if ($params['template'] === 'order_conf' ||
@@ -1300,7 +1306,7 @@ class Mollie extends PaymentModule
                 'name' => $this->name,
                 'class_name' => self::ADMIN_MOLLIE_CONTROLLER,
                 'ParentClassName' => 'AdminParentShipping',
-                'parent' => 'AdminParentShipping'
+                'parent' => 'AdminParentShipping',
             ],
             [
                 'name' => $this->l('AJAX', __CLASS__),
@@ -1329,22 +1335,22 @@ class Mollie extends PaymentModule
             'search' => false,
             'remove_onclick' => true,
             'callback_object' => 'mollie',
-            'callback' => 'resendOrderPaymentLink'
+            'callback' => 'resendOrderPaymentLink',
         ];
     }
 
     public function hookActionValidateOrder($params)
     {
         if ($this->context->controller->controller_name === 'AdminOrders' &&
-            $params["order"]->module === $this->name
+            $params['order']->module === $this->name
         ) {
-            $cartId = $params["cart"]->id;
-            $totalPaid = strval($params["order"]->total_paid);
-            $currency = $params["currency"]->iso_code;
-            $customerKey = $params["customer"]->secure_key;
-            $orderReference = $params["order"]->reference;
-            $orderPayment = $params["order"]->payment;
-            $orderId = $params["order"]->id;
+            $cartId = $params['cart']->id;
+            $totalPaid = strval($params['order']->total_paid);
+            $currency = $params['currency']->iso_code;
+            $customerKey = $params['customer']->secure_key;
+            $orderReference = $params['order']->reference;
+            $orderPayment = $params['order']->payment;
+            $orderId = $params['order']->id;
 
             /** @var \Mollie\Service\PaymentMethodService $paymentMethodService */
             $paymentMethodService = $this->getContainer(\Mollie\Service\PaymentMethodService::class);
@@ -1384,7 +1390,9 @@ class Mollie extends PaymentModule
 
     /**
      * @param $idOrder
+     *
      * @return string
+     *
      * @throws Exception
      */
     public static function resendOrderPaymentLink($orderId)
@@ -1409,7 +1417,6 @@ class Mollie extends PaymentModule
     {
         if (Tools::getValue('controller') === 'AdminStatuses' && isset($params['fields']['id_order_state'])) {
             $params['where'] = " AND (a.`module_name` = '{$this->name}' AND a.`deleted` = 0) OR a.`module_name` NOT LIKE '{$this->name}'";
-
         }
 
         if (Tools::getValue('controller') === 'AdminStatuses' && isset($params['fields']['id_order_return_state'])) {
@@ -1426,7 +1433,7 @@ class Mollie extends PaymentModule
         $apiService = $this->getContainer(\Mollie\Service\ApiService::class);
 
         $environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
-        $apiKeyConfig = (int)$environment === \Mollie\Config\Config::ENVIRONMENT_LIVE ?
+        $apiKeyConfig = (int) $environment === \Mollie\Config\Config::ENVIRONMENT_LIVE ?
             Mollie\Config\Config::MOLLIE_API_KEY : Mollie\Config\Config::MOLLIE_API_KEY_TEST;
 
         try {

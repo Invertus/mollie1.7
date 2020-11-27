@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -37,7 +38,6 @@ use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
 
 class MollieAjaxModuleFrontController extends ModuleFrontController
 {
-
     public function postProcess()
     {
         $action = Tools::getValue('action');
@@ -63,10 +63,10 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
                 }
 
                 $paymentFee = new DecimalNumber(Tools::getValue('paymentFee'));
-                $orderTotal = new DecimalNumber((string)$cart->getOrderTotal());
+                $orderTotal = new DecimalNumber((string) $cart->getOrderTotal());
                 $orderTotalWithFee = $orderTotal->plus($paymentFee);
 
-                $orderTotalNoTax = new DecimalNumber((string)$cart->getOrderTotal(false));
+                $orderTotalNoTax = new DecimalNumber((string) $cart->getOrderTotal(false));
                 $orderTotalNoTaxWithFee = $orderTotalNoTax->plus($paymentFee);
 
                 $total_including_tax = $orderTotalWithFee->toPrecision(2);
@@ -75,28 +75,28 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
                 $taxConfiguration = new TaxConfiguration();
                 $presentedCart = $this->cart_presenter->present($this->context->cart);
 
-                $presentedCart['totals'] = array(
-                    'total' => array(
+                $presentedCart['totals'] = [
+                    'total' => [
                         'type' => 'total',
-                        'label' => $this->translator->trans('Total', array(), 'Shop.Theme.Checkout'),
+                        'label' => $this->translator->trans('Total', [], 'Shop.Theme.Checkout'),
                         'amount' => $taxConfiguration->includeTaxes() ? $total_including_tax : $total_excluding_tax,
                         'value' => Tools::displayPrice(
                             $taxConfiguration->includeTaxes() ? (float) $total_including_tax : (float) $total_excluding_tax
                         ),
-                    ),
-                    'total_including_tax' => array(
+                    ],
+                    'total_including_tax' => [
                         'type' => 'total',
-                        'label' => $this->translator->trans('Total (tax incl.)', array(), 'Shop.Theme.Checkout'),
+                        'label' => $this->translator->trans('Total (tax incl.)', [], 'Shop.Theme.Checkout'),
                         'amount' => $total_including_tax,
                         'value' => Tools::displayPrice((float) $total_including_tax),
-                    ),
-                    'total_excluding_tax' => array(
+                    ],
+                    'total_excluding_tax' => [
                         'type' => 'total',
-                        'label' => $this->translator->trans('Total (tax excl.)', array(), 'Shop.Theme.Checkout'),
+                        'label' => $this->translator->trans('Total (tax excl.)', [], 'Shop.Theme.Checkout'),
                         'amount' => $total_excluding_tax,
                         'value' => Tools::displayPrice((float) $total_excluding_tax),
-                    ),
-                );
+                    ],
+                ];
 
                 $this->context->smarty->assign([
                     'configuration' => $this->getTemplateVarConfiguration(),
@@ -119,13 +119,12 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
                         $errorMessage = str_replace('mollieMessage=', '', $errorMessage);
                         $errorMessage = str_replace('_', ' ', $errorMessage);
                         $this->context->smarty->assign([
-                            'errorMessage' => $errorMessage
+                            'errorMessage' => $errorMessage,
                         ]);
                         $this->ajaxDie($this->context->smarty->fetch("{$this->module->getLocalPath()}views/templates/front/mollie_error.tpl"));
                     }
                 }
                 $this->ajaxDie();
         }
-
     }
 }

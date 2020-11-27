@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -59,7 +60,7 @@ class CountryService
         $countriesWithNames = [];
         $countriesWithNames[] = [
             'id' => 0,
-            'name' => $this->module->l('All')
+            'name' => $this->module->l('All'),
         ];
         foreach ($countries as $key => $country) {
             $countriesWithNames[] = [

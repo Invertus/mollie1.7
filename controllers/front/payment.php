@@ -27,28 +27,27 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
+use Mollie\Config\Config;
 use Mollie\Exception\OrderCreationException;
 use Mollie\Handler\Exception\OrderExceptionHandler;
+use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Service\ExceptionService;
-use MolliePrefix\Mollie\Api\Exceptions\ApiException;
+use Mollie\Service\MemorizeCartService;
+use Mollie\Service\PaymentMethodService;
+use Mollie\Utility\PaymentFeeUtility;
 use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
 use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
 use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\PrestaShop\Decimal\Number;
-use Mollie\Config\Config;
-use Mollie\Repository\PaymentMethodRepository;
-use Mollie\Service\MemorizeCartService;
-use Mollie\Service\PaymentMethodService;
-use Mollie\Utility\PaymentFeeUtility;
-use PrestaShop\PrestaShop\Adapter\CoreException;
 
 if (!defined('_PS_VERSION_')) {
     return;
@@ -64,13 +63,13 @@ require_once dirname(__FILE__) . '/../../mollie.php';
  */
 class MolliePaymentModuleFrontController extends ModuleFrontController
 {
-    /** @var bool $ssl */
+    /** @var bool */
     public $ssl = true;
 
-    /** @var bool $display_column_left */
+    /** @var bool */
     public $display_column_left = false;
 
-    /** @var bool $display_column_right */
+    /** @var bool */
     public $display_column_right = false;
 
     /**
@@ -119,7 +118,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 
         $environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
         $paymentMethodId = $paymentMethodRepo->getPaymentMethodIdByMethodId($method, $environment);
-        $paymentMethodObj = new MolPaymentMethod((int)$paymentMethodId);
+        $paymentMethodObj = new MolPaymentMethod((int) $paymentMethodId);
         // Prepare payment
         do {
             $orderReference = Order::generateReference();
@@ -129,7 +128,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
             Tools::strtoupper($this->context->currency->iso_code),
             $method,
             $issuer,
-            (int)$cart->id,
+            (int) $cart->id,
             $customer->secure_key,
             $paymentMethodObj,
             false,
@@ -169,8 +168,8 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
                 Db::getInstance()->insert(
                     'mollie_payments',
                     [
-                        'cart_id' => (int)$cart->id,
-                        'order_id' => (int)$order->id,
+                        'cart_id' => (int) $cart->id,
+                        'order_id' => (int) $order->id,
                         'method' => pSQL($apiPayment->method),
                         'transaction_id' => pSQL($apiPayment->id),
                         'order_reference' => pSQL($orderReference),
@@ -200,6 +199,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
      * @param Customer $customer
      *
      * @return bool
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
@@ -237,6 +237,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
      * @param string $selectedApi
      *
      * @return MollieOrderAlias|MolliePaymentAlias
+     *
      * @throws OrderCreationException
      */
     protected function createPayment($data, $selectedApi)
@@ -289,7 +290,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
                 Db::getInstance()->insert(
                     'mollie_payments',
                     [
-                        'cart_id' => (int)$cartId,
+                        'cart_id' => (int) $cartId,
                         'method' => pSQL($apiPayment->method),
                         'transaction_id' => pSQL($apiPayment->id),
                         'order_reference' => pSQL($orderReference),
@@ -332,12 +333,12 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
             $this->context->cart->getOrderTotal()
         );
 
-        $totalPrice = new Number((string)$originalAmount);
+        $totalPrice = new Number((string) $originalAmount);
 
-        $orderFeeNumber = new Number((string)0);
+        $orderFeeNumber = new Number((string) 0);
         if ($orderFee) {
             $orderFeeObj = new MolOrderFee();
-            $orderFeeObj->id_cart = (int)$cartId;
+            $orderFeeObj->id_cart = (int) $cartId;
             $environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
             $orderFeeObj->order_fee = PaymentFeeUtility::getPaymentFee(
                 new MolPaymentMethod(
@@ -350,14 +351,14 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
             } catch (Exception $e) {
                 throw new PrestaShopException('Can\'t save Order fee');
             }
-            $orderFeeNumber = new Number((string)$orderFeeObj->order_fee);
+            $orderFeeNumber = new Number((string) $orderFeeObj->order_fee);
             $totalPrice = $orderFeeNumber->plus($totalPrice);
         }
 
         $this->module->validateOrder(
-            (int)$cartId,
-            (int)Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING),
-            (float)$totalPrice->toPrecision(2),
+            (int) $cartId,
+            (int) Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING),
+            (float) $totalPrice->toPrecision(2),
             isset(Mollie\Config\Config::$methods[$apiPayment->method]) ? Mollie\Config\Config::$methods[$method] : $this->module->name,
             null,
             $extraVars,
@@ -368,9 +369,9 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 
         $orderid = Order::getOrderByCartId($cartId);
         $order = new Order($orderid);
-        $order->total_paid_tax_excl = (float)$orderFeeNumber->plus(new Number((string)$order->total_paid_tax_excl))->toPrecision(2);
-        $order->total_paid_tax_incl = (float)$orderFeeNumber->plus(new Number((string)$order->total_paid_tax_incl))->toPrecision(2);
-        $order->total_paid = (float)$totalPrice->toPrecision(2);
+        $order->total_paid_tax_excl = (float) $orderFeeNumber->plus(new Number((string) $order->total_paid_tax_excl))->toPrecision(2);
+        $order->total_paid_tax_incl = (float) $orderFeeNumber->plus(new Number((string) $order->total_paid_tax_incl))->toPrecision(2);
+        $order->total_paid = (float) $totalPrice->toPrecision(2);
         $order->reference = $orderReference;
         $order->update();
 

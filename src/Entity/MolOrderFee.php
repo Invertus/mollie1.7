@@ -27,12 +27,12 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
-
 class MolOrderFee extends ObjectModel
 {
     /**
@@ -48,12 +48,12 @@ class MolOrderFee extends ObjectModel
     /**
      * @var array
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'mol_order_fee',
         'primary' => 'id_mol_order_fee',
-        'fields' => array(
-            'id_cart' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-            'order_fee' => array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
-        ),
-    );
+        'fields' => [
+            'id_cart' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+            'order_fee' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+        ],
+    ];
 }
