@@ -30,7 +30,7 @@ class RefundUtilityTest extends TestCase
     public function testIsOrderLinesRefundPossible($lines, $availableRefund, $result)
     {
         $refunds = RefundUtility::isOrderLinesRefundPossible($lines, $availableRefund);
-
+        dump($availableRefund);
         self::assertEquals($result, $refunds);
     }
 
@@ -252,6 +252,89 @@ class RefundUtilityTest extends TestCase
                     'currency' => 'EUR'
                 ],
                 'result' => false
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getRefundedAmountProvider
+     *
+     * @param $paymentRefunds
+     * @param $result
+     */
+    public function testGetRefundedAmount($paymentRefunds, $result)
+    {
+        $refunds = RefundUtility::getRefundedAmount($paymentRefunds);
+
+        self::assertEquals($result, $refunds);
+    }
+
+    public function getRefundedAmountProvider()
+    {
+        return [
+            'refunds with pending status' => [
+                'refunds' => [
+                    0 => (object) array(
+                        'status' => 'pending',
+                        'amount' => (object) array(
+                            'value' => '10.00',
+                            'currency' => 'EUR'
+                        ),
+                    ),
+                    1 => (object) array(
+                        'status' => 'pending',
+                        'amount' => (object) array(
+                            'value' => '5.00',
+                            'currency' => 'EUR'
+                        ),
+                    )
+                ],
+                'result' => '15.00'
+            ],
+            'refunds with pending and cancelled statuses' => [
+                'refunds' => [
+                    0 => (object) array(
+                        'status' => 'pending',
+                        'amount' => (object) array(
+                            'value' => '10.00',
+                            'currency' => 'EUR'
+                        ),
+                    ),
+                    1 => (object) array(
+                        'status' => 'canceled',
+                        'amount' => (object) array(
+                            'value' => '5.00',
+                            'currency' => 'EUR'
+                        ),
+                    )
+                ],
+                'result' => '10.00'
+            ],
+            'refunds with refunded, pending and cancelled statuses' => [
+                'refunds' => [
+                    0 => (object) array(
+                        'status' => 'pending',
+                        'amount' => (object) array(
+                            'value' => '10.00',
+                            'currency' => 'EUR'
+                        ),
+                    ),
+                    1 => (object) array(
+                        'status' => 'canceled',
+                        'amount' => (object) array(
+                            'value' => '5.00',
+                            'currency' => 'EUR'
+                        ),
+                    ),
+                    2 => (object) array(
+                        'status' => 'refunded',
+                        'amount' => (object) array(
+                            'value' => '10.00',
+                            'currency' => 'EUR'
+                        ),
+                    )
+                ],
+                'result' => '20.00'
             ]
         ];
     }

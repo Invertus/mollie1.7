@@ -35,6 +35,8 @@
 
 namespace Mollie\Utility;
 
+use Mollie\Config\Config;
+
 class RefundUtility
 {
     public static function getRefundLines(array $lines)
@@ -63,5 +65,17 @@ class RefundUtility
         }
 
         return NumberUtility::isLowerOrEqualThan($refundedAmount, $availableRefund['value']);
+    }
+
+    public static function getRefundedAmount($paymentRefunds)
+    {
+        $refundAmount = 0;
+        foreach ($paymentRefunds as $refund) {
+            if($refund->status !== Config::MOLLIE_REFUND_STATUS_CANCELED) {
+                $refundAmount = NumberUtility::plus((float)$refundAmount, (float) $refund->amount->value);
+            }
+        }
+
+        return $refundAmount;
     }
 }
