@@ -429,8 +429,8 @@ class Installer implements InstallerInterface
 		$moduleTab->active = $active;
 
 		if (Config::isVersion17()) {
-            $moduleTab->icon = $icon;
-        }
+			$moduleTab->icon = $icon;
+		}
 
 		$languages = Language::getLanguages(true);
 		foreach ($languages as $language) {

@@ -278,10 +278,10 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 		}
 
 		if (Config::isVersion17()) {
-            parent::setTemplate($template, $params, $locale);
-        }
-        parent::setTemplate($template);
-    }
+			parent::setTemplate($template, $params, $locale);
+		}
+		parent::setTemplate($template);
+	}
 
 	private function createOrder($method, $apiPayment, $cartId, $originalAmount, $secureKey, $orderReference)
 	{

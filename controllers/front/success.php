@@ -86,11 +86,11 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
 	 */
 	public function initContent()
 	{
-	    if (!Config::isVersion17()) {
-	        parent::initContent();
+		if (!Config::isVersion17()) {
+			parent::initContent();
 
-	        return;
-        }
+			return;
+		}
 		$moduleName = Tools::getValue('module_name');
 
 		if (Configuration::isCatalogMode()) {
