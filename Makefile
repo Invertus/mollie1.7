@@ -18,3 +18,10 @@ build-vendor-no-dev:
 fl: fix-lint
 fix-lint:
 	docker run --rm -it -w=/app -v ${PWD}:/app oskarstark/php-cs-fixer-ga:latest
+
+e2e: test-e2e
+test-e2e:
+	docker exec -i prestashop-17 sh -c "rm -rf /var/www/html/install"
+	-docker exec -i prestashop-17 sh -c "mv /var/www/html/admin /var/www/html/admin966z7uc2l"
+	docker exec -i prestashop-17 sh -c "cd /var/www/html && php  bin/console prestashop:module install mollie"
+	docker exec -i prestashop-17 sh -c "chmod -R 777 /var/www/html"

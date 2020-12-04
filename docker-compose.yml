@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: mysql:5
+    ports:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: prestashop
+      MYSQL_DATABASE: prestashop
+    restart: always
+
+
+  prestashop-17:
+    container_name: prestashop-17
+    image: prestashop/prestashop:1.7
+    environment:
+      PS_INSTALL_AUTO: 0
+      DB_PASSWD: prestashop
+      DB_NAME: prestashop
+      DB_SERVER: mysql
+      PS_DOMAIN: localhost:8001
+      PS_FOLDER_INSTALL: install
+      PS_FOLDER_ADMIN: admin966z7uc2l
+    depends_on:
+      - mysql
+    ports:
+      - "8001:80"
+    volumes:
+      - ./:/var/www/html/modules/mollie:cached
+      - ./tests/seed/settings/defines.inc.php:/var/www/html/config/defines.inc.php
+      - ./tests/seed/settings/parameters.php:/var/www/html/app/config/parameters.php
+
+
