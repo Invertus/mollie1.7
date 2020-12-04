@@ -19,8 +19,8 @@ fl: fix-lint
 fix-lint:
 	docker run --rm -it -w=/app -v ${PWD}:/app oskarstark/php-cs-fixer-ga:latest
 
-e2e: test-e2e
-test-e2e:
+bps17: build-ps-17
+build-ps-17:
 	# configuring your prestashop
 	docker exec -i prestashop-17 sh -c "rm -rf /var/www/html/install"
 	-docker exec -i prestashop-17 sh -c "mv /var/www/html/admin /var/www/html/admin966z7uc2l"
@@ -30,3 +30,7 @@ test-e2e:
 	docker exec -i prestashop-17 sh -c "cd /var/www/html && php  bin/console prestashop:module install mollie"
 	# chmod all folders
 	docker exec -i prestashop-17 sh -c "chmod -R 777 /var/www/html"
+
+e2e: test-e2e
+test-e2e:
+	# todo: https://www.cypress.io/blog/2019/05/02/run-cypress-with-a-single-docker-command/

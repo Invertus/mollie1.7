@@ -10,9 +10,8 @@ services:
       MYSQL_DATABASE: prestashop
     restart: always
     healthcheck:
-      test: "mysqladmin ping -h127.0.0.1 -uroot -ppassword --silent"
+      test: "mysqladmin ping -h127.0.0.1 -uroot -pprestashop --silent"
       interval: 10s
-
 
   prestashop-17:
     container_name: prestashop-17
@@ -34,4 +33,15 @@ services:
       - ./tests/seed/settings/defines.inc.php:/var/www/html/config/defines.inc.php
       - ./tests/seed/settings/parameters.php:/var/www/html/app/config/parameters.php
 
-
+  cypress:
+    # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+    image: "cypress/included:6.0.1"
+    depends_on:
+      - prestashop-17
+    environment:
+      # pass base url to test pointing at the web application
+      - CYPRESS_baseUrl=http://localhost:8001
+    # share the current folder as volume to avoid copying
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e
