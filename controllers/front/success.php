@@ -24,6 +24,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
+use Mollie\Config\Config;
 use Mollie\Repository\OrderFeeRepository;
 use PrestaShop\PrestaShop\Adapter\Order\OrderPresenter;
 
@@ -85,6 +86,11 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
 	 */
 	public function initContent()
 	{
+	    if (!Config::isVersion17()) {
+	        parent::initContent();
+
+	        return;
+        }
 		$moduleName = Tools::getValue('module_name');
 
 		if (Configuration::isCatalogMode()) {
@@ -172,7 +178,7 @@ class MollieSuccessModuleFrontController extends ModuleFrontController
 			$cart->id,
 			(int) Configuration::get('PS_OS_PAYMENT'),
 			0,
-			$this->trans('Free order', [], 'Admin.Orderscustomers.Feature'),
+			$this->module->l('Free order', 'Admin.Orderscustomers.Feature'),
 			null,
 			[],
 			null,

@@ -42,7 +42,7 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
 	{
 		$action = Tools::getValue('action');
 		switch ($action) {
-			case 'getTotalCartPrice':
+			case 'getTotalCartPrice': //TODO maybe useless action because there is no checkout/_partials/cart-summary-totals
 				$cart = Context::getContext()->cart;
 				$paymentFee = Tools::getValue('paymentFee');
 				if (!$paymentFee) {
@@ -78,7 +78,7 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
 				$presentedCart['totals'] = [
 					'total' => [
 						'type' => 'total',
-						'label' => $this->translator->trans('Total', [], 'Shop.Theme.Checkout'),
+                        'label' => $this->module->l('Total', 'Shop.Theme.Checkout'),
 						'amount' => $taxConfiguration->includeTaxes() ? $total_including_tax : $total_excluding_tax,
 						'value' => Tools::displayPrice(
 							$taxConfiguration->includeTaxes() ? (float) $total_including_tax : (float) $total_excluding_tax
@@ -86,20 +86,25 @@ class MollieAjaxModuleFrontController extends ModuleFrontController
 					],
 					'total_including_tax' => [
 						'type' => 'total',
-						'label' => $this->translator->trans('Total (tax incl.)', [], 'Shop.Theme.Checkout'),
+                        'label' => $this->module->l('Total (tax incl.)', 'Shop.Theme.Checkout'),
 						'amount' => $total_including_tax,
 						'value' => Tools::displayPrice((float) $total_including_tax),
 					],
 					'total_excluding_tax' => [
 						'type' => 'total',
-						'label' => $this->translator->trans('Total (tax excl.)', [], 'Shop.Theme.Checkout'),
+                        'label' => $this->module->l('Total (tax excl.)', 'Shop.Theme.Checkout'),
 						'amount' => $total_excluding_tax,
 						'value' => Tools::displayPrice((float) $total_excluding_tax),
 					],
 				];
 
+				if (\Mollie\Config\Config::isVersion17()) {
+                    $this->context->smarty->assign([
+                        'configuration' => $this->getTemplateVarConfiguration(),
+                    ]);
+                }
+
 				$this->context->smarty->assign([
-					'configuration' => $this->getTemplateVarConfiguration(),
 					'cart' => $presentedCart,
 					'display_transaction_updated_info' => Tools::getIsset('updatedTransaction'),
 				]);

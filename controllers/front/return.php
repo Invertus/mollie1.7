@@ -34,6 +34,7 @@
  * @codingStandardsIgnoreStart
  */
 
+use Mollie\Config\Config;
 use Mollie\Controller\AbstractMollieController;
 use Mollie\Factory\CustomerFactory;
 use Mollie\Repository\PaymentMethodRepository;
@@ -126,18 +127,18 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
 			if (false === $data['mollie_info']) {
 				$data['mollie_info'] = [];
-				$data['msg_details'] = $this->l('The order with this id does not exist.');
+				$data['msg_details'] = $this->module->l('The order with this id does not exist.');
 			} elseif (PaymentMethod::BANKTRANSFER === $data['mollie_info']['method']
 				&& PaymentStatus::STATUS_OPEN === $data['mollie_info']['bank_status']
 			) {
-				$data['msg_details'] = $this->l('We have not received a definite payment status. You will be notified as soon as we receive a confirmation of the bank/merchant.');
+				$data['msg_details'] = $this->module->l('We have not received a definite payment status. You will be notified as soon as we receive a confirmation of the bank/merchant.');
 			} else {
 				$data['wait'] = true;
 			}
 		} else {
 			// Not allowed? Don't make query but redirect.
 			$data['mollie_info'] = [];
-			$data['msg_details'] = $this->l('You are not authorised to see this page.');
+			$data['msg_details'] = $this->module->l('You are not authorised to see this page.');
 			Tools::redirect(Context::getContext()->link->getPageLink('index', true));
 		}
 
@@ -183,7 +184,10 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 			$template = "module:mollie/views/templates/front/17_{$template}";
 		}
 
-		parent::setTemplate($template, $params, $locale);
+        if (Config::isVersion17()) {
+            parent::setTemplate($template, $params, $locale);
+        }
+        parent::setTemplate($template);
 	}
 
 	/**
@@ -319,7 +323,9 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
 	private function setWarning($message)
 	{
-		$this->warning[] = $message;
+	    if (Config::isVersion17()) {
+            $this->warning[] = $message;
+        }
 
 		$this->context->cookie->__set('mollie_payment_canceled_error', json_encode($this->warning));
 	}

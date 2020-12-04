@@ -427,7 +427,10 @@ class Installer implements InstallerInterface
 		$moduleTab->id_parent = $idParent;
 		$moduleTab->module = $this->module->name;
 		$moduleTab->active = $active;
-		$moduleTab->icon = $icon;
+
+		if (Config::isVersion17()) {
+            $moduleTab->icon = $icon;
+        }
 
 		$languages = Language::getLanguages(true);
 		foreach ($languages as $language) {
