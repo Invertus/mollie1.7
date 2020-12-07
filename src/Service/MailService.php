@@ -53,10 +53,10 @@ use Mollie\Config\Config;
 use Order;
 use OrderState;
 use PDF;
-use Validate;
 use Product;
 use State;
 use Tools;
+use Validate;
 
 class MailService
 {
@@ -175,43 +175,43 @@ class MailService
 		$product_var_tpl_list = [];
 		foreach ($order->getProducts() as $product) {
 			$specific_price = null;
-            $price = Product::getPriceStatic(
-                (int) $product['id_product'],
-                false,
-                ($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null),
-                6,
-                null,
-                false,
-                true, $product['product_quantity'],
-                false,
-                (int) $order->id_customer,
-                (int) $order->id_cart,
-                (int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')},
-                $specific_price,
-                true,
-                true,
-                null,
-                true,
-                $product['id_customization']
-            );
+			$price = Product::getPriceStatic(
+				(int) $product['id_product'],
+				false,
+				($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null),
+				6,
+				null,
+				false,
+				true, $product['product_quantity'],
+				false,
+				(int) $order->id_customer,
+				(int) $order->id_cart,
+				(int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')},
+				$specific_price,
+				true,
+				true,
+				null,
+				true,
+				$product['id_customization']
+			);
 
 			$price_wt = Product::getPriceStatic(
-			    (int) $product['id_product'],
-                true, ($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null),
-                2,
-                null, false,
-                true,
-                $product['product_quantity'],
-                false,
-                (int) $order->id_customer,
-                (int) $order->id_cart,
-                (int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')},
-                $specific_price,
-                true, true,
-                null,
-                true,
-                $product['id_customization']
-            );
+				(int) $product['id_product'],
+				true, ($product['product_attribute_id'] ? (int) $product['product_attribute_id'] : null),
+				2,
+				null, false,
+				true,
+				$product['product_quantity'],
+				false,
+				(int) $order->id_customer,
+				(int) $order->id_cart,
+				(int) $order->{Configuration::get('PS_TAX_ADDRESS_TYPE')},
+				$specific_price,
+				true, true,
+				null,
+				true,
+				$product['id_customization']
+			);
 
 			$product_price = PS_TAX_EXC == Product::getTaxCalculationMethod() ? Tools::ps_round($price, 2) : $price_wt;
 
@@ -245,7 +245,6 @@ class MailService
 					}
 
 					if (isset($customization['datas'][Product::CUSTOMIZE_FILE])) {
-
 						$customization_text .= Context::getContext()->getTranslator()->trans('%d image(s)', [count($customization['datas'][Product::CUSTOMIZE_FILE])], 'Admin.Payment.Notification') . '<br />';
 					}
 

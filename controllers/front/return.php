@@ -184,10 +184,10 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 			$template = "module:mollie/views/templates/front/17_{$template}";
 		}
 
-        if (Config::isVersion17()) {
-            parent::setTemplate($template, $params, $locale);
-        }
-        parent::setTemplate($template);
+		if (Config::isVersion17()) {
+			parent::setTemplate($template, $params, $locale);
+		}
+		parent::setTemplate($template);
 	}
 
 	/**
@@ -323,9 +323,9 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
 	private function setWarning($message)
 	{
-	    if (Config::isVersion17()) {
-            $this->warning[] = $message;
-        }
+		if (Config::isVersion17()) {
+			$this->warning[] = $message;
+		}
 
 		$this->context->cookie->__set('mollie_payment_canceled_error', json_encode($this->warning));
 	}
