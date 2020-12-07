@@ -46,8 +46,8 @@ class AdminMollieModuleController extends ModuleAdminController
 					'AdminModules',
 					[],
 					[
-					    'configure' => 'mollie'
-                    ]
+						'configure' => 'mollie',
+					]
 				)
 			);
 		}
