@@ -44,7 +44,10 @@ class AdminMollieModuleController extends ModuleAdminController
 			Tools::redirectAdmin(
 				$this->context->link->getAdminLink(
 					'AdminModules',
-					true
+					[],
+					[
+					    'configure' => 'mollie'
+                    ]
 				)
 			);
 		}
