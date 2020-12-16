@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,40 +43,40 @@ use Tools;
 
 class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function isValid($paymentMethod)
-    {
-        if (!$this->isCountrySupportedByPaymentMethod($paymentMethod)) {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isValid($paymentMethod)
+	{
+		if (!$this->isCountrySupportedByPaymentMethod($paymentMethod)) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isCountrySupportedByPaymentMethod($paymentMethod)
-    {
-        $countryCode = Tools::strtolower(Context::getContext()->country->iso_code);
-        $supportedCountries = Config::$defaultMethodAvailability[$paymentMethod->method_name];
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isCountrySupportedByPaymentMethod($paymentMethod)
+	{
+		$countryCode = Tools::strtolower(Context::getContext()->country->iso_code);
+		$supportedCountries = Config::$defaultMethodAvailability[$paymentMethod->method_name];
 
-        if (!$supportedCountries) {
-            return true;
-        }
+		if (!$supportedCountries) {
+			return true;
+		}
 
-        return in_array($countryCode, $supportedCountries);
-    }
+		return in_array($countryCode, $supportedCountries);
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function supports($paymentMethod)
-    {
-        return $paymentMethod->id_method == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports($paymentMethod)
+	{
+		return $paymentMethod->id_method == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
+	}
 }

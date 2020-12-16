@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -40,43 +41,43 @@ use Mollie\Config\Config;
 
 class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function isValid($paymentMethod)
-    {
-        if (!$this->isSslEnabledEverywhere()) {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isValid($paymentMethod)
+	{
+		if (!$this->isSslEnabledEverywhere()) {
+			return false;
+		}
 
-        if (!$this->isPaymentMethodInCookie()) {
-            return false;
-        }
+		if (!$this->isPaymentMethodInCookie()) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function supports($paymentMethod)
-    {
-        return $paymentMethod->id_method == Config::APPLEPAY;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports($paymentMethod)
+	{
+		return $paymentMethod->id_method == Config::APPLEPAY;
+	}
 
-    /**
-     * @return bool
-     */
-    private function isSslEnabledEverywhere()
-    {
-        return (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
-    }
+	/**
+	 * @return bool
+	 */
+	private function isSslEnabledEverywhere()
+	{
+		return (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
+	}
 
-    /**
-     * @return bool
-     */
-    private function isPaymentMethodInCookie()
-    {
-        return $_COOKIE['isApplePayMethod'] !== '0';
-    }
+	/**
+	 * @return bool
+	 */
+	private function isPaymentMethodInCookie()
+	{
+		return $_COOKIE['isApplePayMethod'] !== '0';
+	}
 }

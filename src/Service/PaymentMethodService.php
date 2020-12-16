@@ -111,9 +111,9 @@ class PaymentMethodService
 
 	private $phoneNumberProvider;
 
-    private $paymentMethodRestrictionValidation;
+	private $paymentMethodRestrictionValidation;
 
-    public function __construct(
+	public function __construct(
 		Mollie $module,
 		PaymentMethodRepository $methodRepository,
 		MethodCountryRepository $methodCountryRepository,
@@ -123,7 +123,7 @@ class PaymentMethodService
 		CreditCardLogoProvider $creditCardLogoProvider,
 		PaymentMethodSortProviderInterface $paymentMethodSortProvider,
 		PhoneNumberProviderInterface $phoneNumberProvider,
-        PaymentMethodRestrictionValidationInterface $paymentMethodRestrictionValidation
+		PaymentMethodRestrictionValidationInterface $paymentMethodRestrictionValidation
 	) {
 		$this->module = $module;
 		$this->methodRepository = $methodRepository;
@@ -134,8 +134,8 @@ class PaymentMethodService
 		$this->creditCardLogoProvider = $creditCardLogoProvider;
 		$this->paymentMethodSortProvider = $paymentMethodSortProvider;
 		$this->phoneNumberProvider = $phoneNumberProvider;
-        $this->paymentMethodRestrictionValidation = $paymentMethodRestrictionValidation;
-    }
+		$this->paymentMethodRestrictionValidation = $paymentMethodRestrictionValidation;
+	}
 
 	public function savePaymentMethod($method)
 	{
@@ -179,30 +179,30 @@ class PaymentMethodService
 	 *
 	 * @public ✓ This method is part of the public API
 	 */
-    public function getMethodsForCheckout()
-    {
-        $apiKey = EnvironmentUtility::getApiKey();
-        if (!$apiKey) {
-            return [];
-        }
-        /* @phpstan-ignore-next-line */
-        if (false === Configuration::get(Config::MOLLIE_STATUS_AWAITING)) {
-            return [];
-        }
-        $context = Context::getContext();
-        $apiEnvironment = Configuration::get(Config::MOLLIE_ENVIRONMENT);
-        $methods = $this->methodRepository->getMethodsForCheckout($apiEnvironment);
-        if (empty($methods)) {
-            $methods = [];
-        }
-        $countryCode = Tools::strtolower($context->country->iso_code);
+	public function getMethodsForCheckout()
+	{
+		$apiKey = EnvironmentUtility::getApiKey();
+		if (!$apiKey) {
+			return [];
+		}
+		/* @phpstan-ignore-next-line */
+		if (false === Configuration::get(Config::MOLLIE_STATUS_AWAITING)) {
+			return [];
+		}
+		$context = Context::getContext();
+		$apiEnvironment = Configuration::get(Config::MOLLIE_ENVIRONMENT);
+		$methods = $this->methodRepository->getMethodsForCheckout($apiEnvironment);
+		if (empty($methods)) {
+			$methods = [];
+		}
+		$countryCode = Tools::strtolower($context->country->iso_code);
 
-        foreach ($methods as $index => $method) {
-            $methodObj = new MolPaymentMethod($method['id_payment_method']);
-            if (!$this->paymentMethodRestrictionValidation->isPaymentMethodValid($methodObj)) {
-                continue;
-            }
-        }
+		foreach ($methods as $index => $method) {
+			$methodObj = new MolPaymentMethod($method['id_payment_method']);
+			if (!$this->paymentMethodRestrictionValidation->isPaymentMethodValid($methodObj)) {
+				continue;
+			}
+		}
 
 		if (version_compare(_PS_VERSION_, '1.6.0.9', '>')) {
 			foreach ($methods as $index => $methodId) {
@@ -231,10 +231,10 @@ class PaymentMethodService
 			}
 		}
 
-        $methods = $this->paymentMethodSortProvider->getSortedInAscendingWayForCheckout($methods);
+		$methods = $this->paymentMethodSortProvider->getSortedInAscendingWayForCheckout($methods);
 
-        return $methods;
-    }
+		return $methods;
+	}
 
 	/**
 	 * Get payment data.

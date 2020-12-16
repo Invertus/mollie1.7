@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -39,10 +40,10 @@ use MolPaymentMethod;
 
 interface PaymentMethodRestrictionValidationInterface
 {
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    public function isPaymentMethodValid($paymentMethod);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	public function isPaymentMethodValid($paymentMethod);
 }

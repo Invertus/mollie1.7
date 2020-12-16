@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -43,110 +44,110 @@ use Tools;
 
 class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function isValid($paymentMethod)
-    {
-        if (!$this->isPaymentMethodEnabled($paymentMethod)) {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isValid($paymentMethod)
+	{
+		if (!$this->isPaymentMethodEnabled($paymentMethod)) {
+			return false;
+		}
 
-        if (!$this->isCurrencyOptionDefinedForPaymentMethod($paymentMethod)) {
-            return false;
-        }
+		if (!$this->isCurrencyOptionDefinedForPaymentMethod($paymentMethod)) {
+			return false;
+		}
 
-        if (!$this->isCurrencySupportedByPaymentMethod($paymentMethod)) {
-            return false;
-        }
+		if (!$this->isCurrencySupportedByPaymentMethod($paymentMethod)) {
+			return false;
+		}
 
-        if ($this->isOrderTotalLowerThanMinimumAllowed($paymentMethod)) {
-            return false;
-        }
+		if ($this->isOrderTotalLowerThanMinimumAllowed($paymentMethod)) {
+			return false;
+		}
 
-        if ($this->isOrderTotalHigherThanMaximumAllowed($paymentMethod)) {
-            return false;
-        }
+		if ($this->isOrderTotalHigherThanMaximumAllowed($paymentMethod)) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function supports($paymentMethod)
-    {
-        return true;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports($paymentMethod)
+	{
+		return true;
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isCurrencyOptionDefinedForPaymentMethod($paymentMethod)
-    {
-        return isset(Config::$methodCurrencies[$paymentMethod->method_name]);
-    }
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isCurrencyOptionDefinedForPaymentMethod($paymentMethod)
+	{
+		return isset(Config::$methodCurrencies[$paymentMethod->method_name]);
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isCurrencySupportedByPaymentMethod($paymentMethod)
-    {
-        $currencyCode = Tools::strtolower(Context::getContext()->currency->iso_code);
-        $supportedCurrencies = Config::$methodCurrencies[$paymentMethod->method_name];
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isCurrencySupportedByPaymentMethod($paymentMethod)
+	{
+		$currencyCode = Tools::strtolower(Context::getContext()->currency->iso_code);
+		$supportedCurrencies = Config::$methodCurrencies[$paymentMethod->method_name];
 
-        return in_array($currencyCode, $supportedCurrencies);
-    }
+		return in_array($currencyCode, $supportedCurrencies);
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isPaymentMethodEnabled($paymentMethod)
-    {
-        return (bool) $paymentMethod->enabled;
-    }
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isPaymentMethodEnabled($paymentMethod)
+	{
+		return (bool) $paymentMethod->enabled;
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isOrderTotalLowerThanMinimumAllowed($paymentMethod)
-    {
-        $totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
-        $totalOrder = Tools::convertPrice(
-            $totalOrderCost,
-            Context::getContext()->currency,
-            false
-        ); //Changes total by default currency to currently used currency.
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isOrderTotalLowerThanMinimumAllowed($paymentMethod)
+	{
+		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
+		$totalOrder = Tools::convertPrice(
+			$totalOrderCost,
+			Context::getContext()->currency,
+			false
+		); //Changes total by default currency to currently used currency.
 
-        return NumberUtility::isLowerThan((float) $totalOrder, (float) $paymentMethod->minimal_order_value);
-    }
+		return NumberUtility::isLowerThan((float) $totalOrder, (float) $paymentMethod->minimal_order_value);
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isOrderTotalHigherThanMaximumAllowed($paymentMethod)
-    {
-        $totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
-        $totalOrder = Tools::convertPrice(
-            $totalOrderCost,
-            Context::getContext()->currency,
-            false
-        ); //Changes total by default currency to currently used currency.
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isOrderTotalHigherThanMaximumAllowed($paymentMethod)
+	{
+		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
+		$totalOrder = Tools::convertPrice(
+			$totalOrderCost,
+			Context::getContext()->currency,
+			false
+		); //Changes total by default currency to currently used currency.
 
-        if ((float) $paymentMethod->max_order_value <= 0) {
-            return true;
-        }
+		if ((float) $paymentMethod->max_order_value <= 0) {
+			return true;
+		}
 
-        return NumberUtility::isLowerThan((float) $paymentMethod->max_order_value, (float) $totalOrder);
-    }
+		return NumberUtility::isLowerThan((float) $paymentMethod->max_order_value, (float) $totalOrder);
+	}
 }

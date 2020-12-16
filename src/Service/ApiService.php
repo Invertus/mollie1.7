@@ -56,7 +56,6 @@ use MolPaymentMethod;
 use PrestaShopDatabaseException;
 use PrestaShopException;
 use PrestaShopLogger;
-use SmartyException;
 use Tools;
 
 class ApiService
@@ -125,37 +124,37 @@ class ApiService
 			$api->setApiKey(Tools::getValue('Mollie_Api_Key'));
 		}
 		if (defined('_TB_VERSION_')) {
-			$api->addVersionString('ThirtyBees/'._TB_VERSION_);
+			$api->addVersionString('ThirtyBees/' . _TB_VERSION_);
 			$api->addVersionString("MollieThirtyBees/{$moduleVersion}");
 		} else {
-			$api->addVersionString('PrestaShop/'._PS_VERSION_);
+			$api->addVersionString('PrestaShop/' . _PS_VERSION_);
 			$api->addVersionString("MolliePrestaShop/{$moduleVersion}");
 		}
 
 		return $api;
 	}
 
-    /**
-     * @param MollieApiClient $api
-     * @param string $paymentId
-     * @param string $currencyIso
-     *
-     * @return array
-     */
-    public function getPaymentMethodOrderTotalRestriction(MollieApiClient $api, $paymentId, $currencyIso)
-    {
-        try {
-            $paymentMethodConfig = $api->methods->get($paymentId, [
-                'currency' => $currencyIso
-            ])->getArrayCopy();
+	/**
+	 * @param MollieApiClient $api
+	 * @param string $paymentId
+	 * @param string $currencyIso
+	 *
+	 * @return array
+	 */
+	public function getPaymentMethodOrderTotalRestriction(MollieApiClient $api, $paymentId, $currencyIso)
+	{
+		try {
+			$paymentMethodConfig = $api->methods->get($paymentId, [
+				'currency' => $currencyIso,
+			])->getArrayCopy();
+		} catch (Exception $e) {
+			PrestaShopLogger::addLog('Mollie returned error on getPaymentMethodOrderTotalRestriction: ' . $e->getMessage());
 
-        } catch (Exception $e) {
-            PrestaShopLogger::addLog('Mollie returned error on getPaymentMethodOrderTotalRestriction: ' . $e->getMessage());
-            return null;
-        }
+			return null;
+		}
 
-        return $paymentMethodConfig;
-    }
+		return $paymentMethodConfig;
+	}
 
 	/**
 	 * Get payment methods to show on the configuration page.

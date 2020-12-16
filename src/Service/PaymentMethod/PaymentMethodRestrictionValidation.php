@@ -27,51 +27,54 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Service\PaymentMethod;
+
 use Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\PaymentMethodRestrictionValidatorInterface;
 use MolPaymentMethod;
 
 final class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionValidationInterface
 {
-    /**
-     * @var \Traversable
-     */
-    private $paymentRestrictionValidators;
+	/**
+	 * @var \Traversable
+	 */
+	private $paymentRestrictionValidators;
 
-    public function __construct(\Traversable $paymentRestrictionValidators)
-    {
-        $this->paymentRestrictionValidators = $paymentRestrictionValidators;
-    }
+	public function __construct(\Traversable $paymentRestrictionValidators)
+	{
+		$this->paymentRestrictionValidators = $paymentRestrictionValidators;
+	}
 
-    /**
-     * Atleast one payment restriction validator is present at all times (BasePaymentRestrictionValidation)
-     *
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    public function isPaymentMethodValid($paymentMethod)
-    {
-        $success = false;
+	/**
+	 * Atleast one payment restriction validator is present at all times (BasePaymentRestrictionValidation)
+	 *
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	public function isPaymentMethodValid($paymentMethod)
+	{
+		$success = false;
 
-        /**
-         * @var PaymentMethodRestrictionValidatorInterface $paymentRestrictionValidator
-         */
-        foreach ($this->paymentRestrictionValidators as $paymentRestrictionValidator) {
-            if ($paymentRestrictionValidator->supports($paymentMethod)) {
-                $success = $paymentRestrictionValidator->isValid($paymentMethod);
+		/**
+		 * @var PaymentMethodRestrictionValidatorInterface $paymentRestrictionValidator
+		 */
+		foreach ($this->paymentRestrictionValidators as $paymentRestrictionValidator) {
+			if ($paymentRestrictionValidator->supports($paymentMethod)) {
+				$success = $paymentRestrictionValidator->isValid($paymentMethod);
 
-                if (!$success) {
-                    return false;
-                }
-            }
-        }
-        return $success;
-    }
+				if (!$success) {
+					return false;
+				}
+			}
+		}
+
+		return $success;
+	}
 }

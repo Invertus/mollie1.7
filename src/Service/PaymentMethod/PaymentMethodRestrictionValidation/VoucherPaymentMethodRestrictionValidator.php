@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -38,38 +39,36 @@ namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 use Context;
 use Mollie\Config\Config;
 use Mollie\Utility\NumberUtility;
-use MolPaymentMethod;
-use Tools;
 
 class VoucherPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function isValid($paymentMethod)
-    {
-        if ($this->isOrderTotalLowerThanMinimumAllowed()) {
-            return false;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isValid($paymentMethod)
+	{
+		if ($this->isOrderTotalLowerThanMinimumAllowed()) {
+			return false;
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function supports($paymentMethod)
-    {
-        return $paymentMethod->id_method == Config::MOLLIE_VOUCHER_METHOD_ID;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports($paymentMethod)
+	{
+		return $paymentMethod->id_method == Config::MOLLIE_VOUCHER_METHOD_ID;
+	}
 
-    /**
-     * @return bool
-     */
-    private function isOrderTotalLowerThanMinimumAllowed()
-    {
-        $totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
+	/**
+	 * @return bool
+	 */
+	private function isOrderTotalLowerThanMinimumAllowed()
+	{
+		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
 
-        return NumberUtility::isLowerThan($totalOrderCost, Config::MOLLIE_VOUCHER_MINIMAL_AMOUNT);
-    }
+		return NumberUtility::isLowerThan($totalOrderCost, Config::MOLLIE_VOUCHER_MINIMAL_AMOUNT);
+	}
 }
