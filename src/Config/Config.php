@@ -255,6 +255,8 @@ class Config
 	const MOLLIE_VOUCHER_CATEGORY = 'MOLLIE_VOUCHER_CATEGORY';
 
 	const MOLLIE_VOUCHER_METHOD_ID = 'voucher';
+    const MOLLIE_KLARNA_PAY_LATER_METHOD_ID = 'klarnapaylater';
+    const MOLLIE_KLARNA_SLICE_IT_METHOD_ID = 'klarnasliceit';
 
 	const MOLLIE_VOUCHER_CATEGORY_NULL = 'null';
 	const MOLLIE_VOUCHER_CATEGORY_MEAL = 'meal';

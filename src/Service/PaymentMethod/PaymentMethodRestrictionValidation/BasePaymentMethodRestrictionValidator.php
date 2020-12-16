@@ -1,0 +1,152 @@
+<?php
+/**
+ * Copyright (c) 2012-2020, Mollie B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ *
+ * @author     Mollie B.V. <info@mollie.nl>
+ * @copyright  Mollie B.V.
+ * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ * @category   Mollie
+ * @package    Mollie
+ * @link       https://www.mollie.nl
+ * @codingStandardsIgnoreStart
+ */
+
+namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+
+use Context;
+use Mollie\Config\Config;
+use Mollie\Utility\NumberUtility;
+use MolPaymentMethod;
+use Tools;
+
+class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function isValid($paymentMethod)
+    {
+        if (!$this->isPaymentMethodEnabled($paymentMethod)) {
+            return false;
+        }
+
+        if (!$this->isCurrencyOptionDefinedForPaymentMethod($paymentMethod)) {
+            return false;
+        }
+
+        if (!$this->isCurrencySupportedByPaymentMethod($paymentMethod)) {
+            return false;
+        }
+
+        if ($this->isOrderTotalLowerThanMinimumAllowed($paymentMethod)) {
+            return false;
+        }
+
+        if ($this->isOrderTotalHigherThanMaximumAllowed($paymentMethod)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supports($paymentMethod)
+    {
+        return true;
+    }
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isCurrencyOptionDefinedForPaymentMethod($paymentMethod)
+    {
+        return isset(Config::$methodCurrencies[$paymentMethod->method_name]);
+    }
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isCurrencySupportedByPaymentMethod($paymentMethod)
+    {
+        $currencyCode = Tools::strtolower(Context::getContext()->currency->iso_code);
+        $supportedCurrencies = Config::$methodCurrencies[$paymentMethod->method_name];
+
+        return in_array($currencyCode, $supportedCurrencies);
+    }
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isPaymentMethodEnabled($paymentMethod)
+    {
+        return (bool) $paymentMethod->enabled;
+    }
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isOrderTotalLowerThanMinimumAllowed($paymentMethod)
+    {
+        $totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
+        $totalOrder = Tools::convertPrice(
+            $totalOrderCost,
+            Context::getContext()->currency,
+            false
+        ); //Changes total by default currency to currently used currency.
+
+        return NumberUtility::isLowerThan((float) $totalOrder, (float) $paymentMethod->minimal_order_value);
+    }
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isOrderTotalHigherThanMaximumAllowed($paymentMethod)
+    {
+        $totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
+        $totalOrder = Tools::convertPrice(
+            $totalOrderCost,
+            Context::getContext()->currency,
+            false
+        ); //Changes total by default currency to currently used currency.
+
+        if ((float) $paymentMethod->max_order_value <= 0) {
+            return true;
+        }
+
+        return NumberUtility::isLowerThan((float) $paymentMethod->max_order_value, (float) $totalOrder);
+    }
+}
