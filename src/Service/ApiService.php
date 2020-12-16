@@ -56,7 +56,6 @@ use MolPaymentMethod;
 use PrestaShopDatabaseException;
 use PrestaShopException;
 use PrestaShopLogger;
-use Tools;
 
 class ApiService
 {
