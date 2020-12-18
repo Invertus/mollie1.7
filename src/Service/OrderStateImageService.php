@@ -44,11 +44,11 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-    public function deleteOrderStateLogo($orderStateId)
-    {
-        $destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
-        @unlink($destination);
-    }
+	public function deleteOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
+		@unlink($destination);
+	}
 
 	public function createTemporaryOrderStateLogo($orderStateId)
 	{
@@ -57,9 +57,9 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-    public function deleteTemporaryOrderStateLogo($orderStateId)
-    {
-        $destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_'. $orderStateId . '_1.gif';
-        @unlink($destination);
-    }
+	public function deleteTemporaryOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
+		@unlink($destination);
+	}
 }
