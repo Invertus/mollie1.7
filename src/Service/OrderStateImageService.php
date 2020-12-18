@@ -50,12 +50,12 @@ class OrderStateImageService
         @unlink($destination);
     }
 
-    public function createTemporaryOrderStateLogo($orderStateId)
-    {
-        $source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
-        $destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_'. $orderStateId . '_1.gif';
-        @copy($source, $destination);
-    }
+	public function createTemporaryOrderStateLogo($orderStateId)
+	{
+		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
+		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
+		@copy($source, $destination);
+	}
 
     public function deleteTemporaryOrderStateLogo($orderStateId)
     {
