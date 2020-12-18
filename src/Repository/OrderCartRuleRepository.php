@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
  *
@@ -26,26 +27,34 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
-*}
-<table width="100%" id="body" border="0" cellpadding="0" cellspacing="0" style="margin:0;">
-    <tr>
-        <td colspan="6" class="left">
-        </td>
+ *
+ * @see       https://www.mollie.nl
+ * @codingStandardsIgnoreStart
+ */
 
-        <td colspan="6" rowspan="6" class="right">
-            <table id="payment-tab" width="100%" class="right">
-                <tr class="bold">
-                    <td class="grey" width="50%">
-                        {l s='Payment Fee' mod='mollie'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$orderFeeAmountDisplay|escape:'html':'UTF-8'}
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+namespace Mollie\Repository;
+
+use Db;
+use OrderCartRule;
+
+final class OrderCartRuleRepository extends AbstractRepository implements OrderCartRuleRepositoryInterface
+{
+	public function __construct()
+	{
+		parent::__construct(OrderCartRule::class);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function decreaseCustomerUsedCartRuleQuantity($orderId, $cartRuleId)
+	{
+		return (bool) Db::getInstance()->delete(
+			'order_cart_rule',
+			'id_order= ' . (int) $orderId . ' AND id_cart_rule= ' . (int) $cartRuleId,
+			1
+		);
+	}
+}

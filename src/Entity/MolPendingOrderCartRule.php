@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
  *
@@ -26,26 +27,63 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
-*}
-<table width="100%" id="body" border="0" cellpadding="0" cellspacing="0" style="margin:0;">
-    <tr>
-        <td colspan="6" class="left">
-        </td>
+ *
+ * @see       https://www.mollie.nl
+ * @codingStandardsIgnoreStart
+ */
+class MolPendingOrderCartRule extends ObjectModel
+{
+	/**
+	 * @var int
+	 */
+	public $id_order;
 
-        <td colspan="6" rowspan="6" class="right">
-            <table id="payment-tab" width="100%" class="right">
-                <tr class="bold">
-                    <td class="grey" width="50%">
-                        {l s='Payment Fee' mod='mollie'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$orderFeeAmountDisplay|escape:'html':'UTF-8'}
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+	/**
+	 * @var int
+	 */
+	public $id_cart_rule;
+
+	/**
+	 * @var int
+	 */
+	public $id_order_invoice;
+
+	/**
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * @var float
+	 */
+	public $value_tax_incl;
+
+	/**
+	 * @var float
+	 */
+	public $value_tax_excl;
+
+	/**
+	 * @var bool
+	 */
+	public $free_shipping;
+
+	/**
+	 * @var array
+	 */
+	public static $definition = [
+		'table' => 'mol_pending_order_cart_rule',
+		'primary' => 'id_mol_pending_order_cart_rule',
+		'fields' => [
+			'id_order' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'id_cart_rule' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'id_order_invoice' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'name' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
+			'value_tax_incl' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+			'value_tax_excl' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+			'free_shipping' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool'],
+		],
+	];
+}

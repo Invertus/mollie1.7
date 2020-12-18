@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
  *
@@ -26,26 +27,41 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
-*}
-<table width="100%" id="body" border="0" cellpadding="0" cellspacing="0" style="margin:0;">
-    <tr>
-        <td colspan="6" class="left">
-        </td>
+ *
+ * @see       https://www.mollie.nl
+ * @codingStandardsIgnoreStart
+ */
 
-        <td colspan="6" rowspan="6" class="right">
-            <table id="payment-tab" width="100%" class="right">
-                <tr class="bold">
-                    <td class="grey" width="50%">
-                        {l s='Payment Fee' mod='mollie'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$orderFeeAmountDisplay|escape:'html':'UTF-8'}
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+namespace Mollie\Repository;
+
+use MolPendingOrderCartRule;
+use Order;
+use OrderCartRule;
+
+interface PendingOrderCartRuleRepositoryInterface extends ReadOnlyRepositoryInterface
+{
+	/**
+	 * @param int $orderId
+	 * @param int $cartRuleId
+	 */
+	public function removePreviousPendingOrderCartRule($orderId, $cartRuleId);
+
+	/**
+	 * Used to create MolPendingOrderCartRule from OrderCartRule to be used later on successful payment to increase customer used cart rule quantity.
+	 *
+	 * @param int $orderId
+	 * @param int $cartRuleId
+	 * @param OrderCartRule $orderCartRule
+	 */
+	public function createPendingOrderCartRule($orderId, $cartRuleId, OrderCartRule $orderCartRule);
+
+	/**
+	 * Used to create OrderCartRule from MolPendingOrderCartRule
+	 *
+	 * @param Order $order
+	 * @param MolPendingOrderCartRule $pendingOrderCartRule
+	 */
+	public function usePendingOrderCartRule(Order $order, MolPendingOrderCartRule $pendingOrderCartRule);
+}

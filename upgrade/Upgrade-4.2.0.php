@@ -35,6 +35,7 @@
 
 use Mollie\Config\Config;
 use Mollie\Install\Installer;
+use Mollie\Service\OrderStateImageService;
 
 if (!defined('_PS_VERSION_')) {
 	exit;
@@ -58,6 +59,35 @@ function upgrade_module_4_2_0($module)
 
 	$module->registerHook('actionOrderGridQueryBuilderModifier');
 	$module->registerHook('actionOrderGridDefinitionModifier');
+
+	Db::getInstance()->execute(' CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mol_pending_order_cart_rule` (
+            `id_mol_pending_order_cart_rule` INT(64) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            `id_order` VARCHAR(64) NOT NULL,
+            `id_cart_rule` VARCHAR(64) NOT NULL,
+            `name` VARCHAR(64) NOT NULL,
+            `value_tax_incl` decimal(20,6) NOT NULL,
+            `value_tax_excl` decimal(20,6) NOT NULL,
+            `free_shipping` TINYINT(1) NOT NULL,
+            `id_order_invoice` INT(64) NOT NULL
+        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
+	);
+
+	/**
+	 * @var OrderStateImageService $imageService
+	 */
+	$imageService = $module->getMollieContainer(OrderStateImageService::class);
+	$mollieOrderStatuses = Config::getMollieOrderStatuses();
+
+	foreach ($mollieOrderStatuses as $mollieOrderStatus) {
+		$orderStatusId = Configuration::get($mollieOrderStatus);
+
+		if ($orderStatusId) {
+			$imageService->deleteOrderStateLogo($orderStatusId);
+			$imageService->deleteTemporaryOrderStateLogo($orderStatusId);
+			$imageService->createOrderStateLogo($orderStatusId);
+			$imageService->createTemporaryOrderStateLogo($orderStatusId);
+		}
+	}
 
 	return true;
 }

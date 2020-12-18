@@ -338,7 +338,7 @@ class Mollie extends PaymentModule
 		Media::addJsDef([
 			'description_message' => $this->l('Description cannot be empty'),
 			'profile_id_message' => $this->l('Wrong profile ID'),
-			'profile_id_message_empty' => $this->l('Profile ID cannot be empty'),
+			'profile_id_message_empty' => addslashes($this->l('Profile ID cannot be empty')),
 			'payment_api' => Mollie\Config\Config::MOLLIE_PAYMENTS_API,
 			'ajaxUrl' => $this->context->link->getAdminLink('AdminMollieAjax'),
 		]);
@@ -552,7 +552,7 @@ class Mollie extends PaymentModule
 		$this->context->controller->addCSS($this->getPathUri() . 'views/css/admin/menu.css');
 
 		$html = '';
-		if ($this->context->controller->controller_name === 'AdminOrders' || $this->context->controller instanceof AdminOrdersController) {
+		if ($this->context->controller->controller_name === 'AdminOrders') {
 			$this->context->smarty->assign([
 				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=mollie&ajax=1',
 				'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int) Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),

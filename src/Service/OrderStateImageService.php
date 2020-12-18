@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
  *
@@ -26,26 +27,51 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
-*}
-<table width="100%" id="body" border="0" cellpadding="0" cellspacing="0" style="margin:0;">
-    <tr>
-        <td colspan="6" class="left">
-        </td>
+ *
+ * @see       https://www.mollie.nl
+ */
 
-        <td colspan="6" rowspan="6" class="right">
-            <table id="payment-tab" width="100%" class="right">
-                <tr class="bold">
-                    <td class="grey" width="50%">
-                        {l s='Payment Fee' mod='mollie'}
-                    </td>
-                    <td class="white" width="50%">
-                        {$orderFeeAmountDisplay|escape:'html':'UTF-8'}
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+namespace Mollie\Service;
+
+class OrderStateImageService
+{
+	/**
+	 * @var int
+	 */
+	public function createOrderStateLogo($orderStateId)
+	{
+		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
+		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
+		@copy($source, $destination);
+	}
+
+	/**
+	 * @var int
+	 */
+	public function deleteOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
+		@unlink($destination);
+	}
+
+	/**
+	 * @var int
+	 */
+	public function createTemporaryOrderStateLogo($orderStateId)
+	{
+		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
+		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
+		@copy($source, $destination);
+	}
+
+	/**
+	 * @var int
+	 */
+	public function deleteTemporaryOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
+		@unlink($destination);
+	}
+}

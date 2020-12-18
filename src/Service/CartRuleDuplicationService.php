@@ -35,12 +35,45 @@
 
 namespace Mollie\Service;
 
-class ImageService
+use CartRule;
+use Context;
+use Mollie\Repository\CartRuleRepository;
+
+class CartRuleDuplicationService
 {
-	public function createOrderStateLogo($orderStateId)
+	/**
+	 * @var CartRuleRepository
+	 */
+	private $cartRuleRepository;
+
+	public function __construct(CartRuleRepository $cartRuleRepository)
 	{
-		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
-		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
-		@copy($source, $destination);
+		$this->cartRuleRepository = $cartRuleRepository;
+	}
+
+	/**
+	 * @param array $cartRules
+	 *
+	 * @return bool
+	 *
+	 * @throws \PrestaShopException
+	 */
+	public function restoreCartRules($cartRules = [])
+	{
+		if (empty($cartRules)) {
+			return true;
+		}
+		$context = Context::getContext();
+
+		foreach ($cartRules as $cartRuleContent) {
+			/** @var CartRule $cartRule */
+			$cartRule = $this->cartRuleRepository->findOneBy(['id_cart_rule' => (int) $cartRuleContent['id_cart_rule']]);
+
+			if ($cartRule->checkValidity($context, false, false)) {
+				$context->cart->addCartRule($cartRule->id);
+			}
+		}
+
+		return true;
 	}
 }
