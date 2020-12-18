@@ -37,9 +37,9 @@ namespace Mollie\Service;
 
 class OrderStateImageService
 {
-    /**
-     * @var int $orderStateId
-     */
+	/**
+	 * @var int
+	 */
 	public function createOrderStateLogo($orderStateId)
 	{
 		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
@@ -47,18 +47,18 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-    /**
-     * @var int $orderStateId
-     */
-    public function deleteOrderStateLogo($orderStateId)
-    {
-        $destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
-        @unlink($destination);
-    }
+	/**
+	 * @var int
+	 */
+	public function deleteOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
+		@unlink($destination);
+	}
 
-    /**
-     * @var int $orderStateId
-     */
+	/**
+	 * @var int
+	 */
 	public function createTemporaryOrderStateLogo($orderStateId)
 	{
 		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
@@ -66,12 +66,12 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-    /**
-     * @var int $orderStateId
-     */
-    public function deleteTemporaryOrderStateLogo($orderStateId)
-    {
-        $destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_'. $orderStateId . '_1.gif';
-        @unlink($destination);
-    }
+	/**
+	 * @var int
+	 */
+	public function deleteTemporaryOrderStateLogo($orderStateId)
+	{
+		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
+		@unlink($destination);
+	}
 }
