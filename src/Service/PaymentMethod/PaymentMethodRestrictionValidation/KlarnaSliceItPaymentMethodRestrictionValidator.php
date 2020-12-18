@@ -43,23 +43,23 @@ use MolPaymentMethod;
 
 class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    /**
-     * @var PaymentMethodCountryProviderInterface
-     */
-    private $paymentMethodCountryProvider;
+	/**
+	 * @var PaymentMethodCountryProviderInterface
+	 */
+	private $paymentMethodCountryProvider;
 
-    public function __construct(
-        LegacyContext $context,
-        PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
-    ) {
-        $this->context = $context;
-        $this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
-    }
+	public function __construct(
+		LegacyContext $context,
+		PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
+	) {
+		$this->context = $context;
+		$this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -81,25 +81,25 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
 		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_SLICE_IT;
 	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
-    {
-        if (!$this->context->getCountryIsoCode()) {
-            return false;
-        }
-        $supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
+	{
+		if (!$this->context->getCountryIsoCode()) {
+			return false;
+		}
+		$supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
 
-        if (!$supportedCountries) {
-            return true;
-        }
+		if (!$supportedCountries) {
+			return true;
+		}
 
-        return in_array(
-            strtolower($this->context->getCountryIsoCode()),
-            array_map('strtolower', $supportedCountries)
-        );
-    }
+		return in_array(
+			strtolower($this->context->getCountryIsoCode()),
+			array_map('strtolower', $supportedCountries)
+		);
+	}
 }

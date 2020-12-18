@@ -40,19 +40,19 @@ use MolPaymentMethod;
 
 interface OrderTotalRestrictionProviderInterface
 {
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param int $currencyId
-     *
-     * @return array|null
-     */
-    public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $currencyId);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param int $currencyId
+	 *
+	 * @return array|null
+	 */
+	public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $currencyId);
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param int $currencyId
-     *
-     * @return array|null
-     */
-    public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $currencyId);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param int $currencyId
+	 *
+	 * @return array|null
+	 */
+	public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $currencyId);
 }

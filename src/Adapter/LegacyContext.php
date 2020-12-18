@@ -40,38 +40,38 @@ use Context;
 
 class LegacyContext
 {
-    public function getContext()
-    {
-        return Context::getContext();
-    }
+	public function getContext()
+	{
+		return Context::getContext();
+	}
 
-    public function getCurrencyIsoCode()
-    {
-        return $this->getContext()->currency->iso_code;
-    }
+	public function getCurrencyIsoCode()
+	{
+		return $this->getContext()->currency->iso_code;
+	}
 
-    public function getCountryIsoCode()
-    {
-        return $this->getContext()->country->iso_code;
-    }
+	public function getCountryIsoCode()
+	{
+		return $this->getContext()->country->iso_code;
+	}
 
-    public function getCountryId()
-    {
-        return $this->getContext()->country->id;
-    }
+	public function getCountryId()
+	{
+		return $this->getContext()->country->id;
+	}
 
-    public function getCurrencyId()
-    {
-        return $this->getContext()->currency->id;
-    }
+	public function getCurrencyId()
+	{
+		return $this->getContext()->currency->id;
+	}
 
-    public function getCart()
-    {
-        return $this->getContext()->cart;
-    }
+	public function getCart()
+	{
+		return $this->getContext()->cart;
+	}
 
-    public function getMobileDetect()
-    {
-        return $this->getContext()->getMobileDetect();
-    }
+	public function getMobileDetect()
+	{
+		return $this->getContext()->getMobileDetect();
+	}
 }

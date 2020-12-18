@@ -41,22 +41,23 @@ use Mollie\Adapter\LegacyContext;
 
 class OrderTotalProvider implements OrderTotalProviderInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    public function __construct(LegacyContext $context)
-    {
-        $this->context = $context;
-    }
+	public function __construct(LegacyContext $context)
+	{
+		$this->context = $context;
+	}
 
-    /**
-     * @return float
-     * @throws Exception
-     */
-    public function provideOrderTotal()
-    {
-        return (float) $this->context->getCart()->getOrderTotal();
-    }
+	/**
+	 * @return float
+	 *
+	 * @throws Exception
+	 */
+	public function provideOrderTotal()
+	{
+		return (float) $this->context->getCart()->getOrderTotal();
+	}
 }

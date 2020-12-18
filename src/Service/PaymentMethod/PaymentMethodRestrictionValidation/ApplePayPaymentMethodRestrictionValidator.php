@@ -42,15 +42,15 @@ use Mollie\Config\Config;
 
 class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    public function __construct(LegacyContext $context)
-    {
-        $this->context = $context;
-    }
+	public function __construct(LegacyContext $context)
+	{
+		$this->context = $context;
+	}
 
 	/**
 	 * {@inheritDoc}

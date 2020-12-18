@@ -41,8 +41,8 @@ use MolPaymentMethod;
 
 class PaymentMethodCountryProvider implements PaymentMethodCountryProviderInterface
 {
-    public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod)
-    {
-        return Config::$defaultMethodAvailability[$paymentMethod->getPaymentMethodName()] ?: null;
-    }
+	public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod)
+	{
+		return Config::$defaultMethodAvailability[$paymentMethod->getPaymentMethodName()] ?: null;
+	}
 }

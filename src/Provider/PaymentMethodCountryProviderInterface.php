@@ -40,10 +40,10 @@ use MolPaymentMethod;
 
 interface PaymentMethodCountryProviderInterface
 {
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return null|array
-     */
-    public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return array|null
+	 */
+	public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod);
 }
