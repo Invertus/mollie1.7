@@ -34,72 +34,15 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Provider;
 
-use Context;
-use Mollie\Adapter\LegacyContext;
 use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProvider;
-use Mollie\Provider\PaymentMethodCountryProviderInterface;
 use MolPaymentMethod;
-use Tools;
 
-class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+final class PaymentMethodCountryProvider implements PaymentMethodCountryProviderInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
-
-    /**
-     * @var PaymentMethodCountryProviderInterface
-     */
-    private $paymentMethodCountryProvider;
-
-    public function __construct(
-        LegacyContext $context,
-        PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
-    ) {
-        $this->context = $context;
-        $this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function supports($paymentMethod)
+    public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod)
     {
-        return $paymentMethod->getPaymentName() == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if (!$this->isContextCountryCodeSupported($paymentMethod)) {
-			return false;
-		}
-
-		return true;
-	}
-
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
-    {
-        if (!$this->context->getCountryIsoCode()) {
-            return false;
-        }
-        $supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
-
-        if (!$supportedCountries) {
-            return true;
-        }
-
-        return in_array($this->context->getCountryIsoCode(), $supportedCountries);
+        return Config::$defaultMethodAvailability[$paymentMethod->getPaymentName()] ?: null;
     }
 }

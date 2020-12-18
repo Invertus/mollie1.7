@@ -34,61 +34,11 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Provider;
 
-use Configuration;
-use Mollie\Adapter\LegacyContext;
-use Mollie\Config\Config;
+use MolPaymentMethod;
 
-class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+interface PaymentMethodCurrencyProviderInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
-
-    public function __construct(LegacyContext $context)
-    {
-        $this->context = $context;
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if (!$this->isSslEnabledEverywhere()) {
-			return false;
-		}
-
-		if (!$this->isPaymentMethodInCookie()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function supports($paymentMethod)
-	{
-		return $paymentMethod->getPaymentName() == Config::APPLEPAY;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function isSslEnabledEverywhere()
-	{
-		return (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function isPaymentMethodInCookie()
-	{
-		return $_COOKIE['isApplePayMethod'] !== '0';
-	}
+    public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod);
 }

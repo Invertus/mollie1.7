@@ -36,14 +36,39 @@
 
 namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
-use Context;
-use Mollie\Config\Config;
-use Mollie\Utility\NumberUtility;
+use Mollie\Adapter\LegacyContext;
+use Mollie\Provider\PaymentMethodCurrencyProviderInterface;
+use Mollie\Service\OrderTotalServiceInterface;
 use MolPaymentMethod;
 use Tools;
 
 class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
+    /**
+     * @var LegacyContext
+     */
+    private $context;
+
+    /**
+     * @var OrderTotalServiceInterface
+     */
+    private $orderTotalService;
+
+    /**
+     * @var PaymentMethodCurrencyProviderInterface
+     */
+    private $paymentMethodCurrenciesProvider;
+
+    public function __construct(
+        LegacyContext $context,
+        OrderTotalServiceInterface $orderTotalService,
+        PaymentMethodCurrencyProviderInterface $paymentMethodCurrenciesProvider
+    ) {
+        $this->context = $context;
+        $this->orderTotalService = $orderTotalService;
+        $this->paymentMethodCurrenciesProvider = $paymentMethodCurrenciesProvider;
+    }
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -87,8 +112,18 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isCurrencyOptionDefinedForPaymentMethod($paymentMethod)
 	{
-		return isset(Config::$methodCurrencies[$paymentMethod->method_name]);
+	    return !empty($this->paymentMethodCurrenciesProvider->provideAvailableCurrenciesByPaymentMethod($paymentMethod));
 	}
+
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return bool
+     */
+    private function isPaymentMethodEnabled($paymentMethod)
+    {
+        return (bool) $paymentMethod->enabled;
+    }
 
 	/**
 	 * @param MolPaymentMethod $paymentMethod
@@ -97,8 +132,8 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isCurrencySupportedByPaymentMethod($paymentMethod)
 	{
-		$currencyCode = Tools::strtolower(Context::getContext()->currency->iso_code);
-		$supportedCurrencies = Config::$methodCurrencies[$paymentMethod->method_name];
+        $supportedCurrencies = $this->paymentMethodCurrenciesProvider->provideAvailableCurrenciesByPaymentMethod($paymentMethod);
+		$currencyCode = Tools::strtolower($this->context->getCurrencyIsoCode());
 
 		return in_array($currencyCode, $supportedCurrencies);
 	}
@@ -108,26 +143,11 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 *
 	 * @return bool
 	 */
-	private function isPaymentMethodEnabled($paymentMethod)
-	{
-		return (bool) $paymentMethod->enabled;
-	}
-
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 *
-	 * @return bool
-	 */
 	private function isOrderTotalLowerThanMinimumAllowed($paymentMethod)
 	{
-		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
-		$totalOrder = Tools::convertPrice(
-			$totalOrderCost,
-			Context::getContext()->currency,
-			false
-		); //Changes total by default currency to currently used currency.
+        $orderTotal =  $this->context->getCart()->getOrderTotal(true);
 
-		return NumberUtility::isLowerThan((float) $totalOrder, (float) $paymentMethod->minimal_order_value);
+	    return $this->orderTotalService->isOrderTotalLowerThanMinimumAllowed($paymentMethod, $orderTotal);
 	}
 
 	/**
@@ -137,17 +157,8 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isOrderTotalHigherThanMaximumAllowed($paymentMethod)
 	{
-		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
-		$totalOrder = Tools::convertPrice(
-			$totalOrderCost,
-			Context::getContext()->currency,
-			false
-		); //Changes total by default currency to currently used currency.
+        $orderTotal =  $this->context->getCart()->getOrderTotal(true);
 
-		if ((float) $paymentMethod->max_order_value <= 0) {
-			return true;
-		}
-
-		return NumberUtility::isLowerThan((float) $paymentMethod->max_order_value, (float) $totalOrder);
+        return $this->orderTotalService->isOrderTotalHigherThanMaximumAllowed($paymentMethod, $orderTotal);
 	}
 }

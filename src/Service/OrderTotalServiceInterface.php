@@ -34,41 +34,25 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Service;
 
-use Context;
-use Mollie\Config\Config;
-use Mollie\Utility\NumberUtility;
+use MolPaymentMethod;
 
-class VoucherPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+interface OrderTotalServiceInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if ($this->isOrderTotalLowerThanMinimumAllowed()) {
-			return false;
-		}
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     * @param float $orderTotal
+     *
+     * @return bool
+     */
+    public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
 
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function supports($paymentMethod)
-	{
-		return $paymentMethod->id_method == Config::MOLLIE_VOUCHER_METHOD_ID;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function isOrderTotalLowerThanMinimumAllowed()
-	{
-		$totalOrderCost = Context::getContext()->cart->getOrderTotal(true);
-
-		return NumberUtility::isLowerThan($totalOrderCost, Config::MOLLIE_VOUCHER_MINIMAL_AMOUNT);
-	}
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     * @param float $orderTotal
+     *
+     * @return bool
+     */
+    public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
 }

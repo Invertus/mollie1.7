@@ -169,3 +169,18 @@ services:
     class: Mollie\Service\PaymentMethodOrderRestrictionUpdater
     arguments:
       - '@Mollie\Service\ApiService'
+
+  Mollie\Service\OrderTotalService:
+    class: Mollie\Service\OrderTotalService
+    arguments:
+      - '@=service("adapter.context")'
+      - '@Mollie\Provider\OrderTotalRestrictionProvider'
+
+  Mollie\Provider\OrderTotalRestrictionProvider:
+    class: Mollie\Provider\OrderTotalRestrictionProvider
+
+  Mollie\Provider\PaymentMethodCurrencyProvider:
+    class: Mollie\Provider\PaymentMethodCurrencyProvider
+
+  Mollie\Provider\PaymentMethodCountryProvider:
+    class: Mollie\Provider\PaymentMethodCountryProvider

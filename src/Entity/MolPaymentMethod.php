@@ -33,6 +33,7 @@
  * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
+
 class MolPaymentMethod extends ObjectModel
 {
 	/**
@@ -138,4 +139,9 @@ class MolPaymentMethod extends ObjectModel
 			'position' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
 		],
 	];
+
+	public function getPaymentName()
+    {
+        return $this->id_method;
+    }
 }

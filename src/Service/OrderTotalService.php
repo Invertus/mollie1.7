@@ -34,72 +34,65 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Service;
 
-use Context;
 use Mollie\Adapter\LegacyContext;
-use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProvider;
-use Mollie\Provider\PaymentMethodCountryProviderInterface;
+use Mollie\Provider\OrderTotalRestrictionProvider;
+use Mollie\Utility\NumberUtility;
 use MolPaymentMethod;
-use Tools;
 
-class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+class OrderTotalService implements OrderTotalServiceInterface
 {
     /**
      * @var LegacyContext
      */
-    private $context;
+    private $legacyContext;
 
     /**
-     * @var PaymentMethodCountryProviderInterface
+     * @var OrderTotalRestrictionProvider
      */
-    private $paymentMethodCountryProvider;
+    private $orderTotalRestrictionProvider;
 
     public function __construct(
-        LegacyContext $context,
-        PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
+        LegacyContext $legacyContext,
+        OrderTotalRestrictionProvider $orderTotalRestrictionProvider
     ) {
-        $this->context = $context;
-        $this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
+        $this->legacyContext = $legacyContext;
+        $this->orderTotalRestrictionProvider = $orderTotalRestrictionProvider;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function supports($paymentMethod)
-    {
-        return $paymentMethod->getPaymentName() == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
-    }
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if (!$this->isContextCountryCodeSupported($paymentMethod)) {
-			return false;
-		}
-
-		return true;
-	}
 
     /**
      * @param MolPaymentMethod $paymentMethod
+     * @param float $orderTotal
      *
      * @return bool
      */
-    private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
+    public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
     {
-        if (!$this->context->getCountryIsoCode()) {
-            return false;
-        }
-        $supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
+        $minimalOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMinimumRestriction(
+            $paymentMethod,
+            $this->legacyContext->getCurrencyId()
+        );
 
-        if (!$supportedCountries) {
-            return true;
-        }
+        return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal); //TODO change order total by payment.
+    }
 
-        return in_array($this->context->getCountryIsoCode(), $supportedCountries);
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     * @param float $orderTotal
+     *
+     * @return bool
+     */
+    public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
+    {
+        $maximumOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMaximumRestriction(
+            $paymentMethod,
+            $this->legacyContext->getCurrencyId()
+        );
+
+//        if (maxOrderValue <= 0) { //If lower than 0, return false.
+//            return false;
+//        }
+        return NumberUtility::isLowerThan((float) $maximumOrderTotal, (float) $orderTotal);  //TODO change order total by payment.
     }
 }

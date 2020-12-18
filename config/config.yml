@@ -33,3 +33,6 @@ services:
   Mollie\Install\DatabaseTableInstaller:
 
   Mollie\Install\DatabaseTableUninstaller:
+
+  adapter.context:
+    class: Invertus\SaferPay\Adapter\LegacyContext

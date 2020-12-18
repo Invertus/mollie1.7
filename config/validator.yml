@@ -10,26 +10,33 @@ services:
 
   Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\BasePaymentMethodRestrictionValidator:
     class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\BasePaymentMethodRestrictionValidator
+    arguments:
+      - '@=service("adapter.context")'
+      - '@Mollie\Service\OrderTotalService'
+      - '@Mollie\Provider\PaymentMethodCurrencyProvider'
     tags:
       - { name: mollie.paymentmethodrestriction }
 
     Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\ApplePayPaymentMethodRestrictionValidator:
       class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\ApplePayPaymentMethodRestrictionValidator
+      arguments:
+        - '@=service("adapter.context")'
       tags:
         - { name: mollie.paymentmethodrestriction }
 
     Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\KlarnaSliceItPaymentMethodRestrictionValidator:
       class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\KlarnaSliceItPaymentMethodRestrictionValidator
+      arguments:
+        - '@=service("adapter.context")'
+        - '@Mollie\Provider\PaymentMethodCountryProvider'
       tags:
         - { name: mollie.paymentmethodrestriction }
 
     Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\KlarnaPayLaterPaymentMethodRestrictionValidator:
       class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\KlarnaPayLaterPaymentMethodRestrictionValidator
-      tags:
-        - { name: mollie.paymentmethodrestriction }
-
-    Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\VoucherPaymentMethodRestrictionValidator:
-      class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\VoucherPaymentMethodRestrictionValidator
+      arguments:
+        - '@=service("adapter.context")'
+        - '@Mollie\Provider\PaymentMethodCountryProvider'
       tags:
         - { name: mollie.paymentmethodrestriction }
 

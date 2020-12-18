@@ -34,6 +34,11 @@
       "src/"
     ]
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Mollie\\Tests\\": "tests/"
+    }
+  },
   "config": {
     "platform": {
       "php": "5.6"

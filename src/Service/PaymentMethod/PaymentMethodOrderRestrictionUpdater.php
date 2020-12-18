@@ -27,79 +27,53 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
  * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @package    Mollie
+ * @link       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Service;
 
-use Context;
-use Mollie\Adapter\LegacyContext;
-use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProvider;
-use Mollie\Provider\PaymentMethodCountryProviderInterface;
+use MolliePrefix\Mollie\Api\MollieApiClient;
 use MolPaymentMethod;
-use Tools;
+use MolPaymentMethodOrderTotalRestriction;
+use PrestaShopException;
 
-class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+class PaymentMethodOrderRestrictionUpdater
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+    private $apiService;
 
-    /**
-     * @var PaymentMethodCountryProviderInterface
-     */
-    private $paymentMethodCountryProvider;
-
-    public function __construct(
-        LegacyContext $context,
-        PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
-    ) {
-        $this->context = $context;
-        $this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function supports($paymentMethod)
+    public function __construct(ApiService $apiService)
     {
-        return $paymentMethod->getPaymentName() == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
+        $this->apiService = $apiService;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if (!$this->isContextCountryCodeSupported($paymentMethod)) {
-			return false;
-		}
-
-		return true;
-	}
-
     /**
+     * @param MollieApiClient $mollieApiClient
      * @param MolPaymentMethod $paymentMethod
+     * @param int $currencyId
      *
      * @return bool
+     * @throws PrestaShopException
      */
-    private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
+    public function update(MollieApiClient $mollieApiClient, MolPaymentMethod $paymentMethod, $currencyId)
     {
-        if (!$this->context->getCountryIsoCode()) {
-            return false;
-        }
-        $supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
+        $config = $this->apiService->getPaymentMethodOrderTotalRestriction(
+            $mollieApiClient,
+            $paymentMethod->id_method,
+            \Context::getContext()->currency->iso_code
+        );
 
-        if (!$supportedCountries) {
+        if (empty($config)) {
             return true;
         }
+        $paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
+        $paymentMethodOrderRestriction->currencyId = $currencyId;
+        $paymentMethodOrderRestriction->maximumOrderTotal = $config['minimumAmount']['value'];
+        $paymentMethodOrderRestriction->minimalOrderTotal = $config['maximumAmount']['value'];
+        $paymentMethodOrderRestriction->save();
 
-        return in_array($this->context->getCountryIsoCode(), $supportedCountries);
+        return true;
     }
 }

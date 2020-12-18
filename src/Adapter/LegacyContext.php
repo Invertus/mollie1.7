@@ -34,61 +34,44 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Adapter;
 
-use Configuration;
-use Mollie\Adapter\LegacyContext;
-use Mollie\Config\Config;
+use Context;
 
-class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+class LegacyContext
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
-
-    public function __construct(LegacyContext $context)
+    public function getContext()
     {
-        $this->context = $context;
+        return Context::getContext();
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid($paymentMethod)
-	{
-		if (!$this->isSslEnabledEverywhere()) {
-			return false;
-		}
+    public function getCurrencyIsoCode()
+    {
+        return $this->getContext()->currency->iso_code;
+    }
 
-		if (!$this->isPaymentMethodInCookie()) {
-			return false;
-		}
+    public function getCountryIsoCode()
+    {
+        return $this->getContext()->country->iso_code;
+    }
 
-		return true;
-	}
+    public function getCountryId()
+    {
+        return $this->getContext()->country->id;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function supports($paymentMethod)
-	{
-		return $paymentMethod->getPaymentName() == Config::APPLEPAY;
-	}
+    public function getCurrencyId()
+    {
+        return $this->getContext()->currency->id;
+    }
 
-	/**
-	 * @return bool
-	 */
-	private function isSslEnabledEverywhere()
-	{
-		return (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
-	}
+    public function getCart()
+    {
+        return $this->getContext()->cart;
+    }
 
-	/**
-	 * @return bool
-	 */
-	private function isPaymentMethodInCookie()
-	{
-		return $_COOKIE['isApplePayMethod'] !== '0';
-	}
+    public function getMobileDetect()
+    {
+        return $this->getContext()->getMobileDetect();
+    }
 }
