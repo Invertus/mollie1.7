@@ -39,10 +39,10 @@ namespace Mollie\Provider;
 use Mollie\Config\Config;
 use MolPaymentMethod;
 
-final class PaymentMethodCountryProvider implements PaymentMethodCountryProviderInterface
+class PaymentMethodCountryProvider implements PaymentMethodCountryProviderInterface
 {
     public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod)
     {
-        return Config::$defaultMethodAvailability[$paymentMethod->getPaymentName()] ?: null;
+        return Config::$defaultMethodAvailability[$paymentMethod->getPaymentMethodName()] ?: null;
     }
 }

@@ -163,7 +163,7 @@ class ApiService
 		$isSSLEnabled = $this->configurationAdapter->get('PS_SSL_ENABLED_EVERYWHERE');
 		foreach ($apiMethods as $apiMethod) {
 			$tipEnableSSL = false;
-			if (Config::APPLEPAY === $apiMethod->id && !$isSSLEnabled) {
+			if (Config::MOLLIE_METHOD_ID_APPLE_PAY === $apiMethod->id && !$isSSLEnabled) {
 				$notAvailable[] = $apiMethod->id;
 				$tipEnableSSL = true;
 			}

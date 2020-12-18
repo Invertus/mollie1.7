@@ -73,7 +73,7 @@ class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrict
 	 */
 	public function supports($paymentMethod)
 	{
-		return $paymentMethod->getPaymentName() == Config::APPLEPAY;
+		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_APPLE_PAY;
 	}
 
 	/**

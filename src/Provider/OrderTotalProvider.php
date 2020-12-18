@@ -36,17 +36,27 @@
 
 namespace Mollie\Provider;
 
-use MolPaymentMethod;
+use Exception;
+use Mollie\Adapter\LegacyContext;
 
-class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInterface
+class OrderTotalProvider implements OrderTotalProviderInterface
 {
-    public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $currencyId)
+    /**
+     * @var LegacyContext
+     */
+    private $context;
+
+    public function __construct(LegacyContext $context)
     {
-        return 0; //TODO have logic that returns from db according to paymentmethod and currency Id.
+        $this->context = $context;
     }
 
-    public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $currencyId)
+    /**
+     * @return float
+     * @throws Exception
+     */
+    public function provideOrderTotal()
     {
-        return 0; //TODO have logic that returns from db according to paymentmethod id and currency Id.
+        return (float) $this->context->getCart()->getOrderTotal();
     }
 }

@@ -38,7 +38,6 @@ namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
 use Mollie\Adapter\LegacyContext;
 use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProvider;
 use Mollie\Provider\PaymentMethodCountryProviderInterface;
 use MolPaymentMethod;
 
@@ -79,7 +78,7 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
 	 */
 	public function supports($paymentMethod)
 	{
-		return $paymentMethod->getPaymentName() == Config::MOLLIE_KLARNA_SLICE_IT_METHOD_ID;
+		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_SLICE_IT;
 	}
 
     /**
@@ -98,6 +97,9 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
             return true;
         }
 
-        return in_array($this->context->getCountryIsoCode(), $supportedCountries);
+        return in_array(
+            strtolower($this->context->getCountryIsoCode()),
+            array_map('strtolower', $supportedCountries)
+        );
     }
 }

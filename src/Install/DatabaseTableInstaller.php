@@ -133,10 +133,12 @@ final class DatabaseTableInstaller implements InstallerInterface
                     ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
         ';
 
+		//TODO add this to upgrades in whatever version this goes to.
 		$sql[] = '
             CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mol_payment_method_order_total_restriction` (
                 `id_payment_method_order_total_restriction`  INT(64)  NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                `currencyId` INT(64) NOT NULL,
+                `id_payment_method` INT(64) NOT NULL
+                `id_currency` INT(64) NOT NULL,
                 `minimalOrderTotal` decimal(20,6),
                 `maximumOrderTotal` decimal(20,6)
             ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;

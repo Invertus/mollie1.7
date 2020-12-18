@@ -69,7 +69,7 @@ class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRe
      */
     public function supports($paymentMethod)
     {
-        return $paymentMethod->getPaymentName() == Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID;
+        return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER;
     }
 
 	/**
@@ -100,6 +100,9 @@ class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRe
             return true;
         }
 
-        return in_array($this->context->getCountryIsoCode(), $supportedCountries);
+        return in_array(
+            strtolower($this->context->getCountryIsoCode()),
+            array_map('strtolower', $supportedCountries)
+        );
     }
 }

@@ -70,7 +70,7 @@ class OrderStatusUtility
 			return $transaction->status;
 		}
 
-		$isVoucher = Config::MOLLIE_VOUCHER_METHOD_ID === $transaction->method;
+		$isVoucher = Config::MOLLIE_METHOD_ID_VOUCHER === $transaction->method;
 		$remainingAmount = 0;
 		if ($isVoucher) {
 			/** @var PaymentCollection $payments */

@@ -247,7 +247,7 @@ class TransactionService
 			$payments = $transaction->payments();
 
 			foreach ($payments as $payment) {
-				if (Config::MOLLIE_VOUCHER_METHOD_ID === $transaction->method) {
+				if (Config::MOLLIE_METHOD_ID_VOUCHER === $transaction->method) {
 					$transactionInfos = $this->getVoucherTransactionInfo($payment, $transactionInfos);
 					$transactionInfos = $this->getVoucherRemainderTransactionInfo($payment, $transactionInfos);
 				} else {

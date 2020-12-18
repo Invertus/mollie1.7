@@ -176,6 +176,11 @@ services:
       - '@=service("adapter.context")'
       - '@Mollie\Provider\OrderTotalRestrictionProvider'
 
+  Mollie\Provider\OrderTotalProvider:
+    class: Mollie\Provider\OrderTotalProvider
+    arguments:
+      - '@=service("adapter.context")'
+
   Mollie\Provider\OrderTotalRestrictionProvider:
     class: Mollie\Provider\OrderTotalRestrictionProvider
 

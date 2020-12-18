@@ -18,12 +18,12 @@ class ApplePayPaymentRestrictionValidationTest extends UnitTestCase
     public function getApplePayPaymentRestrictionSupportedDataProvider()
     {
         return [
-            [
-                'paymentMethod' => $this->mockPaymentMethod(Config::APPLEPAY),
+            'Supported' => [
+                'paymentMethod' => $this->mockPaymentMethod(Config::MOLLIE_METHOD_ID_APPLE_PAY, true),
                 'expectedResult' => true,
             ],
-            [
-                'paymentName' => $this->mockPaymentMethod(Config::MOLLIE_KLARNA_PAY_LATER_METHOD_ID),
+            'Not supported' => [
+                'paymentName' => $this->mockPaymentMethod(Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER, true),
                 'expectedResult' => false,
             ],
         ];

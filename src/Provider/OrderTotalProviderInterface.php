@@ -36,17 +36,7 @@
 
 namespace Mollie\Provider;
 
-use MolPaymentMethod;
-
-class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInterface
+interface OrderTotalProviderInterface
 {
-    public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $currencyId)
-    {
-        return 0; //TODO have logic that returns from db according to paymentmethod and currency Id.
-    }
-
-    public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $currencyId)
-    {
-        return 0; //TODO have logic that returns from db according to paymentmethod id and currency Id.
-    }
+    public function provideOrderTotal();
 }

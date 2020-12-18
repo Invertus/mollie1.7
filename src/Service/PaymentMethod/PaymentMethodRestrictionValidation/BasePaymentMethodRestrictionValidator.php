@@ -37,6 +37,7 @@
 namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
 use Mollie\Adapter\LegacyContext;
+use Mollie\Provider\OrderTotalProviderInterface;
 use Mollie\Provider\PaymentMethodCurrencyProviderInterface;
 use Mollie\Service\OrderTotalServiceInterface;
 use MolPaymentMethod;
@@ -59,14 +60,21 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
      */
     private $paymentMethodCurrenciesProvider;
 
+    /**
+     * @var OrderTotalProviderInterface
+     */
+    private $orderTotalProvider;
+
     public function __construct(
         LegacyContext $context,
         OrderTotalServiceInterface $orderTotalService,
-        PaymentMethodCurrencyProviderInterface $paymentMethodCurrenciesProvider
+        PaymentMethodCurrencyProviderInterface $paymentMethodCurrenciesProvider,
+        OrderTotalProviderInterface $orderTotalProvider
     ) {
         $this->context = $context;
         $this->orderTotalService = $orderTotalService;
         $this->paymentMethodCurrenciesProvider = $paymentMethodCurrenciesProvider;
+        $this->orderTotalProvider = $orderTotalProvider;
     }
 
 	/**
@@ -122,7 +130,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
      */
     private function isPaymentMethodEnabled($paymentMethod)
     {
-        return (bool) $paymentMethod->enabled;
+        return (bool) $paymentMethod->getEnabled();
     }
 
 	/**
@@ -135,7 +143,10 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
         $supportedCurrencies = $this->paymentMethodCurrenciesProvider->provideAvailableCurrenciesByPaymentMethod($paymentMethod);
 		$currencyCode = Tools::strtolower($this->context->getCurrencyIsoCode());
 
-		return in_array($currencyCode, $supportedCurrencies);
+		return in_array(
+		    strtolower($currencyCode),
+		    array_map('strtolower', $supportedCurrencies)
+        );
 	}
 
 	/**
@@ -145,7 +156,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isOrderTotalLowerThanMinimumAllowed($paymentMethod)
 	{
-        $orderTotal =  $this->context->getCart()->getOrderTotal(true);
+	    $orderTotal = $this->orderTotalProvider->provideOrderTotal();
 
 	    return $this->orderTotalService->isOrderTotalLowerThanMinimumAllowed($paymentMethod, $orderTotal);
 	}
@@ -157,7 +168,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isOrderTotalHigherThanMaximumAllowed($paymentMethod)
 	{
-        $orderTotal =  $this->context->getCart()->getOrderTotal(true);
+        $orderTotal = $this->orderTotalProvider->provideOrderTotal();
 
         return $this->orderTotalService->isOrderTotalHigherThanMaximumAllowed($paymentMethod, $orderTotal);
 	}

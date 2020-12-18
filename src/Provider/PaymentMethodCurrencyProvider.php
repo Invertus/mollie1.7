@@ -39,7 +39,7 @@ namespace Mollie\Provider;
 use Mollie\Config\Config;
 use MolPaymentMethod;
 
-final class PaymentMethodCurrencyProvider implements PaymentMethodCurrencyProviderInterface
+class PaymentMethodCurrencyProvider implements PaymentMethodCurrencyProviderInterface
 {
     public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod)
     {

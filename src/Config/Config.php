@@ -222,7 +222,6 @@ class Config
 	const STATUS_ON_BACKORDER = 'on_backorder';
 	const MOLLIE_AWAITING_PAYMENT = 'awaiting';
 	const PRICE_DISPLAY_METHOD_NO_TAXES = '1';
-	const APPLEPAY = 'applepay';
 	const MOLLIE_COUNTRIES = 'country_';
 
 	const STATUS_PS_OS_OUTOFSTOCK_PAID = 'PS_OS_OUTOFSTOCK_PAID';
@@ -254,9 +253,10 @@ class Config
 
 	const MOLLIE_VOUCHER_CATEGORY = 'MOLLIE_VOUCHER_CATEGORY';
 
-	const MOLLIE_VOUCHER_METHOD_ID = 'voucher';
-	const MOLLIE_KLARNA_PAY_LATER_METHOD_ID = 'klarnapaylater';
-	const MOLLIE_KLARNA_SLICE_IT_METHOD_ID = 'klarnasliceit';
+	const MOLLIE_METHOD_ID_VOUCHER= 'voucher';
+	const MOLLIE_METHOD_ID_KLARNA_PAY_LATER = 'klarnapaylater';
+	const MOLLIE_METHOD_ID_KLARNA_SLICE_IT = 'klarnasliceit';
+    const MOLLIE_METHOD_ID_APPLE_PAY = 'applepay';
 
 	const MOLLIE_VOUCHER_CATEGORY_NULL = 'null';
 	const MOLLIE_VOUCHER_CATEGORY_MEAL = 'meal';

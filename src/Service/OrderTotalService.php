@@ -37,7 +37,7 @@
 namespace Mollie\Service;
 
 use Mollie\Adapter\LegacyContext;
-use Mollie\Provider\OrderTotalRestrictionProvider;
+use Mollie\Provider\OrderTotalRestrictionProviderInterface;
 use Mollie\Utility\NumberUtility;
 use MolPaymentMethod;
 
@@ -49,13 +49,13 @@ class OrderTotalService implements OrderTotalServiceInterface
     private $legacyContext;
 
     /**
-     * @var OrderTotalRestrictionProvider
+     * @var OrderTotalRestrictionProviderInterface
      */
     private $orderTotalRestrictionProvider;
 
     public function __construct(
         LegacyContext $legacyContext,
-        OrderTotalRestrictionProvider $orderTotalRestrictionProvider
+        OrderTotalRestrictionProviderInterface $orderTotalRestrictionProvider
     ) {
         $this->legacyContext = $legacyContext;
         $this->orderTotalRestrictionProvider = $orderTotalRestrictionProvider;
@@ -74,7 +74,11 @@ class OrderTotalService implements OrderTotalServiceInterface
             $this->legacyContext->getCurrencyId()
         );
 
-        return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal); //TODO change order total by payment.
+        if (!$minimalOrderTotal) {
+            return false;
+        }
+
+        return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal);
     }
 
     /**
@@ -90,9 +94,10 @@ class OrderTotalService implements OrderTotalServiceInterface
             $this->legacyContext->getCurrencyId()
         );
 
-//        if (maxOrderValue <= 0) { //If lower than 0, return false.
-//            return false;
-//        }
-        return NumberUtility::isLowerThan((float) $maximumOrderTotal, (float) $orderTotal);  //TODO change order total by payment.
+        if (!$maximumOrderTotal || $maximumOrderTotal <= 0) {
+            return false;
+        }
+
+        return NumberUtility::isLowerThan((float) $maximumOrderTotal, (float) $orderTotal);
     }
 }

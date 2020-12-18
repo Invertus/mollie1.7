@@ -68,46 +68,4 @@ class MolPaymentMethodOrderTotalRestriction extends ObjectModel
             'maximumOrderTotal' => array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
         ),
     );
-
-    /**
-     * @param PaymentMethod $paymentMethod
-     *
-     * @return float
-     */
-    private function getMinimalOrderValue($paymentMethod)
-    {
-        //TODO  $result = $this->client->performHttpCall(self::REST_READ, "{$this->getResourcePath()}/{$id}" . '?currency=EUR'); change currency
-        // if it's null then just do nothing
-        if (!isset($paymentMethod['minimumAmount'])) {
-            return 0.0; //TODO default minimum amount
-        }
-        $mollieMinimumOrderTotalCurrencyId = Currency::getIdByIsoCode($paymentMethod['minimumAmount']->currency);
-
-        if (empty($mollieMinimumOrderTotalCurrencyId)) {
-            return 0.0; //As there is no way to convert currency from EUR (Mollie default currency) to shops currency.
-        }
-        $mollieMinimumOrderTotalCurrency = Currency::getCurrency($mollieMinimumOrderTotalCurrencyId);
-
-        return Tools::convertPrice($paymentMethod['minimumAmount']->value, $mollieMinimumOrderTotalCurrency, false);
-    }
-
-    /**
-     * @param PaymentMethod $paymentMethod
-     *
-     * @return float
-     */
-    private function getMaximumOrderValue($paymentMethod)
-    {
-        if (!isset($paymentMethod['maximumAmount'])) {
-            return 0.0; //TODO check if 0 then do not check maximum
-        }
-        $mollieMaximumOrderTotalCurrencyId = Currency::getIdByIsoCode($paymentMethod['maximumAmount']->currency);
-
-        if (empty($mollieMaximumOrderTotalCurrencyId)) {
-            return 0.0; //As there is no way to convert currency from EUR (Mollie default currency) to shops currency.
-        }
-        $mollieMaximumOrderTotalCurrency = Currency::getCurrency($mollieMaximumOrderTotalCurrencyId);
-
-        return Tools::convertPrice($paymentMethod['maximumAmount']->value, $mollieMaximumOrderTotalCurrency, false);
-    }
 }

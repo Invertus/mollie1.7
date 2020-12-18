@@ -793,7 +793,7 @@ class Mollie extends PaymentModule
 
 			$methodObj = new MolPaymentMethod($method['id_payment_method']);
 
-			$isVoucherMethod = \Mollie\Config\Config::MOLLIE_VOUCHER_METHOD_ID === $methodObj->id_method;
+			$isVoucherMethod = \Mollie\Config\Config::MOLLIE_METHOD_ID_VOUCHER === $methodObj->id_method;
 			$hasVoucherProducts = $voucherValidator->validate($cart->getProducts());
 			if ($isVoucherMethod && !$hasVoucherProducts) {
 				continue;
