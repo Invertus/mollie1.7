@@ -79,9 +79,9 @@ class Installer implements InstallerInterface
 	private $databaseTableInstaller;
 
 	public function __construct(
-        Mollie $module,
-        OrderStateImageService $imageService,
-        InstallerInterface $databaseTableInstaller
+		Mollie $module,
+		OrderStateImageService $imageService,
+		InstallerInterface $databaseTableInstaller
 	) {
 		$this->module = $module;
 		$this->imageService = $imageService;

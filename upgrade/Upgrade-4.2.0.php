@@ -72,22 +72,22 @@ function upgrade_module_4_2_0($module)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;'
 	);
 
-    /**
-     * @var OrderStateImageService $imageService
-     */
-    $imageService = $module->getMollieContainer(OrderStateImageService::class);
-    $mollieOrderStatuses = Config::getMollieOrderStatuses();
+	/**
+	 * @var OrderStateImageService $imageService
+	 */
+	$imageService = $module->getMollieContainer(OrderStateImageService::class);
+	$mollieOrderStatuses = Config::getMollieOrderStatuses();
 
-    foreach($mollieOrderStatuses as $mollieOrderStatus) {
-        $orderStatusId = Configuration::get($mollieOrderStatus);
+	foreach ($mollieOrderStatuses as $mollieOrderStatus) {
+		$orderStatusId = Configuration::get($mollieOrderStatus);
 
-        if($orderStatusId) {
-            $imageService->deleteOrderStateLogo($orderStatusId);
-            $imageService->deleteTemporaryOrderStateLogo($orderStatusId);
-            $imageService->createOrderStateLogo($orderStatusId);
-            $imageService->createTemporaryOrderStateLogo($orderStatusId);
-        }
-    }
+		if ($orderStatusId) {
+			$imageService->deleteOrderStateLogo($orderStatusId);
+			$imageService->deleteTemporaryOrderStateLogo($orderStatusId);
+			$imageService->createOrderStateLogo($orderStatusId);
+			$imageService->createTemporaryOrderStateLogo($orderStatusId);
+		}
+	}
 
 	return true;
 }
