@@ -46,9 +46,8 @@ class OrderStateImageService
 
     public function deleteOrderStateLogo($orderStateId)
     {
-        $source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
         $destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
-        @unlink($source, $destination);
+        @unlink($destination);
     }
 
     public function createTemporaryOrderStateLogo($orderStateId)
@@ -60,8 +59,7 @@ class OrderStateImageService
 
     public function deleteTemporaryOrderStateLogo($orderStateId)
     {
-        $source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
         $destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_'. $orderStateId . '_1.gif';
-        @unlink($source, $destination);
+        @unlink($destination);
     }
 }
