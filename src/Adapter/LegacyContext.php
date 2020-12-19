@@ -46,9 +46,9 @@ class LegacyContext
 	}
 
 	public function getCookieValue($key)
-    {
-        return $this->getContext()->cookie->__get($key);
-    }
+	{
+		return $this->getContext()->cookie->__get($key);
+	}
 
 	public function getCurrencyIsoCode()
 	{
