@@ -38,8 +38,8 @@ namespace Mollie\Repository;
 
 final class MolPaymentMethodOrderTotalRestrictionRepository extends AbstractRepository implements MolPaymentMethodOrderTotalRestrictionRepositoryInterface
 {
-    public function __construct()
-    {
-        parent::__construct(MolPaymentMethodOrderTotalRestrictionRepository::class);
-    }
+	public function __construct()
+	{
+		parent::__construct(MolPaymentMethodOrderTotalRestrictionRepository::class);
+	}
 }

@@ -35,10 +35,10 @@
  */
 class MolPaymentMethod extends ObjectModel
 {
-    /**
-     * @var int
-     */
-    public $id_payment_method;
+	/**
+	 * @var int
+	 */
+	public $id_payment_method;
 
 	/**
 	 * @var bool
