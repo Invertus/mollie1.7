@@ -44,18 +44,18 @@ class UnitTestCase extends TestCase
 	}
 
 	public function mockContextWithCookie($cookieValue)
-    {
-        $contextMock = $this->getMockBuilder(LegacyContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	{
+		$contextMock = $this->getMockBuilder(LegacyContext::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $contextMock
-            ->method('getCookieValue')
-            ->willReturn($cookieValue)
-        ;
+		$contextMock
+			->method('getCookieValue')
+			->willReturn($cookieValue)
+		;
 
-        return $contextMock;
-    }
+		return $contextMock;
+	}
 
 	public function mockPaymentMethod($paymentName, $enabled)
 	{
@@ -157,17 +157,17 @@ class UnitTestCase extends TestCase
 	}
 
 	public function mockConfigurationAdapter($configuration)
-    {
-        $configurationAdapter = $this->getMockBuilder(ConfigurationAdapter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	{
+		$configurationAdapter = $this->getMockBuilder(ConfigurationAdapter::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $configurationAdapter
-            ->method('get')
-            ->with('PS_SSL_ENABLED_EVERYWHERE')
-            ->willReturn($configuration['PS_SSL_ENABLED_EVERYWHERE'])
-        ;
+		$configurationAdapter
+			->method('get')
+			->with('PS_SSL_ENABLED_EVERYWHERE')
+			->willReturn($configuration['PS_SSL_ENABLED_EVERYWHERE'])
+		;
 
-        return $configurationAdapter;
-    }
+		return $configurationAdapter;
+	}
 }
