@@ -70,25 +70,24 @@ class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionVali
 		 * @var PaymentMethodRestrictionValidatorInterface $paymentRestrictionValidator
 		 */
 		foreach ($this->paymentRestrictionValidators as $paymentRestrictionValidator) {
+			try {
+				if ($paymentRestrictionValidator->supports($paymentMethod)) {
+					$success = $paymentRestrictionValidator->isValid($paymentMethod);
 
-		    try {
-                if ($paymentRestrictionValidator->supports($paymentMethod)) {
-                    $success = $paymentRestrictionValidator->isValid($paymentMethod);
-
-                    if (!$success) {
-                        return false;
-                    }
-                }
-            } catch (Exception $exception) {
-                PrestaShopLogger::addLog(
-                    sprintf('%s has caught error: %s', __METHOD__, $exception->getMessage()),
-                    Config::ERROR,
-                    null,
-                    null,
-                    null,
-                    true
-                );
-            }
+					if (!$success) {
+						return false;
+					}
+				}
+			} catch (Exception $exception) {
+				PrestaShopLogger::addLog(
+					sprintf('%s has caught error: %s', __METHOD__, $exception->getMessage()),
+					Config::ERROR,
+					null,
+					null,
+					null,
+					true
+				);
+			}
 		}
 
 		return $success;
