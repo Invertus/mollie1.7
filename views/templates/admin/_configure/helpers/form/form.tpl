@@ -738,6 +738,10 @@
             <button type="button" class="btn btn-default {if isset($input.class)}{$input.class|escape:'html':'UTF-8'}{/if}">{$input.text|escape:'html':'UTF-8'}</button>
         </div>
         <div>
+            <p class="help-block">{if isset($input.help)}{$input.help|escape:'html':'UTF-8'}{/if}</p>
+        </div>
+{*        TODO add template for refresh message. *}
+        <div>
             <span class="order-total-restriction-refresh-message"></span>
         </div>
     {else}

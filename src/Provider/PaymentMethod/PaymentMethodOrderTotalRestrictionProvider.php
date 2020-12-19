@@ -1,7 +1,4 @@
 <?php
-
-use Mollie\Service\ApiService;
-
 /**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
@@ -37,9 +34,10 @@ use Mollie\Service\ApiService;
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Provider\PaymentMethod;
 
 use Mollie;
+use Mollie\Service\ApiService;
 
 class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTotalRestrictionProviderInterface
 {
@@ -49,11 +47,11 @@ class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTo
 	private $mollie;
 
 	/**
-	 * @var Mollie\Service\ApiService
+	 * @var ApiService
 	 */
 	private $apiService;
 
-	public function __construct(Mollie $mollie, Mollie\Service\ApiService $apiService)
+	public function __construct(Mollie $mollie, ApiService $apiService)
 	{
 		$this->mollie = $mollie;
 		$this->apiService = $apiService;

@@ -38,7 +38,7 @@ namespace Mollie\Service\PaymentMethod;
 
 use Mollie\Config\Config;
 use Mollie\Exception\OrderTotalRestrictionException;
-use Mollie\Provider\PaymentMethodOrderTotalRestrictionProviderInterface;
+use Mollie\Provider\PaymentMethod\PaymentMethodOrderTotalRestrictionProviderInterface;
 use MolPaymentMethod;
 use MolPaymentMethodOrderTotalRestriction;
 use PrestaShopException;

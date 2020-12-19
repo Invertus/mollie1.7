@@ -41,17 +41,17 @@ class MolPaymentMethodOrderTotalRestriction extends ObjectModel
 	public $id_payment_method;
 
 	/**
-	 * @var int
+	 * @var string
 	 */
 	public $currency_iso;
 
 	/**
-	 * @var string
+	 * @var float
 	 */
 	public $minimum_order_total;
 
 	/**
-	 * @var string
+	 * @var float
 	 */
 	public $maximum_order_total;
 

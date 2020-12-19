@@ -41,7 +41,7 @@ use Mollie\Provider\CreditCardLogoProvider;
 use Mollie\Repository\PaymentMethodRepository;
 use Mollie\Service\ExceptionService;
 use Mollie\Service\MolliePaymentMailService;
-use Mollie\Service\OrderTotalRestrictionServiceInterface;
+use Mollie\Service\OrderTotal\OrderTotalRestrictionServiceInterface;
 use Mollie\Utility\TimeUtility;
 
 class AdminMollieAjaxController extends ModuleAdminController

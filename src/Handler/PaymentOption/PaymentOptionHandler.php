@@ -34,7 +34,7 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Handler;
+namespace Mollie\Handler\PaymentOption;
 
 use Configuration;
 use Mollie\Config\Config;

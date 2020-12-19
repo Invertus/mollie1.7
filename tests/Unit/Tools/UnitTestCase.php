@@ -6,9 +6,10 @@ use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Adapter\LegacyContext;
 use Mollie\Provider\OrderTotalProvider;
 use Mollie\Provider\OrderTotalRestrictionProvider;
-use Mollie\Provider\PaymentMethodCountryProvider;
-use Mollie\Provider\PaymentMethodCurrencyProvider;
-use Mollie\Service\OrderTotalService;
+use Mollie\Provider\PaymentMethod\PaymentMethodCountryProvider;
+use Mollie\Provider\PaymentMethod\PaymentMethodCurrencyProvider;
+use Mollie\Repository\PaymentMethodRepositoryInterface;
+use Mollie\Service\OrderTotal\OrderTotalService;
 use MolPaymentMethod;
 use PHPUnit\Framework\TestCase;
 
@@ -67,11 +68,7 @@ class UnitTestCase extends TestCase
 			->method('getPaymentMethodName')
 			->willReturn($paymentName)
 		;
-
-		$paymentMethod
-			->method('getEnabled')
-			->willReturn($enabled)
-		;
+		$paymentMethod->enabled = $enabled;
 
 		return $paymentMethod;
 	}
@@ -141,6 +138,20 @@ class UnitTestCase extends TestCase
 
 		return $orderTotalRestrictionProvider;
 	}
+
+	public function mockPaymentMethodRepository()
+    {
+        $paymentMethodRepository = $this->getMockBuilder(PaymentMethodRepositoryInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $paymentMethodRepository
+            ->method('findAll')
+            ->willReturn(
+                new \PrestaShopCollection(MolPaymentMethod::class)
+            )
+        ;
+    }
 
 	public function mockOrderTotalProvider($orderTotal)
 	{

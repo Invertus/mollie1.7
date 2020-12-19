@@ -779,8 +779,8 @@ class Mollie extends PaymentModule
 		]);
 		$paymentOptions = [];
 
-		/** @var \Mollie\Handler\PaymentOptionHandler $paymentOptionsHandler */
-		$paymentOptionsHandler = $this->getMollieContainer(\Mollie\Handler\PaymentOptionHandler::class);
+		/** @var \Mollie\Handler\PaymentOption\PaymentOptionHandler $paymentOptionsHandler */
+		$paymentOptionsHandler = $this->getMollieContainer(\Mollie\Handler\PaymentOption\PaymentOptionHandler::class);
 
 		foreach ($methods as $method) {
 			$methodObj = new MolPaymentMethod($method['id_payment_method']);

@@ -1,7 +1,7 @@
 <?php
 
 use Mollie\Config\Config;
-use Mollie\Service\OrderTotalService;
+use Mollie\Service\OrderTotal\OrderTotalService;
 use Mollie\Tests\Unit\Tools\UnitTestCase;
 
 class OrderTotalServiceTest extends UnitTestCase

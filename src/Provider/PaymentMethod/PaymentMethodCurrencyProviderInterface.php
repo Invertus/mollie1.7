@@ -34,25 +34,11 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Provider\PaymentMethod;
 
 use MolPaymentMethod;
 
-interface OrderTotalServiceInterface
+interface PaymentMethodCurrencyProviderInterface
 {
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 * @param float $orderTotal
-	 *
-	 * @return bool
-	 */
-	public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
-
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 * @param float $orderTotal
-	 *
-	 * @return bool
-	 */
-	public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
+	public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod);
 }

@@ -34,16 +34,15 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Provider\PaymentMethod;
 
+use Mollie\Config\Config;
 use MolPaymentMethod;
 
-interface PaymentMethodCountryProviderInterface
+class PaymentMethodCurrencyProvider implements PaymentMethodCurrencyProviderInterface
 {
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 *
-	 * @return array|null
-	 */
-	public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod);
+	public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod)
+	{
+		return Config::$methodCurrencies[$paymentMethod->id_method] ?: null;
+	}
 }

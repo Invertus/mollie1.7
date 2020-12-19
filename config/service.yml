@@ -196,10 +196,10 @@ services:
   Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater:
     class: Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater
     arguments:
-      - '@Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider'
+      - '@Mollie\Provider\PaymentMethod\PaymentMethodOrderTotalRestrictionProvider'
 
-  Mollie\Service\OrderTotalService:
-    class: Mollie\Service\OrderTotalService
+  Mollie\Service\OrderTotal\OrderTotalService:
+    class: Mollie\Service\OrderTotal\OrderTotalService
     arguments:
       - '@=service("mollie.adapter.context")'
       - '@Mollie\Provider\OrderTotalRestrictionProvider'
@@ -214,29 +214,29 @@ services:
     arguments:
       - '@Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository'
 
-  Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider:
-    class: Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider
+  Mollie\Provider\PaymentMethod\PaymentMethodOrderTotalRestrictionProvider:
+    class: Mollie\Provider\PaymentMethod\PaymentMethodOrderTotalRestrictionProvider
     arguments:
       - '@mollie'
       - '@Mollie\Service\ApiService'
 
-  Mollie\Provider\PaymentMethodCurrencyProvider:
-    class: Mollie\Provider\PaymentMethodCurrencyProvider
+  Mollie\Provider\PaymentMethod\PaymentMethodCurrencyProvider:
+    class: Mollie\Provider\PaymentMethod\PaymentMethodCurrencyProvider
 
-  Mollie\Provider\PaymentMethodCountryProvider:
-    class: Mollie\Provider\PaymentMethodCountryProvider
+  Mollie\Provider\PaymentMethod\PaymentMethodCountryProvider:
+    class: Mollie\Provider\PaymentMethod\PaymentMethodCountryProvider
 
-  Mollie\Service\OrderTotalRestrictionService:
-    class: Mollie\Service\OrderTotalRestrictionService
+  Mollie\Service\OrderTotal\OrderTotalRestrictionService:
+    class: Mollie\Service\OrderTotal\OrderTotalRestrictionService
     arguments:
       - '@Mollie\Repository\PaymentMethodRepository'
       - '@Mollie\Repository\CurrencyRepository'
       - '@Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater'
 
-  Mollie\Service\OrderTotalRestrictionServiceInterface: '@Mollie\Service\OrderTotalRestrictionService'
+  Mollie\Service\OrderTotal\OrderTotalRestrictionServiceInterface: '@Mollie\Service\OrderTotal\OrderTotalRestrictionService'
 
-  Mollie\Handler\PaymentOptionHandler:
-    class: Mollie\Handler\PaymentOptionHandler
+  Mollie\Handler\PaymentOption\PaymentOptionHandler:
+    class: Mollie\Handler\PaymentOption\PaymentOptionHandler
     arguments:
       - '@Mollie\Provider\PaymentOption\BasePaymentOptionProvider'
       - '@Mollie\Provider\PaymentOption\CreditCardPaymentOptionProvider'

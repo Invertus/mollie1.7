@@ -34,15 +34,17 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Handler\PaymentOption;
 
-use Mollie\Config\Config;
 use MolPaymentMethod;
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
-class PaymentMethodCurrencyProvider implements PaymentMethodCurrencyProviderInterface
+interface PaymentOptionHandlerInterface
 {
-	public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod)
-	{
-		return Config::$methodCurrencies[$paymentMethod->id_method] ?: null;
-	}
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return PaymentOption
+	 */
+	public function handle(MolPaymentMethod $paymentMethod);
 }

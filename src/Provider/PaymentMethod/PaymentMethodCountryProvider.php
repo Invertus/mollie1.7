@@ -34,13 +34,16 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Provider\PaymentMethod;
 
 use Mollie\Config\Config;
 use MolPaymentMethod;
 
 class PaymentMethodCountryProvider implements PaymentMethodCountryProviderInterface
 {
+    /**
+     * @inheritDoc
+     */
 	public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod)
 	{
 		return Config::$defaultMethodAvailability[$paymentMethod->getPaymentMethodName()] ?: null;

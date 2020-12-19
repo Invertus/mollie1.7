@@ -38,8 +38,8 @@ namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
 use Mollie\Adapter\LegacyContext;
 use Mollie\Provider\OrderTotalProviderInterface;
-use Mollie\Provider\PaymentMethodCurrencyProviderInterface;
-use Mollie\Service\OrderTotalServiceInterface;
+use Mollie\Provider\PaymentMethod\PaymentMethodCurrencyProviderInterface;
+use Mollie\Service\OrderTotal\OrderTotalServiceInterface;
 use MolPaymentMethod;
 use Tools;
 

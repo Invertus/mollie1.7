@@ -34,9 +34,8 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Provider\PaymentMethod;
 
-use MolliePrefix\Mollie\Api\Resources\BaseResource;
 use MolliePrefix\Mollie\Api\Resources\Method;
 
 interface PaymentMethodOrderTotalRestrictionProviderInterface
@@ -45,7 +44,7 @@ interface PaymentMethodOrderTotalRestrictionProviderInterface
 	 * @param string $paymentMethodName
 	 * @param string $currencyIso
 	 *
-	 * @return BaseResource|Method|null
+	 * @return Method|null
 	 */
 	public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso);
 }

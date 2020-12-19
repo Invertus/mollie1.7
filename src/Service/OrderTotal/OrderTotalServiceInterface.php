@@ -34,17 +34,25 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Handler;
+namespace Mollie\Service\OrderTotal;
 
 use MolPaymentMethod;
-use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
-interface PaymentOptionHandlerInterface
+interface OrderTotalServiceInterface
 {
 	/**
 	 * @param MolPaymentMethod $paymentMethod
+	 * @param float $orderTotal
 	 *
-	 * @return PaymentOption
+	 * @return bool
 	 */
-	public function handle(MolPaymentMethod $paymentMethod);
+	public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
+
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param float $orderTotal
+	 *
+	 * @return bool
+	 */
+	public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal);
 }

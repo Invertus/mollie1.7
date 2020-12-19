@@ -34,16 +34,16 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Provider\PaymentMethod;
 
-use Mollie\Exception\OrderTotalRestrictionException;
+use MolPaymentMethod;
 
-interface OrderTotalRestrictionServiceInterface
+interface PaymentMethodCountryProviderInterface
 {
 	/**
-	 * @throws OrderTotalRestrictionException
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return array|null
 	 */
-	public function updateOrderTotalRestrictions();
-
-	public function deleteOrderTotalRestrictions();
+	public function provideAvailableCountriesByPaymentMethod(MolPaymentMethod $paymentMethod);
 }

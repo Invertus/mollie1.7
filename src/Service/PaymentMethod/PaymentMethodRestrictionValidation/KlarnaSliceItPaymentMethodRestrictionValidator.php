@@ -38,7 +38,7 @@ namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
 use Mollie\Adapter\LegacyContext;
 use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProviderInterface;
+use Mollie\Provider\PaymentMethod\PaymentMethodCountryProviderInterface;
 use MolPaymentMethod;
 
 class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface

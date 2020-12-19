@@ -34,7 +34,7 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Service\OrderTotal;
 
 use Mollie\Adapter\LegacyContext;
 use Mollie\Provider\OrderTotalRestrictionProviderInterface;

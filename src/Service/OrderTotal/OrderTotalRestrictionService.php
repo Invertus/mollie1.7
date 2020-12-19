@@ -34,7 +34,7 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Service\OrderTotal;
 
 use Currency;
 use Db;
@@ -74,8 +74,6 @@ class OrderTotalRestrictionService implements OrderTotalRestrictionServiceInterf
 	}
 
 	/**
-	 * TODO test this
-	 *
 	 * @throws OrderTotalRestrictionException
 	 */
 	public function updateOrderTotalRestrictions()
@@ -108,6 +106,6 @@ class OrderTotalRestrictionService implements OrderTotalRestrictionServiceInterf
 
 	public function deleteOrderTotalRestrictions()
 	{
-		Db::getInstance()->delete(MolPaymentMethodOrderTotalRestriction::$definition['table'], 1);
+		Db::getInstance()->delete(MolPaymentMethodOrderTotalRestriction::$definition['table'], '1=1');
 	}
 }
