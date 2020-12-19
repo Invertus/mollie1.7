@@ -77,11 +77,11 @@ class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrict
 		$paymentMethodOrderRestriction->minimum_order_total = 0.0;
 		$paymentMethodOrderRestriction->maximum_order_total = 0.0;
 
-		if ($config->minimumAmount) {
+		if (isset($config->minimumAmount) && isset($config->minimumAmount->value)) {
 			$paymentMethodOrderRestriction->minimum_order_total = (float) $config->minimumAmount->value ?: 0.0;
 		}
 
-		if ($config->maximumAmount) {
+		if (isset($config->maximumAmount) && isset($config->maximumAmount->value)) {
 			$paymentMethodOrderRestriction->maximum_order_total = (float) $config->maximumAmount->value ?: 0.0;
 		}
 
