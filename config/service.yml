@@ -201,18 +201,18 @@ services:
   Mollie\Service\OrderTotalService:
     class: Mollie\Service\OrderTotalService
     arguments:
-      - '@=service("adapter.context")'
+      - '@=service("mollie.adapter.context")'
       - '@Mollie\Provider\OrderTotalRestrictionProvider'
 
   Mollie\Provider\OrderTotalProvider:
     class: Mollie\Provider\OrderTotalProvider
     arguments:
-      - '@=service("adapter.context")'
+      - '@=service("mollie.adapter.context")'
 
   Mollie\Provider\OrderTotalRestrictionProvider:
     class: Mollie\Provider\OrderTotalRestrictionProvider
     arguments:
-
+      - '@Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository'
 
   Mollie\Provider\PaymentMethodCurrencyProvider:
     class: Mollie\Provider\PaymentMethodCurrencyProvider

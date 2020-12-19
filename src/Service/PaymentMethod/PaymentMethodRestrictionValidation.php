@@ -87,6 +87,8 @@ class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionVali
 					null,
 					true
 				);
+
+				return false;
 			}
 		}
 

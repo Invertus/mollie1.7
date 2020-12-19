@@ -39,3 +39,7 @@ services:
 
   Mollie\Repository\PendingOrderCartRuleRepository:
     class: Mollie\Repository\PendingOrderCartRuleRepository
+
+  Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository:
+    class: Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository
+
