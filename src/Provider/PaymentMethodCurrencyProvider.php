@@ -41,8 +41,8 @@ use MolPaymentMethod;
 
 class PaymentMethodCurrencyProvider implements PaymentMethodCurrencyProviderInterface
 {
-    public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod)
-    {
-        return Config::$methodCurrencies[$paymentMethod->id_method] ?: null;
-    }
+	public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod)
+	{
+		return Config::$methodCurrencies[$paymentMethod->id_method] ?: null;
+	}
 }

@@ -43,61 +43,61 @@ use MolPaymentMethod;
 
 class OrderTotalService implements OrderTotalServiceInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $legacyContext;
+	/**
+	 * @var LegacyContext
+	 */
+	private $legacyContext;
 
-    /**
-     * @var OrderTotalRestrictionProviderInterface
-     */
-    private $orderTotalRestrictionProvider;
+	/**
+	 * @var OrderTotalRestrictionProviderInterface
+	 */
+	private $orderTotalRestrictionProvider;
 
-    public function __construct(
-        LegacyContext $legacyContext,
-        OrderTotalRestrictionProviderInterface $orderTotalRestrictionProvider
-    ) {
-        $this->legacyContext = $legacyContext;
-        $this->orderTotalRestrictionProvider = $orderTotalRestrictionProvider;
-    }
+	public function __construct(
+		LegacyContext $legacyContext,
+		OrderTotalRestrictionProviderInterface $orderTotalRestrictionProvider
+	) {
+		$this->legacyContext = $legacyContext;
+		$this->orderTotalRestrictionProvider = $orderTotalRestrictionProvider;
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param float $orderTotal
-     *
-     * @return bool
-     */
-    public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
-    {
-        $minimalOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMinimumRestriction(
-            $paymentMethod,
-            $this->legacyContext->getCurrencyId()
-        );
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param float $orderTotal
+	 *
+	 * @return bool
+	 */
+	public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
+	{
+		$minimalOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMinimumRestriction(
+			$paymentMethod,
+			$this->legacyContext->getCurrencyId()
+		);
 
-        if (!$minimalOrderTotal) {
-            return false;
-        }
+		if (!$minimalOrderTotal) {
+			return false;
+		}
 
-        return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal);
-    }
+		return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal);
+	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param float $orderTotal
-     *
-     * @return bool
-     */
-    public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
-    {
-        $maximumOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMaximumRestriction(
-            $paymentMethod,
-            $this->legacyContext->getCurrencyId()
-        );
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param float $orderTotal
+	 *
+	 * @return bool
+	 */
+	public function isOrderTotalHigherThanMaximumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
+	{
+		$maximumOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMaximumRestriction(
+			$paymentMethod,
+			$this->legacyContext->getCurrencyId()
+		);
 
-        if (!$maximumOrderTotal || $maximumOrderTotal <= 0) {
-            return false;
-        }
+		if (!$maximumOrderTotal || $maximumOrderTotal <= 0) {
+			return false;
+		}
 
-        return NumberUtility::isLowerThan((float) $maximumOrderTotal, (float) $orderTotal);
-    }
+		return NumberUtility::isLowerThan((float) $maximumOrderTotal, (float) $orderTotal);
+	}
 }

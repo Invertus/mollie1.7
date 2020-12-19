@@ -13,131 +13,131 @@ use PHPUnit\Framework\TestCase;
 
 class UnitTestCase extends TestCase
 {
-    public function mockContext($countryCode, $currencyCode)
-    {
-        $contextMock = $this->getMockBuilder(LegacyContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockContext($countryCode, $currencyCode)
+	{
+		$contextMock = $this->getMockBuilder(LegacyContext::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $contextMock
-            ->method('getCountryIsoCode')
-            ->willReturn($countryCode)
-        ;
+		$contextMock
+			->method('getCountryIsoCode')
+			->willReturn($countryCode)
+		;
 
-        $contextMock
-            ->method('getCurrencyIsoCode')
-            ->willReturn($currencyCode)
-        ;
+		$contextMock
+			->method('getCurrencyIsoCode')
+			->willReturn($currencyCode)
+		;
 
-        $contextMock
-            ->method('getCurrencyId')
-            ->willReturn(1)
-        ;
+		$contextMock
+			->method('getCurrencyId')
+			->willReturn(1)
+		;
 
-        $contextMock
-            ->method('getCountryId')
-            ->willReturn(1)
-        ;
+		$contextMock
+			->method('getCountryId')
+			->willReturn(1)
+		;
 
-        return $contextMock;
-    }
+		return $contextMock;
+	}
 
-    public function mockPaymentMethod($paymentName, $enabled)
-    {
-        $paymentMethod = $this->getMockBuilder(MolPaymentMethod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockPaymentMethod($paymentName, $enabled)
+	{
+		$paymentMethod = $this->getMockBuilder(MolPaymentMethod::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $paymentMethod
-            ->method('getPaymentMethodName')
-            ->willReturn($paymentName)
-        ;
+		$paymentMethod
+			->method('getPaymentMethodName')
+			->willReturn($paymentName)
+		;
 
-        $paymentMethod
-            ->method('getEnabled')
-            ->willReturn($enabled)
-        ;
+		$paymentMethod
+			->method('getEnabled')
+			->willReturn($enabled)
+		;
 
-        return $paymentMethod;
-    }
+		return $paymentMethod;
+	}
 
-    public function mockPaymentMethodCountryProvider($availableCountries)
-    {
-        $paymentMethodCountryProvider = $this->getMockBuilder(PaymentMethodCountryProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockPaymentMethodCountryProvider($availableCountries)
+	{
+		$paymentMethodCountryProvider = $this->getMockBuilder(PaymentMethodCountryProvider::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $paymentMethodCountryProvider
-            ->method('provideAvailableCountriesByPaymentMethod')
-            ->willReturn($availableCountries)
-        ;
+		$paymentMethodCountryProvider
+			->method('provideAvailableCountriesByPaymentMethod')
+			->willReturn($availableCountries)
+		;
 
-        return $paymentMethodCountryProvider;
-    }
+		return $paymentMethodCountryProvider;
+	}
 
-    public function mockPaymentMethodCurrencyProvider($availableCurrencies)
-    {
-        $paymentMethodCountryProvider = $this->getMockBuilder(PaymentMethodCurrencyProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockPaymentMethodCurrencyProvider($availableCurrencies)
+	{
+		$paymentMethodCountryProvider = $this->getMockBuilder(PaymentMethodCurrencyProvider::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $paymentMethodCountryProvider
-            ->method('provideAvailableCurrenciesByPaymentMethod')
-            ->willReturn($availableCurrencies)
-        ;
+		$paymentMethodCountryProvider
+			->method('provideAvailableCurrenciesByPaymentMethod')
+			->willReturn($availableCurrencies)
+		;
 
-        return $paymentMethodCountryProvider;
-    }
+		return $paymentMethodCountryProvider;
+	}
 
-    public function mockOrderTotalService($isOrderTotalHigherThanMaximum, $isOrderTotalLowerThanMinimum)
-    {
-        $orderTotalService = $this->getMockBuilder(OrderTotalService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockOrderTotalService($isOrderTotalHigherThanMaximum, $isOrderTotalLowerThanMinimum)
+	{
+		$orderTotalService = $this->getMockBuilder(OrderTotalService::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $orderTotalService
-            ->method('isOrderTotalLowerThanMinimumAllowed')
-            ->willReturn($isOrderTotalLowerThanMinimum)
-        ;
+		$orderTotalService
+			->method('isOrderTotalLowerThanMinimumAllowed')
+			->willReturn($isOrderTotalLowerThanMinimum)
+		;
 
-        $orderTotalService
-            ->method('isOrderTotalHigherThanMaximumAllowed')
-            ->willReturn($isOrderTotalHigherThanMaximum)
-        ;
+		$orderTotalService
+			->method('isOrderTotalHigherThanMaximumAllowed')
+			->willReturn($isOrderTotalHigherThanMaximum)
+		;
 
-        return $orderTotalService;
-    }
+		return $orderTotalService;
+	}
 
-    public function mockOrderTotalRestrictionProvider($minimumValue, $maximumValue)
-    {
-        $orderTotalRestrictionProvider = $this->getMockBuilder(OrderTotalRestrictionProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockOrderTotalRestrictionProvider($minimumValue, $maximumValue)
+	{
+		$orderTotalRestrictionProvider = $this->getMockBuilder(OrderTotalRestrictionProvider::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $orderTotalRestrictionProvider
-            ->method('provideOrderTotalMinimumRestriction')
-            ->willReturn($minimumValue)
-        ;
+		$orderTotalRestrictionProvider
+			->method('provideOrderTotalMinimumRestriction')
+			->willReturn($minimumValue)
+		;
 
-        $orderTotalRestrictionProvider
-            ->method('provideOrderTotalMaximumRestriction')
-            ->willReturn($maximumValue)
-        ;
+		$orderTotalRestrictionProvider
+			->method('provideOrderTotalMaximumRestriction')
+			->willReturn($maximumValue)
+		;
 
-        return $orderTotalRestrictionProvider;
-    }
+		return $orderTotalRestrictionProvider;
+	}
 
-    public function mockOrderTotalProvider($orderTotal)
-    {
-        $orderTotalProvider = $this->getMockBuilder(OrderTotalProvider::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	public function mockOrderTotalProvider($orderTotal)
+	{
+		$orderTotalProvider = $this->getMockBuilder(OrderTotalProvider::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $orderTotalProvider
-            ->method('provideOrderTotal')
-            ->willReturn($orderTotal)
-        ;
+		$orderTotalProvider
+			->method('provideOrderTotal')
+			->willReturn($orderTotal)
+		;
 
-        return $orderTotalProvider;
-    }
+		return $orderTotalProvider;
+	}
 }

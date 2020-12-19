@@ -36,41 +36,38 @@
 
 namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
-use Context;
 use Mollie\Adapter\LegacyContext;
 use Mollie\Config\Config;
-use Mollie\Provider\PaymentMethodCountryProvider;
 use Mollie\Provider\PaymentMethodCountryProviderInterface;
 use MolPaymentMethod;
-use Tools;
 
 class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
 {
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    /**
-     * @var PaymentMethodCountryProviderInterface
-     */
-    private $paymentMethodCountryProvider;
+	/**
+	 * @var PaymentMethodCountryProviderInterface
+	 */
+	private $paymentMethodCountryProvider;
 
-    public function __construct(
-        LegacyContext $context,
-        PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
-    ) {
-        $this->context = $context;
-        $this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
-    }
+	public function __construct(
+		LegacyContext $context,
+		PaymentMethodCountryProviderInterface $paymentMethodCountryProvider
+	) {
+		$this->context = $context;
+		$this->paymentMethodCountryProvider = $paymentMethodCountryProvider;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function supports($paymentMethod)
-    {
-        return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports($paymentMethod)
+	{
+		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -84,25 +81,25 @@ class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRe
 		return true;
 	}
 
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     *
-     * @return bool
-     */
-    private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
-    {
-        if (!$this->context->getCountryIsoCode()) {
-            return false;
-        }
-        $supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 *
+	 * @return bool
+	 */
+	private function isContextCountryCodeSupported(MolPaymentMethod $paymentMethod)
+	{
+		if (!$this->context->getCountryIsoCode()) {
+			return false;
+		}
+		$supportedCountries = $this->paymentMethodCountryProvider->provideAvailableCountriesByPaymentMethod($paymentMethod);
 
-        if (!$supportedCountries) {
-            return true;
-        }
+		if (!$supportedCountries) {
+			return true;
+		}
 
-        return in_array(
-            strtolower($this->context->getCountryIsoCode()),
-            array_map('strtolower', $supportedCountries)
-        );
-    }
+		return in_array(
+			strtolower($this->context->getCountryIsoCode()),
+			array_map('strtolower', $supportedCountries)
+		);
+	}
 }

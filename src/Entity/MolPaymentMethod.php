@@ -33,7 +33,6 @@
  * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
-
 class MolPaymentMethod extends ObjectModel
 {
 	/**
@@ -140,19 +139,19 @@ class MolPaymentMethod extends ObjectModel
 		],
 	];
 
-    /**
-     * @return string|null
-     */
+	/**
+	 * @return string|null
+	 */
 	public function getPaymentMethodName()
-    {
-        return $this->id_method ?: null;
-    }
+	{
+		return $this->id_method ?: null;
+	}
 
-    /**
-     * @return bool
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
+	/**
+	 * @return bool
+	 */
+	public function getEnabled()
+	{
+		return $this->enabled;
+	}
 }

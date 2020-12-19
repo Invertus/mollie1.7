@@ -27,45 +27,45 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
-
 class MolPaymentMethodOrderTotalRestriction extends ObjectModel
 {
-    /**
-     * @var int
-     */
-    public $id_payment_method;
+	/**
+	 * @var int
+	 */
+	public $id_payment_method;
 
-    /**
-     * @var int
-     */
-    public $currencyId;
+	/**
+	 * @var int
+	 */
+	public $currencyId;
 
-    /**
-     * @var string
-     */
-    public $minimalOrderTotal;
+	/**
+	 * @var string
+	 */
+	public $minimalOrderTotal;
 
-    /**
-     * @var string
-     */
-    public $maximumOrderTotal;
+	/**
+	 * @var string
+	 */
+	public $maximumOrderTotal;
 
-    /**
-     * @var array
-     */
-    public static $definition = array(
-        'table' => 'mol_payment_method_order_total_restriction',
-        'primary' => 'id_payment_method_order_total_restriction',
-        'fields' => array(
-            'id_payment_method_order_total_restriction' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-            'currencyId' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-            'minimalOrderTotal' => array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
-            'maximumOrderTotal' => array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
-        ),
-    );
+	/**
+	 * @var array
+	 */
+	public static $definition = [
+		'table' => 'mol_payment_method_order_total_restriction',
+		'primary' => 'id_payment_method_order_total_restriction',
+		'fields' => [
+			'id_payment_method_order_total_restriction' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'currencyId' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'minimalOrderTotal' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+			'maximumOrderTotal' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+		],
+	];
 }

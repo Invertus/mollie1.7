@@ -27,9 +27,10 @@
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
+ *
  * @category   Mollie
- * @package    Mollie
- * @link       https://www.mollie.nl
+ *
+ * @see       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
@@ -42,38 +43,39 @@ use PrestaShopException;
 
 class PaymentMethodOrderRestrictionUpdater
 {
-    private $apiService;
+	private $apiService;
 
-    public function __construct(ApiService $apiService)
-    {
-        $this->apiService = $apiService;
-    }
+	public function __construct(ApiService $apiService)
+	{
+		$this->apiService = $apiService;
+	}
 
-    /**
-     * @param MollieApiClient $mollieApiClient
-     * @param MolPaymentMethod $paymentMethod
-     * @param int $currencyId
-     *
-     * @return bool
-     * @throws PrestaShopException
-     */
-    public function update(MollieApiClient $mollieApiClient, MolPaymentMethod $paymentMethod, $currencyId)
-    {
-        $config = $this->apiService->getPaymentMethodOrderTotalRestriction(
-            $mollieApiClient,
-            $paymentMethod->id_method,
-            \Context::getContext()->currency->iso_code
-        );
+	/**
+	 * @param MollieApiClient $mollieApiClient
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param int $currencyId
+	 *
+	 * @return bool
+	 *
+	 * @throws PrestaShopException
+	 */
+	public function update(MollieApiClient $mollieApiClient, MolPaymentMethod $paymentMethod, $currencyId)
+	{
+		$config = $this->apiService->getPaymentMethodOrderTotalRestriction(
+			$mollieApiClient,
+			$paymentMethod->id_method,
+			\Context::getContext()->currency->iso_code
+		);
 
-        if (empty($config)) {
-            return true;
-        }
-        $paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
-        $paymentMethodOrderRestriction->currencyId = $currencyId;
-        $paymentMethodOrderRestriction->maximumOrderTotal = $config['minimumAmount']['value'];
-        $paymentMethodOrderRestriction->minimalOrderTotal = $config['maximumAmount']['value'];
-        $paymentMethodOrderRestriction->save();
+		if (empty($config)) {
+			return true;
+		}
+		$paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
+		$paymentMethodOrderRestriction->currencyId = $currencyId;
+		$paymentMethodOrderRestriction->maximumOrderTotal = $config['minimumAmount']['value'];
+		$paymentMethodOrderRestriction->minimalOrderTotal = $config['maximumAmount']['value'];
+		$paymentMethodOrderRestriction->save();
 
-        return true;
-    }
+		return true;
+	}
 }

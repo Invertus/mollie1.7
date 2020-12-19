@@ -40,5 +40,5 @@ use MolPaymentMethod;
 
 interface PaymentMethodCurrencyProviderInterface
 {
-    public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod);
+	public function provideAvailableCurrenciesByPaymentMethod(MolPaymentMethod $paymentMethod);
 }
