@@ -34,25 +34,12 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Repository;
 
-use MolPaymentMethod;
-
-interface OrderTotalRestrictionProviderInterface
+final class MolPaymentMethodOrderTotalRestrictionRepository extends AbstractRepository implements MolPaymentMethodOrderTotalRestrictionRepositoryInterface
 {
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 * @param int $id_currency
-	 *
-	 * @return float
-	 */
-	public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $id_currency);
-
-	/**
-	 * @param MolPaymentMethod $paymentMethod
-	 * @param int $id_currency
-	 *
-	 * @return float
-	 */
-	public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $id_currency);
+    public function __construct()
+    {
+        parent::__construct(MolPaymentMethodOrderTotalRestrictionRepository::class);
+    }
 }

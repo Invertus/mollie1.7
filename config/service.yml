@@ -211,6 +211,8 @@ services:
 
   Mollie\Provider\OrderTotalRestrictionProvider:
     class: Mollie\Provider\OrderTotalRestrictionProvider
+    arguments:
+
 
   Mollie\Provider\PaymentMethodCurrencyProvider:
     class: Mollie\Provider\PaymentMethodCurrencyProvider
