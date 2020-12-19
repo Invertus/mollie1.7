@@ -36,7 +36,6 @@
 
 namespace Mollie\Service;
 
-use ArrayObject;
 use Configuration;
 use Exception;
 use Mollie\Adapter\ConfigurationAdapter;
@@ -119,11 +118,10 @@ class ApiService
 	public function getPaymentMethodOrderTotalRestriction(MollieApiClient $api, $paymentId, $currencyIso)
 	{
 		try {
-		    /** @var BaseResource|Method $paymentMethodConfig */
+			/** @var BaseResource|Method $paymentMethodConfig */
 			$paymentMethodConfig = $api->methods->get($paymentId, [
 				'currency' => $currencyIso,
 			]);
-
 		} catch (Exception $e) {
 			PrestaShopLogger::addLog('Mollie returned error on getPaymentMethodOrderTotalRestriction: ' . $e->getMessage());
 

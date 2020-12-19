@@ -111,9 +111,9 @@ class PaymentMethodService
 
 	private $phoneNumberProvider;
 
-    /**
-     * @var PaymentMethodRestrictionValidationInterface
-     */
+	/**
+	 * @var PaymentMethodRestrictionValidationInterface
+	 */
 	private $paymentMethodRestrictionValidation;
 
 	public function __construct(
