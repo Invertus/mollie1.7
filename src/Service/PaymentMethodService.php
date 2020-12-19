@@ -203,7 +203,7 @@ class PaymentMethodService
 		foreach ($methods as $index => $method) {
 			$methodObj = new MolPaymentMethod($method['id_payment_method']);
 			if (!$this->paymentMethodRestrictionValidation->isPaymentMethodValid($methodObj)) {
-				continue;
+			    unset($methods[$index]);
 			}
 		}
 

@@ -55,6 +55,11 @@ class LegacyContext
 		return $this->getContext()->currency->iso_code;
 	}
 
+    public function getCurrencySign()
+    {
+        return $this->getContext()->currency->sign;
+    }
+
 	public function getCountryIsoCode()
 	{
 		return $this->getContext()->country->iso_code;
@@ -79,4 +84,14 @@ class LegacyContext
 	{
 		return $this->getContext()->getMobileDetect();
 	}
+
+    public function getLink()
+    {
+        return $this->getContext()->link;
+    }
+
+    public function getSmarty()
+    {
+        return $this->getContext()->smarty;
+    }
 }

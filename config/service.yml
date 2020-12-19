@@ -234,3 +234,10 @@ services:
       - '@Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater'
 
   Mollie\Service\OrderTotalRestrictionServiceInterface: '@Mollie\Service\OrderTotalRestrictionService'
+
+  Mollie\Handler\PaymentOptionHandler:
+    class: Mollie\Handler\PaymentOptionHandler
+    arguments:
+      - '@Mollie\Provider\PaymentOption\BasePaymentOptionProvider'
+      - '@Mollie\Provider\PaymentOption\CreditCardPaymentOptionProvider'
+      - '@Mollie\Provider\PaymentOption\IdealPaymentOptionProvider'

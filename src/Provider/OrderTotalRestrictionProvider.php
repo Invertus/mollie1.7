@@ -59,7 +59,7 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	public function provideOrderTotalMinimumRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
 	{
 		$paymentMethodOrderTotalRestriction = $this->getPaymentMethodOrderTotalRestriction(
-			$paymentMethod->id_payment_method,
+			$paymentMethod->id,
 			$currencyIso
 		);
 
@@ -76,7 +76,7 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	public function provideOrderTotalMaximumRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
 	{
 		$paymentMethodOrderTotalRestriction = $this->getPaymentMethodOrderTotalRestriction(
-			$paymentMethod->id_payment_method,
+			$paymentMethod->id,
 			$currencyIso
 		);
 

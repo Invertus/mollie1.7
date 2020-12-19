@@ -34,70 +34,17 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
+namespace Mollie\Handler;
 
-use Mollie\Adapter\ConfigurationAdapter;
-use Mollie\Adapter\LegacyContext;
-use Mollie\Config\Config;
 use MolPaymentMethod;
+use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 
-class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrictionValidatorInterface
+interface PaymentOptionHandlerInterface
 {
-	/**
-	 * @var LegacyContext
-	 */
-	private $context;
-
-	/**
-	 * @var ConfigurationAdapter
-	 */
-	private $configurationAdapter;
-
-	public function __construct(
-		LegacyContext $context,
-		ConfigurationAdapter $configurationAdapter
-	) {
-		$this->context = $context;
-		$this->configurationAdapter = $configurationAdapter;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isValid(MolPaymentMethod$paymentMethod)
-	{
-		if (!$this->isSslEnabledEverywhere()) {
-			return false;
-		}
-
-		if (!$this->isPaymentMethodInCookie()) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function supports(MolPaymentMethod $paymentMethod)
-	{
-		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_APPLE_PAY;
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function isSslEnabledEverywhere()
-	{
-		return (bool) $this->configurationAdapter->get('PS_SSL_ENABLED_EVERYWHERE');
-	}
-
-	/**
-	 * @return bool
-	 */
-	private function isPaymentMethodInCookie()
-	{
-		return (int) $this->context->getCookieValue('isApplePayMethod') !== 0;
-	}
+    /**
+     * @param MolPaymentMethod $paymentMethod
+     *
+     * @return PaymentOption
+     */
+    public function handle(MolPaymentMethod $paymentMethod);
 }

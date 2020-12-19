@@ -80,7 +80,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isValid($paymentMethod)
+	public function isValid(MolPaymentMethod $paymentMethod)
 	{
 		if (!$this->isPaymentMethodEnabled($paymentMethod)) {
 			return false;
@@ -108,7 +108,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	/**
 	 * {@inheritDoc}
 	 */
-	public function supports($paymentMethod)
+	public function supports(MolPaymentMethod $paymentMethod)
 	{
 		return true;
 	}
@@ -130,7 +130,7 @@ class BasePaymentMethodRestrictionValidator implements PaymentMethodRestrictionV
 	 */
 	private function isPaymentMethodEnabled($paymentMethod)
 	{
-		return (bool) $paymentMethod->getEnabled();
+		return (bool) $paymentMethod->enabled;
 	}
 
 	/**

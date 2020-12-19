@@ -62,7 +62,7 @@ class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionVali
 	 *
 	 * @return bool
 	 */
-	public function isPaymentMethodValid($paymentMethod)
+	public function isPaymentMethodValid(MolPaymentMethod $paymentMethod)
 	{
 		$success = false;
 

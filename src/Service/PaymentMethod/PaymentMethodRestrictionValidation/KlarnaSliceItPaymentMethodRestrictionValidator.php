@@ -64,7 +64,7 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isValid($paymentMethod)
+	public function isValid(MolPaymentMethod$paymentMethod)
 	{
 		if (!$this->isContextCountryCodeSupported($paymentMethod)) {
 			return false;
@@ -76,7 +76,7 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
 	/**
 	 * {@inheritDoc}
 	 */
-	public function supports($paymentMethod)
+	public function supports(MolPaymentMethod $paymentMethod)
 	{
 		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_SLICE_IT;
 	}

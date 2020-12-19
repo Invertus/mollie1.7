@@ -146,12 +146,4 @@ class MolPaymentMethod extends ObjectModel
 	{
 		return $this->id_method ?: null;
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function getEnabled()
-	{
-		return $this->enabled;
-	}
 }

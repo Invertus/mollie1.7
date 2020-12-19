@@ -45,5 +45,5 @@ interface PaymentMethodRestrictionValidationInterface
 	 *
 	 * @return bool
 	 */
-	public function isPaymentMethodValid($paymentMethod);
+	public function isPaymentMethodValid(MolPaymentMethod $paymentMethod);
 }
