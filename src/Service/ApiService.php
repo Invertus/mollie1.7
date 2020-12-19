@@ -48,7 +48,6 @@ use Mollie\Utility\UrlPathUtility;
 use MolliePrefix\Mollie\Api\Exceptions\ApiException;
 use MolliePrefix\Mollie\Api\MollieApiClient;
 use MolliePrefix\Mollie\Api\Resources\BaseCollection;
-use MolliePrefix\Mollie\Api\Resources\BaseResource;
 use MolliePrefix\Mollie\Api\Resources\Method;
 use MolliePrefix\Mollie\Api\Resources\MethodCollection;
 use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
