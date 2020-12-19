@@ -1,7 +1,3 @@
-<?php
-
-use Mollie\Service\ApiService;
-
 /**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
@@ -30,48 +26,27 @@ use Mollie\Service\ApiService;
  * @author     Mollie B.V. <info@mollie.nl>
  * @copyright  Mollie B.V.
  * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
  * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @package    Mollie
+ * @link       https://www.mollie.nl
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+$(document).ready(function () {
+    $('button.js-refresh-order-total-values').on('click', refreshOrderTotalRestriction);
 
-use Mollie;
-
-class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTotalRestrictionProviderInterface
-{
-    /**
-     * @var Mollie
-     */
-    private $mollie;
-
-    /**
-     * @var Mollie\Service\ApiService
-     */
-    private $apiService;
-
-    public function __construct(Mollie $mollie, Mollie\Service\ApiService $apiService)
-    {
-        $this->mollie = $mollie;
-        $this->apiService = $apiService;
+    function refreshOrderTotalRestriction() {
+        $.ajax(ajaxUrl, {
+                method: 'POST',
+                data: {
+                    'action': 'refreshOrderTotalRestriction',
+                    'ajax': 1
+                },
+                success: function (response) {
+                    response = JSON.parse(response);
+                    $('.order-total-restriction-refresh-message').text(response.message);
+                }
+            }
+        )
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso)
-    {
-        if (!$this->mollie->api) {
-            return null;
-        }
-
-        return $this->apiService->getPaymentMethodOrderTotalRestriction(
-            $this->mollie->api,
-            $paymentMethodName,
-            $currencyIso
-        );
-    }
-}
+});

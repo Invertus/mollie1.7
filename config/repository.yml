@@ -31,15 +31,30 @@ services:
   Mollie\Repository\OrderRepository:
     class: Mollie\Repository\OrderRepository
 
+  Mollie\Repository\OrderRepositoryInterface: '@Mollie\Repository\OrderRepository'
+
   Mollie\Repository\OrderCartRuleRepository:
     class: Mollie\Repository\OrderCartRuleRepository
+
+  Mollie\Repository\OrderCartRuleRepositoryInterface: '@Mollie\Repository\OrderCartRuleRepository'
 
   Mollie\Repository\CartRuleRepository:
     class: Mollie\Repository\CartRuleRepository
 
+  Mollie\Repository\CartRuleRepositoryInterface: '@Mollie\Repository\CartRuleRepository'
+
   Mollie\Repository\PendingOrderCartRuleRepository:
     class: Mollie\Repository\PendingOrderCartRuleRepository
 
+  Mollie\Repository\PendingOrderCartRuleRepositoryInterface: '@Mollie\Repository\PendingOrderCartRuleRepository'
+
   Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository:
     class: Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository
+
+  Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepositoryInterface: '@Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository'
+
+  Mollie\Repository\CurrencyRepository:
+    class: Mollie\Repository\CurrencyRepository
+
+  Mollie\Repository\CurrencyRepositoryInterface: '@Mollie\Repository\CurrencyRepository'
 

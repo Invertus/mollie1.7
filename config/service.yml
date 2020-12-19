@@ -193,8 +193,8 @@ services:
       - '@Mollie\Repository\CartRuleRepository'
       - '@Mollie\Repository\OrderRepository'
 
-  Mollie\Service\PaymentMethodOrderRestrictionUpdater:
-    class: Mollie\Service\PaymentMethodOrderRestrictionUpdater
+  Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater:
+    class: Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater
     arguments:
       - '@Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider'
 
@@ -225,3 +225,12 @@ services:
 
   Mollie\Provider\PaymentMethodCountryProvider:
     class: Mollie\Provider\PaymentMethodCountryProvider
+
+  Mollie\Service\OrderTotalRestrictionService:
+    class: Mollie\Service\OrderTotalRestrictionService
+    arguments:
+      - '@Mollie\Repository\PaymentMethodRepository'
+      - '@Mollie\Repository\CurrencyRepository'
+      - '@Mollie\Service\PaymentMethod\PaymentMethodOrderRestrictionUpdater'
+
+  Mollie\Service\OrderTotalRestrictionServiceInterface: '@Mollie\Service\OrderTotalRestrictionService'

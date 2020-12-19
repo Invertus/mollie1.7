@@ -1,7 +1,4 @@
 <?php
-
-use Mollie\Service\ApiService;
-
 /**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
@@ -37,41 +34,16 @@ use Mollie\Service\ApiService;
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Service;
 
-use Mollie;
+use Mollie\Exception\OrderTotalRestrictionException;
 
-class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTotalRestrictionProviderInterface
+interface OrderTotalRestrictionServiceInterface
 {
     /**
-     * @var Mollie
+     * @throws OrderTotalRestrictionException
      */
-    private $mollie;
+    public function updateOrderTotalRestrictions();
 
-    /**
-     * @var Mollie\Service\ApiService
-     */
-    private $apiService;
-
-    public function __construct(Mollie $mollie, Mollie\Service\ApiService $apiService)
-    {
-        $this->mollie = $mollie;
-        $this->apiService = $apiService;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso)
-    {
-        if (!$this->mollie->api) {
-            return null;
-        }
-
-        return $this->apiService->getPaymentMethodOrderTotalRestriction(
-            $this->mollie->api,
-            $paymentMethodName,
-            $currencyIso
-        );
-    }
+    public function deleteOrderTotalRestrictions();
 }

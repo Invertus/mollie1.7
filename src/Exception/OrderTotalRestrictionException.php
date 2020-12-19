@@ -1,7 +1,4 @@
 <?php
-
-use Mollie\Service\ApiService;
-
 /**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
@@ -37,41 +34,13 @@ use Mollie\Service\ApiService;
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Provider;
+namespace Mollie\Exception;
 
-use Mollie;
-
-class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTotalRestrictionProviderInterface
+class OrderTotalRestrictionException extends \Exception
 {
-    /**
-     * @var Mollie
-     */
-    private $mollie;
+	const NO_AVAILABLE_PAYMENT_METHODS_FOUND = 1;
 
-    /**
-     * @var Mollie\Service\ApiService
-     */
-    private $apiService;
+	const NO_AVAILABLE_CURRENCIES_FOUND = 2;
 
-    public function __construct(Mollie $mollie, Mollie\Service\ApiService $apiService)
-    {
-        $this->mollie = $mollie;
-        $this->apiService = $apiService;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso)
-    {
-        if (!$this->mollie->api) {
-            return null;
-        }
-
-        return $this->apiService->getPaymentMethodOrderTotalRestriction(
-            $this->mollie->api,
-            $paymentMethodName,
-            $currencyIso
-        );
-    }
+    const ORDER_TOTAL_RESTRICTION_SAVE_FAILED = 3;
 }

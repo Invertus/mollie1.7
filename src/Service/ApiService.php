@@ -113,7 +113,7 @@ class ApiService
 	 * @param string $paymentId
 	 * @param string $currencyIso
 	 *
-	 * @return array|null
+	 * @return BaseResource|Method|null
 	 */
 	public function getPaymentMethodOrderTotalRestriction(MollieApiClient $api, $paymentId, $currencyIso)
 	{

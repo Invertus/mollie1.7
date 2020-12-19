@@ -36,11 +36,6 @@
 class MolPaymentMethod extends ObjectModel
 {
 	/**
-	 * @var int
-	 */
-	public $id_payment_method;
-
-	/**
 	 * @var bool
 	 */
 	public $enabled;
@@ -125,7 +120,6 @@ class MolPaymentMethod extends ObjectModel
 		'table' => 'mol_payment_method',
 		'primary' => 'id_payment_method',
 		'fields' => [
-			'id_payment_method' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
 			'id_method' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
 			'method_name' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
 			'enabled' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool'],

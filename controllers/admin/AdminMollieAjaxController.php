@@ -36,9 +36,16 @@
 
 use Mollie\Builder\ApiTestFeedbackBuilder;
 use Mollie\Config\Config;
+use Mollie\Exception\OrderTotalRestrictionException;
 use Mollie\Provider\CreditCardLogoProvider;
+use Mollie\Repository\CurrencyRepository;
+use Mollie\Repository\CurrencyRepositoryInterface;
 use Mollie\Repository\PaymentMethodRepository;
+use Mollie\Repository\PaymentMethodRepositoryInterface;
+use Mollie\Service\ExceptionService;
 use Mollie\Service\MolliePaymentMailService;
+use Mollie\Service\OrderTotalRestrictionServiceInterface;
+use Mollie\Service\PaymentMethodOrderRestrictionUpdaterInterface;
 use Mollie\Utility\TimeUtility;
 
 class AdminMollieAjaxController extends ModuleAdminController
@@ -65,6 +72,9 @@ class AdminMollieAjaxController extends ModuleAdminController
 			case 'validateLogo':
 				$this->validateLogo();
 				break;
+            case 'refreshOrderTotalRestriction':
+                $this->refreshOrderTotalRestriction();
+                break;
 			default:
 				break;
 		}
@@ -138,6 +148,40 @@ class AdminMollieAjaxController extends ModuleAdminController
 				'template' => $this->context->smarty->fetch($this->module->getLocalPath() . 'views/templates/admin/api_test_results.tpl'),
 			]
 		));
+	}
+
+	/**
+	 * @throws PrestaShopException
+	 */
+	private function refreshOrderTotalRestriction()
+	{
+	    /** @var OrderTotalRestrictionServiceInterface $orderTotalRestrictionService */
+	    $orderTotalRestrictionService = $this->module->getMollieContainer(OrderTotalRestrictionServiceInterface::class);
+
+	    /** @var ExceptionService $exceptionService */
+	    $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+
+	    try {
+	        $orderTotalRestrictionService->deleteOrderTotalRestrictions();
+            $orderTotalRestrictionService->updateOrderTotalRestrictions();
+        } catch (OrderTotalRestrictionException $orderTotalRestrictionException) {
+            $errorMessage = $exceptionService->getErrorMessageForException(
+                $orderTotalRestrictionException,
+                $exceptionService->getErrorMessages()
+            );
+
+            $this->ajaxDie(json_encode(
+                [
+                    'message' => $errorMessage,
+                ]
+            ));
+        }
+
+        $this->ajaxDie(json_encode(
+            [
+                'message' => $this->module->l('Successfully updated order total restriction values'),
+            ]
+        ));
 	}
 
 	private function closeUpgradeNotice()

@@ -34,11 +34,15 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Service\PaymentMethod;
 
+use Mollie\Config\Config;
+use Mollie\Exception\OrderTotalRestrictionException;
 use Mollie\Provider\PaymentMethodOrderTotalRestrictionProviderInterface;
 use MolPaymentMethod;
 use MolPaymentMethodOrderTotalRestriction;
+use PrestaShopException;
+use PrestaShopLogger;
 
 class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrictionUpdaterInterface
 {
@@ -54,6 +58,7 @@ class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrict
     }
 
     /**
+     * TODO trigger this on first update when this is launched.
      * @inheritDoc
      */
     public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
@@ -64,14 +69,31 @@ class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrict
         );
 
         if (!$config) {
-            return null;
+            return false;
         }
         $paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
-        $paymentMethodOrderRestriction->id_payment_method = $paymentMethod->id_payment_method;
-        $paymentMethodOrderRestriction->currency_iso = $currencyIso;
-        $paymentMethodOrderRestriction->minimum_order_total = $config['minimumAmount']['value'];
-        $paymentMethodOrderRestriction->maximum_order_total = $config['maximumAmount']['value'];
+        $paymentMethodOrderRestriction->id_payment_method = (int) $paymentMethod->id;
+        $paymentMethodOrderRestriction->currency_iso = strtoupper($currencyIso);
+        $paymentMethodOrderRestriction->minimum_order_total = 0.0;
+        $paymentMethodOrderRestriction->maximum_order_total = 0.0;
 
-        $paymentMethodOrderRestriction->save();
+        if ($config->minimumAmount) {
+            $paymentMethodOrderRestriction->minimum_order_total = (float) $config->minimumAmount->value ?: 0.0;
+        }
+
+        if ($config->maximumAmount) {
+            $paymentMethodOrderRestriction->maximum_order_total = (float) $config->maximumAmount->value ?: 0.0;
+        }
+
+        try {
+            return $paymentMethodOrderRestriction->save();
+        } catch (PrestaShopException $e) {
+            PrestaShopLogger::addLog(__METHOD__ . ' returned exception: ' . $e->getMessage(), Config::ERROR, 0, null, null, true);
+
+            throw new OrderTotalRestrictionException(
+                'Failed to save payment method order restriction',
+                OrderTotalRestrictionException::ORDER_TOTAL_RESTRICTION_SAVE_FAILED
+            );
+        }
     }
 }

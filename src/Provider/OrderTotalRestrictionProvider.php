@@ -97,7 +97,7 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	{
 		return $this->methodOrderTotalRestriction->findOneBy([
 			'id_payment_method' => (int) $id_payment_method,
-			'currency_iso' => (int) $currencyIso,
+			'currency_iso' => strtoupper($currencyIso),
 		]);
 	}
 }

@@ -36,13 +36,16 @@
 
 namespace Mollie\Provider;
 
+use MolliePrefix\Mollie\Api\Resources\BaseResource;
+use MolliePrefix\Mollie\Api\Resources\Method;
+
 interface PaymentMethodOrderTotalRestrictionProviderInterface
 {
     /**
      * @param string $paymentMethodName
      * @param string $currencyIso
      *
-     * @return float|null
+     * @return BaseResource|Method|null
      */
     public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso);
 }
