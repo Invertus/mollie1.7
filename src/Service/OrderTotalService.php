@@ -69,16 +69,16 @@ class OrderTotalService implements OrderTotalServiceInterface
 	 */
 	public function isOrderTotalLowerThanMinimumAllowed(MolPaymentMethod $paymentMethod, $orderTotal)
 	{
-		$minimalOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMinimumRestriction(
+		$minimumOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMinimumRestriction(
 			$paymentMethod,
-			$this->legacyContext->getCurrencyId()
+			$this->legacyContext->getCurrencyIsoCode()
 		);
 
-		if (!$minimalOrderTotal) {
+		if (!$minimumOrderTotal) {
 			return false;
 		}
 
-		return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimalOrderTotal);
+		return (bool) NumberUtility::isLowerThan((float) $orderTotal, (float) $minimumOrderTotal);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class OrderTotalService implements OrderTotalServiceInterface
 	{
 		$maximumOrderTotal = $this->orderTotalRestrictionProvider->provideOrderTotalMaximumRestriction(
 			$paymentMethod,
-			$this->legacyContext->getCurrencyId()
+			$this->legacyContext->getCurrencyIsoCode()
 		);
 
 		if (!$maximumOrderTotal || $maximumOrderTotal <= 0) {

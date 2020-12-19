@@ -151,9 +151,9 @@ final class DatabaseTableInstaller implements InstallerInterface
             CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mol_payment_method_order_total_restriction` (
                 `id_payment_method_order_total_restriction`  INT(64)  NOT NULL PRIMARY KEY AUTO_INCREMENT,
                 `id_payment_method` INT(64) NOT NULL
-                `id_currency` INT(64) NOT NULL,
-                `minimalOrderTotal` decimal(20,6),
-                `maximumOrderTotal` decimal(20,6)
+                `currency_iso` INT(64) NOT NULL,
+                `minimum_order_total` decimal(20,6),
+                `maximum_order_total` decimal(20,6)
         ';
 
 		return $sql;

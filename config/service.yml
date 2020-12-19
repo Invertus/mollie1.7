@@ -196,7 +196,7 @@ services:
   Mollie\Service\PaymentMethodOrderRestrictionUpdater:
     class: Mollie\Service\PaymentMethodOrderRestrictionUpdater
     arguments:
-      - '@Mollie\Service\ApiService'
+      - '@Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider'
 
   Mollie\Service\OrderTotalService:
     class: Mollie\Service\OrderTotalService
@@ -213,6 +213,12 @@ services:
     class: Mollie\Provider\OrderTotalRestrictionProvider
     arguments:
       - '@Mollie\Repository\MolPaymentMethodOrderTotalRestrictionRepository'
+
+  Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider:
+    class: Mollie\Provider\PaymentMethodOrderTotalRestrictionProvider
+    arguments:
+      - '@mollie'
+      - '@Mollie\Service\ApiService'
 
   Mollie\Provider\PaymentMethodCurrencyProvider:
     class: Mollie\Provider\PaymentMethodCurrencyProvider

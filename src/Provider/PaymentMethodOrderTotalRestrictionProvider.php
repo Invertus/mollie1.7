@@ -1,4 +1,7 @@
 <?php
+
+use Mollie\Service\ApiService;
+
 /**
  * Copyright (c) 2012-2020, Mollie B.V.
  * All rights reserved.
@@ -34,44 +37,41 @@
  * @codingStandardsIgnoreStart
  */
 
-namespace Mollie\Service;
+namespace Mollie\Provider;
 
-use Mollie\Provider\PaymentMethodOrderTotalRestrictionProviderInterface;
-use MolPaymentMethod;
-use MolPaymentMethodOrderTotalRestriction;
+use Mollie;
 
-class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrictionUpdaterInterface
+class PaymentMethodOrderTotalRestrictionProvider implements PaymentMethodOrderTotalRestrictionProviderInterface
 {
     /**
-     * @var PaymentMethodOrderTotalRestrictionProviderInterface
+     * @var Mollie
      */
-    private $paymentMethodOrderTotalRestrictionProvider;
+    private $mollie;
 
-    public function __construct(
-        PaymentMethodOrderTotalRestrictionProviderInterface $paymentMethodOrderTotalRestrictionProvider
-    ) {
-        $this->paymentMethodOrderTotalRestrictionProvider = $paymentMethodOrderTotalRestrictionProvider;
+    /**
+     * @var ApiService
+     */
+    private $apiService;
+
+    public function __construct(Mollie $mollie, ApiService $apiService)
+    {
+        $this->mollie = $mollie;
+        $this->apiService = $apiService;
     }
 
     /**
      * @inheritDoc
      */
-    public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
+    public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso)
     {
-        $config = $this->paymentMethodOrderTotalRestrictionProvider->providePaymentMethodOrderTotalRestriction(
-            $paymentMethod->getPaymentMethodName(),
-            $currencyIso
-        );
-
-        if (!$config) {
+        if (!$this->mollie->api) {
             return null;
         }
-        $paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
-        $paymentMethodOrderRestriction->id_payment_method = $paymentMethod->id_payment_method;
-        $paymentMethodOrderRestriction->currency_iso = $currencyIso;
-        $paymentMethodOrderRestriction->minimum_order_total = $config['minimumAmount']['value'];
-        $paymentMethodOrderRestriction->maximum_order_total = $config['maximumAmount']['value'];
 
-        $paymentMethodOrderRestriction->save();
+        return $this->apiService->getPaymentMethodOrderTotalRestriction(
+            $this->mollie->api,
+            $paymentMethodName,
+            $currencyIso
+        );
     }
 }
