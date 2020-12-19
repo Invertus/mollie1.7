@@ -64,7 +64,7 @@ class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrict
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isValid(MolPaymentMethod$paymentMethod)
+	public function isValid(MolPaymentMethod $paymentMethod)
 	{
 		if (!$this->isSslEnabledEverywhere()) {
 			return false;

@@ -64,7 +64,7 @@ class KlarnaSliceItPaymentMethodRestrictionValidator implements PaymentMethodRes
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isValid(MolPaymentMethod$paymentMethod)
+	public function isValid(MolPaymentMethod $paymentMethod)
 	{
 		if (!$this->isContextCountryCodeSupported($paymentMethod)) {
 			return false;

@@ -46,72 +46,72 @@ use Tools;
 
 class BasePaymentOptionProvider implements PaymentOptionProviderInterface
 {
-    /**
-     * @var Mollie
-     */
-    private $module;
+	/**
+	 * @var Mollie
+	 */
+	private $module;
 
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    /**
-     * @var CreditCardLogoProvider
-     */
-    private $creditCardLogoProvider;
+	/**
+	 * @var CreditCardLogoProvider
+	 */
+	private $creditCardLogoProvider;
 
-    /**
-     * @var PaymentFeeProviderInterface
-     */
-    private $paymentFeeProvider;
+	/**
+	 * @var PaymentFeeProviderInterface
+	 */
+	private $paymentFeeProvider;
 
-    public function __construct(
-        Mollie $module,
-        LegacyContext $context,
-        CreditCardLogoProvider $creditCardLogoProvider,
-        PaymentFeeProviderInterface $paymentFeeProvider
-    ) {
-        $this->module = $module;
-        $this->context = $context;
-        $this->creditCardLogoProvider = $creditCardLogoProvider;
-        $this->paymentFeeProvider = $paymentFeeProvider;
-    }
+	public function __construct(
+		Mollie $module,
+		LegacyContext $context,
+		CreditCardLogoProvider $creditCardLogoProvider,
+		PaymentFeeProviderInterface $paymentFeeProvider
+	) {
+		$this->module = $module;
+		$this->context = $context;
+		$this->creditCardLogoProvider = $creditCardLogoProvider;
+		$this->paymentFeeProvider = $paymentFeeProvider;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function providePaymentOption(MolPaymentMethod $paymentMethod)
-    {
-        $paymentOption = new PaymentOption();
-        $paymentOption->setCallToActionText($this->module->l($paymentMethod->method_name));
-        $paymentOption->setModuleName($this->module->name);
-        $paymentOption->setAction($this->context->getLink()->getModuleLink(
-            'mollie',
-            'payment',
-            ['method' => $paymentMethod->getPaymentMethodName(), 'rand' => Mollie\Utility\TimeUtility::getCurrentTimeStamp()],
-            true
-        ));
-        $paymentOption->setLogo($this->creditCardLogoProvider->getMethodOptionLogo($paymentMethod));
-        $paymentFee = $this->paymentFeeProvider->providePaymentFee($paymentMethod);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function providePaymentOption(MolPaymentMethod $paymentMethod)
+	{
+		$paymentOption = new PaymentOption();
+		$paymentOption->setCallToActionText($this->module->l($paymentMethod->method_name));
+		$paymentOption->setModuleName($this->module->name);
+		$paymentOption->setAction($this->context->getLink()->getModuleLink(
+			'mollie',
+			'payment',
+			['method' => $paymentMethod->getPaymentMethodName(), 'rand' => Mollie\Utility\TimeUtility::getCurrentTimeStamp()],
+			true
+		));
+		$paymentOption->setLogo($this->creditCardLogoProvider->getMethodOptionLogo($paymentMethod));
+		$paymentFee = $this->paymentFeeProvider->providePaymentFee($paymentMethod);
 
-        if ($paymentFee) {
-            $paymentOption->setInputs(
-                [
-                    [
-                        'type' => 'hidden',
-                        'name' => 'payment-fee-price',
-                        'value' => $paymentFee,
-                    ],
-                    [
-                        'type' => 'hidden',
-                        'name' => 'payment-fee-price-display',
-                        'value' => sprintf($this->module->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
-                    ],
-                ]
-            );
-        }
+		if ($paymentFee) {
+			$paymentOption->setInputs(
+				[
+					[
+						'type' => 'hidden',
+						'name' => 'payment-fee-price',
+						'value' => $paymentFee,
+					],
+					[
+						'type' => 'hidden',
+						'name' => 'payment-fee-price-display',
+						'value' => sprintf($this->module->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
+					],
+				]
+			);
+		}
 
-        return $paymentOption;
-    }
+		return $paymentOption;
+	}
 }

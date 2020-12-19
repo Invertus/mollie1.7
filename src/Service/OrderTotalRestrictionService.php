@@ -74,7 +74,8 @@ class OrderTotalRestrictionService implements OrderTotalRestrictionServiceInterf
 	}
 
 	/**
-     * TODO test this
+	 * TODO test this
+	 *
 	 * @throws OrderTotalRestrictionException
 	 */
 	public function updateOrderTotalRestrictions()

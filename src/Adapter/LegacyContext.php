@@ -55,10 +55,10 @@ class LegacyContext
 		return $this->getContext()->currency->iso_code;
 	}
 
-    public function getCurrencySign()
-    {
-        return $this->getContext()->currency->sign;
-    }
+	public function getCurrencySign()
+	{
+		return $this->getContext()->currency->sign;
+	}
 
 	public function getCountryIsoCode()
 	{
@@ -85,13 +85,13 @@ class LegacyContext
 		return $this->getContext()->getMobileDetect();
 	}
 
-    public function getLink()
-    {
-        return $this->getContext()->link;
-    }
+	public function getLink()
+	{
+		return $this->getContext()->link;
+	}
 
-    public function getSmarty()
-    {
-        return $this->getContext()->smarty;
-    }
+	public function getSmarty()
+	{
+		return $this->getContext()->smarty;
+	}
 }

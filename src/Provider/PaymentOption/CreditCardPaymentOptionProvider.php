@@ -47,108 +47,108 @@ use Tools;
 
 class CreditCardPaymentOptionProvider implements PaymentOptionProviderInterface
 {
-    /**
-     * @var Mollie
-     */
-    private $module;
+	/**
+	 * @var Mollie
+	 */
+	private $module;
 
-    /**
-     * @var LegacyContext
-     */
-    private $context;
+	/**
+	 * @var LegacyContext
+	 */
+	private $context;
 
-    /**
-     * @var CreditCardLogoProvider
-     */
-    private $creditCardLogoProvider;
+	/**
+	 * @var CreditCardLogoProvider
+	 */
+	private $creditCardLogoProvider;
 
-    /**
-     * @var OrderTotalProviderInterface
-     */
-    private $orderTotalProvider;
+	/**
+	 * @var OrderTotalProviderInterface
+	 */
+	private $orderTotalProvider;
 
-    /**
-     * @var PaymentFeeProviderInterface
-     */
-    private $paymentFeeProvider;
+	/**
+	 * @var PaymentFeeProviderInterface
+	 */
+	private $paymentFeeProvider;
 
-    public function __construct(
-        Mollie $module,
-        LegacyContext $context,
-        CreditCardLogoProvider $creditCardLogoProvider,
-        OrderTotalProviderInterface $orderTotalProvider,
-        PaymentFeeProviderInterface $paymentFeeProvider
-    ) {
-        $this->module = $module;
-        $this->context = $context;
-        $this->creditCardLogoProvider = $creditCardLogoProvider;
-        $this->orderTotalProvider = $orderTotalProvider;
-        $this->paymentFeeProvider = $paymentFeeProvider;
-    }
+	public function __construct(
+		Mollie $module,
+		LegacyContext $context,
+		CreditCardLogoProvider $creditCardLogoProvider,
+		OrderTotalProviderInterface $orderTotalProvider,
+		PaymentFeeProviderInterface $paymentFeeProvider
+	) {
+		$this->module = $module;
+		$this->context = $context;
+		$this->creditCardLogoProvider = $creditCardLogoProvider;
+		$this->orderTotalProvider = $orderTotalProvider;
+		$this->paymentFeeProvider = $paymentFeeProvider;
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public function providePaymentOption(MolPaymentMethod $paymentMethod)
-    {
-        $paymentOption = new PaymentOption();
-        $paymentOption->setCallToActionText($this->module->l($paymentMethod->method_name));
-        $paymentOption->setModuleName($this->module->name);
-        $paymentOption->setAction($this->context->getLink()->getModuleLink(
-            'mollie',
-            'payScreen',
-            ['method' => $paymentMethod->getPaymentMethodName(), 'rand' => Mollie\Utility\TimeUtility::getCurrentTimeStamp(), 'cardToken' => ''],
-            true
-        ));
-        $paymentOption->setInputs([
-            [
-                'type' => 'hidden',
-                'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
-                'value' => '',
-            ],
-        ]);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function providePaymentOption(MolPaymentMethod $paymentMethod)
+	{
+		$paymentOption = new PaymentOption();
+		$paymentOption->setCallToActionText($this->module->l($paymentMethod->method_name));
+		$paymentOption->setModuleName($this->module->name);
+		$paymentOption->setAction($this->context->getLink()->getModuleLink(
+			'mollie',
+			'payScreen',
+			['method' => $paymentMethod->getPaymentMethodName(), 'rand' => Mollie\Utility\TimeUtility::getCurrentTimeStamp(), 'cardToken' => ''],
+			true
+		));
+		$paymentOption->setInputs([
+			[
+				'type' => 'hidden',
+				'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
+				'value' => '',
+			],
+		]);
 
-        $this->context->getSmarty()->assign([
-            'mollieIFrameJS' => 'https://js.mollie.com/v1/mollie.js',
-            'price' => $this->orderTotalProvider->provideOrderTotal(),
-            'priceSign' => $this->context->getCurrencySign(),
-            'methodId' => $paymentMethod->getPaymentMethodName(),
-        ]);
-        $paymentOption->setLogo($this->creditCardLogoProvider->getMethodOptionLogo($paymentMethod));
+		$this->context->getSmarty()->assign([
+			'mollieIFrameJS' => 'https://js.mollie.com/v1/mollie.js',
+			'price' => $this->orderTotalProvider->provideOrderTotal(),
+			'priceSign' => $this->context->getCurrencySign(),
+			'methodId' => $paymentMethod->getPaymentMethodName(),
+		]);
+		$paymentOption->setLogo($this->creditCardLogoProvider->getMethodOptionLogo($paymentMethod));
 
-        $paymentOption->setAdditionalInformation($this->module->display(
-            $this->module->getPathUri(), 'views/templates/hook/mollie_iframe.tpl'
-        ));
+		$paymentOption->setAdditionalInformation($this->module->display(
+			$this->module->getPathUri(), 'views/templates/hook/mollie_iframe.tpl'
+		));
 
-        $paymentOption->setInputs([
-            [
-                'type' => 'hidden',
-                'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
-                'value' => '',
-            ],
-        ]);
-        $paymentFee = $this->paymentFeeProvider->providePaymentFee($paymentMethod);
+		$paymentOption->setInputs([
+			[
+				'type' => 'hidden',
+				'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
+				'value' => '',
+			],
+		]);
+		$paymentFee = $this->paymentFeeProvider->providePaymentFee($paymentMethod);
 
-        if ($paymentFee) {
-            $paymentOption->setInputs([
-                [
-                    'type' => 'hidden',
-                    'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
-                    'value' => '',
-                ],
-                [
-                    'type' => 'hidden',
-                    'name' => 'payment-fee-price',
-                    'value' => $paymentFee,
-                ],
-                [
-                    'type' => 'hidden',
-                    'name' => 'payment-fee-price-display',
-                    'value' => sprintf($this->module->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
-                ],
-            ]);
-        }
+		if ($paymentFee) {
+			$paymentOption->setInputs([
+				[
+					'type' => 'hidden',
+					'name' => "mollieCardToken{$paymentMethod->getPaymentMethodName()}",
+					'value' => '',
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'payment-fee-price',
+					'value' => $paymentFee,
+				],
+				[
+					'type' => 'hidden',
+					'name' => 'payment-fee-price-display',
+					'value' => sprintf($this->module->l('Payment Fee: %1s'), Tools::displayPrice($paymentFee)),
+				],
+			]);
+		}
 
-        return $paymentOption;
-    }
+		return $paymentOption;
+	}
 }

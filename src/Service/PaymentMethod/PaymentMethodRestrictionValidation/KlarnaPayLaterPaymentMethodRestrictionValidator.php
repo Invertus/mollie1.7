@@ -73,13 +73,13 @@ class KlarnaPayLaterPaymentMethodRestrictionValidator implements PaymentMethodRe
 		return true;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function supports(MolPaymentMethod $paymentMethod)
-    {
-        return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function supports(MolPaymentMethod $paymentMethod)
+	{
+		return $paymentMethod->getPaymentMethodName() == Config::MOLLIE_METHOD_ID_KLARNA_PAY_LATER;
+	}
 
 	/**
 	 * @param MolPaymentMethod $paymentMethod
