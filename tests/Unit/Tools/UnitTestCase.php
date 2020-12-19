@@ -2,6 +2,7 @@
 
 namespace Mollie\Tests\Unit\Tools;
 
+use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Adapter\LegacyContext;
 use Mollie\Provider\OrderTotalProvider;
 use Mollie\Provider\OrderTotalRestrictionProvider;
@@ -41,6 +42,20 @@ class UnitTestCase extends TestCase
 
 		return $contextMock;
 	}
+
+	public function mockContextWithCookie($cookieValue)
+    {
+        $contextMock = $this->getMockBuilder(LegacyContext::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $contextMock
+            ->method('getCookieValue')
+            ->willReturn($cookieValue)
+        ;
+
+        return $contextMock;
+    }
 
 	public function mockPaymentMethod($paymentName, $enabled)
 	{
@@ -140,4 +155,19 @@ class UnitTestCase extends TestCase
 
 		return $orderTotalProvider;
 	}
+
+	public function mockConfigurationAdapter($configuration)
+    {
+        $configurationAdapter = $this->getMockBuilder(ConfigurationAdapter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $configurationAdapter
+            ->method('get')
+            ->with('PS_SSL_ENABLED_EVERYWHERE')
+            ->willReturn($configuration['PS_SSL_ENABLED_EVERYWHERE'])
+        ;
+
+        return $configurationAdapter;
+    }
 }

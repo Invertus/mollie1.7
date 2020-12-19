@@ -22,6 +22,7 @@ services:
     class: Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\ApplePayPaymentMethodRestrictionValidator
     arguments:
       - '@=service("adapter.context")'
+      - '@Mollie\Adapter\ConfigurationAdapter'
     tags:
       - { name: mollie.paymentmethodrestriction }
 

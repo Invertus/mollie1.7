@@ -37,6 +37,7 @@
 namespace Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation;
 
 use Configuration;
+use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Adapter\LegacyContext;
 use Mollie\Config\Config;
 
@@ -47,10 +48,18 @@ class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrict
 	 */
 	private $context;
 
-	public function __construct(LegacyContext $context)
-	{
+    /**
+     * @var ConfigurationAdapter
+     */
+    private $configurationAdapter;
+
+    public function __construct(
+	    LegacyContext $context,
+        ConfigurationAdapter $configurationAdapter
+    ) {
 		$this->context = $context;
-	}
+        $this->configurationAdapter = $configurationAdapter;
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -81,7 +90,7 @@ class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrict
 	 */
 	private function isSslEnabledEverywhere()
 	{
-		return (bool) Configuration::get('PS_SSL_ENABLED_EVERYWHERE');
+	    return (bool) $this->configurationAdapter->get('PS_SSL_ENABLED_EVERYWHERE');
 	}
 
 	/**
@@ -89,6 +98,6 @@ class ApplePayPaymentMethodRestrictionValidator implements PaymentMethodRestrict
 	 */
 	private function isPaymentMethodInCookie()
 	{
-		return $_COOKIE['isApplePayMethod'] !== '0';
+		return (int) $this->context->getCookieValue('isApplePayMethod') !== 0;
 	}
 }
