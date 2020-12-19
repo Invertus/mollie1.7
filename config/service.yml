@@ -185,13 +185,13 @@ services:
       - '@Mollie\Repository\CartRuleRepository'
       - '@Mollie\Repository\OrderRepository'
 
-    Mollie\Handler\CartRule\CartRuleQuantityResetHandler:
-      class: Mollie\Handler\CartRule\CartRuleQuantityResetHandler
-      arguments:
-        - '@Mollie\Repository\PendingOrderCartRuleRepository'
-        - '@Mollie\Repository\OrderCartRuleRepository'
-        - '@Mollie\Repository\CartRuleRepository'
-        - '@Mollie\Repository\OrderRepository'
+  Mollie\Handler\CartRule\CartRuleQuantityResetHandler:
+    class: Mollie\Handler\CartRule\CartRuleQuantityResetHandler
+    arguments:
+      - '@Mollie\Repository\PendingOrderCartRuleRepository'
+      - '@Mollie\Repository\OrderCartRuleRepository'
+      - '@Mollie\Repository\CartRuleRepository'
+      - '@Mollie\Repository\OrderRepository'
 
   Mollie\Service\PaymentMethodOrderRestrictionUpdater:
     class: Mollie\Service\PaymentMethodOrderRestrictionUpdater

@@ -1452,7 +1452,7 @@ class Mollie extends PaymentModule
 			PrestaShopLogger::addLog(__METHOD__ . ' - System incompatible: ' . $e->getMessage(), Mollie\Config\Config::CRASH);
 		} catch (MolliePrefix\Mollie\Api\Exceptions\ApiException $e) {
 			$this->warning = $this->l('Payment error:') . $e->getMessage();
-			PrestaShopLogger::addLog(__METHOD__ . ' said: ' . $this->warning, Mollie\Config\Config::CRASH);
+            PrestaShopLogger::addLog(__METHOD__ . ' said: ' . $this->warning, Mollie\Config\Config::CRASH);
 		}
 	}
 }

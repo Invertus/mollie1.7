@@ -36,17 +36,21 @@
 
 namespace Mollie\Service\PaymentMethod;
 
+use Exception;
+use Mollie\Config\Config;
 use Mollie\Service\PaymentMethod\PaymentMethodRestrictionValidation\PaymentMethodRestrictionValidatorInterface;
 use MolPaymentMethod;
+use PrestaShopLogger;
+use Traversable;
 
-final class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionValidationInterface
+class PaymentMethodRestrictionValidation implements PaymentMethodRestrictionValidationInterface
 {
 	/**
-	 * @var \Traversable
+	 * @var Traversable
 	 */
 	private $paymentRestrictionValidators;
 
-	public function __construct(\Traversable $paymentRestrictionValidators)
+	public function __construct(Traversable $paymentRestrictionValidators)
 	{
 		$this->paymentRestrictionValidators = $paymentRestrictionValidators;
 	}
@@ -66,13 +70,25 @@ final class PaymentMethodRestrictionValidation implements PaymentMethodRestricti
 		 * @var PaymentMethodRestrictionValidatorInterface $paymentRestrictionValidator
 		 */
 		foreach ($this->paymentRestrictionValidators as $paymentRestrictionValidator) {
-			if ($paymentRestrictionValidator->supports($paymentMethod)) {
-				$success = $paymentRestrictionValidator->isValid($paymentMethod);
 
-				if (!$success) {
-					return false;
-				}
-			}
+		    try {
+                if ($paymentRestrictionValidator->supports($paymentMethod)) {
+                    $success = $paymentRestrictionValidator->isValid($paymentMethod);
+
+                    if (!$success) {
+                        return false;
+                    }
+                }
+            } catch (Exception $exception) {
+                PrestaShopLogger::addLog(
+                    sprintf('%s has caught error: %s', __METHOD__, $exception->getMessage()),
+                    Config::ERROR,
+                    null,
+                    null,
+                    null,
+                    true
+                );
+            }
 		}
 
 		return $success;
