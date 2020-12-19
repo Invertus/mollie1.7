@@ -140,18 +140,18 @@ class UnitTestCase extends TestCase
 	}
 
 	public function mockPaymentMethodRepository()
-    {
-        $paymentMethodRepository = $this->getMockBuilder(PaymentMethodRepositoryInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+	{
+		$paymentMethodRepository = $this->getMockBuilder(PaymentMethodRepositoryInterface::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-        $paymentMethodRepository
-            ->method('findAll')
-            ->willReturn(
-                new \PrestaShopCollection(MolPaymentMethod::class)
-            )
-        ;
-    }
+		$paymentMethodRepository
+			->method('findAll')
+			->willReturn(
+				new \PrestaShopCollection(MolPaymentMethod::class)
+			)
+		;
+	}
 
 	public function mockOrderTotalProvider($orderTotal)
 	{

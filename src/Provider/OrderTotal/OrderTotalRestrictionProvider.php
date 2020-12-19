@@ -95,12 +95,12 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	 */
 	private function getPaymentMethodOrderTotalRestriction($id_payment_method, $currencyIso)
 	{
-	    /** @var MolPaymentMethodOrderTotalRestriction|null $paymentMethodOrderTotalRestriction */
-	    $paymentMethodOrderTotalRestriction = $this->methodOrderTotalRestriction->findOneBy([
+		/** @var MolPaymentMethodOrderTotalRestriction|null $paymentMethodOrderTotalRestriction */
+		$paymentMethodOrderTotalRestriction = $this->methodOrderTotalRestriction->findOneBy([
 			'id_payment_method' => (int) $id_payment_method,
 			'currency_iso' => strtoupper($currencyIso),
 		]);
 
-	    return $paymentMethodOrderTotalRestriction;
+		return $paymentMethodOrderTotalRestriction;
 	}
 }
