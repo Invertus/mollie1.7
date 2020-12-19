@@ -404,15 +404,15 @@ class FormBuilder
 			]
 		);
 
-        $input[] = [
-            'type' => 'mollie-button-update-order-total-restriction',
-            'label' => '',
-            'tab' => $generalSettings,
-            'name' => Config::MOLLIE_BUTTON_ORDER_TOTAL_REFRESH,
-            'text' => $this->module->l('Refresh order total restriction values', self::FILE_NAME),
-            'class' => 'js-refresh-order-total-values',
-            'form_group_class' => 'js-refresh-order-total',
-        ];
+		$input[] = [
+			'type' => 'mollie-button-update-order-total-restriction',
+			'label' => '',
+			'tab' => $generalSettings,
+			'name' => Config::MOLLIE_BUTTON_ORDER_TOTAL_REFRESH,
+			'text' => $this->module->l('Refresh order total restriction values', self::FILE_NAME),
+			'class' => 'js-refresh-order-total-values',
+			'form_group_class' => 'js-refresh-order-total',
+		];
 
 		$input[] = [
 			'type' => 'mollie-h2',

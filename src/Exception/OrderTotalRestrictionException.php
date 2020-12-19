@@ -42,5 +42,5 @@ class OrderTotalRestrictionException extends \Exception
 
 	const NO_AVAILABLE_CURRENCIES_FOUND = 2;
 
-    const ORDER_TOTAL_RESTRICTION_SAVE_FAILED = 3;
+	const ORDER_TOTAL_RESTRICTION_SAVE_FAILED = 3;
 }

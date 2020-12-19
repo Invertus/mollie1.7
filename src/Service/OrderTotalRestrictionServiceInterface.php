@@ -40,10 +40,10 @@ use Mollie\Exception\OrderTotalRestrictionException;
 
 interface OrderTotalRestrictionServiceInterface
 {
-    /**
-     * @throws OrderTotalRestrictionException
-     */
-    public function updateOrderTotalRestrictions();
+	/**
+	 * @throws OrderTotalRestrictionException
+	 */
+	public function updateOrderTotalRestrictions();
 
-    public function deleteOrderTotalRestrictions();
+	public function deleteOrderTotalRestrictions();
 }

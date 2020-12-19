@@ -41,12 +41,13 @@ use MolPaymentMethod;
 
 interface PaymentMethodOrderRestrictionUpdaterInterface
 {
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param string $currencyIso
-     *
-     * @return bool
-     * @throws OrderTotalRestrictionException
-     */
-    public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param string $currencyIso
+	 *
+	 * @return bool
+	 *
+	 * @throws OrderTotalRestrictionException
+	 */
+	public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso);
 }

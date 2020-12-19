@@ -62,7 +62,7 @@ class MolPaymentMethodOrderTotalRestriction extends ObjectModel
 		'table' => 'mol_payment_method_order_total_restriction',
 		'primary' => 'id_payment_method_order_total_restriction',
 		'fields' => [
-		    'id_payment_method' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
+			'id_payment_method' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
 			'currency_iso' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
 			'minimum_order_total' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
 			'maximum_order_total' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],

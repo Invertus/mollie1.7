@@ -46,54 +46,51 @@ use PrestaShopLogger;
 
 class PaymentMethodOrderRestrictionUpdater implements PaymentMethodOrderRestrictionUpdaterInterface
 {
-    /**
-     * @var PaymentMethodOrderTotalRestrictionProviderInterface
-     */
-    private $paymentMethodOrderTotalRestrictionProvider;
+	/**
+	 * @var PaymentMethodOrderTotalRestrictionProviderInterface
+	 */
+	private $paymentMethodOrderTotalRestrictionProvider;
 
-    public function __construct(
-        PaymentMethodOrderTotalRestrictionProviderInterface $paymentMethodOrderTotalRestrictionProvider
-    ) {
-        $this->paymentMethodOrderTotalRestrictionProvider = $paymentMethodOrderTotalRestrictionProvider;
-    }
+	public function __construct(
+		PaymentMethodOrderTotalRestrictionProviderInterface $paymentMethodOrderTotalRestrictionProvider
+	) {
+		$this->paymentMethodOrderTotalRestrictionProvider = $paymentMethodOrderTotalRestrictionProvider;
+	}
 
-    /**
-     * TODO trigger this on first update when this is launched.
-     * @inheritDoc
-     */
-    public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
-    {
-        $config = $this->paymentMethodOrderTotalRestrictionProvider->providePaymentMethodOrderTotalRestriction(
-            $paymentMethod->getPaymentMethodName(),
-            $currencyIso
-        );
+	/**
+	 * TODO trigger this on first update when this is launched.
+	 * {@inheritDoc}
+	 */
+	public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso)
+	{
+		$config = $this->paymentMethodOrderTotalRestrictionProvider->providePaymentMethodOrderTotalRestriction(
+			$paymentMethod->getPaymentMethodName(),
+			$currencyIso
+		);
 
-        if (!$config) {
-            return false;
-        }
-        $paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
-        $paymentMethodOrderRestriction->id_payment_method = (int) $paymentMethod->id;
-        $paymentMethodOrderRestriction->currency_iso = strtoupper($currencyIso);
-        $paymentMethodOrderRestriction->minimum_order_total = 0.0;
-        $paymentMethodOrderRestriction->maximum_order_total = 0.0;
+		if (!$config) {
+			return false;
+		}
+		$paymentMethodOrderRestriction = new MolPaymentMethodOrderTotalRestriction();
+		$paymentMethodOrderRestriction->id_payment_method = (int) $paymentMethod->id;
+		$paymentMethodOrderRestriction->currency_iso = strtoupper($currencyIso);
+		$paymentMethodOrderRestriction->minimum_order_total = 0.0;
+		$paymentMethodOrderRestriction->maximum_order_total = 0.0;
 
-        if ($config->minimumAmount) {
-            $paymentMethodOrderRestriction->minimum_order_total = (float) $config->minimumAmount->value ?: 0.0;
-        }
+		if ($config->minimumAmount) {
+			$paymentMethodOrderRestriction->minimum_order_total = (float) $config->minimumAmount->value ?: 0.0;
+		}
 
-        if ($config->maximumAmount) {
-            $paymentMethodOrderRestriction->maximum_order_total = (float) $config->maximumAmount->value ?: 0.0;
-        }
+		if ($config->maximumAmount) {
+			$paymentMethodOrderRestriction->maximum_order_total = (float) $config->maximumAmount->value ?: 0.0;
+		}
 
-        try {
-            return $paymentMethodOrderRestriction->save();
-        } catch (PrestaShopException $e) {
-            PrestaShopLogger::addLog(__METHOD__ . ' returned exception: ' . $e->getMessage(), Config::ERROR, 0, null, null, true);
+		try {
+			return $paymentMethodOrderRestriction->save();
+		} catch (PrestaShopException $e) {
+			PrestaShopLogger::addLog(__METHOD__ . ' returned exception: ' . $e->getMessage(), Config::ERROR, 0, null, null, true);
 
-            throw new OrderTotalRestrictionException(
-                'Failed to save payment method order restriction',
-                OrderTotalRestrictionException::ORDER_TOTAL_RESTRICTION_SAVE_FAILED
-            );
-        }
-    }
+			throw new OrderTotalRestrictionException('Failed to save payment method order restriction', OrderTotalRestrictionException::ORDER_TOTAL_RESTRICTION_SAVE_FAILED);
+		}
+	}
 }
