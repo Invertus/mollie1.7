@@ -60,7 +60,7 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	{
 		$paymentMethodOrderTotalRestriction = $this->getPaymentMethodOrderTotalRestriction(
 			$paymentMethod->id_payment_method,
-            $currencyIso
+			$currencyIso
 		);
 
 		if (!$paymentMethodOrderTotalRestriction) {
@@ -77,7 +77,7 @@ class OrderTotalRestrictionProvider implements OrderTotalRestrictionProviderInte
 	{
 		$paymentMethodOrderTotalRestriction = $this->getPaymentMethodOrderTotalRestriction(
 			$paymentMethod->id_payment_method,
-            $currencyIso
+			$currencyIso
 		);
 
 		if (!$paymentMethodOrderTotalRestriction) {

@@ -36,17 +36,15 @@
 
 namespace Mollie\Service;
 
-use MolliePrefix\Mollie\Api\MollieApiClient;
 use MolPaymentMethod;
-use PrestaShopException;
 
 interface PaymentMethodOrderRestrictionUpdaterInterface
 {
-    /**
-     * @param MolPaymentMethod $paymentMethod
-     * @param string $currencyIso
-     *
-     * @return void
-     */
-    public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso);
+	/**
+	 * @param MolPaymentMethod $paymentMethod
+	 * @param string $currencyIso
+	 *
+	 * @return void
+	 */
+	public function updatePaymentMethodOrderTotalRestriction(MolPaymentMethod $paymentMethod, $currencyIso);
 }

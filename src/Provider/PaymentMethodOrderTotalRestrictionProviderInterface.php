@@ -38,11 +38,11 @@ namespace Mollie\Provider;
 
 interface PaymentMethodOrderTotalRestrictionProviderInterface
 {
-    /**
-     * @param string $paymentMethodName
-     * @param string $currencyIso
-     *
-     * @return float|null
-     */
-    public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso);
+	/**
+	 * @param string $paymentMethodName
+	 * @param string $currencyIso
+	 *
+	 * @return float|null
+	 */
+	public function providePaymentMethodOrderTotalRestriction($paymentMethodName, $currencyIso);
 }
