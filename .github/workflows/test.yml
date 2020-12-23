@@ -52,8 +52,10 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     steps:
-      - name: E2E
+      - name: Checkout
         uses: actions/checkout@v2
+
+      - name: E2E testing
         run: make e2eh
 
       - name: Archive videos
