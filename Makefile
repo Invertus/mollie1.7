@@ -36,7 +36,7 @@ build-ps-17:
 e2e17p: e2e-17-prepare
 e2e-17-prepare:
 	# detaching containers
-	docker-compose up -d
+	docker-compose up -d --force-recreate
 	# sees what containers are running
 	docker-compose ps
 	# waits for mysql to load
@@ -49,11 +49,11 @@ e2e-17-prepare:
 e2eh: test-e2e-headless
 test-e2e-headless:
 	make e2e17p
-	docker-compose -f docker-compose.e2e.yml up --exit-code-from cypress
+	docker-compose -f docker-compose.e2e.yml up --force-recreate --exit-code-from cypress
 
 # Run e2e tests with graphical interface ( usually you can skip building since its likely you already done, only execute docker-compose command below )
 e2eg: test-e2e-gui
 test-e2e-gui:
 	make e2e17p
 	# this should work out of the box for all linux users.
-	docker-compose -f docker-compose.e2e.yml -f docker-compose.e2e.local.yml up --exit-code-from cypress
+	docker-compose -f docker-compose.e2e.yml -f docker-compose.e2e.local.yml up --force-recreate --exit-code-from cypress
