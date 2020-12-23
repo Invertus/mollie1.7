@@ -113,13 +113,8 @@ class FormBuilder
 
 		$inputs = $this->getAccountSettingsSection($isApiKeyProvided);
 
-		if ($isApiKeyProvided) {
-			$inputs = array_merge($inputs, $this->getAdvancedSettingsSection());
-		}
-
 		$fields = [
 			'form' => [
-				'tabs' => $this->getSettingTabs($isApiKeyProvided),
 				'input' => $inputs,
 				'submit' => [
 					'title' => $this->module->l('Save'),
@@ -436,7 +431,7 @@ class FormBuilder
 		return $input;
 	}
 
-	protected function getAdvancedSettingsSection()
+	public function buildAdvancedSettingsForm()
 	{
 		$advancedSettings = 'advanced_settings';
 		$input = [];
@@ -817,19 +812,36 @@ class FormBuilder
 			]
 		);
 
-		return $input;
-	}
+        $fields = [
+            'form' => [
+                'input' => $input,
+                'submit' => [
+                    'title' => $this->module->l('Save'),
+                    'class' => 'btn btn-default pull-right',
+                ],
+            ],
+        ];
 
-	private function getSettingTabs($isApiKeyProvided)
-	{
-		$tabs = [
-			'general_settings' => $this->module->l('General settings', self::FILE_NAME),
-		];
+        $helper = new HelperForm();
 
-		if ($isApiKeyProvided) {
-			$tabs['advanced_settings'] = $this->module->l('Advanced settings', self::FILE_NAME);
-		}
+        $helper->show_toolbar = false;
+        $helper->table = $this->module->getTable();
+        $helper->module = $this->module;
+        $helper->default_form_language = $this->module->getContext()->language->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
-		return $tabs;
+        $helper->identifier = $this->module->getIdentifier();
+        $helper->submit_action = 'submitAdvancedSettings';
+        $helper->currentIndex = $this->module->getContext()->link->getAdminLink('AdminModules', false)
+            . "&configure={$this->module->name}&tab_module={$this->module->tab}&module_name={$this->module->name}";
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+
+        $helper->tpl_vars = [
+            'fields_value' => $this->configFieldService->getConfigFieldsValues(),
+            'languages' => $this->module->getContext()->controller->getLanguages(),
+            'id_language' => $this->module->getContext()->language->id,
+        ];
+
+        return $helper->generateForm([$fields]);
 	}
 }

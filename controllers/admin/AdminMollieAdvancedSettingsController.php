@@ -13,12 +13,17 @@
 
 use Mollie\Config\Config;
 
-class AdminMollieModuleController extends ModuleAdminController
+class AdminMollieAdvancedSettingsController extends ModuleAdminController
 {
     public function __construct()
     {
-        parent::__construct();
         $this->bootstrap = true;
+        parent::__construct();
+    }
+
+    public function setMedia($isNewTheme = false)
+    {
+        parent::setMedia($isNewTheme);
     }
 
     public function initContent()
@@ -136,7 +141,7 @@ class AdminMollieModuleController extends ModuleAdminController
         $settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
 
         try {
-            $this->content .= $settingsFormBuilder->buildSettingsForm();
+            $this->content .= $settingsFormBuilder->buildAdvancedSettingsForm();
         } catch (PrestaShopDatabaseException $e) {
             $this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
         }

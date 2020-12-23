@@ -11,14 +11,18 @@
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Config\Config;
-
-class AdminMollieModuleController extends ModuleAdminController
+class AdminMollieSettingsController extends ModuleAdminController
 {
+
     public function __construct()
     {
-        parent::__construct();
         $this->bootstrap = true;
+        parent::__construct();
+    }
+
+    public function init()
+    {
+        parent::init();
     }
 
     public function initContent()
@@ -87,6 +91,45 @@ class AdminMollieModuleController extends ModuleAdminController
             }
         }
 
+        $this->content = $templateParser->parseTemplate(
+            $this->context->smarty,
+            $this->module->getMollieContainer(\Mollie\Builder\Content\LogoInfoBlock::class),
+            $this->module->getLocalPath() . 'views/templates/admin/logo.tpl'
+        );
+
+        /** @var \Mollie\Builder\Content\UpdateMessageInfoBlock $updateMessageInfoBlock */
+        $updateMessageInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\UpdateMessageInfoBlock::class);
+        $updateMessageInfoBlockData = $updateMessageInfoBlock->setAddons(Mollie::ADDONS);
+
+        $this->content .= $templateParser->parseTemplate(
+            $this->context->smarty,
+            $updateMessageInfoBlockData,
+            $this->module->getLocalPath() . 'views/templates/admin/updateMessage.tpl'
+        );
+
+        $this->renderSettingsForm();
+
+        $this->context->smarty->assign('content', $this->content);
+    }
+
+    public function renderSettingsForm()
+    {
+        /** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
+        $baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
+        $this->context->smarty->assign($baseInfoBlock->buildParams());
+
+        /** @var \Mollie\Builder\FormBuilder $settingsFormBuilder */
+        $settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
+
+        try {
+            $this->content .= $settingsFormBuilder->buildSettingsForm();
+        } catch (PrestaShopDatabaseException $e) {
+            $this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
+        }
+    }
+
+    public function setMedia($isNewTheme = false)
+    {
         Media::addJsDef([
             'description_message' => $this->l('Description cannot be empty'),
             'profile_id_message' => $this->l('Wrong profile ID'),
@@ -111,37 +154,8 @@ class AdminMollieModuleController extends ModuleAdminController
         $this->context->controller->addJS($this->module->getPathUri() . 'views/js/admin/init_mollie_account.js');
         $this->context->controller->addCSS($this->module->getPathUri() . 'views/css/mollie.css');
         $this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/logo_input.css');
+        parent::setMedia($isNewTheme);
 
-        $this->content = $templateParser->parseTemplate(
-            $this->context->smarty,
-            $this->module->getMollieContainer(\Mollie\Builder\Content\LogoInfoBlock::class),
-            $this->module->getLocalPath() . 'views/templates/admin/logo.tpl'
-        );
-
-        /** @var \Mollie\Builder\Content\UpdateMessageInfoBlock $updateMessageInfoBlock */
-        $updateMessageInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\UpdateMessageInfoBlock::class);
-        $updateMessageInfoBlockData = $updateMessageInfoBlock->setAddons(Mollie::ADDONS);
-
-        $this->content .= $templateParser->parseTemplate(
-            $this->context->smarty,
-            $updateMessageInfoBlockData,
-            $this->module->getLocalPath() . 'views/templates/admin/updateMessage.tpl'
-        );
-//
-        /** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
-        $baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
-        $this->context->smarty->assign($baseInfoBlock->buildParams());
-//
-        /** @var \Mollie\Builder\FormBuilder $settingsFormBuilder */
-        $settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
-
-        try {
-            $this->content .= $settingsFormBuilder->buildSettingsForm();
-        } catch (PrestaShopDatabaseException $e) {
-            $this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
-        }
-
-        $this->context->smarty->assign('content', $this->content);
     }
 
 //	public function postProcess()
