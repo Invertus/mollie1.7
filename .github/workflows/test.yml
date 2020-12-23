@@ -60,3 +60,9 @@ jobs:
         uses: actions/checkout@v2
         run: make e2eh
 
+      - name: Archive videos
+        uses: actions/upload-artifact@v2
+        with:
+          name: videos
+          path: cypress/videos
+
