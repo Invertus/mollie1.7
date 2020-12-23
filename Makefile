@@ -55,5 +55,5 @@ test-e2e-headless:
 e2eg: test-e2e-gui
 test-e2e-gui:
 	make e2e17p
-	# this should work out of the box for all linux users
+	# this should work out of the box for all linux users.
 	docker-compose -f docker-compose.e2e.yml -f docker-compose.e2e.local.yml up --exit-code-from cypress
