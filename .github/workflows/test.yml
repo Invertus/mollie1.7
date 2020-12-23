@@ -58,8 +58,12 @@ jobs:
       - name: E2E testing
         run: make e2eh
 
-      - name: Archive videos
+      - name: Archive videos and screenshots
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: videos
-          path: cypress/videos
+          name: videos_screenshots
+          retention-days: 1
+          path: |
+            cypress/videos
+            cypress/screenshots
