@@ -10881,7 +10881,7 @@ CREATE TABLE `ps_shop_url` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `ps_shop_url` (`id_shop_url`, `id_shop`, `domain`, `domain_ssl`, `physical_uri`, `virtual_uri`, `main`, `active`) VALUES
-(1,	1,	'localhost:8001',	'localhost:8001',	'/',	'',	1,	1);
+(1,	1,	'172.17.0.1:8001',	'172.17.0.1:8001',	'/',	'',	1,	1);
 
 DROP TABLE IF EXISTS `ps_smarty_cache`;
 CREATE TABLE `ps_smarty_cache` (
