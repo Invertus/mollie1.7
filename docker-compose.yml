@@ -18,7 +18,7 @@ services:
 
   prestashop-17:
     container_name: prestashop-17
-    image: prestashop/prestashop:1.7
+    image: prestashop/prestashop:1.7.7.0-apache
     environment:
       PS_INSTALL_AUTO: 0
       DB_PASSWD: prestashop
