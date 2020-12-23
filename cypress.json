@@ -1,3 +1,3 @@
 {
-  "baseUrl": "http://host.docker.interal:8001"
+  "baseUrl": "http://172.17.0.1:8001"
 }
