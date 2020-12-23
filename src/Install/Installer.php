@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -45,7 +22,7 @@ use FeatureValue;
 use Language;
 use Mollie;
 use Mollie\Config\Config;
-use Mollie\Service\ImageService;
+use Mollie\Service\OrderStateImageService;
 use Mollie\Utility\MultiLangUtility;
 use OrderState;
 use PrestaShopDatabaseException;
@@ -69,7 +46,7 @@ class Installer implements InstallerInterface
 	private $module;
 
 	/**
-	 * @var ImageService
+	 * @var OrderStateImageService
 	 */
 	private $imageService;
 
@@ -80,7 +57,7 @@ class Installer implements InstallerInterface
 
 	public function __construct(
 		Mollie $module,
-		ImageService $imageService,
+		OrderStateImageService $imageService,
 		InstallerInterface $databaseTableInstaller
 	) {
 		$this->module = $module;
@@ -165,19 +142,16 @@ class Installer implements InstallerInterface
 			'actionAdminStatusesListingFieldsModifier',
 			'actionAdminControllerSetMedia',
 			'actionValidateOrder',
+			'actionOrderGridDefinitionModifier',
+			'actionOrderGridQueryBuilderModifier',
 		];
 	}
 
 	/**
-	 * Create new order state for partial refunds.
-	 *
 	 * @return bool
 	 *
 	 * @throws PrestaShopDatabaseException
 	 * @throws PrestaShopException
-	 * @throws Adapter_Exception
-	 *
-	 * @since 2.0.0
 	 */
 	private function createPartialRefundOrderState()
 	{
@@ -199,8 +173,6 @@ class Installer implements InstallerInterface
 	}
 
 	/**
-	 * @param $languageId
-	 *
 	 * @return bool
 	 *
 	 * @throws PrestaShopDatabaseException
@@ -240,7 +212,7 @@ class Installer implements InstallerInterface
 		if (!$this->createOrderCompletedOrderState()) {
 			return false;
 		}
-		if (!$this->klarnaPaymentAcceptedState()) {
+		if (!$this->klarnaPaymentAuthorizedState()) {
 			return false;
 		}
 		if (!$this->klarnaPaymentShippedState()) {
@@ -251,8 +223,6 @@ class Installer implements InstallerInterface
 	}
 
 	/**
-	 * @param $languageId
-	 *
 	 * @return bool
 	 *
 	 * @throws PrestaShopDatabaseException
@@ -279,8 +249,6 @@ class Installer implements InstallerInterface
 	}
 
 	/**
-	 * @param $languageId
-	 *
 	 * @return bool
 	 *
 	 * @throws PrestaShopDatabaseException
@@ -313,27 +281,27 @@ class Installer implements InstallerInterface
 	 * @throws PrestaShopDatabaseException
 	 * @throws PrestaShopException
 	 */
-	public function klarnaPaymentAcceptedState()
+	public function klarnaPaymentAuthorizedState()
 	{
 		$orderState = new OrderState();
-		$orderState->send_email = false;
+		$orderState->send_email = true;
 		$orderState->color = '#8A2BE2';
 		$orderState->hidden = false;
 		$orderState->delivery = false;
 		$orderState->logable = true;
-		$orderState->invoice = false;
+		$orderState->invoice = true;
 		$orderState->pdf_invoice = true;
 		$orderState->paid = true;
 		$orderState->send_email = true;
 		$orderState->template = 'payment';
 		$orderState->module_name = $this->module->name;
-		$orderState->name = MultiLangUtility::createMultiLangField('Klarna payment accepted');
+		$orderState->name = MultiLangUtility::createMultiLangField('Klarna payment authorized');
 
 		if ($orderState->add()) {
 			$this->imageService->createOrderStateLogo($orderState->id);
 		}
-		Configuration::updateValue(Config::MOLLIE_STATUS_KLARNA_ACCEPTED, (int) $orderState->id);
-		Configuration::updateValue(Config::MOLLIE_KLARNA_INVOICE_ON, Config::MOLLIE_STATUS_KLARNA_ACCEPTED);
+		Configuration::updateValue(Config::MOLLIE_STATUS_KLARNA_AUTHORIZED, (int) $orderState->id);
+		Configuration::updateValue(Config::MOLLIE_KLARNA_INVOICE_ON, Config::MOLLIE_STATUS_KLARNA_AUTHORIZED);
 
 		return true;
 	}
@@ -347,12 +315,12 @@ class Installer implements InstallerInterface
 	public function klarnaPaymentShippedState()
 	{
 		$orderState = new OrderState();
-		$orderState->send_email = false;
+		$orderState->send_email = true;
 		$orderState->color = '#8A2BE2';
 		$orderState->hidden = false;
 		$orderState->delivery = false;
 		$orderState->logable = true;
-		$orderState->invoice = true;
+		$orderState->invoice = false;
 		$orderState->shipped = true;
 		$orderState->paid = true;
 		$orderState->delivery = true;
@@ -417,11 +385,11 @@ class Installer implements InstallerInterface
 	public function setDefaultCarrierStatuses()
 	{
 		$sql = new DbQuery();
-		$sql->select('`'.bqSQL(OrderState::$definition['primary']).'`');
+		$sql->select('`' . bqSQL(OrderState::$definition['primary']) . '`');
 		$sql->from(bqSQL(OrderState::$definition['table']));
 		$sql->where('`shipped` = 1');
 
-		$defaultStatuses = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($sql);
+		$defaultStatuses = Db::getInstance()->executeS($sql);
 		if (!is_array($defaultStatuses)) {
 			return;
 		}
@@ -438,8 +406,7 @@ class Installer implements InstallerInterface
 		$moduleTab->id_parent = $idParent;
 		$moduleTab->module = $this->module->name;
 		$moduleTab->active = $active;
-		$moduleTab->icon = $icon;
-
+		$moduleTab->icon = $icon; /** @phpstan-ignore-line */
 		$languages = Language::getLanguages(true);
 		foreach ($languages as $language) {
 			$moduleTab->name[$language['id_lang']] = $name;
@@ -453,12 +420,7 @@ class Installer implements InstallerInterface
 	}
 
 	/**
-	 * Copies module email templates to all languages
-	 * Collects error messages if email templates copy process is unsuccessful.
-	 *
-	 * @param Module $module Module object
-	 *
-	 * @return bool Email templates copied successfully or not
+	 * @return bool
 	 */
 	public function copyEmailTemplates()
 	{
@@ -469,17 +431,17 @@ class Installer implements InstallerInterface
 				continue;
 			}
 
-			if (file_exists($this->module->getLocalPath().'mails/'.$language['iso_code'])) {
+			if (file_exists($this->module->getLocalPath() . 'mails/' . $language['iso_code'])) {
 				continue;
 			}
 
 			try {
 				Tools::recurseCopy(
-					$this->module->getLocalPath().'mails/'.Config::DEFAULT_EMAIL_LANGUAGE_ISO_CODE,
-					$this->module->getLocalPath().'mails/'.$language['iso_code']
+					$this->module->getLocalPath() . 'mails/' . Config::DEFAULT_EMAIL_LANGUAGE_ISO_CODE,
+					$this->module->getLocalPath() . 'mails/' . $language['iso_code']
 				);
 			} catch (PrestaShopException $e) {
-				$this->errors[] = $this->module->l('Could not copy email templates:', self::FILE_NAME).' '.$e->getMessage();
+				$this->errors[] = $this->module->l('Could not copy email templates:', self::FILE_NAME) . ' ' . $e->getMessage();
 
 				return false;
 			}
@@ -492,7 +454,7 @@ class Installer implements InstallerInterface
 	{
 		$mollieVoucherId = Configuration::get(Config::MOLLIE_VOUCHER_FEATURE_ID);
 		if ($mollieVoucherId) {
-			$mollieFeature = new Feature($mollieVoucherId);
+			$mollieFeature = new Feature((int) $mollieVoucherId);
 			$doesFeatureExist = Validate::isLoadedObject($mollieFeature);
 			if ($doesFeatureExist) {
 				return;
@@ -508,7 +470,7 @@ class Installer implements InstallerInterface
 			$featureValue->id_feature = $feature->id;
 			$featureValue->value = MultiLangUtility::createMultiLangField($categoryName);
 			$featureValue->add();
-			Configuration::updateValue(Config::MOLLIE_VOUCHER_FEATURE.$key, $featureValue->id);
+			Configuration::updateValue(Config::MOLLIE_VOUCHER_FEATURE . $key, $featureValue->id);
 		}
 
 		Configuration::updateValue(Config::MOLLIE_VOUCHER_FEATURE_ID, $feature->id);

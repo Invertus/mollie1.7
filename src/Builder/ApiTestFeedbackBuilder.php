@@ -1,49 +1,28 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
 namespace Mollie\Builder;
 
-use Mollie\Service\ApiService;
+use Mollie\Service\ApiKeyService;
+use MolliePrefix\Mollie\Api\Resources\BaseCollection;
+use MolliePrefix\Mollie\Api\Resources\MethodCollection;
 
 class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 {
 	/**
-	 * @var ApiService
+	 * @var ApiKeyService
 	 */
-	private $apiService;
+	private $apiKeyService;
 
 	/**
 	 * @var string
@@ -60,9 +39,9 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 	 */
 	private $liveKey;
 
-	public function __construct($moduleVersion, ApiService $apiService)
+	public function __construct($moduleVersion, ApiKeyService $apiKeyService)
 	{
-		$this->apiService = $apiService;
+		$this->apiKeyService = $apiKeyService;
 		$this->moduleVersion = $moduleVersion;
 	}
 
@@ -113,8 +92,8 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 	}
 
 	/**
-	 * @param $testKey string
-	 * @param $liveKey string
+	 * @param string $testKey
+	 * @param string $liveKey
 	 *
 	 * @return array
 	 */
@@ -123,14 +102,14 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 		$testKeyInfo = $this->getApiKeyInfo($testKey);
 		$liveKeyInfo = $this->getApiKeyInfo($liveKey);
 
-		return  [
+		return [
 			'testKeyInfo' => $testKeyInfo,
 			'liveKeyInfo' => $liveKeyInfo,
 		];
 	}
 
 	/**
-	 * @param $apiKey string
+	 * @param string $apiKey
 	 *
 	 * @return array
 	 */
@@ -141,24 +120,24 @@ class ApiTestFeedbackBuilder implements TemplateBuilderInterface
 				'status' => false,
 			];
 		}
-		$api = $this->apiService->setApiKey($apiKey, $this->moduleVersion);
+		$api = $this->apiKeyService->setApiKey($apiKey, $this->moduleVersion);
 		if (!$api) {
 			return [
 				'status' => false,
 			];
 		}
-		/** @var $methods */
+		/** @var BaseCollection|MethodCollection $methods */
 		$methods = $api->methods->allAvailable();
-		$methodsASArray = $methods->getArrayCopy();
+		$methodsAsArray = $methods->getArrayCopy();
 
 		return [
 			'status' => true,
-			'methods' => $this->getPaymentMethodsAsArray($methodsASArray),
+			'methods' => $this->getPaymentMethodsAsArray($methodsAsArray),
 		];
 	}
 
 	/**
-	 * @param $methods
+	 * @param array $methods
 	 *
 	 * @return array
 	 */

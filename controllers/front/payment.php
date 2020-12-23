@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -53,7 +30,7 @@ if (!defined('_PS_VERSION_')) {
 	return;
 }
 
-require_once dirname(__FILE__).'/../../mollie.php';
+require_once dirname(__FILE__) . '/../../mollie.php';
 
 /**
  * Class MolliePaymentModuleFrontController.
@@ -89,7 +66,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 			$customer
 		)) {
 			/** @var Mollie\Service\LanguageService $langService */
-			$langService = $this->module->getContainer(Mollie\Service\LanguageService::class);
+			$langService = $this->module->getMollieContainer(Mollie\Service\LanguageService::class);
 			$this->errors[] = $langService->getLang()['This payment method is not available.'];
 			$this->setTemplate('error.tpl');
 
@@ -112,11 +89,11 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 		}
 
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 		/** @var PaymentMethodService $paymentMethodService */
-		$paymentMethodService = $this->module->getContainer(PaymentMethodService::class);
+		$paymentMethodService = $this->module->getMollieContainer(PaymentMethodService::class);
 
-		$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+		$environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
 		$paymentMethodId = $paymentMethodRepo->getPaymentMethodIdByMethodId($method, $environment);
 		$paymentMethodObj = new MolPaymentMethod((int) $paymentMethodId);
 		// Prepare payment
@@ -141,10 +118,10 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 			$this->setTemplate('error.tpl');
 
 			if (Configuration::get(Mollie\Config\Config::MOLLIE_DISPLAY_ERRORS)) {
-				$message = 'Cart Dump: '.$e->getMessage().' json: '.json_encode($paymentData, JSON_PRETTY_PRINT);
+				$message = 'Cart Dump: ' . $e->getMessage() . ' json: ' . json_encode($paymentData, JSON_PRETTY_PRINT);
 			} else {
 				/** @var ExceptionService $exceptionService */
-				$exceptionService = $this->module->getContainer(ExceptionService::class);
+				$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
 				$message = $exceptionService->getErrorMessageForException($e, $exceptionService->getErrorMessages());
 			}
 			$this->errors[] = $message;
@@ -153,7 +130,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 		} catch (PrestaShopException $e) {
 			$this->setTemplate('error.tpl');
 			$this->errors[] = Configuration::get(Mollie\Config\Config::MOLLIE_DISPLAY_ERRORS)
-				? $e->getMessage().' Cart Dump: '.json_encode($paymentData, JSON_PRETTY_PRINT)
+				? $e->getMessage() . ' Cart Dump: ' . json_encode($paymentData, JSON_PRETTY_PRINT)
 				: $this->module->l('An error occurred while initializing your payment. Please contact our customer support.', 'payment');
 
 			return;
@@ -195,7 +172,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 	 * Checks if this payment option is still available
 	 * May redirect the user to a more appropriate page.
 	 *
-	 * @param Cart     $cart
+	 * @param Cart $cart
 	 * @param Customer $customer
 	 *
 	 * @return bool
@@ -233,7 +210,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 	}
 
 	/**
-	 * @param array  $data
+	 * @param array $data
 	 * @param string $selectedApi
 	 *
 	 * @return MollieOrderAlias|MolliePaymentAlias
@@ -254,19 +231,17 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 			return $payment;
 		} catch (Exception $e) {
 			/** @var OrderExceptionHandler $orderExceptionHandler */
-			$orderExceptionHandler = $this->module->getContainer(OrderExceptionHandler::class);
+			$orderExceptionHandler = $this->module->getMollieContainer(OrderExceptionHandler::class);
 
 			throw $orderExceptionHandler->handle($e);
 		}
-
-		return $payment;
 	}
 
 	/**
 	 * Prepend module path if PS version >= 1.7.
 	 *
-	 * @param string      $template
-	 * @param array       $params
+	 * @param string $template
+	 * @param array $params
 	 * @param string|null $locale
 	 *
 	 * @throws PrestaShopException
@@ -279,6 +254,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 			$template = "module:mollie/views/templates/front/17_{$template}";
 		}
 
+		/* @phpstan-ignore-next-line */
 		parent::setTemplate($template, $params, $locale);
 	}
 
@@ -300,7 +276,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 				);
 			} catch (PrestaShopDatabaseException $e) {
 				/** @var PaymentMethodRepository $paymentMethodRepo */
-				$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+				$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 				$paymentMethodRepo->tryAddOrderReferenceColumn();
 				throw $e;
 			}
@@ -323,8 +299,8 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 			];
 		}
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
-		$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
+		$environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
 
 		$orderFee = PaymentFeeUtility::getPaymentFee(
 			new MolPaymentMethod(
@@ -339,7 +315,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 		if ($orderFee) {
 			$orderFeeObj = new MolOrderFee();
 			$orderFeeObj->id_cart = (int) $cartId;
-			$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+			$environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
 			$orderFeeObj->order_fee = PaymentFeeUtility::getPaymentFee(
 				new MolPaymentMethod(
 					$paymentMethodRepo->getPaymentMethodIdByMethodId($apiPayment->method, $environment)
@@ -376,7 +352,7 @@ class MolliePaymentModuleFrontController extends ModuleFrontController
 		$order->update();
 
 		/** @var MemorizeCartService $memorizeCart */
-		$memorizeCart = $this->module->getContainer(MemorizeCartService::class);
+		$memorizeCart = $this->module->getMollieContainer(MemorizeCartService::class);
 
 		$memorizeCart->memorizeCart($order);
 	}

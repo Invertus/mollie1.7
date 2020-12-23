@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -64,7 +41,7 @@ class TranslationCsvFileGeneratorConsoleCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		include_once $this->module->getLocalPath().'/translations/en.php';
+		include_once $this->module->getLocalPath() . '/translations/en.php';
 
 		$csvHeader = [
 			'ID',
@@ -76,17 +53,36 @@ class TranslationCsvFileGeneratorConsoleCommand extends Command
 		$translations = $GLOBALS['_MODULE'];
 		try {
 			$fp = fopen('translation.csv', 'w');
-			fputcsv($fp, $csvHeader);
+			$fields = [];
 			foreach ($translations as $id => $text) {
 				$field = array_map('utf8_decode', [$id, $text]);
-				fputcsv($fp, $field);
+				$fields[$field[0]] = $field;
 			}
-			fclose($fp);
 		} catch (\Exception $e) {
 			$output->writeln("<error>{$e->getMessage()}</error>");
 
 			return 0;
 		}
+
+		$translationFiles = [
+			2 => 'nl',
+			3 => 'de',
+			4 => 'fr',
+		];
+		fputcsv($fp, $csvHeader);
+		foreach ($translationFiles as $position => $file) {
+			include_once $this->module->getLocalPath() . "translations/{$file}.php";
+			$translations = $GLOBALS['_MODULE'];
+
+			foreach ($translations as $id => $text) {
+				$fields[$id][$position] = $text;
+			}
+		}
+		foreach ($fields as $field) {
+			fputcsv($fp, $field);
+		}
+
+		fclose($fp);
 		$output->writeln('<info>Translation export to CSV finished</info>');
 
 		return 0;

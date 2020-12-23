@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -45,13 +22,12 @@ use Mollie\Utility\PaymentMethodUtility;
 use Mollie\Utility\TransactionUtility;
 use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
-use PrestaShop\PrestaShop\Adapter\CoreException;
 
 if (!defined('_PS_VERSION_')) {
 	exit;
 }
 
-require_once dirname(__FILE__).'/../../mollie.php';
+require_once dirname(__FILE__) . '/../../mollie.php';
 
 class MollieReturnModuleFrontController extends AbstractMollieController
 {
@@ -67,7 +43,6 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 	 * Unset the cart id from cookie if the order exists.
 	 *
 	 * @throws PrestaShopException
-	 * @throws CoreException
 	 */
 	public function init()
 	{
@@ -96,7 +71,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 		$customerSecureKey = Tools::getValue('key');
 
 		/** @var CustomerFactory $customerFactory */
-		$customerFactory = $this->module->getContainer(CustomerFactory::class);
+		$customerFactory = $this->module->getMollieContainer(CustomerFactory::class);
 		$this->context = $customerFactory->recreateFromRequest($customerId, $customerSecureKey, $this->context);
 		if (Tools::getValue('ajax')) {
 			$this->processAjax();
@@ -109,7 +84,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 		$cart = null;
 
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 		if (Tools::getIsset('cart_id')) {
 			$idCart = (int) Tools::getValue('cart_id');
 
@@ -117,7 +92,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 			$cart = new Cart($idCart);
 			$data['auth'] = (int) $cart->id_customer === $this->context->customer->id;
 			if ($data['auth']) {
-				$data['mollie_info'] = $paymentMethodRepo->getPaymentBy('cart_id', (int) $idCart);
+				$data['mollie_info'] = $paymentMethodRepo->getPaymentBy('cart_id', (string) $idCart);
 			}
 		}
 
@@ -126,18 +101,18 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 
 			if (false === $data['mollie_info']) {
 				$data['mollie_info'] = [];
-				$data['msg_details'] = $this->l('The order with this id does not exist.');
+				$data['msg_details'] = $this->module->l('The order with this id does not exist.', self::FILE_NAME);
 			} elseif (PaymentMethod::BANKTRANSFER === $data['mollie_info']['method']
 				&& PaymentStatus::STATUS_OPEN === $data['mollie_info']['bank_status']
 			) {
-				$data['msg_details'] = $this->l('We have not received a definite payment status. You will be notified as soon as we receive a confirmation of the bank/merchant.');
+				$data['msg_details'] = $this->module->l('We have not received a definite payment status. You will be notified as soon as we receive a confirmation of the bank/merchant.', self::FILE_NAME);
 			} else {
 				$data['wait'] = true;
 			}
 		} else {
 			// Not allowed? Don't make query but redirect.
 			$data['mollie_info'] = [];
-			$data['msg_details'] = $this->l('You are not authorised to see this page.');
+			$data['msg_details'] = $this->module->l('You are not authorised to see this page.', self::FILE_NAME);
 			Tools::redirect(Context::getContext()->link->getPageLink('index', true));
 		}
 
@@ -169,8 +144,8 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 	/**
 	 * Prepend module path if PS version >= 1.7.
 	 *
-	 * @param string      $template
-	 * @param array       $params
+	 * @param string $template
+	 * @param array $params
 	 * @param string|null $locale
 	 *
 	 * @throws PrestaShopException
@@ -183,11 +158,11 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 			$template = "module:mollie/views/templates/front/17_{$template}";
 		}
 
+		/* @phpstan-ignore-next-line */
 		parent::setTemplate($template, $params, $locale);
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws PrestaShopException
 	 * @throws SmartyException
 	 */
@@ -214,27 +189,27 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 	{
 		header('Content-Type: application/json;charset=UTF-8');
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 
 		$transactionId = Tools::getValue('transaction_id');
 		$dbPayment = $paymentMethodRepo->getPaymentBy('transaction_id', $transactionId);
 		$cart = new Cart($dbPayment['cart_id']);
 		if (!Validate::isLoadedObject($cart)) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 			]));
 		}
-		$orderId = Order::getOrderByCartId((int) $cart->id);
+		$orderId = (int) Order::getOrderByCartId((int) $cart->id); /** @phpstan-ignore-line */
 		$order = new Order((int) $orderId);
 
 		if (!Validate::isLoadedObject($cart)) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 			]));
 		}
 
 		if ((int) $cart->id_customer !== (int) $this->context->customer->id) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 			]));
 		}
@@ -261,7 +236,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 		$paymentMethod = PaymentMethodUtility::getPaymentMethodName($transaction->method);
 
 		/** @var PaymentReturnService $paymentReturnService */
-		$paymentReturnService = $this->module->getContainer(PaymentReturnService::class);
+		$paymentReturnService = $this->module->getMollieContainer(PaymentReturnService::class);
 		$stockManagement = Configuration::get('PS_STOCK_MANAGEMENT');
 		switch ($orderStatus) {
 			case PaymentStatus::STATUS_OPEN:
@@ -283,7 +258,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 				);
 
 				/** @var MemorizeCartService $memorizeCart */
-				$memorizeCart = $this->module->getContainer(MemorizeCartService::class);
+				$memorizeCart = $this->module->getMollieContainer(MemorizeCartService::class);
 				$memorizeCart->removeMemorizedCart($order);
 
 				break;
@@ -296,7 +271,7 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 				);
 
 				/** @var MemorizeCartService $memorizeCart */
-				$memorizeCart = $this->module->getContainer(MemorizeCartService::class);
+				$memorizeCart = $this->module->getMollieContainer(MemorizeCartService::class);
 				$memorizeCart->removeMemorizedCart($order);
 
 				break;
@@ -305,20 +280,21 @@ class MollieReturnModuleFrontController extends AbstractMollieController
 			case PaymentStatus::STATUS_FAILED:
 				$this->setWarning($notSuccessfulPaymentMessage);
 				/** @var RestorePendingCartService $restorePendingCart */
-				$restorePendingCart = $this->module->getContainer(RestorePendingCartService::class);
+				$restorePendingCart = $this->module->getMollieContainer(RestorePendingCartService::class);
 				$restorePendingCart->restore($order);
 
 				$response = $paymentReturnService->handleFailedStatus($order, $transaction, $orderStatus, $paymentMethod);
 				break;
 			default:
-				die();
+				exit();
 		}
 
-		die(json_encode($response));
+		exit(json_encode($response));
 	}
 
 	private function setWarning($message)
 	{
+		/* @phpstan-ignore-next-line */
 		$this->warning[] = $message;
 
 		$this->context->cookie->__set('mollie_payment_canceled_error', json_encode($this->warning));

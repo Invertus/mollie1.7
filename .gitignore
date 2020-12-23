@@ -12,3 +12,4 @@ config.xml
 mails/
 views/img/customLogo/*.jpg
 cypress/videos
+.php_cs.cache

@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -162,7 +139,7 @@ class FormBuilder
 		$helper->identifier = $this->module->getIdentifier();
 		$helper->submit_action = 'submitmollie';
 		$helper->currentIndex = $this->module->getContext()->link->getAdminLink('AdminModules', false)
-			."&configure={$this->module->name}&tab_module={$this->module->tab}&module_name={$this->module->name}";
+			. "&configure={$this->module->name}&tab_module={$this->module->tab}&module_name={$this->module->name}";
 		$helper->token = Tools::getAdminTokenLite('AdminModules');
 
 		$helper->tpl_vars = [
@@ -435,13 +412,13 @@ class FormBuilder
 				]
 			),
 			'showCustomLogo' => Configuration::get(Config::MOLLIE_SHOW_CUSTOM_LOGO),
-			'customLogoUrl' => $this->creditCardLogoProvider->getLogoPathUri()."?{$dateStamp}",
+			'customLogoUrl' => $this->creditCardLogoProvider->getLogoPathUri() . "?{$dateStamp}",
 			'customLogoExist' => $this->creditCardLogoProvider->logoExists(),
 			'voucherCategory' => Configuration::get(Config::MOLLIE_VOUCHER_CATEGORY),
 			'categoryList' => \Category::getCategories($this->module->getContext()->language->id, true, false),
 			'productAttributes' => Attribute::getAttributes($this->module->getContext()->language->id),
 			'klarnaPayments' => Config::KLARNA_PAYMENTS,
-			'klarnaStatuses' => [Config::MOLLIE_STATUS_KLARNA_ACCEPTED, Config::MOLLIE_STATUS_KLARNA_SHIPPED],
+			'klarnaStatuses' => [Config::MOLLIE_STATUS_KLARNA_AUTHORIZED, Config::MOLLIE_STATUS_KLARNA_SHIPPED],
 		];
 
 		return $input;
@@ -537,13 +514,14 @@ class FormBuilder
 		}
 		$input[] = [
 			'type' => 'select',
-			'label' => $this->module->l('Create Klarna invoice on:', self::FILE_NAME),
+			'label' => $this->module->l('When to create the invoice?', self::FILE_NAME),
+			'desc' => $this->module->display($this->module->getPathUri(), 'views/templates/admin/invoice_description.tpl'),
 			'tab' => $advancedSettings,
 			'name' => Config::MOLLIE_KLARNA_INVOICE_ON,
 			'options' => [
 				'query' => [
 					[
-						'id' => Config::MOLLIE_STATUS_KLARNA_ACCEPTED,
+						'id' => Config::MOLLIE_STATUS_KLARNA_AUTHORIZED,
 						'name' => $this->module->l('Accepted', self::FILE_NAME),
 					],
 					[
@@ -585,12 +563,12 @@ class FormBuilder
 			}
 			$statuses[] = [
 				'name' => $name,
-				'key' => @constant('Mollie\Config\Config::MOLLIE_STATUS_'.Tools::strtoupper($name)),
+				'key' => @constant('Mollie\Config\Config::MOLLIE_STATUS_' . Tools::strtoupper($name)),
 				'value' => $val,
 				'description' => $desc,
 				'message' => sprintf($messageStatus, $this->module->lang($name)),
-				'key_mail' => @constant('Mollie\Config\Config::MOLLIE_MAIL_WHEN_'.Tools::strtoupper($name)),
-				'value_mail' => Configuration::get('MOLLIE_MAIL_WHEN_'.Tools::strtoupper($name)),
+				'key_mail' => @constant('Mollie\Config\Config::MOLLIE_MAIL_WHEN_' . Tools::strtoupper($name)),
+				'value_mail' => Configuration::get('MOLLIE_MAIL_WHEN_' . Tools::strtoupper($name)),
 				'description_mail' => sprintf($descriptionMail, $this->module->lang($name)),
 				'message_mail' => sprintf($messageMail, $this->module->lang($name)),
 			];
@@ -757,7 +735,7 @@ class FormBuilder
 		$orderStatuses = array_merge($orderStatuses, OrderState::getOrderStates($this->lang->id));
 		$orderStatusesCount = count($orderStatuses);
 		for ($i = 0; $i < $orderStatusesCount; ++$i) {
-			$orderStatuses[$i]['name'] = $orderStatuses[$i]['id_order_state'].' - '.$orderStatuses[$i]['name'];
+			$orderStatuses[$i]['name'] = $orderStatuses[$i]['id_order_state'] . ' - ' . $orderStatuses[$i]['name'];
 		}
 
 		AssortUtility::aasort($orderStatuses, 'id_order_state');

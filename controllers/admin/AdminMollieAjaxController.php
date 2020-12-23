@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -80,8 +57,8 @@ class AdminMollieAjaxController extends ModuleAdminController
 		$paymentStatus = Tools::getValue('status');
 
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
-		$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
+		$environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
 		$methodId = $paymentMethodRepo->getPaymentMethodIdByMethodId($paymentMethod, $environment);
 		$method = new MolPaymentMethod($methodId);
 		switch ($paymentStatus) {
@@ -97,7 +74,7 @@ class AdminMollieAjaxController extends ModuleAdminController
 		$this->ajaxDie(json_encode(
 			[
 				'success' => true,
-				'paymentStatus' => $method->enabled,
+				'paymentStatus' => (int) $method->enabled,
 			]
 		));
 	}
@@ -110,7 +87,7 @@ class AdminMollieAjaxController extends ModuleAdminController
 		$orderId = Tools::getValue('id_order');
 
 		/** @var MolliePaymentMailService $molliePaymentMailService */
-		$molliePaymentMailService = $this->module->getContainer(MolliePaymentMailService::class);
+		$molliePaymentMailService = $this->module->getMollieContainer(MolliePaymentMailService::class);
 
 		$response = $molliePaymentMailService->sendSecondChanceMail($orderId);
 
@@ -127,7 +104,7 @@ class AdminMollieAjaxController extends ModuleAdminController
 		$liveKey = Tools::getValue('liveKey');
 
 		/** @var ApiTestFeedbackBuilder $apiTestFeedbackBuilder */
-		$apiTestFeedbackBuilder = $this->module->getContainer(ApiTestFeedbackBuilder::class);
+		$apiTestFeedbackBuilder = $this->module->getMollieContainer(ApiTestFeedbackBuilder::class);
 		$apiTestFeedbackBuilder->setTestKey($testKey);
 		$apiTestFeedbackBuilder->setLiveKey($liveKey);
 		$apiKeysTestInfo = $apiTestFeedbackBuilder->buildParams();
@@ -135,7 +112,7 @@ class AdminMollieAjaxController extends ModuleAdminController
 		$this->context->smarty->assign($apiKeysTestInfo);
 		$this->ajaxDie(json_encode(
 			[
-				'template' => $this->context->smarty->fetch($this->module->getLocalPath().'views/templates/admin/api_test_results.tpl'),
+				'template' => $this->context->smarty->fetch($this->module->getLocalPath() . 'views/templates/admin/api_test_results.tpl'),
 			]
 		));
 	}
@@ -148,7 +125,7 @@ class AdminMollieAjaxController extends ModuleAdminController
 	private function validateLogo()
 	{
 		/** @var CreditCardLogoProvider $creditCardLogoProvider */
-		$creditCardLogoProvider = $this->module->getContainer(CreditCardLogoProvider::class);
+		$creditCardLogoProvider = $this->module->getMollieContainer(CreditCardLogoProvider::class);
 		$target_file = $creditCardLogoProvider->getLocalLogoPath();
 		$isUploaded = 1;
 		$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);

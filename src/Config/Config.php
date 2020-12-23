@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -180,7 +157,7 @@ class Config
 	const MOLLIE_STATUS_INITIATED = 'MOLLIE_STATUS_INITIATED';
 	const MOLLIE_STATUS_PARTIALLY_SHIPPED = 'MOLLIE_PARTIALLY_SHIPPED';
 	const MOLLIE_STATUS_ORDER_COMPLETED = 'MOLLIE_STATUS_ORDER_COMPLETED';
-	const MOLLIE_STATUS_KLARNA_ACCEPTED = 'MOLLIE_STATUS_KLARNA_ACCEPTED';
+	const MOLLIE_STATUS_KLARNA_AUTHORIZED = 'MOLLIE_STATUS_KLARNA_AUTHORIZED';
 	const MOLLIE_STATUS_KLARNA_SHIPPED = 'MOLLIE_STATUS_KLARNA_SHIPPED';
 	const MOLLIE_KLARNA_INVOICE_ON = 'MOLLIE_KLARNA_INVOICE_ON';
 
@@ -271,11 +248,15 @@ class Config
 		self::MOLLIE_VOUCHER_CATEGORY_ECO => 'eco',
 	];
 	const MOLLIE_VOUCHER_MINIMAL_AMOUNT = 1;
+	const RESTORE_CART_BACKTRACE_MEMORIZATION_SERVICE = 'memo';
+	const RESTORE_CART_BACKTRACE_RETURN_CONTROLLER = 'return';
 
 	const KLARNA_PAYMENTS = [
 		PaymentMethod::KLARNA_PAY_LATER,
 		PaymentMethod::KLARNA_SLICE_IT,
 	];
+
+	const ROUTE_RESEND_SECOND_CHANCE_PAYMENT_MESSAGE = 'mollie_module_admin_resend_payment_message';
 
 	/** @var array */
 	public static $methods = [
@@ -308,7 +289,7 @@ class Config
 			self::MOLLIE_AWAITING_PAYMENT => Configuration::get(self::MOLLIE_STATUS_AWAITING),
 			PaymentStatus::STATUS_PAID => Configuration::get(self::MOLLIE_STATUS_PAID),
 			OrderStatus::STATUS_COMPLETED => Configuration::get(self::MOLLIE_STATUS_COMPLETED),
-			PaymentStatus::STATUS_AUTHORIZED => Configuration::get(self::MOLLIE_STATUS_KLARNA_ACCEPTED),
+			PaymentStatus::STATUS_AUTHORIZED => Configuration::get(self::MOLLIE_STATUS_KLARNA_AUTHORIZED),
 			PaymentStatus::STATUS_CANCELED => Configuration::get(self::MOLLIE_STATUS_CANCELED),
 			PaymentStatus::STATUS_EXPIRED => Configuration::get(self::MOLLIE_STATUS_EXPIRED),
 			RefundStatus::STATUS_REFUNDED => Configuration::get(self::MOLLIE_STATUS_REFUNDED),
@@ -347,7 +328,7 @@ class Config
 			self::MOLLIE_STATUS_PARTIAL_REFUND,
 			self::MOLLIE_STATUS_AWAITING,
 			self::MOLLIE_STATUS_ORDER_COMPLETED,
-			self::MOLLIE_STATUS_KLARNA_ACCEPTED,
+			self::MOLLIE_STATUS_KLARNA_AUTHORIZED,
 			self::MOLLIE_STATUS_KLARNA_SHIPPED,
 		];
 	}

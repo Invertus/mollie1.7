@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -58,31 +35,32 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 	}
 
 	/**
-	 * @param $paymentMethodId
+	 * @param string $paymentMethodId
 	 *
 	 * @return false|string|null
 	 */
 	public function getPaymentMethodIssuersByPaymentMethodId($paymentMethodId)
 	{
-		$sql = 'Select issuers_json FROM `'._DB_PREFIX_.'mol_payment_method_issuer` WHERE id_payment_method = "'.pSQL($paymentMethodId).'"';
+		$sql = 'Select issuers_json FROM `' . _DB_PREFIX_ . 'mol_payment_method_issuer` WHERE id_payment_method = "' . pSQL($paymentMethodId) . '"';
 
 		return Db::getInstance()->getValue($sql);
 	}
 
 	/**
-	 * @param $paymentMethodId
+	 * @param string $paymentMethodId
 	 *
 	 * @return bool
 	 */
 	public function deletePaymentMethodIssuersByPaymentMethodId($paymentMethodId)
 	{
-		$sql = 'DELETE FROM `'._DB_PREFIX_.'mol_payment_method_issuer` WHERE id_payment_method = "'.pSQL($paymentMethodId).'"';
+		$sql = 'DELETE FROM `' . _DB_PREFIX_ . 'mol_payment_method_issuer` WHERE id_payment_method = "' . pSQL($paymentMethodId) . '"';
 
 		return Db::getInstance()->execute($sql);
 	}
 
 	/**
-	 * @param $environment
+	 * @param array $savedPaymentMethods
+	 * @param int $environment
 	 *
 	 * @return bool
 	 */
@@ -92,21 +70,21 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 
 		return Db::getInstance()->delete(
 			'mol_payment_method',
-			'id_method NOT IN ("'.implode('", "', $escapedMethods).'")
-            AND `live_environment` = '.(int) $environment
+			'id_method NOT IN ("' . implode('", "', $escapedMethods) . '")
+            AND `live_environment` = ' . (int) $environment
 		);
 	}
 
 	/**
-	 * @param $paymentMethodId
-	 * @param $environment
+	 * @param string $paymentMethodId
+	 * @param int $environment
 	 *
 	 * @return false|string|null
 	 */
 	public function getPaymentMethodIdByMethodId($paymentMethodId, $environment)
 	{
-		$sql = 'SELECT id_payment_method FROM `'._DB_PREFIX_.'mol_payment_method`
-        WHERE id_method = "'.pSQL($paymentMethodId).'" AND live_environment = "'.(int) $environment.'"';
+		$sql = 'SELECT id_payment_method FROM `' . _DB_PREFIX_ . 'mol_payment_method`
+        WHERE id_method = "' . pSQL($paymentMethodId) . '" AND live_environment = "' . (int) $environment . '"';
 
 		return Db::getInstance()->getValue($sql);
 	}
@@ -115,20 +93,17 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 	 * @param string $column
 	 * @param string $id
 	 *
-	 * @return array
+	 * @return array|bool|object|null
 	 *
 	 * @throws PrestaShopDatabaseException
-	 * @throws PrestaShopException
-	 *
-	 * @since 3.3.0 static function
 	 */
 	public function getPaymentBy($column, $id)
 	{
 		try {
-			$paidPayment = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow(
+			$paidPayment = Db::getInstance()->getRow(
 				sprintf(
 					'SELECT * FROM `%s` WHERE `%s` = \'%s\' AND `bank_status` IN(\'%s\', \'%s\')',
-					_DB_PREFIX_.'mollie_payments',
+					_DB_PREFIX_ . 'mollie_payments',
 					bqSQL($column),
 					pSQL($id),
 					PaymentStatus::STATUS_PAID,
@@ -145,10 +120,10 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 		}
 
 		try {
-			$nonPaidPayment = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow(
+			$nonPaidPayment = Db::getInstance()->getRow(
 				sprintf(
 					'SELECT * FROM `%s` WHERE `%s` = \'%s\' ORDER BY `created_at` DESC',
-					_DB_PREFIX_.'mollie_payments',
+					_DB_PREFIX_ . 'mollie_payments',
 					bqSQL($column),
 					pSQL($id)
 				)
@@ -171,14 +146,14 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 	public function tryAddOrderReferenceColumn()
 	{
 		try {
-			if (!Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+			if (!Db::getInstance()->getValue('
                 SELECT COUNT(*)
                 FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = \''._DB_NAME_.'\'
-                AND TABLE_NAME = \''._DB_PREFIX_.'mollie_payments\'
+                WHERE TABLE_SCHEMA = \'' . _DB_NAME_ . '\'
+                AND TABLE_NAME = \'' . _DB_PREFIX_ . 'mollie_payments\'
                 AND COLUMN_NAME = \'order_reference\'')
 			) {
-				return Db::getInstance()->execute('ALTER TABLE `'._DB_PREFIX_.'mollie_payments` ADD `order_reference` varchar(191)');
+				return Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'mollie_payments` ADD `order_reference` varchar(191)');
 			}
 		} catch (PrestaShopException $e) {
 			return false;
@@ -197,14 +172,14 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 		$sql = new DbQuery();
 		$sql->select('*');
 		$sql->from('mol_payment_method');
-		$sql->where('live_environment = '.pSQL($environment));
+		$sql->where('live_environment = ' . pSQL($environment));
 
 		return Db::getInstance()->executeS($sql);
 	}
 
 	/**
-	 * @param $oldTransactionId
-	 * @param $newTransactionId
+	 * @param string $oldTransactionId
+	 * @param string $newTransactionId
 	 *
 	 * @return bool
 	 */
@@ -215,7 +190,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 			[
 				'transaction_id' => pSQL($newTransactionId),
 			],
-			'`transaction_id` = \''.pSQL($oldTransactionId).'\''
+			'`transaction_id` = \'' . pSQL($oldTransactionId) . '\''
 		);
 	}
 
@@ -230,7 +205,7 @@ class PaymentMethodRepository extends AbstractRepository implements PaymentMetho
 					'order_id' => (int) $orderId,
 					'method' => pSQL($paymentMethod),
 				],
-				'`transaction_id` = \''.pSQL($transactionId).'\''
+				'`transaction_id` = \'' . pSQL($transactionId) . '\''
 			);
 		} catch (Exception $e) {
 			$this->tryAddOrderReferenceColumn();

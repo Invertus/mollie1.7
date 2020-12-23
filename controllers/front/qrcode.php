@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -44,13 +21,12 @@ use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
 use MolliePrefix\Mollie\Api\Types\PaymentMethod;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
-use PrestaShop\PrestaShop\Adapter\CoreException;
 
 if (!defined('_PS_VERSION_')) {
 	exit;
 }
 
-require_once dirname(__FILE__).'/../../mollie.php';
+require_once dirname(__FILE__) . '/../../mollie.php';
 
 /**
  * Class MollieQrcodeModuleFrontController.
@@ -86,7 +62,7 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 		if (Tools::getValue('done')) {
 			$canceled = true;
 			/** @var PaymentMethodRepository $paymentMethodRepo */
-			$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+			$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 			$dbPayment = $paymentMethodRepo->getPaymentBy('cart_id', Tools::getValue('cart_id'));
 			if (is_array($dbPayment)) {
 				try {
@@ -98,16 +74,15 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 
 			header('Content-Type: text/html');
 			$this->context->smarty->assign([
-				'ideal_logo' => __PS_BASE_URI__.'modules/mollie/views/img/ideal_logo.png',
+				'ideal_logo' => __PS_BASE_URI__ . 'modules/mollie/views/img/ideal_logo.png',
 				'canceled' => $canceled,
 			]);
-			echo $this->context->smarty->fetch(_PS_MODULE_DIR_.'mollie/views/templates/front/qr_done.tpl');
+			echo $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'mollie/views/templates/front/qr_done.tpl');
 			exit;
 		}
 	}
 
 	/**
-	 * @throws CoreException
 	 * @throws PrestaShopDatabaseException
 	 * @throws PrestaShopException
 	 * @throws SmartyException
@@ -139,20 +114,20 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 		$customer = $context->customer;
 		$cart = $context->cart;
 		if (!$cart instanceof Cart || !$cart->getOrderTotal(true)) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 				'message' => 'No active cart',
 			]));
 		}
 		/** @var PaymentMethodRepository $paymentMethodRepo */
-		$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+		$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 		/** @var ApiService $apiService */
-		$apiService = $this->module->getContainer(ApiService::class);
+		$apiService = $this->module->getMollieContainer(ApiService::class);
 		/** @var PaymentMethodService $paymentMethodService */
-		$paymentMethodService = $this->module->getContainer(PaymentMethodService::class);
+		$paymentMethodService = $this->module->getMollieContainer(PaymentMethodService::class);
 
 		$orderTotal = $cart->getOrderTotal(true);
-		$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+		$environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
 		$paymentMethodId = $paymentMethodRepo->getPaymentMethodIdByMethodId(PaymentMethod::IDEAL, $environment);
 		$paymentMethodObj = new MolPaymentMethod($paymentMethodId);
 		$payment = $mollie->api->{$apiService->selectedApi(Mollie::$selectedApi)}->create($paymentMethodService->getPaymentData(
@@ -185,7 +160,7 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 		}
 
 		$src = isset($payment->details->qrCode->src) ? $payment->details->qrCode->src : null;
-		die(json_encode([
+		exit(json_encode([
 			'success' => (bool) $src,
 			'href' => $src,
 			'idTransaction' => $payment->id,
@@ -196,7 +171,6 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 
 	/**
 	 * @throws ApiException
-	 * @throws CoreException
 	 * @throws PrestaShopDatabaseException
 	 * @throws PrestaShopException
 	 */
@@ -204,7 +178,7 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 	{
 		header('Content-Type: application/json;charset=UTF-8');
 		if (empty($this->context->cart)) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 				'status' => false,
 				'amount' => null,
@@ -218,23 +192,23 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 				$_GET['module'] = $this->module->name;
 			}
 			/** @var TransactionService $transactionService */
-			$transactionService = $this->module->getContainer(TransactionService::class);
+			$transactionService = $this->module->getMollieContainer(TransactionService::class);
 
 			$transactionService->processTransaction($apiPayment);
 		}
 
 		try {
 			/** @var PaymentMethodRepository $paymentMethodRepo */
-			$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+			$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 			$payment = $paymentMethodRepo->getPaymentBy('transaction_id', Tools::getValue('transaction_id'));
 		} catch (PrestaShopDatabaseException $e) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 				'status' => false,
 				'amount' => null,
 			]));
 		} catch (PrestaShopException $e) {
-			die(json_encode([
+			exit(json_encode([
 				'success' => false,
 				'status' => false,
 				'amount' => null,
@@ -256,7 +230,7 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 
 		$cart = new Cart($payment['cart_id']);
 		$amount = (int) ($cart->getOrderTotal(true) * 100);
-		die(json_encode([
+		exit(json_encode([
 			'success' => true,
 			'status' => $status,
 			'amount' => $amount,
@@ -284,15 +258,9 @@ class MollieQrcodeModuleFrontController extends ModuleFrontController
 		$context = Context::getContext();
 		/** @var Cart $cart */
 		$cart = $context->cart;
-		if (!$cart) {
-			die(json_encode([
-				'success' => true,
-				'amount' => 0,
-			]));
-		}
 
 		$cartTotal = (int) ($cart->getOrderTotal(true) * 100);
-		die(json_encode([
+		exit(json_encode([
 			'success' => true,
 			'amount' => $cartTotal,
 		]));

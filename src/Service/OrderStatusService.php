@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -59,10 +36,10 @@ class OrderStatusService
 	}
 
 	/**
-	 * @param int        $order
+	 * @param int $orderId
 	 * @param string|int $statusId
-	 * @param null       $useExistingPayment
-	 * @param array      $templateVars
+	 * @param null $useExistingPayment
+	 * @param array $templateVars
 	 *
 	 * @return void
 	 *
@@ -74,7 +51,7 @@ class OrderStatusService
 	 * @since 3.3.2 $useExistingPayment option
 	 * @since 3.3.4 Accepts template vars for the corresponding email template
 	 */
-	public function setOrderStatus($order, $statusId, $useExistingPayment = null, $templateVars = [])
+	public function setOrderStatus($orderId, $statusId, $useExistingPayment = null, $templateVars = [])
 	{
 		if (is_string($statusId)) {
 			$status = $statusId;
@@ -95,10 +72,7 @@ class OrderStatusService
 		if (0 === (int) $statusId) {
 			return;
 		}
-
-		if (!$order instanceof Order) {
-			$order = new Order((int) $order);
-		}
+		$order = new Order((int) $orderId);
 
 		if (!Validate::isLoadedObject($order)) {
 			return;
@@ -119,7 +93,7 @@ class OrderStatusService
 
 		$history = new OrderHistory();
 		$history->id_order = $order->id;
-		$history->changeIdOrderState($statusId, $order, $useExistingPayment);
+		$history->changeIdOrderState($statusId, $orderId, $useExistingPayment);
 
 		$status = OrderStatusUtility::transformPaymentStatusToPaid($status, Config::STATUS_PAID_ON_BACKORDER);
 
@@ -131,7 +105,7 @@ class OrderStatusService
 			$this->mailService->sendNewOrderMail($order, $statusId);
 		}
 
-		if ('0' === Configuration::get('MOLLIE_MAIL_WHEN_'.Tools::strtoupper($status))) {
+		if ('0' === Configuration::get('MOLLIE_MAIL_WHEN_' . Tools::strtoupper($status))) {
 			$history->add();
 		} else {
 			$history->addWithemail(true, $templateVars);
@@ -140,7 +114,7 @@ class OrderStatusService
 
 	private function checkIfOrderConfNeedsToBeSend($statusId)
 	{
-		if (Config::NEW_ORDER_MAIL_SEND_ON_PAID !== (int) Configuration::get(Config::MOLLIE_SEND_NEW_ORDER)) {
+		if (Config::NEW_ORDER_MAIL_SEND_ON_PAID !== (int) Configuration::get(Config::MOLLIE_SEND_ORDER_CONFIRMATION)) {
 			return false;
 		}
 

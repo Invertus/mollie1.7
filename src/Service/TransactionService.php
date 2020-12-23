@@ -1,36 +1,13 @@
 <?php
 /**
- * Copyright (c) 2012-2020, Mollie B.V.
- * All rights reserved.
+ * Mollie       https://www.mollie.nl
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * @author      Mollie B.V. <info@mollie.nl>
+ * @copyright   Mollie B.V.
  *
- * - Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * @see        https://github.com/mollie/PrestaShop
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
- *
- * @author     Mollie B.V. <info@mollie.nl>
- * @copyright  Mollie B.V.
- * @license    Berkeley Software Distribution License (BSD-License 2) http://www.opensource.org/licenses/bsd-license.php
- *
- * @category   Mollie
- *
- * @see       https://www.mollie.nl
+ * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
 
@@ -51,12 +28,12 @@ use Mollie\Utility\TransactionUtility;
 use MolliePrefix\Mollie\Api\Exceptions\ApiException;
 use MolliePrefix\Mollie\Api\Resources\Order as MollieOrderAlias;
 use MolliePrefix\Mollie\Api\Resources\Payment as MolliePaymentAlias;
+use MolliePrefix\Mollie\Api\Resources\PaymentCollection;
 use MolliePrefix\Mollie\Api\Types\OrderStatus;
 use MolliePrefix\Mollie\Api\Types\PaymentStatus;
 use MolliePrefix\Mollie\Api\Types\RefundStatus;
 use Order;
 use OrderPayment;
-use PrestaShop\PrestaShop\Adapter\CoreException;
 use PrestaShopDatabaseException;
 use PrestaShopException;
 use PrestaShopLogger;
@@ -102,7 +79,6 @@ class TransactionService
 	 *
 	 * @throws PrestaShopDatabaseException
 	 * @throws PrestaShopException
-	 * @throws CoreException
 	 * @throws ApiException
 	 *
 	 * @since 3.3.0
@@ -113,7 +89,7 @@ class TransactionService
 	{
 		if (empty($transaction)) {
 			if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) >= Mollie\Config\Config::DEBUG_LOG_ERRORS) {
-				PrestaShopLogger::addLog(__METHOD__.' said: Received webhook request without proper transaction ID.', Mollie\Config\Config::WARNING);
+				PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request without proper transaction ID.', Mollie\Config\Config::WARNING);
 			}
 
 			return $this->module->l('Transaction failed', 'webhook');
@@ -139,9 +115,10 @@ class TransactionService
 		}
 
 		$this->setCountryContextIfNotSet($apiPayment);
+		/** @var int $orderId */
 		$orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
 		/** @var OrderStatusService $orderStatusService */
-		$orderStatusService = $this->module->getContainer(OrderStatusService::class);
+		$orderStatusService = $this->module->getMollieContainer(OrderStatusService::class);
 		$cart = new Cart($apiPayment->metadata->cart_id);
 
 		Db::getInstance()->update(
@@ -151,7 +128,7 @@ class TransactionService
 				'bank_status' => pSQL(\Mollie\Config\Config::getStatuses()[$apiPayment->status]),
 				'order_id' => (int) $orderId,
 			],
-			'`transaction_id` = \''.pSQL($transaction->id).'\''
+			'`transaction_id` = \'' . pSQL($transaction->id) . '\''
 		);
 
 		switch ($transaction->resource) {
@@ -175,7 +152,7 @@ class TransactionService
 						}
 
 						/** @var OrderStatusService $orderStatusService */
-						$orderStatusService = $this->module->getContainer(OrderStatusService::class);
+						$orderStatusService = $this->module->getMollieContainer(OrderStatusService::class);
 						$orderStatusService->setOrderStatus($orderId, $paymentStatus);
 
 						$orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
@@ -187,7 +164,9 @@ class TransactionService
 					if (Tools::encrypt($cart->secure_key) === $apiPayment->metadata->secure_key
 						&& OrderStatus::STATUS_CREATED === $apiPayment->status
 					) {
+						/** @var PaymentCollection|null $orderPayments */
 						$orderPayments = $apiPayment->payments();
+
 						$paymentStatus = OrderStatus::STATUS_CREATED;
 						foreach ($orderPayments as $orderPayment) {
 							$paymentStatus = $orderPayment->status;
@@ -195,7 +174,7 @@ class TransactionService
 						$paymentStatus = (int) Mollie\Config\Config::getStatuses()[$paymentStatus];
 
 						/** @var OrderStatusService $orderStatusService */
-						$orderStatusService = $this->module->getContainer(OrderStatusService::class);
+						$orderStatusService = $this->module->getMollieContainer(OrderStatusService::class);
 						$orderStatusService->setOrderStatus($orderId, $paymentStatus);
 
 						$orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
@@ -210,7 +189,7 @@ class TransactionService
 							$this->updateTransaction($orderId, $transaction);
 						}
 						/** @var OrderStatusService $orderStatusService */
-						$orderStatusService = $this->module->getContainer(OrderStatusService::class);
+						$orderStatusService = $this->module->getMollieContainer(OrderStatusService::class);
 						$orderStatusService->setOrderStatus($orderId, $paymentStatus, null, []);
 
 						$orderId = Order::getOrderByCartId((int) $apiPayment->metadata->cart_id);
@@ -223,13 +202,13 @@ class TransactionService
 
 		if (!$this->savePaymentStatus($transaction->id, $apiPayment->status, $orderId)) {
 			if (Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG) >= Mollie\Config\Config::DEBUG_LOG_ERRORS) {
-				PrestaShopLogger::addLog(__METHOD__.' said: Could not save Mollie payment status for transaction "'.$transaction->id.'". Reason: '.Db::getInstance()->getMsgError(), Mollie\Config\Config::WARNING);
+				PrestaShopLogger::addLog(__METHOD__ . ' said: Could not save Mollie payment status for transaction "' . $transaction->id . '". Reason: ' . Db::getInstance()->getMsgError(), Mollie\Config\Config::WARNING);
 			}
 		}
 
 		// Log successful webhook requests in extended log mode only
 		if (Mollie\Config\Config::DEBUG_LOG_ALL == Configuration::get(Mollie\Config\Config::MOLLIE_DEBUG_LOG)) {
-			PrestaShopLogger::addLog(__METHOD__.' said: Received webhook request for order '.(int) $orderId.' / transaction '.$transaction->id, Mollie\Config\Config::NOTICE);
+			PrestaShopLogger::addLog(__METHOD__ . ' said: Received webhook request for order ' . (int) $orderId . ' / transaction ' . $transaction->id, Mollie\Config\Config::NOTICE);
 		}
 
 		return $apiPayment;
@@ -241,7 +220,10 @@ class TransactionService
 		$isOrder = TransactionUtility::isOrderTransaction($transactionId);
 		if ($isOrder) {
 			$transaction = $this->module->api->orders->get($transactionId, ['embed' => 'payments']);
-			foreach ($transaction->payments() as $payment) {
+			/** @var PaymentCollection|null $payments */
+			$payments = $transaction->payments();
+
+			foreach ($payments as $payment) {
 				if (Config::MOLLIE_VOUCHER_METHOD_ID === $transaction->method) {
 					$transactionInfos = $this->getVoucherTransactionInfo($payment, $transactionInfos);
 					$transactionInfos = $this->getVoucherRemainderTransactionInfo($payment, $transactionInfos);
@@ -259,8 +241,8 @@ class TransactionService
 
 	/**
 	 * @param string $transactionId
-	 * @param int    $status
-	 * @param int    $orderId
+	 * @param string $status
+	 * @param int $orderId
 	 *
 	 * @return bool
 	 *
@@ -277,11 +259,11 @@ class TransactionService
 					'bank_status' => pSQL($status),
 					'order_id' => (int) $orderId,
 				],
-				'`transaction_id` = \''.pSQL($transactionId).'\''
+				'`transaction_id` = \'' . pSQL($transactionId) . '\''
 			);
 		} catch (PrestaShopDatabaseException $e) {
 			/** @var PaymentMethodRepository $paymentMethodRepo */
-			$paymentMethodRepo = $this->module->getContainer(PaymentMethodRepository::class);
+			$paymentMethodRepo = $this->module->getMollieContainer(PaymentMethodRepository::class);
 			$paymentMethodRepo->tryAddOrderReferenceColumn();
 			throw $e;
 		}
@@ -317,11 +299,9 @@ class TransactionService
 	}
 
 	/**
-	 * @param $payment
-	 *
 	 * @return array
 	 */
-	private function getVoucherTransactionInfo($payment, array $transactionInfos)
+	private function getVoucherTransactionInfo(MolliePaymentAlias $payment, array $transactionInfos)
 	{
 		foreach ($payment->details->vouchers as $voucher) {
 			$transactionInfos[] = [
@@ -336,11 +316,9 @@ class TransactionService
 	}
 
 	/**
-	 * @param $payment
-	 *
 	 * @return array
 	 */
-	private function getVoucherRemainderTransactionInfo($payment, array $transactionInfos)
+	private function getVoucherRemainderTransactionInfo(MolliePaymentAlias $payment, array $transactionInfos)
 	{
 		if ($payment->details->remainderMethod) {
 			$transactionInfos[] = [
@@ -355,11 +333,9 @@ class TransactionService
 	}
 
 	/**
-	 * @param $payment
-	 *
 	 * @return array
 	 */
-	private function getPaymentTransactionInfo($payment, array $transactionInfos)
+	private function getPaymentTransactionInfo(MolliePaymentAlias $payment, array $transactionInfos)
 	{
 		$transactionInfos[] = [
 			'paymentName' => $payment->method,
@@ -372,10 +348,10 @@ class TransactionService
 	}
 
 	/**
-	 * @param $orderReference
+	 * @param string $orderReference
 	 *
 	 * @throws PrestaShopDatabaseException
-	 * @throws \PrestaShopException
+	 * @throws PrestaShopException
 	 */
 	private function updateOrderPayments(array $transactionInfos, $orderReference)
 	{
@@ -392,7 +368,7 @@ class TransactionService
 	}
 
 	/**
-	 * @param $orderId
+	 * @param int $orderId
 	 * @param MolliePaymentAlias|MollieOrderAlias $transaction
 	 *
 	 * @throws PrestaShopDatabaseException
@@ -401,7 +377,7 @@ class TransactionService
 	private function updateTransaction($orderId, $transaction)
 	{
 		/** @var TransactionService $transactionService */
-		$transactionService = $this->module->getContainer(TransactionService::class);
+		$transactionService = $this->module->getMollieContainer(TransactionService::class);
 		$order = new Order($orderId);
 		if (!$order->getOrderPayments()) {
 			$transactionService->updateOrderTransaction($transaction->id, $order->reference);
