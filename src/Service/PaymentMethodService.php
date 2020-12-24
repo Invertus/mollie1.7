@@ -139,7 +139,7 @@ class PaymentMethodService
 		$paymentMethod->surcharge_percentage = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_PERCENTAGE . $method['id']);
 		$paymentMethod->surcharge_limit = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_LIMIT . $method['id']);
 		$paymentMethod->images_json = json_encode($method['image']);
-		$paymentMethod->live_environment = $environment;
+		$paymentMethod->live_environment = (bool) $environment;
 
 		$paymentMethod->save();
 

@@ -71,17 +71,21 @@ class PaymentMethodConfigurationUpdater
 	public function updatePaymentMethodConfiguration(array $paymentMethodData)
 	{
 		if (empty($paymentMethodData)) {
-			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED, $paymentMethodData['id']);
+			throw new PaymentMethodConfigurationUpdaterException(
+			    'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database',
+                PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED,
+                isset($paymentMethodData['id']) ? $paymentMethodData['id'] : ''
+            );
 		}
 
 		try {
 			$paymentMethod = $this->paymentMethodService->savePaymentMethod($paymentMethodData);
 		} catch (Exception $e) {
-			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_PAYMENT_METHOD, $paymentMethodData['id']);
+			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_PAYMENT_METHOD, isset($paymentMethodData['id']) ? $paymentMethodData['id'] : '');
 		}
 
 		if (!$this->paymentMethodRepository->deletePaymentMethodIssuersByPaymentMethodId($paymentMethod->id)) {
-			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment methods (%s) old issuers unable to be deleted', PaymentMethodConfigurationUpdaterException::FAILED_TO_DELETE_OLD_ISSUERS, $paymentMethodData['id']);
+			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment methods (%s) old issuers unable to be deleted', PaymentMethodConfigurationUpdaterException::FAILED_TO_DELETE_OLD_ISSUERS, isset($paymentMethodData['id']) ? $paymentMethodData['id'] : '');
 		}
 
 		if (isset($paymentMethodData['issuers'])) {
@@ -91,7 +95,7 @@ class PaymentMethodConfigurationUpdater
 			try {
 				$this->entityManager->flush($paymentMethodIssuer);
 			} catch (Exception $e) {
-				throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment methods (%s) issuers unable to be saved', PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_ISSUERS, $paymentMethodData['id']);
+				throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment methods (%s) issuers unable to be saved', PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_ISSUERS, isset($paymentMethodData['id']) ? $paymentMethodData['id'] : '');
 			}
 		}
 
