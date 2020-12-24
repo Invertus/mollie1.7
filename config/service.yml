@@ -22,12 +22,6 @@ services:
       - '@Mollie\Adapter\ConfigurationAdapter'
       - '@Mollie\Service\TransactionService'
 
-  Mollie\Service\ConfigFieldService:
-    arguments:
-      - '@mollie'
-      - '@Mollie\Service\ApiService'
-      - '@Mollie\Repository\CountryRepository'
-
   Mollie\Service\IssuerService:
     arguments:
       - '@mollie'
@@ -60,17 +54,6 @@ services:
   Mollie\Service\CountryService:
     arguments:
       - '@mollie'
-
-  Mollie\Service\SettingsSaveService:
-    arguments:
-      - '@mollie'
-      - '@Mollie\Repository\CountryRepository'
-      - '@Mollie\Repository\PaymentMethodRepository'
-      - '@Mollie\Service\PaymentMethodService'
-      - '@Mollie\Service\ApiService'
-      - '@Mollie\Service\MolCarrierInformationService'
-      - '@Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface'
-      - '@Mollie\Service\ApiKeyService'
 
   Mollie\Service\ShipmentService:
     arguments:

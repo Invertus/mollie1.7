@@ -1,17 +1,4 @@
 services:
-  Mollie\Builder\FormBuilder:
-    arguments:
-      - '@mollie'
-      - '@Mollie\Service\ApiService'
-      - '@Mollie\Service\CountryService'
-      - '@Mollie\Repository\CountryRepository'
-      - '@Mollie\Service\ConfigFieldService'
-      - '@Mollie\Service\MolCarrierInformationService'
-      - '@language'
-      - '@smarty'
-      - '@link'
-      - '@Mollie\Provider\CreditCardLogoProvider'
-
   Mollie\Builder\ApiTestFeedbackBuilder:
     arguments:
       - '@=service("mollie.factory.module_factory").getModuleVersion()'
@@ -65,11 +52,15 @@ services:
     arguments:
       - '@mollie'
       - '@Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock'
+    tags:
+      - { name: mollie.controller.form }
 
   Mollie\Builder\Form\CredentialsForm\CredentialsForm:
     class: Mollie\Builder\Form\CredentialsForm\CredentialsForm
     arguments:
       - '@mollie'
+    tags:
+      - { name: mollie.controller.form }
 
   Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm:
     class: Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm
@@ -80,6 +71,8 @@ services:
       - '@Mollie\Builder\Form\AdvancedSettingsForm\ShipmentSettingsBlock'
       - '@Mollie\Builder\Form\AdvancedSettingsForm\VisualSettingsBlock'
       - '@Mollie\Builder\Form\AdvancedSettingsForm\DebugSettingsBlock'
+    tags:
+      - { name: mollie.controller.form }
 
   Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock:
     class: Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock
