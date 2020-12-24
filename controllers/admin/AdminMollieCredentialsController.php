@@ -76,7 +76,7 @@ class AdminMollieCredentialsController extends AbstractAdminController
             $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
             if ($canSettingFormBeSaved->verify()) {
-                /** @var FormSaver $credentialsFormSaver */
+                /** @var CredentialsFormSaver $credentialsFormSaver */
                 $credentialsFormSaver = $this->module->getMollieContainer(CredentialsFormSaver::class);
                 $credentialsFormSaver->saveConfiguration();
             }

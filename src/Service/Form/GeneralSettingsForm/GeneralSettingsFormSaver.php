@@ -3,9 +3,13 @@
 namespace Mollie\Service\Form\GeneralSettingsForm;
 
 use Configuration;
+use Mollie;
 use Mollie\Adapter\ToolsAdapter;
 use Mollie\Config\Config;
+use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
+use Mollie\Service\ApiService;
 use Mollie\Service\Form\FormSaver;
+use Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater;
 
 class GeneralSettingsFormSaver implements FormSaver
 {
@@ -14,14 +18,44 @@ class GeneralSettingsFormSaver implements FormSaver
      */
     private $toolsAdapter;
 
-    public function __construct(ToolsAdapter $toolsAdapter)
-    {
+    /**
+     * @var Mollie
+     */
+    private $module;
+
+    /**
+     * @var PaymentMethodConfigurationUpdater
+     */
+    private $paymentMethodConfigurationUpdater;
+
+    /**
+     * @var ApiService
+     */
+    private $apiService;
+
+    public function __construct(
+        Mollie $module,
+        ToolsAdapter $toolsAdapter,
+        ApiService $apiService,
+        PaymentMethodConfigurationUpdater $paymentMethodConfigurationUpdater
+    ) {
         $this->toolsAdapter = $toolsAdapter;
+        $this->module = $module;
+        $this->paymentMethodConfigurationUpdater = $paymentMethodConfigurationUpdater;
+        $this->apiService = $apiService;
     }
 
+    /**
+     * @return bool
+     * @throws PaymentMethodConfigurationUpdaterException
+     */
     public function saveConfiguration()
     {
         $success = true;
+
+        foreach ($this->apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri()) as $method) {
+            $success &= $this->paymentMethodConfigurationUpdater->updatePaymentMethodConfiguration($method);
+        }
 
         $success &= Configuration::updateValue(Config::MOLLIE_IFRAME, $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME));
         $success &= Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT));
@@ -34,6 +68,6 @@ class GeneralSettingsFormSaver implements FormSaver
             );
         }
 
-        return $success;
+        return (bool) $success;
     }
 }

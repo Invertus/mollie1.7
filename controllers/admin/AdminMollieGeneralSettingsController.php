@@ -16,6 +16,7 @@ use Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm;
 use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
 use Mollie\Provider\Form\FormValuesProvider;
 use Mollie\Provider\Form\GeneralSettingsFormValuesProvider;
 use Mollie\Service\ExceptionService;
@@ -81,16 +82,26 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
             $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
             if ($canSettingFormBeSaved->verify()) {
-                /** @var FormSaver $generalSettingsFormSaver */
+                /** @var GeneralSettingsFormSaver $generalSettingsFormSaver */
                 $generalSettingsFormSaver = $this->module->getMollieContainer(GeneralSettingsFormSaver::class);
                 $generalSettingsFormSaver->saveConfiguration();
             }
-        } catch (FormSettingVerificationException $e) {
+        } catch (FormSettingVerificationException $exception) {
             /** @var ExceptionService $exceptionService */
             $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
             $this->errors[] = $exceptionService->getErrorMessageForException(
-                $e,
+                $exception,
                 $exceptionService->getErrorMessages()
+            );
+
+            return null;
+        } catch (PaymentMethodConfigurationUpdaterException $exception) {
+            /** @var ExceptionService $exceptionService */
+            $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+            $this->errors[] = $exceptionService->getErrorMessageForException(
+                $exception,
+                $exceptionService->getErrorMessages(),
+                ['paymentMethodName' => $exception->getPaymentMethodName()]
             );
 
             return null;

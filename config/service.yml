@@ -230,4 +230,17 @@ services:
   Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver:
     class: Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver
     arguments:
+      - '@Mollie'
       - '@Mollie\Adapter\ToolsAdapter'
+      - '@Mollie\Service\ApiService'
+      - '@Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater'
+
+  Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater:
+    class: Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater
+    arguments:
+      - '@Mollie\Adapter\ToolsAdapter'
+      - '@Mollie\Adapter\ConfigurationAdapter'
+      - '@Mollie\Repository\PaymentMethodRepositoryInterface'
+      - '@Mollie\Repository\CountryRepository'
+      - '@Mollie\Service\PaymentMethodService'
+      - '@Mollie\Service\EntityManager\ObjectModelManager'

@@ -17,6 +17,7 @@ use Mollie;
 use Mollie\Exception\FormSettingVerificationException;
 use Mollie\Exception\OrderCreationException;
 use Mollie\Exception\OrderTotalRestrictionException;
+use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
 use Mollie\Exception\ShipmentCannotBeSentException;
 
 class ExceptionService
@@ -72,7 +73,21 @@ class ExceptionService
                 FormSettingVerificationException::INCORRECT_CREDENTIALS => $this->module->l(
                     'Failed to save settings: credentials are incorrect'
                 )
-            ]
+            ],
+            PaymentMethodConfigurationUpdaterException::class => [
+                PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED => $this->module->l(
+                    'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', self::SHORT_CLASS_NAME
+                ),
+                PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_PAYMENT_METHOD => $this->module->l(
+                    'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', self::SHORT_CLASS_NAME
+                ),
+                PaymentMethodConfigurationUpdaterException::FAILED_TO_DELETE_OLD_ISSUERS => $this->module->l(
+                    'Failed to update payment method configuration. Payment methods (%s) old issuers unable to be deleted', self::SHORT_CLASS_NAME
+                ),
+                PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_ISSUERS => $this->module->l(
+                    'Failed to update payment method configuration. Payment methods (%s) issuers unable to be saved', self::SHORT_CLASS_NAME
+                ),
+            ],
 		];
 	}
 

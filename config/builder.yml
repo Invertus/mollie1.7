@@ -77,4 +77,4 @@ services:
       - '@mollie'
       - '@Mollie\Service\ApiService'
       - '@Mollie\Service\CountryService'
-      -  '@Mollie\Provider\CreditCardLogoProvider'
+      - '@Mollie\Provider\CreditCardLogoProvider'
