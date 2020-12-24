@@ -71,6 +71,16 @@ services:
     arguments:
       - '@mollie'
 
+  Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm
+    arguments:
+      - '@mollie'
+      - '@Mollie\Builder\Form\AdvancedSettingsForm\OrderStatusesSettingsBlock'
+      - '@Mollie\Builder\Form\AdvancedSettingsForm\MailSettingsBlock'
+      - '@Mollie\Builder\Form\AdvancedSettingsForm\ShipmentSettingsBlock'
+      - '@Mollie\Builder\Form\AdvancedSettingsForm\VisualSettingsBlock'
+      - '@Mollie\Builder\Form\AdvancedSettingsForm\DebugSettingsBlock'
+
   Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock:
     class: Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock
     arguments:
@@ -78,3 +88,32 @@ services:
       - '@Mollie\Service\ApiService'
       - '@Mollie\Service\CountryService'
       - '@Mollie\Provider\CreditCardLogoProvider'
+
+  Mollie\Builder\Form\AdvancedSettingsForm\OrderStatusesSettingsBlock:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\OrderStatusesSettingsBlock
+    arguments:
+      - '@mollie'
+      - '@=service("mollie.adapter.context")'
+
+  Mollie\Builder\Form\AdvancedSettingsForm\MailSettingsBlock:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\MailSettingsBlock
+    arguments:
+      - '@mollie'
+
+  Mollie\Builder\Form\AdvancedSettingsForm\ShipmentSettingsBlock:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\ShipmentSettingsBlock
+    arguments:
+      - '@mollie'
+      - '@=service("mollie.adapter.context")'
+      - '@Mollie\Service\MolCarrierInformationService'
+
+  Mollie\Builder\Form\AdvancedSettingsForm\VisualSettingsBlock:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\VisualSettingsBlock
+    arguments:
+      - '@mollie'
+
+  Mollie\Builder\Form\AdvancedSettingsForm\DebugSettingsBlock:
+    class: Mollie\Builder\Form\AdvancedSettingsForm\DebugSettingsBlock
+    arguments:
+      - '@mollie'
+      - '@=service("mollie.adapter.context")'

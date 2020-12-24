@@ -84,6 +84,6 @@ class MolCarrierInformationService
 		$carrierInformation->url_source = $urlSource;
 		$carrierInformation->custom_url = $customUrl;
 
-		$carrierInformation->save();
+		return $carrierInformation->save();
 	}
 }

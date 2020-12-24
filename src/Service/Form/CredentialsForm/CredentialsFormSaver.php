@@ -19,8 +19,6 @@ class CredentialsFormSaver implements FormSaver
         $this->toolsAdapter = $toolsAdapter;
     }
 
-    //TODO add setting updated from mollie to add form savers.
-
     /**
      * @return bool
      */
@@ -40,7 +38,7 @@ class CredentialsFormSaver implements FormSaver
         }
 
         $success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
-
+        $success &= Configuration::updateValue(Config::MOLLIE_PROFILE_ID, $this->toolsAdapter->getValue(Config::MOLLIE_PROFILE_ID));
 
         return (bool) $success;
     }

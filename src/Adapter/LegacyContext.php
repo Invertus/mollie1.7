@@ -94,4 +94,9 @@ class LegacyContext
 	{
 		return $this->getContext()->smarty;
 	}
+
+    public function getLanguageId()
+    {
+        return $this->getContext()->language->id;
+    }
 }

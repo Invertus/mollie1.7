@@ -11,70 +11,85 @@
  * @codingStandardsIgnoreStart
  */
 
+use Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm;
+use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
+use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Provider\Form\AdvancedSettingsForm\AdvancedSettingsFormValuesProvider;
+use Mollie\Provider\Form\FormValuesProvider;
+use Mollie\Service\ExceptionService;
+use Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver;
+use Mollie\Verification\Form\CanSettingFormBeSaved;
+use Mollie\Verification\Form\FormSettingVerification;
 
 class AdminMollieAdvancedSettingsController extends AbstractAdminController
 {
-	public function __construct()
-	{
-		$this->bootstrap = true;
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        $this->bootstrap = true;
+        parent::__construct();
+    }
 
-	public function initContent()
-	{
-		parent::initContent();
+    public function initContent()
+    {
+        parent::initContent();
 
-		/** @var \Mollie\Repository\ModuleRepository $moduleRepository */
-		$moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
-		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
-		if ($moduleDatabaseVersion < $this->module->version) {
-			$this->context->controller->errors[] = $this->l('Please upgrade Mollie module.');
+        $this->renderForm();
 
-			return;
-		}
+        $this->context->smarty->assign('content', $this->content);
+    }
 
-		$this->checkModuleErrors();
-		$this->setContentValues();
+    public function renderForm()
+    {
+        $helper = new HelperForm();
 
-		$this->renderAdvancedSettingsForm();
+        $helper->show_toolbar = false;
+        $helper->table = $this->module->getTable();
+        $helper->module = $this->module;
+        $helper->default_form_language = $this->module->getContext()->language->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
-		$this->context->smarty->assign('content', $this->content);
-	}
+        $helper->identifier = $this->module->getIdentifier();
+        $helper->submit_action = 'submitAdvancedSettingsConfiguration';
+        $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-	public function renderAdvancedSettingsForm()
-	{
-		/** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
-		$baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
-		$this->context->smarty->assign($baseInfoBlock->buildParams());
+        /** @var FormValuesProvider $advancedSettingsFormValuesProvider */
+        $advancedSettingsFormValuesProvider = $this->module->getMollieContainer(AdvancedSettingsFormValuesProvider::class);
 
-		/** @var \Mollie\Builder\FormBuilder $settingsFormBuilder */
-		$settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
+        $helper->fields_value = $advancedSettingsFormValuesProvider->getFormValues();
 
-		try {
-			$this->content .= $settingsFormBuilder->buildAdvancedSettingsForm();
-		} catch (PrestaShopDatabaseException $e) {
-			$this->context->controller->errors[] = $this->module->l('You are missing database tables. Try resetting module.');
-		}
-	}
+        /** @var TemplateBuilderInterface $credentialsForm */
+        $credentialsForm = $this->module->getMollieContainer(AdvancedSettingsForm::class);
 
-	public function postProcess()
-	{
-		if (!Tools::isSubmit('submitAdvancedSettings')) {
-			return parent::postProcess();
-		}
+        $this->content .= $helper->generateForm($credentialsForm->buildParams());
+    }
 
-		$errors = [];
+    public function postProcess()
+    {
+        if (!Tools::isSubmit('submitAdvancedSettingsConfiguration')) {
+            return parent::postProcess();
+        }
 
-		/** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
-		$saveSettingsService = $this->module->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
-		$resultMessages = $saveSettingsService->saveSettings($errors);
-		if (!empty($errors)) {
-			$this->context->controller->errors = $resultMessages;
-		} else {
-			$this->context->controller->confirmations = $resultMessages;
-		}
+        try {
+            /** @var FormSettingVerification $canSettingFormBeSaved */
+            $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-		return parent::postProcess();
-	}
+            if ($canSettingFormBeSaved->verify()) {
+                /** @var AdvancedSettingsFormSaver $credentialsFormSaver */
+                $credentialsFormSaver = $this->module->getMollieContainer(AdvancedSettingsFormSaver::class);
+                $credentialsFormSaver->saveConfiguration();
+            }
+        } catch (FormSettingVerificationException $e) {
+            /** @var ExceptionService $exceptionService */
+            $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+            $this->errors[] = $exceptionService->getErrorMessageForException(
+                $e,
+                $exceptionService->getErrorMessages()
+            );
+
+            return null;
+        }
+
+        $this->confirmations[] = $this->module->l('Successfully updated settings');
+    }
 }

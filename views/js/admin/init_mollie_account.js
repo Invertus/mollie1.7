@@ -16,8 +16,10 @@ $(document).ready(function () {
                 e.closest('.form-group')
                     .next('.form-group').hide()
                     .next('.form-group').hide()
+                    .next('.form-group').hide()
                     .next('.form-group').hide();
                 e.closest('.form-group')
+                    .find('.help-block').show()
                     .find('.help-block').show()
                     .find('.help-block').show()
                     .find('.help-block').show();
@@ -25,8 +27,10 @@ $(document).ready(function () {
                 e.closest('.form-group')
                     .next('.form-group').show()
                     .next('.form-group').show()
+                    .next('.form-group').show()
                     .next('.form-group').show();
                 e.closest('.form-group')
+                    .find('.help-block').hide()
                     .find('.help-block').hide()
                     .find('.help-block').hide()
                     .find('.help-block').hide();
