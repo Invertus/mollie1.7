@@ -47,6 +47,6 @@ class EnvironmentUtility
 		$apiKeyConfig = Config::ENVIRONMENT_LIVE === (int) $environment ?
 			Config::MOLLIE_API_KEY : Config::MOLLIE_API_KEY_TEST;
 
-		return 'test_pACCABA9KvWGjvW9StKn7QTDNgMvzh'; //Configuration::get($apiKeyConfig);
+		return Configuration::get($apiKeyConfig);
 	}
 }
