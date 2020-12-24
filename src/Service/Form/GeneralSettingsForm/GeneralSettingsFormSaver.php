@@ -115,7 +115,7 @@ class GeneralSettingsFormSaver implements FormSaver
             $savedPaymentMethods[] = $this->paymentMethodConfigurationUpdater->updatePaymentMethodConfiguration($method);
         }
 
-        return $this->paymentMethodRepository->deleteOldPaymentMethods(
+        return (bool) $this->paymentMethodRepository->deleteOldPaymentMethods(
             $savedPaymentMethods,
             Configuration::get(Config::MOLLIE_ENVIRONMENT)
         );

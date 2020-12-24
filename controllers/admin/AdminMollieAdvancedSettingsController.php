@@ -24,72 +24,72 @@ use Mollie\Verification\Form\FormSettingVerification;
 
 class AdminMollieAdvancedSettingsController extends AbstractAdminController
 {
-    public function __construct()
-    {
-        $this->bootstrap = true;
-        parent::__construct();
-    }
+	public function __construct()
+	{
+		$this->bootstrap = true;
+		parent::__construct();
+	}
 
-    public function initContent()
-    {
-        parent::initContent();
+	public function initContent()
+	{
+		parent::initContent();
 
-        $this->renderForm();
+		$this->renderForm();
 
-        $this->context->smarty->assign('content', $this->content);
-    }
+		$this->context->smarty->assign('content', $this->content);
+	}
 
-    public function renderForm()
-    {
-        $helper = new HelperForm();
+	public function renderForm()
+	{
+		$helper = new HelperForm();
 
-        $helper->show_toolbar = false;
-        $helper->table = $this->module->getTable();
-        $helper->module = $this->module;
-        $helper->default_form_language = $this->module->getContext()->language->id;
-        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
+		$helper->show_toolbar = false;
+		$helper->table = $this->module->getTable();
+		$helper->module = $this->module;
+		$helper->default_form_language = $this->module->getContext()->language->id;
+		$helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
-        $helper->identifier = $this->module->getIdentifier();
-        $helper->submit_action = 'submitAdvancedSettingsConfiguration';
-        $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
+		$helper->identifier = $this->module->getIdentifier();
+		$helper->submit_action = 'submitAdvancedSettingsConfiguration';
+		$helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-        /** @var FormValuesProvider $advancedSettingsFormValuesProvider */
-        $advancedSettingsFormValuesProvider = $this->module->getMollieContainer(AdvancedSettingsFormValuesProvider::class);
+		/** @var FormValuesProvider $advancedSettingsFormValuesProvider */
+		$advancedSettingsFormValuesProvider = $this->module->getMollieContainer(AdvancedSettingsFormValuesProvider::class);
 
-        $helper->fields_value = $advancedSettingsFormValuesProvider->getFormValues();
+		$helper->fields_value = $advancedSettingsFormValuesProvider->getFormValues();
 
-        /** @var TemplateBuilderInterface $credentialsForm */
-        $credentialsForm = $this->module->getMollieContainer(AdvancedSettingsForm::class);
+		/** @var TemplateBuilderInterface $credentialsForm */
+		$credentialsForm = $this->module->getMollieContainer(AdvancedSettingsForm::class);
 
-        $this->content .= $helper->generateForm($credentialsForm->buildParams());
-    }
+		$this->content .= $helper->generateForm($credentialsForm->buildParams());
+	}
 
-    public function postProcess()
-    {
-        if (!Tools::isSubmit('submitAdvancedSettingsConfiguration')) {
-            return parent::postProcess();
-        }
+	public function postProcess()
+	{
+		if (!Tools::isSubmit('submitAdvancedSettingsConfiguration')) {
+			return parent::postProcess();
+		}
 
-        try {
-            /** @var FormSettingVerification $canSettingFormBeSaved */
-            $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
+		try {
+			/** @var FormSettingVerification $canSettingFormBeSaved */
+			$canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-            if ($canSettingFormBeSaved->verify()) {
-                /** @var AdvancedSettingsFormSaver $credentialsFormSaver */
-                $credentialsFormSaver = $this->module->getMollieContainer(AdvancedSettingsFormSaver::class);
-                $credentialsFormSaver->saveConfiguration();
-            }
-        } catch (FormSettingVerificationException $e) {
-            /** @var ExceptionService $exceptionService */
-            $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-            $this->errors[] = $exceptionService->getErrorMessageForException(
-                $e,
-                $exceptionService->getErrorMessages()
-            );
+			if ($canSettingFormBeSaved->verify()) {
+				/** @var AdvancedSettingsFormSaver $credentialsFormSaver */
+				$credentialsFormSaver = $this->module->getMollieContainer(AdvancedSettingsFormSaver::class);
+				$credentialsFormSaver->saveConfiguration();
+			}
+		} catch (FormSettingVerificationException $e) {
+			/** @var ExceptionService $exceptionService */
+			$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+			$this->errors[] = $exceptionService->getErrorMessageForException(
+				$e,
+				$exceptionService->getErrorMessages()
+			);
 
-            return null;
-        }
+			return null;
+		}
 
-        $this->confirmations[] = $this->module->l('Successfully updated settings');
-    }
+		$this->confirmations[] = $this->module->l('Successfully updated settings');
+	}
 }

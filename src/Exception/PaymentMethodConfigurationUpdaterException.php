@@ -17,31 +17,31 @@ use Exception;
 
 class PaymentMethodConfigurationUpdaterException extends Exception
 {
-    const NO_PAYMENT_METHOD_DATA_PROVIDED = 1;
+	const NO_PAYMENT_METHOD_DATA_PROVIDED = 1;
 
-    const FAILED_TO_SAVE_PAYMENT_METHOD = 2;
+	const FAILED_TO_SAVE_PAYMENT_METHOD = 2;
 
-    const FAILED_TO_DELETE_OLD_ISSUERS = 3;
+	const FAILED_TO_DELETE_OLD_ISSUERS = 3;
 
-    const FAILED_TO_SAVE_ISSUERS = 4;
+	const FAILED_TO_SAVE_ISSUERS = 4;
 
-    /**
-     * @var string
-     */
-    private $paymentMethodName;
+	/**
+	 * @var string
+	 */
+	private $paymentMethodName;
 
-    public function __construct($message, $code, $paymentMethodName, Exception $previous = null)
-    {
-        $this->paymentMethodName = $paymentMethodName;
+	public function __construct($message, $code, $paymentMethodName, Exception $previous = null)
+	{
+		$this->paymentMethodName = $paymentMethodName;
 
-        parent::__construct($message, $code, $previous);
-    }
+		parent::__construct($message, $code, $previous);
+	}
 
-    /**
-     * @return string
-     */
-    public function getPaymentMethodName()
-    {
-        return $this->paymentMethodName;
-    }
+	/**
+	 * @return string
+	 */
+	public function getPaymentMethodName()
+	{
+		return $this->paymentMethodName;
+	}
 }
