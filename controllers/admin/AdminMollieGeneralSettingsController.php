@@ -1,4 +1,7 @@
 <?php
+
+use Mollie\Controller\AbstractAdminController;
+
 /**
  * Mollie       https://www.mollie.nl
  *
@@ -11,11 +14,9 @@
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Config\Config;
-use Mollie\Controller\AbstractAdminController;
-
-class AdminMollieAdvancedSettingsController extends AbstractAdminController
+class AdminMollieGeneralSettingsController extends AbstractAdminController
 {
+
     public function __construct()
     {
         $this->bootstrap = true;
@@ -30,7 +31,7 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
         $moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
         $moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
         if ($moduleDatabaseVersion < $this->module->version) {
-            $this->context->controller->errors[] = $this->l('Please upgrade Mollie module.');
+            $this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');
 
             return;
         }
@@ -38,12 +39,12 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
         $this->checkModuleErrors();
         $this->setContentValues();
 
-        $this->renderAdvancedSettingsForm();
+        $this->renderSettingsForm();
 
         $this->context->smarty->assign('content', $this->content);
     }
 
-    public function renderAdvancedSettingsForm()
+    public function renderSettingsForm()
     {
         /** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
         $baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
@@ -53,15 +54,15 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
         $settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
 
         try {
-            $this->content .= $settingsFormBuilder->buildAdvancedSettingsForm();
+            $this->content .= $settingsFormBuilder->buildSettingsForm();
         } catch (PrestaShopDatabaseException $e) {
-            $this->context->controller->errors[] = $this->module->l('You are missing database tables. Try resetting module.');
+            $this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
         }
     }
 
     public function postProcess()
     {
-        if (!Tools::isSubmit('submitAdvancedSettings')) {
+        if (!Tools::isSubmit('submitGeneralSettingsConfiguration')) {
             return parent::postProcess();
         }
 
@@ -77,5 +78,14 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
         }
 
         return parent::postProcess();
+    }
+
+    public function setMedia($isNewTheme = false)
+    {
+        parent::setMedia($isNewTheme);
+
+        $this->context->controller->addJqueryPlugin('sortable');
+        $this->context->controller->addJS($this->module->getPathUri() . 'views/js/admin/payment_methods.js');
+        $this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/payment_methods.css');
     }
 }

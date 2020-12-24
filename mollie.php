@@ -58,7 +58,7 @@ class Mollie extends PaymentModule
 	const SUPPORTED_PHP_VERSION = '5.6';
 
     const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
-	const ADMIN_MOLLIE_SETTINGS_CONTROLLER = 'AdminMollieSettings';
+	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
 	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjaxController';
 
@@ -197,14 +197,6 @@ class Mollie extends PaymentModule
 		return $this->identifier;
 	}
 
-	/**
-	 * @return string|void
-	 *
-	 * @throws PrestaShopDatabaseException
-	 * @throws PrestaShopException
-	 * @throws SmartyException
-	 * @throws \MolliePrefix\Mollie\Api\Exceptions\ApiException
-	 */
 	public function getContent()
 	{
 	    /** Unsure why anything should be allowed to call main controller through ajax. */
@@ -219,125 +211,15 @@ class Mollie extends PaymentModule
 			exit(json_encode($this->{'displayAjax' . Tools::ucfirst(Tools::getValue('action'))}()));
 		}
 
-        Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_SETTINGS_CONTROLLER));
-
-		/** @var \Mollie\Repository\ModuleRepository $moduleRepository */
-		$moduleRepository = $this->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
-		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->name);
-		if ($moduleDatabaseVersion < $this->version) {
-			$this->context->controller->errors[] = $this->l('Please upgrade Mollie module.');
-
-			return;
-		}
-
-		/** @var \Mollie\Service\Content\TemplateParserInterface $templateParser */
-		$templateParser = $this->getMollieContainer(\Mollie\Service\Content\TemplateParserInterface::class);
-
-		if (!Configuration::get('PS_SMARTY_FORCE_COMPILE')) {
-			$this->context->controller->errors[] = $templateParser->parseTemplate(
-				$this->context->smarty,
-				$this->getMollieContainer(\Mollie\Builder\Content\SmartyForceCompileInfoBlock::class),
-				$this->getLocalPath() . 'views/templates/hook/smarty_error.tpl'
-			);
-
-			$this->context->controller->warnings[] = $templateParser->parseTemplate(
-				$this->context->smarty,
-				$this->getMollieContainer(\Mollie\Builder\Content\SmartyForceCompileInfoBlock::class),
-				$this->getLocalPath() . 'views/templates/hook/smarty_warning.tpl'
-			);
-		}
-
-		if (Configuration::get('PS_SMARTY_CACHE') && 'never' === Configuration::get('PS_SMARTY_CLEAR_CACHE')) {
-			$this->context->controller->errors[] = $templateParser->parseTemplate(
-				$this->context->smarty,
-				$this->getMollieContainer(\Mollie\Builder\Content\SmartyCacheInfoBlock::class),
-				$this->getLocalPath() . 'views/templates/hook/smarty_error.tpl'
-			);
-		}
-
-		if (\Mollie\Utility\CartPriceUtility::checkRoundingMode()) {
-			$this->context->controller->errors[] = $templateParser->parseTemplate(
-				$this->context->smarty,
-				$this->getMollieContainer(\Mollie\Builder\Content\RoundingModeInfoBlock::class),
-				$this->getLocalPath() . 'views/templates/hook/rounding_error.tpl'
-			);
-		}
-
-		$isSubmitted = (bool) Tools::isSubmit("submit{$this->name}");
-
-		/* @phpstan-ignore-next-line */
-		if (false === Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING) && !$isSubmitted) {
-			$this->context->controller->errors[] = $this->l('Please select order status for the "Status for Awaiting payments" field in the "Advanced settings" tab');
-		}
-
-		$errors = [];
-
-		if (Tools::isSubmit("submit{$this->name}")) {
-			/** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
-			$saveSettingsService = $this->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
-			$resultMessages = $saveSettingsService->saveSettings($errors);
-			if (!empty($errors)) {
-				$this->context->controller->errors = $resultMessages;
-			} else {
-				$this->context->controller->confirmations = $resultMessages;
-			}
-		}
-
-		Media::addJsDef([
-			'description_message' => $this->l('Description cannot be empty'),
-			'profile_id_message' => $this->l('Wrong profile ID'),
-			'profile_id_message_empty' => addslashes($this->l('Profile ID cannot be empty')),
-			'payment_api' => Mollie\Config\Config::MOLLIE_PAYMENTS_API,
-			'ajaxUrl' => $this->context->link->getAdminLink('AdminMollieAjax'),
-		]);
-
-		/* Custom logo JS vars*/
-		Media::addJsDef([
-			'image_size_message' => $this->l('Image size must be %s%x%s1%'),
-			'not_valid_file_message' => $this->l('not a valid file: %s%'),
-		]);
-
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/method_countries.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/validation.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/settings.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/custom_logo.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/upgrade_notice.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/api_key_test.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/order_total_restriction_refresh.js');
-		$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/init_mollie_account.js');
-		$this->context->controller->addCSS($this->getPathUri() . 'views/css/mollie.css');
-		$this->context->controller->addCSS($this->getPathUri() . 'views/css/admin/logo_input.css');
-
-		$html = $templateParser->parseTemplate(
-			$this->context->smarty,
-			$this->getMollieContainer(\Mollie\Builder\Content\LogoInfoBlock::class),
-			$this->getLocalPath() . 'views/templates/admin/logo.tpl'
-		);
-
-		/** @var \Mollie\Builder\Content\UpdateMessageInfoBlock $updateMessageInfoBlock */
-		$updateMessageInfoBlock = $this->getMollieContainer(\Mollie\Builder\Content\UpdateMessageInfoBlock::class);
-		$updateMessageInfoBlockData = $updateMessageInfoBlock->setAddons(self::ADDONS);
-
-		$html .= $templateParser->parseTemplate(
-			$this->context->smarty,
-			$updateMessageInfoBlockData,
-			$this->getLocalPath() . 'views/templates/admin/updateMessage.tpl'
-		);
-
-		/** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
-		$baseInfoBlock = $this->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
-		$this->context->smarty->assign($baseInfoBlock->buildParams());
-
-		/** @var \Mollie\Builder\FormBuilder $settingsFormBuilder */
-		$settingsFormBuilder = $this->getMollieContainer(\Mollie\Builder\FormBuilder::class);
-
-		try {
-			$html .= $settingsFormBuilder->buildSettingsForm();
-		} catch (PrestaShopDatabaseException $e) {
-			$this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
-		}
-
-		return $html;
+        /**
+         * TODO
+         * Fix forms
+         * hide tabs if no api keys inserted (fruugo)
+         * fix saving
+         * fix display issues
+         * fix issues with PS 1.6 display.
+         */
+        Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
 	}
 
 	/**
@@ -434,15 +316,6 @@ class Mollie extends PaymentModule
 				]);
 				$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/order_add.js');
 			}
-		}
-
-		$moduleName = Tools::getValue('configure');
-
-		// We are on module configuration page
-		if ($this->name === $moduleName && 'AdminModules' === $currentController) {
-			$this->context->controller->addJqueryPlugin('sortable');
-			$this->context->controller->addJS($this->getPathUri() . 'views/js/admin/payment_methods.js');
-			$this->context->controller->addCSS($this->getPathUri() . 'views/css/admin/payment_methods.css');
 		}
 	}
 
@@ -966,9 +839,9 @@ class Mollie extends PaymentModule
                 'visible' => false,
             ],
             [
-                'name' => $this->l('Settings'),
+                'name' => $this->l('General Settings'),
                 'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-                'class_name' => self::ADMIN_MOLLIE_SETTINGS_CONTROLLER,
+                'class_name' => self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER,
             ],
             [
                 'name' => $this->l('Advanced Settings'),
