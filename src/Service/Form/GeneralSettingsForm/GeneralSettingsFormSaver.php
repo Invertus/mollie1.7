@@ -68,33 +68,56 @@ class GeneralSettingsFormSaver implements FormSaver
     public function saveConfiguration()
     {
         $success = true;
+
+        $success &= $this->savePaymentMethodSettings();
+        $success &= Configuration::updateValue(Config::MOLLIE_IFRAME, $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME));
+        $success &= Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT));
+        $success &= Configuration::updateValue(Config::MOLLIE_ISSUERS, $this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS));
+
+        return (bool) $success;
+    }
+
+    /**
+     * @return bool
+     * @throws PaymentMethodConfigurationUpdaterException
+     */
+    public function savePaymentMethodSettings()
+    {
+        $success = true;
+        $success &= $this->deleteOldPaymentMethods();
+
+        $paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
+
+        if ($paymentOptionPositions) {
+            $success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
+        }
+        $paymentMethodConfiguration = $this->toolsAdapter->getValue(Config::METHODS_CONFIG);
+
+        if ($paymentMethodConfiguration && json_decode($paymentMethodConfiguration)) {
+            $success &= Configuration::updateValue(
+                Config::METHODS_CONFIG,
+                json_encode(@json_decode($paymentMethodConfiguration))
+            );
+        }
+
+        return (bool) $success;
+    }
+
+    /**
+     * @return bool
+     * @throws PaymentMethodConfigurationUpdaterException
+     */
+    private function deleteOldPaymentMethods()
+    {
         $savedPaymentMethods = [];
 
         foreach ($this->apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri()) as $method) {
             $savedPaymentMethods[] = $this->paymentMethodConfigurationUpdater->updatePaymentMethodConfiguration($method);
         }
 
-        $success &= $this->paymentMethodRepository->deleteOldPaymentMethods(
+        return $this->paymentMethodRepository->deleteOldPaymentMethods(
             $savedPaymentMethods,
             Configuration::get(Config::MOLLIE_ENVIRONMENT)
         );
-
-        $paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
-        if ($paymentOptionPositions) {
-            $success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
-        }
-
-        $success &= Configuration::updateValue(Config::MOLLIE_IFRAME, $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME));
-        $success &= Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT));
-        $success &= Configuration::updateValue(Config::MOLLIE_ISSUERS, $this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS));
-
-        if ($this->toolsAdapter->getValue(Config::METHODS_CONFIG) && json_decode($this->toolsAdapter->getValue(Config::METHODS_CONFIG))) {
-            $success &= Configuration::updateValue(
-                Config::METHODS_CONFIG,
-                json_encode(@json_decode($this->toolsAdapter->getValue(Config::METHODS_CONFIG)))
-            );
-        }
-
-        return (bool) $success;
     }
 }

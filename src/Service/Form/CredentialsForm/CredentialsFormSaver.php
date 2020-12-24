@@ -26,6 +26,18 @@ class CredentialsFormSaver implements FormSaver
     {
         $success = true;
 
+        $success &= $this->saveApiSettings();
+
+        return (bool) $success;
+    }
+
+    /**
+     * @return bool
+     */
+    private function saveApiSettings()
+    {
+        $success = true;
+
         $hasAccount = $this->toolsAdapter->getValue(Config::MOLLIE_ACCOUNT_SWITCH);
 
         if ($hasAccount) {
@@ -36,9 +48,8 @@ class CredentialsFormSaver implements FormSaver
             $success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, null);
             $success &= Configuration::updateValue(Config::MOLLIE_API_KEY, null);
         }
-
-        $success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
         $success &= Configuration::updateValue(Config::MOLLIE_PROFILE_ID, $this->toolsAdapter->getValue(Config::MOLLIE_PROFILE_ID));
+        $success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
 
         return (bool) $success;
     }

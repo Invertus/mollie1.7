@@ -36,6 +36,7 @@ class AdvancedSettingsFormSaver implements FormSaver
     public function saveConfiguration()
     {
         $success = true;
+
         $success &= Configuration::updateValue(Config::MOLLIE_PAYMENTSCREEN_LOCALE, $this->toolsAdapter->getValue(Config::MOLLIE_PAYMENTSCREEN_LOCALE));
         $success &= $this->saveMailSettingsFormValues();
         $success &= $this->saveVisualSettingsFormValues();
