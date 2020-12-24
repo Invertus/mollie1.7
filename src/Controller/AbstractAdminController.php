@@ -41,7 +41,7 @@ class AbstractAdminController extends ModuleAdminController
 			);
 		}
 
-		/** @phpstan-ignore-next-line */
+		/* @phpstan-ignore-next-line */
 		if (false === Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING)) {
 			$this->context->controller->errors[] = $this->module->l('Please select order status for the "Status for Awaiting payments" field in the "Advanced settings" tab');
 		}
