@@ -53,10 +53,27 @@ class AdvancedSettingsFormValuesProvider implements FormValuesProvider
      */
     private function getShipmentSettingsFormValues()
     {
-        return [
+        $formValues = [
             Config::MOLLIE_TRACKING_URLS => Configuration::get(Config::MOLLIE_TRACKING_URLS),
             Config::MOLLIE_AUTO_SHIP_MAIN => Configuration::get(Config::MOLLIE_AUTO_SHIP_MAIN),
         ];
+
+        $checkStatuses = [];
+
+        if (Configuration::get(Config::MOLLIE_AUTO_SHIP_STATUSES)) {
+            $automaticShipmentOrderStatuses = @json_decode(Configuration::get(Config::MOLLIE_AUTO_SHIP_STATUSES), true);
+        }
+        if (!isset($automaticShipmentOrderStatuses) || !is_array($automaticShipmentOrderStatuses)) {
+            $automaticShipmentOrderStatuses = [];
+        }
+
+        foreach ($automaticShipmentOrderStatuses as $automaticShipmentOrderStatus) {
+            $checkStatuses[Config::MOLLIE_AUTO_SHIP_STATUSES . '_' . (int) $automaticShipmentOrderStatus] = true;
+        }
+
+        $formValues = array_merge($formValues, $checkStatuses);
+
+        return $formValues;
     }
 
     /**

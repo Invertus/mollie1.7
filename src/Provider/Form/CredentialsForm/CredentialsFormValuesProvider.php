@@ -10,8 +10,21 @@ class CredentialsFormValuesProvider implements FormValuesProvider
 {
     public function getFormValues()
     {
-        return [
+        $formValues = [
             Config::MOLLIE_ACCOUNT_SWITCH => Configuration::get(Config::MOLLIE_ACCOUNT_SWITCH),
+        ];
+
+        $formValues = array_merge($formValues, $this->getApiSettings());
+
+        return $formValues;
+    }
+
+    /**
+     * @return array
+     */
+    private function getApiSettings()
+    {
+        return [
             Config::MOLLIE_ENVIRONMENT => Configuration::get(Config::MOLLIE_ENVIRONMENT),
             Config::MOLLIE_API_KEY_TEST => Configuration::get(Config::MOLLIE_API_KEY_TEST),
             Config::MOLLIE_API_KEY => Configuration::get(Config::MOLLIE_API_KEY),
