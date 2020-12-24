@@ -15,109 +15,112 @@ use Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater;
 
 class GeneralSettingsFormSaver implements FormSaver
 {
-    /**
-     * @var ToolsAdapter
-     */
-    private $toolsAdapter;
+	/**
+	 * @var ToolsAdapter
+	 */
+	private $toolsAdapter;
 
-    /**
-     * @var Mollie
-     */
-    private $module;
+	/**
+	 * @var Mollie
+	 */
+	private $module;
 
-    /**
-     * @var PaymentMethodConfigurationUpdater
-     */
-    private $paymentMethodConfigurationUpdater;
+	/**
+	 * @var PaymentMethodConfigurationUpdater
+	 */
+	private $paymentMethodConfigurationUpdater;
 
-    /**
-     * @var ApiService
-     */
-    private $apiService;
+	/**
+	 * @var ApiService
+	 */
+	private $apiService;
 
-    /**
-     * @var PaymentMethodRepositoryInterface
-     */
-    private $paymentMethodRepository;
+	/**
+	 * @var PaymentMethodRepositoryInterface
+	 */
+	private $paymentMethodRepository;
 
-    /**
-     * @var PaymentMethodPositionHandlerInterface
-     */
-    private $paymentMethodPositionHandler;
+	/**
+	 * @var PaymentMethodPositionHandlerInterface
+	 */
+	private $paymentMethodPositionHandler;
 
-    public function __construct(
-        Mollie $module,
-        ToolsAdapter $toolsAdapter,
-        ApiService $apiService,
-        PaymentMethodRepositoryInterface $paymentMethodRepository,
-        PaymentMethodConfigurationUpdater $paymentMethodConfigurationUpdater,
-        PaymentMethodPositionHandlerInterface $paymentMethodPositionHandler
-    ) {
-        $this->module = $module;
-        $this->toolsAdapter = $toolsAdapter;
-        $this->apiService = $apiService;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->paymentMethodConfigurationUpdater = $paymentMethodConfigurationUpdater;
-        $this->paymentMethodPositionHandler = $paymentMethodPositionHandler;
-    }
+	public function __construct(
+		Mollie $module,
+		ToolsAdapter $toolsAdapter,
+		ApiService $apiService,
+		PaymentMethodRepositoryInterface $paymentMethodRepository,
+		PaymentMethodConfigurationUpdater $paymentMethodConfigurationUpdater,
+		PaymentMethodPositionHandlerInterface $paymentMethodPositionHandler
+	) {
+		$this->module = $module;
+		$this->toolsAdapter = $toolsAdapter;
+		$this->apiService = $apiService;
+		$this->paymentMethodRepository = $paymentMethodRepository;
+		$this->paymentMethodConfigurationUpdater = $paymentMethodConfigurationUpdater;
+		$this->paymentMethodPositionHandler = $paymentMethodPositionHandler;
+	}
 
-    /**
-     * @return bool
-     * @throws PaymentMethodConfigurationUpdaterException
-     */
-    public function saveConfiguration()
-    {
-        $success = true;
+	/**
+	 * @return bool
+	 *
+	 * @throws PaymentMethodConfigurationUpdaterException
+	 */
+	public function saveConfiguration()
+	{
+		$success = true;
 
-        $success &= $this->savePaymentMethodSettings();
-        $success &= Configuration::updateValue(Config::MOLLIE_IFRAME, $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME));
-        $success &= Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT));
-        $success &= Configuration::updateValue(Config::MOLLIE_ISSUERS, $this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS));
+		$success &= $this->savePaymentMethodSettings();
+		$success &= Configuration::updateValue(Config::MOLLIE_IFRAME, $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME));
+		$success &= Configuration::updateValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT));
+		$success &= Configuration::updateValue(Config::MOLLIE_ISSUERS, $this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS));
 
-        return (bool) $success;
-    }
+		return (bool) $success;
+	}
 
-    /**
-     * @return bool
-     * @throws PaymentMethodConfigurationUpdaterException
-     */
-    public function savePaymentMethodSettings()
-    {
-        $success = true;
-        $success &= $this->deleteOldPaymentMethods();
+	/**
+	 * @return bool
+	 *
+	 * @throws PaymentMethodConfigurationUpdaterException
+	 */
+	public function savePaymentMethodSettings()
+	{
+		$success = true;
+		$success &= $this->deleteOldPaymentMethods();
 
-        $paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
+		$paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
 
-        if ($paymentOptionPositions) {
-            $success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
-        }
-        $paymentMethodConfiguration = $this->toolsAdapter->getValue(Config::METHODS_CONFIG);
+		if ($paymentOptionPositions) {
+			$success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
+		}
+		$paymentMethodConfiguration = $this->toolsAdapter->getValue(Config::METHODS_CONFIG);
 
-        if ($paymentMethodConfiguration && json_decode($paymentMethodConfiguration)) {
-            $success &= Configuration::updateValue(
-                Config::METHODS_CONFIG,
-                json_encode(@json_decode($paymentMethodConfiguration))
-            );
-        }
+		if ($paymentMethodConfiguration && json_decode($paymentMethodConfiguration)) {
+			$success &= Configuration::updateValue(
+				Config::METHODS_CONFIG,
+				json_encode(@json_decode($paymentMethodConfiguration))
+			);
+		}
 
-        return (bool) $success;
-    }
+		return (bool) $success;
+	}
 
-    /**
-     * @return bool
-     * @throws PaymentMethodConfigurationUpdaterException
-     */
-    private function deleteOldPaymentMethods()
-    {
-        $savedPaymentMethods = [];
+	/**
+	 * @return bool
+	 *
+	 * @throws PaymentMethodConfigurationUpdaterException
+	 */
+	private function deleteOldPaymentMethods()
+	{
+		$savedPaymentMethods = [];
 
-        foreach ($this->apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri()) as $method) {
-            $savedPaymentMethods[] = $this->paymentMethodConfigurationUpdater->updatePaymentMethodConfiguration($method);
-        }
+		foreach ($this->apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri()) as $method) {
+			$savedPaymentMethods[] = $this->paymentMethodConfigurationUpdater->updatePaymentMethodConfiguration($method);
+		}
 
-        return (bool) $this->paymentMethodRepository->deleteOldPaymentMethods(
-            $savedPaymentMethods,
-            Configuration::get(Config::MOLLIE_ENVIRONMENT)
-        );
-    }
+		return (bool) $this->paymentMethodRepository->deleteOldPaymentMethods(
+			$savedPaymentMethods,
+			Configuration::get(Config::MOLLIE_ENVIRONMENT)
+		);
+	}
 }
