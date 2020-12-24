@@ -71,11 +71,7 @@ class PaymentMethodConfigurationUpdater
 	public function updatePaymentMethodConfiguration(array $paymentMethodData)
 	{
 		if (empty($paymentMethodData)) {
-			throw new PaymentMethodConfigurationUpdaterException(
-			    'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database',
-                PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED,
-                isset($paymentMethodData['id']) ? $paymentMethodData['id'] : ''
-            );
+			throw new PaymentMethodConfigurationUpdaterException('Failed to update payment method configuration. Payment method (%s) configuration was not saved to database', PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED, isset($paymentMethodData['id']) ? $paymentMethodData['id'] : '');
 		}
 
 		try {
