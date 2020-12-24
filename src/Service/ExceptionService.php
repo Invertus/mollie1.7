@@ -14,6 +14,7 @@ namespace Mollie\Service;
 
 use Exception;
 use Mollie;
+use Mollie\Exception\FormSettingVerificationException;
 use Mollie\Exception\OrderCreationException;
 use Mollie\Exception\OrderTotalRestrictionException;
 use Mollie\Exception\ShipmentCannotBeSentException;
@@ -67,6 +68,11 @@ class ExceptionService
 					'Failed to save payment method order restriction', self::SHORT_CLASS_NAME
 				),
 			],
+            FormSettingVerificationException::class => [
+                FormSettingVerificationException::INCORRECT_CREDENTIALS => $this->module->l(
+                    'Failed to save settings: credentials are incorrect'
+                )
+            ]
 		];
 	}
 

@@ -11,7 +11,17 @@
  * @codingStandardsIgnoreStart
  */
 
+use Mollie\Builder\Form\CredentialsForm\CredentialsForm;
+use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
+use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Provider\Form\CredentialsFormValuesProvider;
+use Mollie\Provider\Form\FormValuesProvider;
+use Mollie\Service\ExceptionService;
+use Mollie\Service\Form\CredentialsForm\CredentialsFormSaver;
+use Mollie\Service\Form\FormSaver;
+use Mollie\Verification\Form\CanSettingFormBeSaved;
+use Mollie\Verification\Form\FormSettingVerification;
 
 class AdminMollieCredentialsController extends AbstractAdminController
 {
@@ -44,13 +54,13 @@ class AdminMollieCredentialsController extends AbstractAdminController
         $helper->submit_action = 'submitCredentialsConfiguration';
         $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-        /** @var \Mollie\Provider\Config\FormValuesProvider $credentialsFormValuesProvider */
-        $credentialsFormValuesProvider = $this->module->getMollieContainer(\Mollie\Provider\Config\CredentialsFormValuesProvider::class);
+        /** @var FormValuesProvider $credentialsFormValuesProvider */
+        $credentialsFormValuesProvider = $this->module->getMollieContainer(CredentialsFormValuesProvider::class);
 
         $helper->fields_value = $credentialsFormValuesProvider->getFormValues();
 
-        /** @var \Mollie\Builder\Form\CredentialsForm\CredentialsForm $generalSettingsForm */
-        $credentialsForm = $this->module->getMollieContainer(\Mollie\Builder\Form\CredentialsForm\CredentialsForm::class);
+        /** @var TemplateBuilderInterface $credentialsForm */
+        $credentialsForm = $this->module->getMollieContainer(CredentialsForm::class);
 
         $this->content .= $helper->generateForm($credentialsForm->buildParams());
     }
@@ -61,20 +71,26 @@ class AdminMollieCredentialsController extends AbstractAdminController
             return parent::postProcess();
         }
 
+        try {
+            /** @var FormSettingVerification $canSettingFormBeSaved */
+            $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
+            if ($canSettingFormBeSaved->verify()) {
+                /** @var FormSaver $credentialsFormSaver */
+                $credentialsFormSaver = $this->module->getMollieContainer(CredentialsFormSaver::class);
+                $credentialsFormSaver->saveConfiguration();
+            }
+        } catch (FormSettingVerificationException $e) {
+            /** @var ExceptionService $exceptionService */
+            $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+            $this->errors[] = $exceptionService->getErrorMessageForException(
+                $e,
+                $exceptionService->getErrorMessages()
+            );
 
+            return null;
+        }
 
-//        $errors = [];
-//
-//        /** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
-        $saveSettingsService = $this->module->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
-//        $resultMessages = $saveSettingsService->saveSettings($errors);
-//        if (!empty($errors)) {
-//            $this->context->controller->errors = $resultMessages;
-//        } else {
-//            $this->context->controller->confirmations = $resultMessages;
-//        }
-
-        return parent::postProcess();
+        $this->confirmations[] = $this->module->l('Successfully updated settings');
     }
 }

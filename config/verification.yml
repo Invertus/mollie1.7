@@ -23,3 +23,10 @@ services:
     arguments:
       - '@Mollie\Repository\PaymentMethodRepository'
       - '@Mollie\Repository\CurrencyRepository'
+
+  Mollie\Verification\Form\CanSettingFormBeSaved:
+    class: Mollie\Verification\Form\CanSettingFormBeSaved
+    arguments:
+      - '@Mollie'
+      - '@Mollie\Adapter\ConfigurationAdapter'
+      - '@Mollie\Adapter\ToolsAdapter'

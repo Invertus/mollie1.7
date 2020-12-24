@@ -221,3 +221,13 @@ services:
 
   Mollie\Service\EntityManager\ObjectModelManager:
     class: Mollie\Service\EntityManager\ObjectModelManager
+
+  Mollie\Service\Form\CredentialsForm\CredentialsFormSaver:
+    class: Mollie\Service\Form\CredentialsForm\CredentialsFormSaver
+    arguments:
+      - '@Mollie\Adapter\ToolsAdapter'
+
+  Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver:
+    class: Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver
+    arguments:
+      - '@Mollie\Adapter\ToolsAdapter'

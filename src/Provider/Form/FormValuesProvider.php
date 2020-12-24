@@ -1,6 +1,6 @@
 <?php
 
-namespace Mollie\Provider\Config;
+namespace Mollie\Provider\Form;
 
 interface FormValuesProvider
 {

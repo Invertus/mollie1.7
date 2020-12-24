@@ -64,8 +64,17 @@ services:
     class: Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm
     arguments:
       - '@mollie'
+      - '@Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock'
 
   Mollie\Builder\Form\CredentialsForm\CredentialsForm:
     class: Mollie\Builder\Form\CredentialsForm\CredentialsForm
     arguments:
       - '@mollie'
+
+  Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock:
+    class: Mollie\Builder\Form\GeneralSettingsForm\PaymentMethodBlock
+    arguments:
+      - '@mollie'
+      - '@Mollie\Service\ApiService'
+      - '@Mollie\Service\CountryService'
+      -  '@Mollie\Provider\CreditCardLogoProvider'

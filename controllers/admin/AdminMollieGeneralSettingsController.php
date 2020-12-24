@@ -11,7 +11,18 @@
  * @codingStandardsIgnoreStart
  */
 
+use Mollie\Builder\Content\BaseInfoBlock;
+use Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm;
+use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
+use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Provider\Form\FormValuesProvider;
+use Mollie\Provider\Form\GeneralSettingsFormValuesProvider;
+use Mollie\Service\ExceptionService;
+use Mollie\Service\Form\FormSaver;
+use Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver;
+use Mollie\Verification\Form\CanSettingFormBeSaved;
+use Mollie\Verification\Form\FormSettingVerification;
 
 class AdminMollieGeneralSettingsController extends AbstractAdminController
 {
@@ -25,20 +36,13 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
     {
         parent::initContent();
 
-        $this->renderSettingsForm();
+        $this->renderForm();
 
         $this->context->smarty->assign('content', $this->content);
     }
 
-    public function renderSettingsForm()
+    public function renderForm()
     {
-        /** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
-        $baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
-        $this->context->smarty->assign($baseInfoBlock->buildParams());
-
-        /** @var \Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsFormSaver $generalSettingsForm */
-        $generalSettingsForm = $this->module->getMollieContainer(\Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsFormSaver::class);
-
         $helper = new HelperForm();
 
         $helper->show_toolbar = false;
@@ -51,14 +55,17 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
         $helper->submit_action = 'submitGeneralSettingsConfiguration';
         $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-        /** @var \Mollie\Service\ConfigFieldService $configFieldService */
-        $configFieldService = $this->module->getMollieContainer(\Mollie\Service\ConfigFieldService::class);
+        /** @var FormValuesProvider $generalSettingsFormValuesProvider */
+        $generalSettingsFormValuesProvider = $this->module->getMollieContainer(GeneralSettingsFormValuesProvider::class);
 
-        $helper->tpl_vars = [
-            'fields_value' =>  $configFieldService->getConfigFieldsValues(),
-            'languages' => $this->module->getContext()->controller->getLanguages(),
-            'id_language' => $this->module->getContext()->language->id,
-        ];
+        /** @var BaseInfoBlock $baseInfoBlock */
+        $baseInfoBlock = $this->module->getMollieContainer(BaseInfoBlock::class);
+        $this->context->smarty->assign($baseInfoBlock->buildParams());
+
+        $helper->fields_value = $generalSettingsFormValuesProvider->getFormValues();
+
+        /** @var TemplateBuilderInterface $generalSettingsForm */
+        $generalSettingsForm = $this->module->getMollieContainer(GeneralSettingsForm::class);
 
         $this->content .= $helper->generateForm($generalSettingsForm->buildParams());
     }
@@ -69,18 +76,27 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
             return parent::postProcess();
         }
 
-        $errors = [];
+        try {
+            /** @var FormSettingVerification $canSettingFormBeSaved */
+            $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-        /** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
-        $saveSettingsService = $this->module->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
-        $resultMessages = $saveSettingsService->saveSettings($errors);
-        if (!empty($errors)) {
-            $this->context->controller->errors = $resultMessages;
-        } else {
-            $this->context->controller->confirmations = $resultMessages;
+            if ($canSettingFormBeSaved->verify()) {
+                /** @var FormSaver $generalSettingsFormSaver */
+                $generalSettingsFormSaver = $this->module->getMollieContainer(GeneralSettingsFormSaver::class);
+                $generalSettingsFormSaver->saveConfiguration();
+            }
+        } catch (FormSettingVerificationException $e) {
+            /** @var ExceptionService $exceptionService */
+            $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+            $this->errors[] = $exceptionService->getErrorMessageForException(
+                $e,
+                $exceptionService->getErrorMessages()
+            );
+
+            return null;
         }
 
-        return parent::postProcess();
+        $this->confirmations[] = $this->module->l('Successfully updated settings');
     }
 
     public function setMedia($isNewTheme = false)
