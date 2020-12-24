@@ -1,9 +1,10 @@
 <?php
 
-namespace Mollie\Provider\Form;
+namespace Mollie\Provider\Form\GeneralSettingsForm;
 
 use Configuration;
 use Mollie\Config\Config;
+use Mollie\Provider\Form\FormValuesProvider;
 
 class GeneralSettingsFormValuesProvider implements FormValuesProvider
 {

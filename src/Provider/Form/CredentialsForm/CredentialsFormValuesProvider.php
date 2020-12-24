@@ -1,9 +1,10 @@
 <?php
 
-namespace Mollie\Provider\Form;
+namespace Mollie\Provider\Form\CredentialsForm;
 
 use Configuration;
 use Mollie\Config\Config;
+use Mollie\Provider\Form\FormValuesProvider;
 
 class CredentialsFormValuesProvider implements FormValuesProvider
 {

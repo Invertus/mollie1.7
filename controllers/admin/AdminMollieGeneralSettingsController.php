@@ -18,7 +18,7 @@ use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
 use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
 use Mollie\Provider\Form\FormValuesProvider;
-use Mollie\Provider\Form\GeneralSettingsFormValuesProvider;
+use Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider;
 use Mollie\Service\ExceptionService;
 use Mollie\Service\Form\FormSaver;
 use Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver;
@@ -56,12 +56,12 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
         $helper->submit_action = 'submitGeneralSettingsConfiguration';
         $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-        /** @var FormValuesProvider $generalSettingsFormValuesProvider */
-        $generalSettingsFormValuesProvider = $this->module->getMollieContainer(GeneralSettingsFormValuesProvider::class);
-
         /** @var BaseInfoBlock $baseInfoBlock */
         $baseInfoBlock = $this->module->getMollieContainer(BaseInfoBlock::class);
         $this->context->smarty->assign($baseInfoBlock->buildParams());
+
+        /** @var FormValuesProvider $generalSettingsFormValuesProvider */
+        $generalSettingsFormValuesProvider = $this->module->getMollieContainer(GeneralSettingsFormValuesProvider::class);
 
         $helper->fields_value = $generalSettingsFormValuesProvider->getFormValues();
 

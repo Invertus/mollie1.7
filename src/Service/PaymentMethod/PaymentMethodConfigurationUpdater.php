@@ -64,7 +64,7 @@ class PaymentMethodConfigurationUpdater
     /**
      * @param array $paymentMethodData
      *
-     * @return bool
+     * @return string
      * @throws PaymentMethodConfigurationUpdaterException
      */
     public function updatePaymentMethodConfiguration(array $paymentMethodData)
@@ -120,11 +120,6 @@ class PaymentMethodConfigurationUpdater
             $this->toolsAdapter->getValue(Config::MOLLIE_METHOD_EXCLUDE_CERTAIN_COUNTRIES . $paymentMethodData['id'])
         );
 
-        $this->paymentMethodRepository->deleteOldPaymentMethods(
-            [$paymentMethodData['id']],
-            $this->configurationAdapter->get(Config::MOLLIE_ENVIRONMENT)
-        );
-
-        return true;
+        return $paymentMethodData['id'];
     }
 }

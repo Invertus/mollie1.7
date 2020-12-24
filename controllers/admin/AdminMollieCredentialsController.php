@@ -15,7 +15,7 @@ use Mollie\Builder\Form\CredentialsForm\CredentialsForm;
 use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
-use Mollie\Provider\Form\CredentialsFormValuesProvider;
+use Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider;
 use Mollie\Provider\Form\FormValuesProvider;
 use Mollie\Service\ExceptionService;
 use Mollie\Service\Form\CredentialsForm\CredentialsFormSaver;

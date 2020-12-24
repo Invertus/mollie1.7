@@ -45,8 +45,8 @@ services:
       - '@mollie'
       - '@Mollie\Service\ApiService'
 
-  Mollie\Provider\Form\CredentialsFormValuesProvider:
-    class: Mollie\Provider\Form\CredentialsFormValuesProvider
+  Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider:
+    class: Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider
 
-  Mollie\Provider\Form\GeneralSettingsFormValuesProvider:
-    class: Mollie\Provider\Form\GeneralSettingsFormValuesProvider
+  Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider:
+    class: Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider
