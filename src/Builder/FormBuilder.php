@@ -146,12 +146,9 @@ class FormBuilder
 
 	protected function getAccountSettingsSection($isApiKeyProvided)
 	{
-		$generalSettings = 'general_settings';
-
 		$input = [
 			[
 				'type' => 'mollie-support',
-				'tab' => $generalSettings,
 				'name' => '',
 			],
 		];
@@ -160,7 +157,6 @@ class FormBuilder
 				[
 					'type' => 'select',
 					'label' => $this->module->l('Environment', self::FILE_NAME),
-					'tab' => $generalSettings,
 					'name' => Config::MOLLIE_ENVIRONMENT,
 					'options' => [
 						'query' => [
@@ -180,7 +176,6 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-password',
 				'label' => $this->module->l('API Key Test', self::FILE_NAME),
-				'tab' => $generalSettings,
 				'desc' => TagsUtility::ppTags(
 					$this->module->l('You can find your API key in your [1]Mollie Profile[/1]; it starts with test or live.', self::FILE_NAME),
 					[$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
@@ -193,7 +188,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-password',
 				'label' => $this->module->l('API Key Live', self::FILE_NAME),
-				'tab' => $generalSettings,
+
 				'name' => Config::MOLLIE_API_KEY,
 				'required' => true,
 				'class' => 'fixed-width-xxl',
@@ -202,7 +197,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-password',
 				'label' => $this->module->l('Profile ID', self::FILE_NAME),
-				'tab' => $generalSettings,
+
 				'desc' => TagsUtility::ppTags(
 					$this->module->l('You can find your Profile ID in your [1]Mollie Profile[/1]', self::FILE_NAME),
 					[$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
@@ -215,7 +210,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-button',
 				'label' => '',
-				'tab' => $generalSettings,
+
 				'name' => Config::MOLLIE_API_KEY_TESTING_BUTTON,
 				'text' => $this->module->l('Test ApiKey', self::FILE_NAME),
 				'class' => 'js-test-api-keys',
@@ -224,7 +219,7 @@ class FormBuilder
 			$input[] =
 				[
 					'type' => 'mollie-h3',
-					'tab' => $generalSettings,
+
 					'name' => '',
 					'title' => '',
 				];
@@ -234,7 +229,7 @@ class FormBuilder
 					'type' => 'mollie-switch',
 					'label' => $this->module->l('Do you already have a Mollie account?', self::FILE_NAME),
 					'name' => Config::MOLLIE_ACCOUNT_SWITCH,
-					'tab' => $generalSettings,
+
 					'is_bool' => true,
 					'values' => [
 						[
@@ -255,7 +250,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'select',
 				'label' => $this->module->l('Environment', self::FILE_NAME),
-				'tab' => $generalSettings,
+
 				'name' => Config::MOLLIE_ENVIRONMENT,
 				'options' => [
 					'query' => [
@@ -275,7 +270,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-password',
 				'label' => $this->module->l('API Key Test', self::FILE_NAME),
-				'tab' => $generalSettings,
+
 				'desc' => TagsUtility::ppTags(
 					$this->module->l('You can find your API key in your [1]Mollie Profile[/1]; it starts with test or live.', self::FILE_NAME),
 					[$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
@@ -288,7 +283,7 @@ class FormBuilder
 			$input[] = [
 				'type' => 'mollie-password',
 				'label' => $this->module->l('API Key Live', self::FILE_NAME),
-				'tab' => $generalSettings,
+
 				'name' => Config::MOLLIE_API_KEY,
 				'required' => true,
 				'class' => 'fixed-width-xxl',
@@ -301,7 +296,7 @@ class FormBuilder
 		$input[] = [
 			'type' => 'switch',
 			'label' => $this->module->l('Use Mollie Components for CreditCards', self::FILE_NAME),
-			'tab' => $generalSettings,
+
 			'name' => Config::MOLLIE_IFRAME,
 			'desc' => TagsUtility::ppTags(
 				$this->module->l('Read more about [1]Mollie Components[/1] and how it improves your conversion.', self::FILE_NAME),
@@ -326,7 +321,7 @@ class FormBuilder
 		$input[] = [
 			'type' => 'switch',
 			'label' => $this->module->l('Use Single Click Payments for CreditCards', self::FILE_NAME),
-			'tab' => $generalSettings,
+
 			'name' => Config::MOLLIE_SINGLE_CLICK_PAYMENT,
 			'desc' => TagsUtility::ppTags(
 				$this->module->l('Read more about [1]Single Click Payments[/1] and how it improves your conversion.', self::FILE_NAME),
@@ -353,7 +348,7 @@ class FormBuilder
 				[
 					'type' => 'select',
 					'label' => $this->module->l('Issuer list', self::FILE_NAME),
-					'tab' => $generalSettings,
+
 					'desc' => $this->module->l('Some payment methods (eg. iDEAL) have an issuer list. This setting specifies where it is shown.', self::FILE_NAME),
 					'name' => Config::MOLLIE_ISSUERS,
 					'options' => [
@@ -377,7 +372,7 @@ class FormBuilder
 		$input[] = [
 			'type' => 'mollie-button-update-order-total-restriction',
 			'label' => '',
-			'tab' => $generalSettings,
+
 			'name' => Config::MOLLIE_BUTTON_ORDER_TOTAL_REFRESH,
 			'text' => $this->module->l('Refresh order total restriction values', self::FILE_NAME),
 			'class' => 'js-refresh-order-total-values',
@@ -387,7 +382,7 @@ class FormBuilder
 
 		$input[] = [
 			'type' => 'mollie-h2',
-			'tab' => $generalSettings,
+
 			'name' => '',
 			'title' => $this->module->l('Payment methods', self::FILE_NAME),
 		];
@@ -396,7 +391,7 @@ class FormBuilder
 		if (empty($molliePaymentMethods)) {
 			$input[] = [
 				'type' => 'mollie-payment-empty-alert',
-				'tab' => $generalSettings,
+
 				'name' => '',
 			];
 		}
@@ -407,7 +402,7 @@ class FormBuilder
 			'name' => Config::METHODS_CONFIG,
 			'paymentMethods' => $molliePaymentMethods,
 			'countries' => $this->countryService->getActiveCountriesList(),
-			'tab' => $generalSettings,
+
 			'onlyOrderMethods' => array_merge(Config::KLARNA_PAYMENTS, ['voucher']),
 			'displayErrors' => Configuration::get(Config::MOLLIE_DISPLAY_ERRORS),
 			'methodDescription' => TagsUtility::ppTags(

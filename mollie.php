@@ -56,7 +56,8 @@ class Mollie extends PaymentModule
 
 	const SUPPORTED_PHP_VERSION = '5.6';
 
-	const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+    const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+    const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
 	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjaxController';
@@ -218,7 +219,11 @@ class Mollie extends PaymentModule
 		 * fix display issues
 		 * fix issues with PS 1.6 display.
 		 */
-		Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
+        if (\Mollie\Utility\EnvironmentUtility::getApiKey()) {
+            Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
+        }
+
+        Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER));
 	}
 
 	/**
@@ -329,7 +334,7 @@ class Mollie extends PaymentModule
 		$html = '';
 		if ($this->context->controller->controller_name === 'AdminOrders') {
 			$this->context->smarty->assign([
-				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=mollie&ajax=1',
+				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true),
 				'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int) Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),
 			]);
 			$html .= $this->display(__FILE__, 'views/templates/admin/ordergrid.tpl');
@@ -837,6 +842,11 @@ class Mollie extends PaymentModule
 				'class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
 				'visible' => false,
 			],
+            [
+                'name' => $this->l('Credentials'),
+                'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
+                'class_name' => self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER,
+            ],
 			[
 				'name' => $this->l('General Settings'),
 				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,

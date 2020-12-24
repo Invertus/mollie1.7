@@ -1,7 +1,4 @@
 <?php
-
-use Mollie\Controller\AbstractAdminController;
-
 /**
  * Mollie       https://www.mollie.nl
  *
@@ -13,77 +10,85 @@ use Mollie\Controller\AbstractAdminController;
  * @license     https://github.com/mollie/PrestaShop/blob/master/LICENSE.md
  * @codingStandardsIgnoreStart
  */
+
+use Mollie\Controller\AbstractAdminController;
+
 class AdminMollieGeneralSettingsController extends AbstractAdminController
 {
-	public function __construct()
-	{
-		$this->bootstrap = true;
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        $this->bootstrap = true;
+        parent::__construct();
+    }
 
-	public function initContent()
-	{
-		parent::initContent();
+    public function initContent()
+    {
+        parent::initContent();
 
-		/** @var \Mollie\Repository\ModuleRepository $moduleRepository */
-		$moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
-		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
-		if ($moduleDatabaseVersion < $this->module->version) {
-			$this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');
+        $this->renderSettingsForm();
 
-			return;
-		}
+        $this->context->smarty->assign('content', $this->content);
+    }
 
-		$this->checkModuleErrors();
-		$this->setContentValues();
+    public function renderSettingsForm()
+    {
+        /** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
+        $baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
+        $this->context->smarty->assign($baseInfoBlock->buildParams());
 
-		$this->renderSettingsForm();
+        /** @var \Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsFormSaver $generalSettingsForm */
+        $generalSettingsForm = $this->module->getMollieContainer(\Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsFormSaver::class);
 
-		$this->context->smarty->assign('content', $this->content);
-	}
+        $helper = new HelperForm();
 
-	public function renderSettingsForm()
-	{
-		/** @var \Mollie\Builder\Content\BaseInfoBlock $baseInfoBlock */
-		$baseInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\BaseInfoBlock::class);
-		$this->context->smarty->assign($baseInfoBlock->buildParams());
+        $helper->show_toolbar = false;
+        $helper->table = $this->module->getTable();
+        $helper->module = $this->module;
+        $helper->default_form_language = $this->module->getContext()->language->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
-		/** @var \Mollie\Builder\FormBuilder $settingsFormBuilder */
-		$settingsFormBuilder = $this->module->getMollieContainer(\Mollie\Builder\FormBuilder::class);
+        $helper->identifier = $this->module->getIdentifier();
+        $helper->submit_action = 'submitGeneralSettingsConfiguration';
+        $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
 
-		try {
-			$this->content .= $settingsFormBuilder->buildSettingsForm();
-		} catch (PrestaShopDatabaseException $e) {
-			$this->context->controller->errors[] = $this->l('You are missing database tables. Try resetting module.');
-		}
-	}
+        /** @var \Mollie\Service\ConfigFieldService $configFieldService */
+        $configFieldService = $this->module->getMollieContainer(\Mollie\Service\ConfigFieldService::class);
 
-	public function postProcess()
-	{
-		if (!Tools::isSubmit('submitGeneralSettingsConfiguration')) {
-			return parent::postProcess();
-		}
+        $helper->tpl_vars = [
+            'fields_value' =>  $configFieldService->getConfigFieldsValues(),
+            'languages' => $this->module->getContext()->controller->getLanguages(),
+            'id_language' => $this->module->getContext()->language->id,
+        ];
 
-		$errors = [];
+        $this->content .= $helper->generateForm($generalSettingsForm->buildParams());
+    }
 
-		/** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
-		$saveSettingsService = $this->module->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
-		$resultMessages = $saveSettingsService->saveSettings($errors);
-		if (!empty($errors)) {
-			$this->context->controller->errors = $resultMessages;
-		} else {
-			$this->context->controller->confirmations = $resultMessages;
-		}
+    public function postProcess()
+    {
+        if (!Tools::isSubmit('submitGeneralSettingsConfiguration')) {
+            return parent::postProcess();
+        }
 
-		return parent::postProcess();
-	}
+        $errors = [];
 
-	public function setMedia($isNewTheme = false)
-	{
-		parent::setMedia($isNewTheme);
+        /** @var \Mollie\Service\SettingsSaveService $saveSettingsService */
+        $saveSettingsService = $this->module->getMollieContainer(\Mollie\Service\SettingsSaveService::class);
+        $resultMessages = $saveSettingsService->saveSettings($errors);
+        if (!empty($errors)) {
+            $this->context->controller->errors = $resultMessages;
+        } else {
+            $this->context->controller->confirmations = $resultMessages;
+        }
 
-		$this->context->controller->addJqueryPlugin('sortable');
-		$this->context->controller->addJS($this->module->getPathUri() . 'views/js/admin/payment_methods.js');
-		$this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/payment_methods.css');
-	}
+        return parent::postProcess();
+    }
+
+    public function setMedia($isNewTheme = false)
+    {
+        parent::setMedia($isNewTheme);
+
+        $this->context->controller->addJqueryPlugin('sortable');
+        $this->context->controller->addJS($this->module->getPathUri() . 'views/js/admin/payment_methods.js');
+        $this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/payment_methods.css');
+    }
 }

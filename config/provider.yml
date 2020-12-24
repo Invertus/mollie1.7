@@ -44,3 +44,6 @@ services:
     arguments:
       - '@mollie'
       - '@Mollie\Service\ApiService'
+
+  Mollie\Provider\Config\CredentialsFormValuesProvider:
+    class: Mollie\Provider\Config\CredentialsFormValuesProvider

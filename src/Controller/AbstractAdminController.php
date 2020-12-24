@@ -6,6 +6,7 @@ use Configuration;
 use Media;
 use ModuleAdminController;
 use Mollie;
+use Tab;
 
 class AbstractAdminController extends ModuleAdminController
 {
@@ -98,4 +99,19 @@ class AbstractAdminController extends ModuleAdminController
 		$this->context->controller->addCSS($this->module->getPathUri() . 'views/css/mollie.css');
 		$this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/logo_input.css');
 	}
+
+    public function initContent()
+    {
+        /** @var \Mollie\Repository\ModuleRepository $moduleRepository */
+        $moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
+        $moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
+        if ($moduleDatabaseVersion < $this->module->version) {
+            $this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');
+
+            return;
+        }
+
+        $this->checkModuleErrors();
+        $this->setContentValues();
+    }
 }

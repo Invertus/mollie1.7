@@ -60,3 +60,12 @@ services:
       - '@mollie'
       - '@Mollie\Service\IssuerService'
 
+  Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm:
+    class: Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm
+    arguments:
+      - '@mollie'
+
+  Mollie\Builder\Form\CredentialsForm\CredentialsForm:
+    class: Mollie\Builder\Form\CredentialsForm\CredentialsForm
+    arguments:
+      - '@mollie'
