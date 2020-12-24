@@ -32,7 +32,6 @@ if (!include_once (dirname(__FILE__) . '/vendor/guzzlehttp/psr7/src/functions_in
  */
 class Mollie extends PaymentModule
 {
-
 	/**
 	 * Symfony DI Container.
 	 **/
@@ -57,7 +56,7 @@ class Mollie extends PaymentModule
 
 	const SUPPORTED_PHP_VERSION = '5.6';
 
-    const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+	const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
 	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjaxController';
@@ -199,7 +198,7 @@ class Mollie extends PaymentModule
 
 	public function getContent()
 	{
-	    /** Unsure why anything should be allowed to call main controller through ajax. */
+		/* Unsure why anything should be allowed to call main controller through ajax. */
 		if (Tools::getValue('ajax')) {
 			header('Content-Type: application/json;charset=UTF-8');
 
@@ -211,15 +210,15 @@ class Mollie extends PaymentModule
 			exit(json_encode($this->{'displayAjax' . Tools::ucfirst(Tools::getValue('action'))}()));
 		}
 
-        /**
-         * TODO
-         * Fix forms
-         * hide tabs if no api keys inserted (fruugo)
-         * fix saving
-         * fix display issues
-         * fix issues with PS 1.6 display.
-         */
-        Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
+		/*
+		 * TODO
+		 * Fix forms
+		 * hide tabs if no api keys inserted (fruugo)
+		 * fix saving
+		 * fix display issues
+		 * fix issues with PS 1.6 display.
+		 */
+		Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
 	}
 
 	/**
@@ -832,22 +831,22 @@ class Mollie extends PaymentModule
 	public function getTabs()
 	{
 		return [
-            [
-                'name' => $this->name,
-                'parent_class_name' => 'AdminParentModulesSf',
-                'class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-                'visible' => false,
-            ],
-            [
-                'name' => $this->l('General Settings'),
-                'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-                'class_name' => self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER,
-            ],
-            [
-                'name' => $this->l('Advanced Settings'),
-                'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-                'class_name' => self::ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER,
-            ],
+			[
+				'name' => $this->name,
+				'parent_class_name' => 'AdminParentModulesSf',
+				'class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
+				'visible' => false,
+			],
+			[
+				'name' => $this->l('General Settings'),
+				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
+				'class_name' => self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER,
+			],
+			[
+				'name' => $this->l('Advanced Settings'),
+				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
+				'class_name' => self::ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER,
+			],
 		];
 	}
 
