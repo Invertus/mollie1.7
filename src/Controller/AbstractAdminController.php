@@ -9,6 +9,9 @@ use Mollie;
 
 class AbstractAdminController extends ModuleAdminController
 {
+    /** @var Mollie */
+    public $module;
+
 	protected function checkModuleErrors()
 	{
 		/** @var \Mollie\Service\Content\TemplateParserInterface $templateParser */
