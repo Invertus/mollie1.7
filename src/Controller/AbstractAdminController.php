@@ -10,8 +10,8 @@ use Tab;
 
 class AbstractAdminController extends ModuleAdminController
 {
-    /** @var Mollie */
-    public $module;
+	/** @var Mollie */
+	public $module;
 
 	protected function checkModuleErrors()
 	{
@@ -42,6 +42,7 @@ class AbstractAdminController extends ModuleAdminController
 			);
 		}
 
+		/* @phpstan-ignore-next-line */
 		if (false === Configuration::get(Mollie\Config\Config::MOLLIE_STATUS_AWAITING)) {
 			$this->context->controller->errors[] = $this->module->l('Please select order status for the "Status for Awaiting payments" field in the "Advanced settings" tab');
 		}
