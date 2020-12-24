@@ -119,7 +119,7 @@ class PaymentMethodService
 
     public function savePaymentMethod($method)
     {
-        $environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+        $environment = (int) Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
         $paymentId = $this->methodRepository->getPaymentMethodIdByMethodId($method['id'], $environment);
         $paymentMethod = new MolPaymentMethod();
         if ($paymentId) {

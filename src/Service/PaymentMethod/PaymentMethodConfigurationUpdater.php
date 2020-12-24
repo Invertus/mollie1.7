@@ -73,7 +73,7 @@ class PaymentMethodConfigurationUpdater
             throw new PaymentMethodConfigurationUpdaterException(
                 'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database',
                 PaymentMethodConfigurationUpdaterException::NO_PAYMENT_METHOD_DATA_PROVIDED,
-                $paymentMethodData['name']
+                $paymentMethodData['id']
             );
         }
 
@@ -83,7 +83,7 @@ class PaymentMethodConfigurationUpdater
             throw new PaymentMethodConfigurationUpdaterException(
                 'Failed to update payment method configuration. Payment method (%s) configuration was not saved to database',
                 PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_PAYMENT_METHOD,
-                $paymentMethodData['name']
+                $paymentMethodData['id']
             );
         }
 
@@ -91,7 +91,7 @@ class PaymentMethodConfigurationUpdater
             throw new PaymentMethodConfigurationUpdaterException(
                 'Failed to update payment method configuration. Payment methods (%s) old issuers unable to be deleted',
                 PaymentMethodConfigurationUpdaterException::FAILED_TO_DELETE_OLD_ISSUERS,
-                $paymentMethodData['name']
+                $paymentMethodData['id']
             );
         }
 
@@ -105,7 +105,7 @@ class PaymentMethodConfigurationUpdater
                 throw new PaymentMethodConfigurationUpdaterException(
                     'Failed to update payment method configuration. Payment methods (%s) issuers unable to be saved',
                     PaymentMethodConfigurationUpdaterException::FAILED_TO_SAVE_ISSUERS,
-                    $paymentMethodData['name']
+                    $paymentMethodData['id']
                 );
             }
         }
