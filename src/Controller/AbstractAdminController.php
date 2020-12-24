@@ -101,18 +101,18 @@ class AbstractAdminController extends ModuleAdminController
 		$this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/logo_input.css');
 	}
 
-    public function initContent()
-    {
-        /** @var \Mollie\Repository\ModuleRepository $moduleRepository */
-        $moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
-        $moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
-        if ($moduleDatabaseVersion < $this->module->version) {
-            $this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');
+	public function initContent()
+	{
+		/** @var \Mollie\Repository\ModuleRepository $moduleRepository */
+		$moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
+		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
+		if ($moduleDatabaseVersion < $this->module->version) {
+			$this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');
 
-            return;
-        }
+			return;
+		}
 
-        $this->checkModuleErrors();
-        $this->setContentValues();
-    }
+		$this->checkModuleErrors();
+		$this->setContentValues();
+	}
 }

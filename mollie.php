@@ -56,8 +56,8 @@ class Mollie extends PaymentModule
 
 	const SUPPORTED_PHP_VERSION = '5.6';
 
-    const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
-    const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
+	const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+	const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
 	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjaxController';
@@ -219,11 +219,11 @@ class Mollie extends PaymentModule
 		 * fix display issues
 		 * fix issues with PS 1.6 display.
 		 */
-        if (\Mollie\Utility\EnvironmentUtility::getApiKey()) {
-            Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
-        }
+		if (\Mollie\Utility\EnvironmentUtility::getApiKey()) {
+			Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
+		}
 
-        Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER));
+		Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER));
 	}
 
 	/**
@@ -842,11 +842,11 @@ class Mollie extends PaymentModule
 				'class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
 				'visible' => false,
 			],
-            [
-                'name' => $this->l('Credentials'),
-                'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-                'class_name' => self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER,
-            ],
+			[
+				'name' => $this->l('Credentials'),
+				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
+				'class_name' => self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER,
+			],
 			[
 				'name' => $this->l('General Settings'),
 				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,

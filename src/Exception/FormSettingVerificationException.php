@@ -38,5 +38,5 @@ namespace Mollie\Exception;
 
 class FormSettingVerificationException extends \Exception
 {
-    const INCORRECT_CREDENTIALS = 1;
+	const INCORRECT_CREDENTIALS = 1;
 }

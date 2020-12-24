@@ -117,36 +117,36 @@ class PaymentMethodService
 		$this->paymentMethodRestrictionValidation = $paymentMethodRestrictionValidation;
 	}
 
-    public function savePaymentMethod($method)
-    {
-        $environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
-        $paymentId = $this->methodRepository->getPaymentMethodIdByMethodId($method['id'], $environment);
-        $paymentMethod = new MolPaymentMethod();
-        if ($paymentId) {
-            $paymentMethod = new MolPaymentMethod((int) $paymentId);
-        }
-        $paymentMethod->id_method = $method['id'];
-        $paymentMethod->method_name = $method['name'];
-        $paymentMethod->enabled = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_ENABLED . $method['id']);
-        $paymentMethod->title = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_TITLE . $method['id']);
-        $paymentMethod->method = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_API . $method['id']);
-        $paymentMethod->description = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_DESCRIPTION . $method['id']);
-        $paymentMethod->is_countries_applicable = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_APPLICABLE_COUNTRIES . $method['id']);
-        $paymentMethod->minimal_order_value = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_MINIMUM_ORDER_VALUE . $method['id']);
-        $paymentMethod->max_order_value = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_MAX_ORDER_VALUE . $method['id']);
-        $paymentMethod->surcharge = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_TYPE . $method['id']);
-        $paymentMethod->surcharge_fixed_amount = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_FIXED_AMOUNT . $method['id']);
-        $paymentMethod->surcharge_percentage = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_PERCENTAGE . $method['id']);
-        $paymentMethod->surcharge_limit = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_LIMIT . $method['id']);
-        $paymentMethod->images_json = json_encode($method['image']);
-        $paymentMethod->live_environment = $environment;
+	public function savePaymentMethod($method)
+	{
+		$environment = Configuration::get(Mollie\Config\Config::MOLLIE_ENVIRONMENT);
+		$paymentId = $this->methodRepository->getPaymentMethodIdByMethodId($method['id'], $environment);
+		$paymentMethod = new MolPaymentMethod();
+		if ($paymentId) {
+			$paymentMethod = new MolPaymentMethod((int) $paymentId);
+		}
+		$paymentMethod->id_method = $method['id'];
+		$paymentMethod->method_name = $method['name'];
+		$paymentMethod->enabled = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_ENABLED . $method['id']);
+		$paymentMethod->title = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_TITLE . $method['id']);
+		$paymentMethod->method = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_API . $method['id']);
+		$paymentMethod->description = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_DESCRIPTION . $method['id']);
+		$paymentMethod->is_countries_applicable = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_APPLICABLE_COUNTRIES . $method['id']);
+		$paymentMethod->minimal_order_value = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_MINIMUM_ORDER_VALUE . $method['id']);
+		$paymentMethod->max_order_value = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_MAX_ORDER_VALUE . $method['id']);
+		$paymentMethod->surcharge = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_TYPE . $method['id']);
+		$paymentMethod->surcharge_fixed_amount = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_FIXED_AMOUNT . $method['id']);
+		$paymentMethod->surcharge_percentage = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_PERCENTAGE . $method['id']);
+		$paymentMethod->surcharge_limit = Tools::getValue(Mollie\Config\Config::MOLLIE_METHOD_SURCHARGE_LIMIT . $method['id']);
+		$paymentMethod->images_json = json_encode($method['image']);
+		$paymentMethod->live_environment = $environment;
 
-        $paymentMethod->save();
+		$paymentMethod->save();
 
-        return $paymentMethod;
-    }
+		return $paymentMethod;
+	}
 
-    /**
+	/**
 	 * Get payment methods to show on the checkout.
 	 *
 	 * @return array
@@ -216,7 +216,7 @@ class PaymentMethodService
 		return $methods;
 	}
 
-    /**
+	/**
 	 * Get payment data.
 	 *
 	 * @param float|string $amount

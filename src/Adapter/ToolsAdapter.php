@@ -32,8 +32,8 @@ class ToolsAdapter
 		return Tools::substr($str, $start, $length);
 	}
 
-    public function getValue($key, $default_value = false)
-    {
-        return Tools::getValue($key, $default_value);
-    }
+	public function getValue($key, $default_value = false)
+	{
+		return Tools::getValue($key, $default_value);
+	}
 }

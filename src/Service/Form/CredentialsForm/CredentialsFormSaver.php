@@ -9,37 +9,37 @@ use Mollie\Service\Form\FormSaver;
 
 class CredentialsFormSaver implements FormSaver
 {
-    /**
-     * @var ToolsAdapter
-     */
-    private $toolsAdapter;
+	/**
+	 * @var ToolsAdapter
+	 */
+	private $toolsAdapter;
 
-    public function __construct(ToolsAdapter $toolsAdapter)
-    {
-        $this->toolsAdapter = $toolsAdapter;
-    }
+	public function __construct(ToolsAdapter $toolsAdapter)
+	{
+		$this->toolsAdapter = $toolsAdapter;
+	}
 
-    /**
-     * @return bool
-     */
-    public function saveConfiguration()
-    {
-        $success = true;
+	/**
+	 * @return bool
+	 */
+	public function saveConfiguration()
+	{
+		$success = true;
 
-        $hasAccount = $this->toolsAdapter->getValue(Config::MOLLIE_ACCOUNT_SWITCH);
+		$hasAccount = $this->toolsAdapter->getValue(Config::MOLLIE_ACCOUNT_SWITCH);
 
-        if ($hasAccount) {
-            $success &= Configuration::updateValue(Config::MOLLIE_ACCOUNT_SWITCH, $hasAccount);
-            $success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST));
-            $success &= Configuration::updateValue(Config::MOLLIE_API_KEY, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY));
-        } else {
-            $success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, null);
-            $success &= Configuration::updateValue(Config::MOLLIE_API_KEY, null);
-        }
+		if ($hasAccount) {
+			$success &= Configuration::updateValue(Config::MOLLIE_ACCOUNT_SWITCH, $hasAccount);
+			$success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST));
+			$success &= Configuration::updateValue(Config::MOLLIE_API_KEY, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY));
+		} else {
+			$success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, null);
+			$success &= Configuration::updateValue(Config::MOLLIE_API_KEY, null);
+		}
 
-        $success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
-        $success &= Configuration::updateValue(Config::MOLLIE_PROFILE_ID, $this->toolsAdapter->getValue(Config::MOLLIE_PROFILE_ID));
+		$success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
+		$success &= Configuration::updateValue(Config::MOLLIE_PROFILE_ID, $this->toolsAdapter->getValue(Config::MOLLIE_PROFILE_ID));
 
-        return (bool) $success;
-    }
+		return (bool) $success;
+	}
 }
