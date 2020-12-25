@@ -4,8 +4,8 @@ namespace Mollie\Builder\Form;
 
 interface FormParserInterface
 {
-    /**
-     * @return string
-     */
-    public function parse();
+	/**
+	 * @return string
+	 */
+	public function parse();
 }

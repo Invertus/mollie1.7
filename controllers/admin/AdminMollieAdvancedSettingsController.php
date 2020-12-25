@@ -77,7 +77,7 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
 			if ($canSettingFormBeSaved->verify()) {
 				/** @var AdvancedSettingsFormSaver $credentialsFormSaver */
 				$advancedSettingsFormSaver = $this->module->getMollieContainer(AdvancedSettingsFormSaver::class);
-                $advancedSettingsFormSaver->saveConfiguration();
+				$advancedSettingsFormSaver->saveConfiguration();
 			}
 		} catch (FormSettingVerificationException $e) {
 			/** @var ExceptionService $exceptionService */
