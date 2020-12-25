@@ -1,0 +1,38 @@
+services:
+  Mollie\Service\LegacyTranslator:
+    class: Mollie\Service\LegacyTranslator
+    arguments:
+      - '@mollie'
+
+  Mollie\Builder\LegacyTranslatorAwareType:
+    class: Mollie\Builder\LegacyTranslatorAwareType
+    arguments:
+      - '@Mollie\Service\LegacyTranslator'
+
+  Mollie\Form\Admin\Credentials\CredentialsType:
+    class: Mollie\Form\Admin\Credentials\CredentialsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    tags:
+        - { name: mollie.form.type }
+
+  Mollie\Builder\Form\AbstractLegacyFormBuilder:
+    class: Mollie\Builder\Form\AbstractLegacyFormBuilder
+    arguments:
+      - '@Mollie'
+
+  Mollie\Builder\Form\AbstractLegacyForm:
+    class: Mollie\Builder\Form\AbstractLegacyForm
+    arguments:
+      - '@Mollie'
+
+  Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder:
+    class: Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder
+    parent: Mollie\Builder\Form\AbstractLegacyFormBuilder
+
+  Mollie\Builder\Form\CredentialsForm\CredentialsFormBuilderInterface: '@Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder'
+
+  Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm:
+    class: Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm
+    parent: Mollie\Builder\Form\AbstractLegacyForm
+
+  Mollie\Builder\Form\CredentialsForm\CredentialsFormInterface: '@Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm'

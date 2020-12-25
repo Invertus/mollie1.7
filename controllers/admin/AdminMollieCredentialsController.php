@@ -11,12 +11,9 @@
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Builder\Form\CredentialsForm\CredentialsForm;
-use Mollie\Builder\TemplateBuilderInterface;
+use Mollie\Builder\Form\CredentialsForm\CredentialsFormInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
-use Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider;
-use Mollie\Provider\Form\FormValuesProvider;
 use Mollie\Service\ExceptionService;
 use Mollie\Service\Form\CredentialsForm\CredentialsFormSaver;
 use Mollie\Verification\Form\CanSettingFormBeSaved;
@@ -34,34 +31,11 @@ class AdminMollieCredentialsController extends AbstractAdminController
 	{
 		parent::initContent();
 
-		$this->renderForm();
+		/** @var CredentialsFormInterface $credentialsForm */
+		$credentialsForm = $this->module->getMollieContainer(CredentialsFormInterface::class);
+		$this->content = $credentialsForm->parse();
 
 		$this->context->smarty->assign('content', $this->content);
-	}
-
-	public function renderForm()
-	{
-		$helper = new HelperForm();
-
-		$helper->show_toolbar = false;
-		$helper->table = $this->module->getTable();
-		$helper->module = $this->module;
-		$helper->default_form_language = $this->module->getContext()->language->id;
-		$helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
-
-		$helper->identifier = $this->module->getIdentifier();
-		$helper->submit_action = 'submitCredentialsConfiguration';
-		$helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
-
-		/** @var FormValuesProvider $credentialsFormValuesProvider */
-		$credentialsFormValuesProvider = $this->module->getMollieContainer(CredentialsFormValuesProvider::class);
-
-		$helper->fields_value = $credentialsFormValuesProvider->getFormValues();
-
-		/** @var TemplateBuilderInterface $credentialsForm */
-		$credentialsForm = $this->module->getMollieContainer(CredentialsForm::class);
-
-		$this->content .= $helper->generateForm($credentialsForm->buildParams());
 	}
 
 	public function postProcess()
