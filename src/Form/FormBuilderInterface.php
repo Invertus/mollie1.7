@@ -10,7 +10,7 @@ interface FormBuilderInterface
 	 * ex. If Options are specified then a new block with given configuration
 	 *
 	 * @param string $child
-	 * @param TypeInterface|null $type
+	 * @param string|null $type
 	 * @param array $options
 	 *
 	 * @return self
