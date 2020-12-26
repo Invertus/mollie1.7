@@ -44,12 +44,3 @@ services:
     arguments:
       - '@mollie'
       - '@Mollie\Service\ApiService'
-
-  Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider:
-    class: Mollie\Provider\Form\CredentialsForm\CredentialsFormValuesProvider
-
-  Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider:
-    class: Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider
-
-  Mollie\Provider\Form\AdvancedSettingsForm\AdvancedSettingsFormValuesProvider:
-    class: Mollie\Provider\Form\AdvancedSettingsForm\AdvancedSettingsFormValuesProvider

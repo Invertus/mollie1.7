@@ -12,15 +12,13 @@
  */
 
 use Mollie\Builder\Content\BaseInfoBlock;
-use Mollie\Builder\Form\GeneralSettingsForm\GeneralSettingsForm;
-use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
 use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
-use Mollie\Provider\Form\FormValuesProvider;
-use Mollie\Provider\Form\GeneralSettingsForm\GeneralSettingsFormValuesProvider;
+use Mollie\Form\Admin\GeneralSettings\FormBuilder\GeneralSettingsFormBuilderInterface;
+use Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormDataProvider;
+use Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormInterface;
 use Mollie\Service\ExceptionService;
-use Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver;
 use Mollie\Verification\Form\CanSettingFormBeSaved;
 use Mollie\Verification\Form\FormSettingVerification;
 
@@ -32,82 +30,71 @@ class AdminMollieGeneralSettingsController extends AbstractAdminController
 		parent::__construct();
 	}
 
-	public function initContent()
-	{
-		parent::initContent();
+    public function initContent()
+    {
+        parent::initContent();
 
-		$this->renderForm();
+        /** @var GeneralSettingsFormBuilderInterface $generalSettingsFormBuilder */
+        $generalSettingsFormBuilder = $this->module->getMollieContainer(GeneralSettingsFormBuilderInterface::class);
 
-		$this->context->smarty->assign('content', $this->content);
-	}
+        $this->content .= $generalSettingsFormBuilder->getForm()->createView();
 
-	public function renderForm()
-	{
-		$helper = new HelperForm();
-
-		$helper->show_toolbar = false;
-		$helper->table = $this->module->getTable();
-		$helper->module = $this->module;
-		$helper->default_form_language = $this->module->getContext()->language->id;
-		$helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
-
-		$helper->identifier = $this->module->getIdentifier();
-		$helper->submit_action = 'submitGeneralSettingsConfiguration';
-		$helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
-
-		/** @var BaseInfoBlock $baseInfoBlock */
-		$baseInfoBlock = $this->module->getMollieContainer(BaseInfoBlock::class);
-		$this->context->smarty->assign($baseInfoBlock->buildParams());
-
-		/** @var FormValuesProvider $generalSettingsFormValuesProvider */
-		$generalSettingsFormValuesProvider = $this->module->getMollieContainer(GeneralSettingsFormValuesProvider::class);
-
-		$helper->fields_value = $generalSettingsFormValuesProvider->getFormValues();
-
-		/** @var TemplateBuilderInterface $generalSettingsForm */
-		$generalSettingsForm = $this->module->getMollieContainer(GeneralSettingsForm::class);
-
-		$this->content .= $helper->generateForm($generalSettingsForm->buildParams());
-	}
+        $this->context->smarty->assign([
+            'content' => $this->content
+        ]);
+    }
 
 	public function postProcess()
 	{
-		if (!Tools::isSubmit('submitGeneralSettingsConfiguration')) {
-			return parent::postProcess();
-		}
+        /** @var BaseInfoBlock $baseInfoBlock */
+        $baseInfoBlock = $this->module->getMollieContainer(BaseInfoBlock::class);
+        $this->context->smarty->assign($baseInfoBlock->buildParams());
 
-		try {
-			/** @var FormSettingVerification $canSettingFormBeSaved */
-			$canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
+        /** @var GeneralSettingsFormBuilderInterface $generalSettingsFormBuilder */
+        $generalSettingsFormBuilder = $this->module->getMollieContainer(GeneralSettingsFormBuilderInterface::class);
 
-			if ($canSettingFormBeSaved->verify()) {
-				/** @var GeneralSettingsFormSaver $generalSettingsFormSaver */
-				$generalSettingsFormSaver = $this->module->getMollieContainer(GeneralSettingsFormSaver::class);
-				$generalSettingsFormSaver->saveConfiguration();
-			}
-		} catch (FormSettingVerificationException $exception) {
-			/** @var ExceptionService $exceptionService */
-			$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-			$this->errors[] = $exceptionService->getErrorMessageForException(
-				$exception,
-				$exceptionService->getErrorMessages()
-			);
+        /** @var GeneralSettingsFormInterface $generalSettingsForm */
+        $generalSettingsForm = $generalSettingsFormBuilder->getForm();
 
-			return null;
-		} catch (PaymentMethodConfigurationUpdaterException $exception) {
-			/** @var ExceptionService $exceptionService */
-			$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-			$this->errors[] = $exceptionService->getErrorMessageForException(
-				$exception,
-				$exceptionService->getErrorMessages(),
-				['paymentMethodName' => $exception->getPaymentMethodName()]
-			);
+        $generalSettingsForm->handleRequest(null);
 
-			return null;
-		}
+        if ($generalSettingsForm->isSubmitted() && $generalSettingsForm->isValid()) {
+            try {
+                /** @var FormSettingVerification $canSettingFormBeSaved */
+                $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-		$this->confirmations[] = $this->module->l('Successfully updated settings');
-	}
+                if ($canSettingFormBeSaved->verify()) {
+                    /** @var GeneralSettingsFormDataProvider $generalSettingsFormDataProvider */
+                    $generalSettingsFormDataProvider = $this->module->getMollieContainer(GeneralSettingsFormDataProvider::class);
+                    $generalSettingsFormDataProvider->setData($generalSettingsFormDataProvider->getData());
+                }
+            } catch (FormSettingVerificationException $e) {
+                /** @var ExceptionService $exceptionService */
+                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+                $this->errors[] = $exceptionService->getErrorMessageForException(
+                    $e,
+                    $exceptionService->getErrorMessages()
+                );
+
+                return null;
+            } catch (PaymentMethodConfigurationUpdaterException $exception) {
+                /** @var ExceptionService $exceptionService */
+                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+                $this->errors[] = $exceptionService->getErrorMessageForException(
+                    $exception,
+                    $exceptionService->getErrorMessages(),
+                    ['paymentMethodName' => $exception->getPaymentMethodName()]
+                );
+
+                return null;
+            }
+            $this->confirmations[] = $this->module->l('Successfully updated settings');
+
+            return null;
+        }
+
+        return parent::postProcess();
+    }
 
 	public function setMedia($isNewTheme = false)
 	{

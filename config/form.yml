@@ -9,6 +9,11 @@ services:
     arguments:
       - '@Mollie\Service\LegacyTranslator'
 
+  Mollie\Form\AbstractLegacyFormBuilder:
+    class: Mollie\Form\AbstractLegacyFormBuilder
+    arguments:
+      - '@Mollie'
+
   Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType:
     class: Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType
     parent: Mollie\Builder\LegacyTranslatorAwareType
@@ -19,16 +24,38 @@ services:
 
   Mollie\Form\Admin\Credentials\Type\CredentialsTypeInterface: '@Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType'
 
-  Mollie\Form\AbstractLegacyFormBuilder:
-    class: Mollie\Form\AbstractLegacyFormBuilder
-    arguments:
-      - '@Mollie'
+  Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType:
+    class: Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.type }
+
+  Mollie\Form\Admin\GeneralSettings\Type\GeneralSettingsTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType'
+
+  Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType:
+    class: Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+      - [ setApiService, [ '@Mollie\Service\ApiService' ] ]
+      - [ setCountryService, [ '@Mollie\Service\CountryService' ] ]
+      - [ setCreditCardLogoProvider, [ '@Mollie\Provider\CreditCardLogoProvider' ] ]
+    tags:
+      - { name: mollie.form.general.settings.type }
 
   Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder:
     class: Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder
     parent: Mollie\Form\AbstractLegacyFormBuilder
 
   Mollie\Form\Admin\Credentials\FormBuilder\CredentialsFormBuilderInterface: '@Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder'
+
+  Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder:
+    class: Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder
+    parent: Mollie\Form\AbstractLegacyFormBuilder
+
+  Mollie\Form\Admin\GeneralSettings\FormBuilder\GeneralSettingsFormBuilderInterface: '@Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder'
 
   Mollie\Form\Admin\Credentials\LegacyCredentialsForm:
     class: Mollie\Form\Admin\Credentials\LegacyCredentialsForm
@@ -37,5 +64,22 @@ services:
 
   Mollie\Form\Admin\Credentials\CredentialsFormInterface: '@Mollie\Form\Admin\Credentials\LegacyCredentialsForm'
 
+  Mollie\Form\Admin\GeneralSettings\LegacyGeneralSettingsForm:
+    class: Mollie\Form\Admin\GeneralSettings\LegacyGeneralSettingsForm
+    arguments:
+      - '@Mollie'
+
+  Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormInterface: '@Mollie\Form\Admin\GeneralSettings\LegacyGeneralSettingsForm'
+
   Mollie\Form\Admin\Credentials\CredentialsFormDataProvider:
     class: Mollie\Form\Admin\Credentials\CredentialsFormDataProvider
+
+  Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormDataProvider:
+    class: Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormDataProvider
+    arguments:
+      - '@Mollie'
+      - '@Mollie\Adapter\ToolsAdapter'
+      - '@Mollie\Service\ApiService'
+      - '@Mollie\Repository\PaymentMethodRepositoryInterface'
+      - '@Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater'
+      - '@Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface'

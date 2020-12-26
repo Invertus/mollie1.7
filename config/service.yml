@@ -205,21 +205,6 @@ services:
   Mollie\Service\EntityManager\ObjectModelManager:
     class: Mollie\Service\EntityManager\ObjectModelManager
 
-  Mollie\Service\Form\CredentialsForm\CredentialsFormSaver:
-    class: Mollie\Service\Form\CredentialsForm\CredentialsFormSaver
-    arguments:
-      - '@Mollie\Adapter\ToolsAdapter'
-
-  Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver:
-    class: Mollie\Service\Form\GeneralSettingsForm\GeneralSettingsFormSaver
-    arguments:
-      - '@Mollie'
-      - '@Mollie\Adapter\ToolsAdapter'
-      - '@Mollie\Service\ApiService'
-      - '@Mollie\Repository\PaymentMethodRepositoryInterface'
-      - '@Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater'
-      - '@Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface'
-
   Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver:
     class: Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver
     arguments:

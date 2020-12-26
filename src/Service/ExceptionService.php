@@ -104,6 +104,7 @@ class ExceptionService
 			}
 
 			if (is_array($message) && isset($message[$exceptionCode])) {
+			    return $message[$exceptionCode];
 				if (strpos($message[$exceptionCode], '%') !== false) {
 					return sprintf($message[$exceptionCode], implode(',', $params));
 				}
