@@ -9,30 +9,33 @@ services:
     arguments:
       - '@Mollie\Service\LegacyTranslator'
 
-  Mollie\Form\Admin\Credentials\CredentialsType:
-    class: Mollie\Form\Admin\Credentials\CredentialsType
+  Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType:
+    class: Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType
     parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
     tags:
         - { name: mollie.form.type }
 
-  Mollie\Builder\Form\AbstractLegacyFormBuilder:
-    class: Mollie\Builder\Form\AbstractLegacyFormBuilder
+  Mollie\Form\Admin\Credentials\Type\CredentialsTypeInterface: '@Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType'
+
+  Mollie\Form\AbstractLegacyFormBuilder:
+    class: Mollie\Form\AbstractLegacyFormBuilder
     arguments:
       - '@Mollie'
 
-  Mollie\Builder\Form\AbstractLegacyForm:
-    class: Mollie\Builder\Form\AbstractLegacyForm
+  Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder:
+    class: Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder
+    parent: Mollie\Form\AbstractLegacyFormBuilder
+
+  Mollie\Form\Admin\Credentials\FormBuilder\CredentialsFormBuilderInterface: '@Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder'
+
+  Mollie\Form\Admin\Credentials\LegacyCredentialsForm:
+    class: Mollie\Form\Admin\Credentials\LegacyCredentialsForm
     arguments:
       - '@Mollie'
 
-  Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder:
-    class: Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder
-    parent: Mollie\Builder\Form\AbstractLegacyFormBuilder
+  Mollie\Form\Admin\Credentials\CredentialsFormInterface: '@Mollie\Form\Admin\Credentials\LegacyCredentialsForm'
 
-  Mollie\Builder\Form\CredentialsForm\CredentialsFormBuilderInterface: '@Mollie\Builder\Form\CredentialsForm\LegacyCredentialsFormBuilder'
-
-  Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm:
-    class: Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm
-    parent: Mollie\Builder\Form\AbstractLegacyForm
-
-  Mollie\Builder\Form\CredentialsForm\CredentialsFormInterface: '@Mollie\Builder\Form\CredentialsForm\LegacyCredentialsForm'
+  Mollie\Form\Admin\Credentials\CredentialsFormDataProvider:
+    class: Mollie\Form\Admin\Credentials\CredentialsFormDataProvider

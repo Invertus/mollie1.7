@@ -6,6 +6,14 @@ use Configuration;
 use Media;
 use ModuleAdminController;
 use Mollie;
+use Mollie\Builder\Content\LogoInfoBlock;
+use Mollie\Builder\Content\RoundingModeInfoBlock;
+use Mollie\Builder\Content\SmartyCacheInfoBlock;
+use Mollie\Builder\Content\SmartyForceCompileInfoBlock;
+use Mollie\Builder\Content\UpdateMessageInfoBlock;
+use Mollie\Repository\ModuleRepository;
+use Mollie\Service\Content\TemplateParserInterface;
+use Mollie\Utility\CartPriceUtility;
 use Tab;
 
 class AbstractAdminController extends ModuleAdminController
@@ -15,13 +23,13 @@ class AbstractAdminController extends ModuleAdminController
 
 	protected function checkModuleErrors()
 	{
-		/** @var \Mollie\Service\Content\TemplateParserInterface $templateParser */
-		$templateParser = $this->module->getMollieContainer(\Mollie\Service\Content\TemplateParserInterface::class);
+		/** @var TemplateParserInterface $templateParser */
+		$templateParser = $this->module->getMollieContainer(TemplateParserInterface::class);
 
 		if (!Configuration::get('PS_SMARTY_FORCE_COMPILE')) {
 			$this->context->controller->warnings[] = $templateParser->parseTemplate(
 				$this->context->smarty,
-				$this->module->getMollieContainer(\Mollie\Builder\Content\SmartyForceCompileInfoBlock::class),
+				$this->module->getMollieContainer(SmartyForceCompileInfoBlock::class),
 				$this->module->getLocalPath() . 'views/templates/hook/smarty_error.tpl'
 			);
 		}
@@ -29,15 +37,15 @@ class AbstractAdminController extends ModuleAdminController
 		if (Configuration::get('PS_SMARTY_CACHE') && 'never' === Configuration::get('PS_SMARTY_CLEAR_CACHE')) {
 			$this->context->controller->errors[] = $templateParser->parseTemplate(
 				$this->context->smarty,
-				$this->module->getMollieContainer(\Mollie\Builder\Content\SmartyCacheInfoBlock::class),
+				$this->module->getMollieContainer(SmartyCacheInfoBlock::class),
 				$this->module->getLocalPath() . 'views/templates/hook/smarty_error.tpl'
 			);
 		}
 
-		if (\Mollie\Utility\CartPriceUtility::checkRoundingMode()) {
+		if (CartPriceUtility::checkRoundingMode()) {
 			$this->context->controller->errors[] = $templateParser->parseTemplate(
 				$this->context->smarty,
-				$this->module->getMollieContainer(\Mollie\Builder\Content\RoundingModeInfoBlock::class),
+				$this->module->getMollieContainer(RoundingModeInfoBlock::class),
 				$this->module->getLocalPath() . 'views/templates/hook/rounding_error.tpl'
 			);
 		}
@@ -50,17 +58,17 @@ class AbstractAdminController extends ModuleAdminController
 
 	protected function setContentValues()
 	{
-		/** @var \Mollie\Service\Content\TemplateParserInterface $templateParser */
-		$templateParser = $this->module->getMollieContainer(\Mollie\Service\Content\TemplateParserInterface::class);
+		/** @var TemplateParserInterface $templateParser */
+		$templateParser = $this->module->getMollieContainer(TemplateParserInterface::class);
 
 		$this->content = $templateParser->parseTemplate(
 			$this->context->smarty,
-			$this->module->getMollieContainer(\Mollie\Builder\Content\LogoInfoBlock::class),
+			$this->module->getMollieContainer(LogoInfoBlock::class),
 			$this->module->getLocalPath() . 'views/templates/admin/logo.tpl'
 		);
 
-		/** @var \Mollie\Builder\Content\UpdateMessageInfoBlock $updateMessageInfoBlock */
-		$updateMessageInfoBlock = $this->module->getMollieContainer(\Mollie\Builder\Content\UpdateMessageInfoBlock::class);
+		/** @var UpdateMessageInfoBlock $updateMessageInfoBlock */
+		$updateMessageInfoBlock = $this->module->getMollieContainer(UpdateMessageInfoBlock::class);
 		$updateMessageInfoBlockData = $updateMessageInfoBlock->setAddons(Mollie::ADDONS);
 
 		$this->content .= $templateParser->parseTemplate(
@@ -103,8 +111,8 @@ class AbstractAdminController extends ModuleAdminController
 
 	public function initContent()
 	{
-		/** @var \Mollie\Repository\ModuleRepository $moduleRepository */
-		$moduleRepository = $this->module->getMollieContainer(\Mollie\Repository\ModuleRepository::class);
+		/** @var ModuleRepository $moduleRepository */
+		$moduleRepository = $this->module->getMollieContainer(ModuleRepository::class);
 		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
 		if ($moduleDatabaseVersion < $this->module->version) {
 			$this->context->controller->errors[] = $this->module->l('Please upgrade Mollie module.');

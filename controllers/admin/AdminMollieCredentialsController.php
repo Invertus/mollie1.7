@@ -11,11 +11,12 @@
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Builder\Form\CredentialsForm\CredentialsFormInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Form\Admin\Credentials\CredentialsFormDataProvider;
+use Mollie\Form\Admin\Credentials\CredentialsFormInterface;
+use Mollie\Form\Admin\Credentials\FormBuilder\CredentialsFormBuilderInterface;
 use Mollie\Service\ExceptionService;
-use Mollie\Service\Form\CredentialsForm\CredentialsFormSaver;
 use Mollie\Verification\Form\CanSettingFormBeSaved;
 use Mollie\Verification\Form\FormSettingVerification;
 
@@ -31,39 +32,51 @@ class AdminMollieCredentialsController extends AbstractAdminController
 	{
 		parent::initContent();
 
-		/** @var CredentialsFormInterface $credentialsForm */
-		$credentialsForm = $this->module->getMollieContainer(CredentialsFormInterface::class);
-		$this->content = $credentialsForm->parse();
+		/** @var CredentialsFormBuilderInterface $credentialsFormBuilder */
+		$credentialsFormBuilder = $this->module->getMollieContainer(CredentialsFormBuilderInterface::class);
 
-		$this->context->smarty->assign('content', $this->content);
+		$this->content .= $credentialsFormBuilder->getForm()->createView();
+
+		$this->context->smarty->assign([
+		    'content' => $this->content
+        ]);
 	}
 
 	public function postProcess()
-	{
-		if (!Tools::isSubmit('submitCredentialsConfiguration')) {
-			return parent::postProcess();
-		}
+    {
+        /** @var CredentialsFormBuilderInterface $credentialsFormBuilder */
+        $credentialsFormBuilder = $this->module->getMollieContainer(CredentialsFormBuilderInterface::class);
 
-		try {
-			/** @var FormSettingVerification $canSettingFormBeSaved */
-			$canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
+        /** @var CredentialsFormInterface $credentialsForm */
+        $credentialsForm = $credentialsFormBuilder->getForm();
 
-			if ($canSettingFormBeSaved->verify()) {
-				/** @var CredentialsFormSaver $credentialsFormSaver */
-				$credentialsFormSaver = $this->module->getMollieContainer(CredentialsFormSaver::class);
-				$credentialsFormSaver->saveConfiguration();
-			}
-		} catch (FormSettingVerificationException $e) {
-			/** @var ExceptionService $exceptionService */
-			$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-			$this->errors[] = $exceptionService->getErrorMessageForException(
-				$e,
-				$exceptionService->getErrorMessages()
-			);
+        $credentialsForm->handleRequest(null);
 
-			return null;
-		}
+        if ($credentialsForm->isSubmitted() && $credentialsForm->isValid()) {
+            try {
+                /** @var FormSettingVerification $canSettingFormBeSaved */
+                $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-		$this->confirmations[] = $this->module->l('Successfully updated settings');
-	}
+                if ($canSettingFormBeSaved->verify()) {
+                    /** @var CredentialsFormDataProvider $credentialsFormDataProvider */
+                    $credentialsFormDataProvider = $this->module->getMollieContainer(CredentialsFormDataProvider::class);
+                    $credentialsFormDataProvider->setData($credentialsFormDataProvider->getData());
+                }
+            } catch (FormSettingVerificationException $e) {
+                /** @var ExceptionService $exceptionService */
+                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+                $this->errors[] = $exceptionService->getErrorMessageForException(
+                    $e,
+                    $exceptionService->getErrorMessages()
+                );
+
+                return null;
+            }
+            $this->confirmations[] = $this->module->l('Successfully updated settings');
+
+            return null;
+        }
+
+        return parent::postProcess();
+    }
 }

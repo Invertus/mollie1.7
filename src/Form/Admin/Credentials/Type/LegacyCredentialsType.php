@@ -1,15 +1,29 @@
 <?php
 
-namespace Mollie\Form\Admin\Credentials;
+namespace Mollie\Form\Admin\Credentials\Type;
 
-use Mollie\Builder\FormBuilderInterface;
+use Mollie;
 use Mollie\Builder\LegacyTranslatorAwareType;
-use Mollie\Builder\TypeInterface;
 use Mollie\Config\Config;
+use Mollie\Form\FormBuilderInterface;
 use Mollie\Utility\EnvironmentUtility;
+use Mollie\Utility\TagsUtility;
 
-class CredentialsType extends LegacyTranslatorAwareType implements TypeInterface
+class LegacyCredentialsType extends LegacyTranslatorAwareType implements CredentialsTypeInterface
 {
+    /**
+     * @var Mollie
+     */
+    private $module;
+
+    public function setModule(Mollie $module)
+    {
+        $this->module = $module;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -20,7 +34,6 @@ class CredentialsType extends LegacyTranslatorAwareType implements TypeInterface
         ;
 
         if (!EnvironmentUtility::getApiKey()) {
-
             $builder
                 ->add(Config::MOLLIE_ACCOUNT_SWITCH, null, [
                     'type' => 'mollie-switch',
@@ -39,9 +52,9 @@ class CredentialsType extends LegacyTranslatorAwareType implements TypeInterface
                             'label' => $this->trans('Disabled', 'FormBuilder'),
                         ],
                     ],
-//                    'desc' => $this->module->display(
-//                        $this->module->getPathUri(), 'views/templates/admin/create_new_account_link.tpl'
-//                    ),
+                    'desc' => $this->module->display(
+                        $this->module->getPathUri(), 'views/templates/admin/create_new_account_link.tpl'
+                    ),
                 ])
             ;
         }
@@ -69,10 +82,10 @@ class CredentialsType extends LegacyTranslatorAwareType implements TypeInterface
             ->add(Config::MOLLIE_API_KEY_TEST, null, [
                 'type' => 'mollie-password',
                 'label' => $this->trans('API Key Test', 'FormBuilder'),
-//                'desc' => TagsUtility::ppTags(
-//                    $this->trans('You can find your API key in your [1]Mollie Profile[/1]; it starts with test or live.', 'FormBuilder'),
-//                    [$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
-//                ),
+                'desc' => TagsUtility::ppTags(
+                    $this->trans('You can find your API key in your [1]Mollie Profile[/1]; it starts with test or live.', 'FormBuilder'),
+                    [$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
+                ),
                 'name' => Config::MOLLIE_API_KEY_TEST,
                 'required' => true,
                 'class' => 'fixed-width-xxl',
@@ -81,10 +94,10 @@ class CredentialsType extends LegacyTranslatorAwareType implements TypeInterface
             ->add(Config::MOLLIE_API_KEY, null, [
                 'type' => 'mollie-password',
                 'label' => $this->trans('Profile ID', 'FormBuilder'),
-//                'desc' => TagsUtility::ppTags(
-//                    $this->trans('You can find your Profile ID in your [1]Mollie Profile[/1]', 'FormBuilder'),
-//                    [$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
-//                ),
+                'desc' => TagsUtility::ppTags(
+                    $this->trans('You can find your Profile ID in your [1]Mollie Profile[/1]', 'FormBuilder'),
+                    [$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
+                ),
                 'name' => Config::MOLLIE_PROFILE_ID,
                 'required' => true,
                 'class' => 'fixed-width-xxl',

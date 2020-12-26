@@ -1,22 +1,20 @@
 <?php
 
-namespace Mollie\Builder\Form;
+namespace Mollie\Form;
 
 use Mollie;
-use Mollie\Builder\FormBuilderInterface;
-use Mollie\Builder\TypeInterface;
 
 abstract class AbstractLegacyFormBuilder implements FormBuilderInterface
 {
     /**
      * @var array
      */
-    private $blocks = [];
+    protected $blocks = [];
 
     /**
      * @var Mollie
      */
-    private $module;
+    protected $module;
 
     public function __construct(Mollie $module)
     {
@@ -26,19 +24,19 @@ abstract class AbstractLegacyFormBuilder implements FormBuilderInterface
     /**
      * @inheritDoc
      */
-    public function add($name, $type = null, $input = [])
+    public function add($child, $type = null, array $options = [])
     {
         if ($type) {
             /** @var TypeInterface $typeBlock */
             $typeBlock = $this->module->getMollieContainer($type);
 
             if ($typeBlock) {
-                $this->blocks[] = $typeBlock->buildForm($this, $input);
+                $this->blocks[] = $typeBlock->buildForm($this, $options);
 
                 return $this;
             }
         }
-        $this->blocks[] = $input;
+        $this->blocks[$child] = $options;
 
         return $this;
     }
@@ -49,5 +47,10 @@ abstract class AbstractLegacyFormBuilder implements FormBuilderInterface
     public function build()
     {
         return $this->blocks;
+    }
+
+    public function resetBlocks()
+    {
+        $this->blocks = [];
     }
 }

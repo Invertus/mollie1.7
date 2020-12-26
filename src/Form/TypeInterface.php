@@ -1,6 +1,6 @@
 <?php
 
-namespace Mollie\Builder;
+namespace Mollie\Form;
 
 interface TypeInterface
 {

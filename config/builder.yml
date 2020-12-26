@@ -55,13 +55,6 @@ services:
     tags:
       - { name: mollie.controller.form }
 
-  Mollie\Builder\Form\CredentialsForm\CredentialsForm:
-    class: Mollie\Builder\Form\CredentialsForm\CredentialsForm
-    arguments:
-      - '@mollie'
-    tags:
-      - { name: mollie.controller.form }
-
   Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm:
     class: Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm
     arguments:
