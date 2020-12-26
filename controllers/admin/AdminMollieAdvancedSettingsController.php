@@ -13,7 +13,6 @@
 
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
-use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
 use Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormDataProvider;
 use Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormInterface;
 use Mollie\Form\Admin\AdvancedSettings\FormBuilder\AdvancedSettingsFormBuilderInterface;
@@ -69,16 +68,6 @@ class AdminMollieAdvancedSettingsController extends AbstractAdminController
                 $this->errors[] = $exceptionService->getErrorMessageForException(
                     $e,
                     $exceptionService->getErrorMessages()
-                );
-
-                return null;
-            } catch (PaymentMethodConfigurationUpdaterException $exception) {
-                /** @var ExceptionService $exceptionService */
-                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-                $this->errors[] = $exceptionService->getErrorMessageForException(
-                    $exception,
-                    $exceptionService->getErrorMessages(),
-                    ['paymentMethodName' => $exception->getPaymentMethodName()]
                 );
 
                 return null;
