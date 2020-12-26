@@ -22,3 +22,10 @@ services:
       - '@Mollie'
 
   Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormInterface: '@Mollie\Form\Admin\GeneralSettings\LegacyGeneralSettingsForm'
+
+  Mollie\Form\Admin\AdvancedSettings\LegacyAdvancedSettingsForm:
+    class: Mollie\Form\Admin\AdvancedSettings\LegacyAdvancedSettingsForm
+    arguments:
+      - '@Mollie'
+
+  Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormInterface: '@Mollie\Form\Admin\AdvancedSettings\LegacyAdvancedSettingsForm'

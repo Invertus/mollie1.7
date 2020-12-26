@@ -12,8 +12,6 @@ services:
     tags:
       - { name: mollie.form.type }
 
-  Mollie\Form\Admin\Credentials\Type\CredentialsTypeInterface: '@Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType'
-
   Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType:
     class: Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType
     parent: Mollie\Builder\LegacyTranslatorAwareType
@@ -22,7 +20,13 @@ services:
     tags:
       - { name: mollie.form.type }
 
-  Mollie\Form\Admin\GeneralSettings\Type\GeneralSettingsTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType'
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyAdvancedSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyAdvancedSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.type }
 
   Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType:
     class: Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType
@@ -35,4 +39,46 @@ services:
     tags:
       - { name: mollie.form.general.settings.type }
 
-  Mollie\Form\Admin\GeneralSettings\Type\PaymentMethodTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType'
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyMailSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyMailSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.advanced.settings.type }
+
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyOrderStatusesSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyOrderStatusesSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+      - [ setContext, [ '@=service("mollie.adapter.context")' ] ]
+    tags:
+      - { name: mollie.form.advanced.settings.type }
+
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyVisualSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyVisualSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.advanced.settings.type }
+
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyShipmentSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyShipmentSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+      - [ setContext, [ '@=service("mollie.adapter.context")' ] ]
+      - [ setCarrierInformationService, [ '@Mollie\Service\MolCarrierInformationService' ] ]
+    tags:
+      - { name: mollie.form.advanced.settings.type }
+
+  Mollie\Form\Admin\AdvancedSettings\Type\LegacyDebugSettingsType:
+    class: Mollie\Form\Admin\AdvancedSettings\Type\LegacyDebugSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+      - [ setContext, [ '@=service("mollie.adapter.context")' ] ]
+    tags:
+      - { name: mollie.form.advanced.settings.type }

@@ -9,12 +9,13 @@ use Mollie;
 use Mollie\Builder\LegacyTranslatorAwareType;
 use Mollie\Config\Config;
 use Mollie\Form\FormBuilderInterface;
+use Mollie\Form\TypeInterface;
 use Mollie\Provider\CreditCardLogoProvider;
 use Mollie\Service\ApiService;
 use Mollie\Service\CountryService;
 use Mollie\Utility\TagsUtility;
 
-class LegacyPaymentMethodType extends LegacyTranslatorAwareType implements PaymentMethodTypeInterface
+class LegacyPaymentMethodType extends LegacyTranslatorAwareType implements TypeInterface
 {
     /**
      * @var Mollie

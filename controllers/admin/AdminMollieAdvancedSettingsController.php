@@ -11,85 +11,92 @@
  * @codingStandardsIgnoreStart
  */
 
-use Mollie\Builder\Form\AdvancedSettingsForm\AdvancedSettingsForm;
-use Mollie\Builder\TemplateBuilderInterface;
 use Mollie\Controller\AbstractAdminController;
 use Mollie\Exception\FormSettingVerificationException;
-use Mollie\Provider\Form\AdvancedSettingsForm\AdvancedSettingsFormValuesProvider;
-use Mollie\Provider\Form\FormValuesProvider;
+use Mollie\Exception\PaymentMethodConfigurationUpdaterException;
+use Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormDataProvider;
+use Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormInterface;
+use Mollie\Form\Admin\AdvancedSettings\FormBuilder\AdvancedSettingsFormBuilderInterface;
 use Mollie\Service\ExceptionService;
-use Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver;
 use Mollie\Verification\Form\CanSettingFormBeSaved;
 use Mollie\Verification\Form\FormSettingVerification;
 
 class AdminMollieAdvancedSettingsController extends AbstractAdminController
 {
-	public function __construct()
-	{
-		$this->bootstrap = true;
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        $this->bootstrap = true;
+        parent::__construct();
+    }
 
-	public function initContent()
-	{
-		parent::initContent();
+    public function initContent()
+    {
+        parent::initContent();
 
-		$this->renderForm();
+        /** @var AdvancedSettingsFormBuilderInterface $advancedSettingsFormBuilder */
+        $advancedSettingsFormBuilder = $this->module->getMollieContainer(AdvancedSettingsFormBuilderInterface::class);
 
-		$this->context->smarty->assign('content', $this->content);
-	}
+        $this->content .= $advancedSettingsFormBuilder->getForm()->createView();
 
-	public function renderForm()
-	{
-		$helper = new HelperForm();
+        $this->context->smarty->assign([
+            'content' => $this->content
+        ]);
+    }
 
-		$helper->show_toolbar = false;
-		$helper->table = $this->module->getTable();
-		$helper->module = $this->module;
-		$helper->default_form_language = $this->module->getContext()->language->id;
-		$helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
+    public function postProcess()
+    {
+        /** @var AdvancedSettingsFormBuilderInterface $advancedSettingsFormBuilder */
+        $advancedSettingsFormBuilder = $this->module->getMollieContainer(AdvancedSettingsFormBuilderInterface::class);
 
-		$helper->identifier = $this->module->getIdentifier();
-		$helper->submit_action = 'submitAdvancedSettingsConfiguration';
-		$helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER);
+        /** @var AdvancedSettingsFormInterface $advancedSettingsForm */
+        $advancedSettingsForm = $advancedSettingsFormBuilder->getForm();
 
-		/** @var FormValuesProvider $advancedSettingsFormValuesProvider */
-		$advancedSettingsFormValuesProvider = $this->module->getMollieContainer(AdvancedSettingsFormValuesProvider::class);
+        $advancedSettingsForm->handleRequest(null);
 
-		$helper->fields_value = $advancedSettingsFormValuesProvider->getFormValues();
+        if ($advancedSettingsForm->isSubmitted() && $advancedSettingsForm->isValid()) {
+            try {
+                /** @var FormSettingVerification $canSettingFormBeSaved */
+                $canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
 
-		/** @var TemplateBuilderInterface $credentialsForm */
-		$credentialsForm = $this->module->getMollieContainer(AdvancedSettingsForm::class);
+                if ($canSettingFormBeSaved->verify()) {
+                    /** @var AdvancedSettingsFormDataProvider $advancedSettingsFormDataProvider */
+                    $advancedSettingsFormDataProvider = $this->module->getMollieContainer(AdvancedSettingsFormDataProvider::class);
+                    $advancedSettingsFormDataProvider->setData($advancedSettingsFormDataProvider->getData());
+                }
+            } catch (FormSettingVerificationException $e) {
+                /** @var ExceptionService $exceptionService */
+                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+                $this->errors[] = $exceptionService->getErrorMessageForException(
+                    $e,
+                    $exceptionService->getErrorMessages()
+                );
 
-		$this->content .= $helper->generateForm($credentialsForm->buildParams());
-	}
+                return null;
+            } catch (PaymentMethodConfigurationUpdaterException $exception) {
+                /** @var ExceptionService $exceptionService */
+                $exceptionService = $this->module->getMollieContainer(ExceptionService::class);
+                $this->errors[] = $exceptionService->getErrorMessageForException(
+                    $exception,
+                    $exceptionService->getErrorMessages(),
+                    ['paymentMethodName' => $exception->getPaymentMethodName()]
+                );
 
-	public function postProcess()
-	{
-		if (!Tools::isSubmit('submitAdvancedSettingsConfiguration')) {
-			return parent::postProcess();
-		}
+                return null;
+            }
+            $this->confirmations[] = $this->module->l('Successfully updated settings');
 
-		try {
-			/** @var FormSettingVerification $canSettingFormBeSaved */
-			$canSettingFormBeSaved = $this->module->getMollieContainer(CanSettingFormBeSaved::class);
+            return null;
+        }
 
-			if ($canSettingFormBeSaved->verify()) {
-				/** @var AdvancedSettingsFormSaver $credentialsFormSaver */
-				$advancedSettingsFormSaver = $this->module->getMollieContainer(AdvancedSettingsFormSaver::class);
-				$advancedSettingsFormSaver->saveConfiguration();
-			}
-		} catch (FormSettingVerificationException $e) {
-			/** @var ExceptionService $exceptionService */
-			$exceptionService = $this->module->getMollieContainer(ExceptionService::class);
-			$this->errors[] = $exceptionService->getErrorMessageForException(
-				$e,
-				$exceptionService->getErrorMessages()
-			);
+        return parent::postProcess();
+    }
 
-			return null;
-		}
+    public function setMedia($isNewTheme = false)
+    {
+        parent::setMedia($isNewTheme);
 
-		$this->confirmations[] = $this->module->l('Successfully updated settings');
-	}
+        $this->context->controller->addJqueryPlugin('sortable');
+        $this->context->controller->addJS($this->module->getPathUri() . 'views/js/admin/payment_methods.js');
+        $this->context->controller->addCSS($this->module->getPathUri() . 'views/css/admin/payment_methods.css');
+    }
 }

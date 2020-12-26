@@ -205,12 +205,6 @@ services:
   Mollie\Service\EntityManager\ObjectModelManager:
     class: Mollie\Service\EntityManager\ObjectModelManager
 
-  Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver:
-    class: Mollie\Service\Form\AdvancedSettingsForm\AdvancedSettingsFormSaver
-    arguments:
-      - '@Mollie\Adapter\ToolsAdapter'
-      - '@Mollie\Service\MolCarrierInformationService'
-
   Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater:
     class: Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater
     arguments:

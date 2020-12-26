@@ -6,9 +6,10 @@ use Mollie;
 use Mollie\Builder\LegacyTranslatorAwareType;
 use Mollie\Config\Config;
 use Mollie\Form\FormBuilderInterface;
+use Mollie\Form\TypeInterface;
 use Mollie\Utility\TagsUtility;
 
-class LegacyGeneralSettingsType extends LegacyTranslatorAwareType implements GeneralSettingsTypeInterface
+class LegacyGeneralSettingsType extends LegacyTranslatorAwareType implements TypeInterface
 {
     /**
      * @var Mollie
@@ -120,7 +121,7 @@ class LegacyGeneralSettingsType extends LegacyTranslatorAwareType implements Gen
                 'name' => '',
                 'title' => $this->module->l('Payment methods', 'FormBuilder'),
             ])
-            ->add('PaymentMethods', PaymentMethodTypeInterface::class, [])
+            ->add('PaymentMethods', LegacyPaymentMethodType::class, [])
         ;
     }
 }

@@ -11,3 +11,8 @@ services:
       - '@Mollie\Repository\PaymentMethodRepositoryInterface'
       - '@Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater'
       - '@Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface'
+
+  Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormDataProvider:
+    class: Mollie\Form\Admin\AdvancedSettings\AdvancedSettingsFormDataProvider
+    arguments:
+      - '@Mollie\Service\MolCarrierInformationService'

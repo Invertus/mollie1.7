@@ -1,14 +1,14 @@
 <?php
 
-namespace Mollie\Form\Admin\GeneralSettings;
+namespace Mollie\Form\Admin\AdvancedSettings;
 
 use Configuration;
 use HelperForm;
 use Mollie;
-use Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder;
+use Mollie\Form\Admin\AdvancedSettings\FormBuilder\LegacyAdvancedSettingsFormBuilder;
 use Tools;
 
-class LegacyGeneralSettingsForm implements GeneralSettingsFormInterface
+class LegacyAdvancedSettingsForm implements AdvancedSettingsFormInterface
 {
     /**
      * @var array
@@ -30,7 +30,7 @@ class LegacyGeneralSettingsForm implements GeneralSettingsFormInterface
      */
     public function isSubmitted()
     {
-        return Tools::isSubmit('submit' . LegacyGeneralSettingsFormBuilder::FORM_NAME . 'Configuration');
+        return Tools::isSubmit('submit' . LegacyAdvancedSettingsFormBuilder::FORM_NAME . 'Configuration');
     }
 
     /**
@@ -71,12 +71,12 @@ class LegacyGeneralSettingsForm implements GeneralSettingsFormInterface
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
         $helper->identifier = $this->module->getIdentifier();
-        $helper->submit_action = 'submit' . LegacyGeneralSettingsFormBuilder::FORM_NAME . 'Configuration';
+        $helper->submit_action = 'submit' . LegacyAdvancedSettingsFormBuilder::FORM_NAME . 'Configuration';
         $helper->token = Tools::getAdminTokenLite(Mollie::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER);
 
-        /** @var GeneralSettingsFormDataProvider $generalSettingsFormDataProvider */
-        $generalSettingsFormDataProvider = $this->module->getMollieContainer(GeneralSettingsFormDataProvider::class);
-        $helper->fields_value = $generalSettingsFormDataProvider->getData();
+        /** @var AdvancedSettingsFormDataProvider $advancedSettingsFormDataProvider */
+        $advancedSettingsFormDataProvider = $this->module->getMollieContainer(AdvancedSettingsFormDataProvider::class);
+        $helper->fields_value = $advancedSettingsFormDataProvider->getData();
 
         return $helper->generateForm([
             [

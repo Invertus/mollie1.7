@@ -6,10 +6,11 @@ use Mollie;
 use Mollie\Builder\LegacyTranslatorAwareType;
 use Mollie\Config\Config;
 use Mollie\Form\FormBuilderInterface;
+use Mollie\Form\TypeInterface;
 use Mollie\Utility\EnvironmentUtility;
 use Mollie\Utility\TagsUtility;
 
-class LegacyCredentialsType extends LegacyTranslatorAwareType implements CredentialsTypeInterface
+class LegacyCredentialsType extends LegacyTranslatorAwareType implements TypeInterface
 {
     /**
      * @var Mollie

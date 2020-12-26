@@ -15,3 +15,9 @@ services:
     parent: Mollie\Form\AbstractLegacyFormBuilder
 
   Mollie\Form\Admin\GeneralSettings\FormBuilder\GeneralSettingsFormBuilderInterface: '@Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder'
+
+  Mollie\Form\Admin\AdvancedSettings\FormBuilder\LegacyAdvancedSettingsFormBuilder:
+    class: Mollie\Form\Admin\AdvancedSettings\FormBuilder\LegacyAdvancedSettingsFormBuilder
+    parent: Mollie\Form\AbstractLegacyFormBuilder
+
+  Mollie\Form\Admin\AdvancedSettings\FormBuilder\AdvancedSettingsFormBuilderInterface: '@Mollie\Form\Admin\AdvancedSettings\FormBuilder\LegacyAdvancedSettingsFormBuilder'

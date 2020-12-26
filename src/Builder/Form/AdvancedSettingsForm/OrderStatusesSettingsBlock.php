@@ -120,7 +120,7 @@ class OrderStatusesSettingsBlock implements TemplateBuilderInterface
 				];
 			}
 
-			$isStatusAwaiting = Config::MOLLIE_AWAITING_PAYMENT === $status['name'];
+            $isStatusAwaiting = Config::MOLLIE_AWAITING_PAYMENT === $status['name'];
 			$input[] = [
 				'type' => 'select',
 				'label' => $status['message'],

@@ -3,8 +3,8 @@
 namespace Mollie\Form\Admin\GeneralSettings\FormBuilder;
 
 use Mollie\Form\AbstractLegacyFormBuilder;
-use Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormInterface;
-use Mollie\Form\Admin\GeneralSettings\Type\GeneralSettingsTypeInterface;
+use Mollie\Form\Admin\GeneralSettings\LegacyGeneralSettingsForm;
+use Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType;
 use Mollie\Form\FormInterface;
 
 class LegacyGeneralSettingsFormBuilder extends AbstractLegacyFormBuilder implements GeneralSettingsFormBuilderInterface
@@ -17,10 +17,10 @@ class LegacyGeneralSettingsFormBuilder extends AbstractLegacyFormBuilder impleme
     public function getForm()
     {
         $this->resetBlocks(); //Hack to reset all blocks as we are unable to create FormBuilder by factories.
-        $this->add(self::FORM_NAME, GeneralSettingsTypeInterface::class);
+        $this->add(self::FORM_NAME, LegacyGeneralSettingsType::class);
 
-        /** @var GeneralSettingsFormInterface $generalSettingsForm */
-        $generalSettingsForm = $this->module->getMollieContainer(GeneralSettingsFormInterface::class);
+        /** @var LegacyGeneralSettingsForm $generalSettingsForm */
+        $generalSettingsForm = $this->module->getMollieContainer(LegacyGeneralSettingsForm::class);
         $generalSettingsForm->setData($this->build());
 
         return $generalSettingsForm;
