@@ -4,5 +4,5 @@ namespace Mollie\Service;
 
 interface TranslatorInterface
 {
-    public function trans($key, $parameters, $domain);
+	public function trans($key, $parameters, $domain);
 }
