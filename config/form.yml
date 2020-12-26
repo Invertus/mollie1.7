@@ -45,6 +45,8 @@ services:
     tags:
       - { name: mollie.form.general.settings.type }
 
+  Mollie\Form\Admin\GeneralSettings\Type\PaymentMethodTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType'
+
   Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder:
     class: Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder
     parent: Mollie\Form\AbstractLegacyFormBuilder

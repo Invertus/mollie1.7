@@ -14,7 +14,7 @@ use Mollie\Service\ApiService;
 use Mollie\Service\CountryService;
 use Mollie\Utility\TagsUtility;
 
-class LegacyPaymentMethodType extends LegacyTranslatorAwareType implements GeneralSettingsTypeInterface
+class LegacyPaymentMethodType extends LegacyTranslatorAwareType implements PaymentMethodTypeInterface
 {
     /**
      * @var Mollie
