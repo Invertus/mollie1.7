@@ -1,0 +1,38 @@
+services:
+  Mollie\Builder\LegacyTranslatorAwareType:
+    class: Mollie\Builder\LegacyTranslatorAwareType
+    arguments:
+      - '@Mollie\Service\LegacyTranslator'
+
+  Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType:
+    class: Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.type }
+
+  Mollie\Form\Admin\Credentials\Type\CredentialsTypeInterface: '@Mollie\Form\Admin\Credentials\Type\LegacyCredentialsType'
+
+  Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType:
+    class: Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+    tags:
+      - { name: mollie.form.type }
+
+  Mollie\Form\Admin\GeneralSettings\Type\GeneralSettingsTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyGeneralSettingsType'
+
+  Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType:
+    class: Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType
+    parent: Mollie\Builder\LegacyTranslatorAwareType
+    calls:
+      - [ setModule, [ '@mollie' ] ]
+      - [ setApiService, [ '@Mollie\Service\ApiService' ] ]
+      - [ setCountryService, [ '@Mollie\Service\CountryService' ] ]
+      - [ setCreditCardLogoProvider, [ '@Mollie\Provider\CreditCardLogoProvider' ] ]
+    tags:
+      - { name: mollie.form.general.settings.type }
+
+  Mollie\Form\Admin\GeneralSettings\Type\PaymentMethodTypeInterface: '@Mollie\Form\Admin\GeneralSettings\Type\LegacyPaymentMethodType'

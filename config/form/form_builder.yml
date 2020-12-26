@@ -1,0 +1,17 @@
+services:
+  Mollie\Form\AbstractLegacyFormBuilder:
+    class: Mollie\Form\AbstractLegacyFormBuilder
+    arguments:
+      - '@Mollie'
+
+  Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder:
+    class: Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder
+    parent: Mollie\Form\AbstractLegacyFormBuilder
+
+  Mollie\Form\Admin\Credentials\FormBuilder\CredentialsFormBuilderInterface: '@Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder'
+
+  Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder:
+    class: Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder
+    parent: Mollie\Form\AbstractLegacyFormBuilder
+
+  Mollie\Form\Admin\GeneralSettings\FormBuilder\GeneralSettingsFormBuilderInterface: '@Mollie\Form\Admin\GeneralSettings\FormBuilder\LegacyGeneralSettingsFormBuilder'

@@ -1,0 +1,13 @@
+services:
+  Mollie\Form\Admin\Credentials\CredentialsFormDataProvider:
+    class: Mollie\Form\Admin\Credentials\CredentialsFormDataProvider
+
+  Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormDataProvider:
+    class: Mollie\Form\Admin\GeneralSettings\GeneralSettingsFormDataProvider
+    arguments:
+      - '@Mollie'
+      - '@Mollie\Adapter\ToolsAdapter'
+      - '@Mollie\Service\ApiService'
+      - '@Mollie\Repository\PaymentMethodRepositoryInterface'
+      - '@Mollie\Service\PaymentMethod\PaymentMethodConfigurationUpdater'
+      - '@Mollie\Handler\Settings\PaymentMethodPositionHandlerInterface'
