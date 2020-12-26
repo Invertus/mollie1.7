@@ -38,9 +38,9 @@ class CredentialsFormSaver implements FormSaver
 	{
 		$success = true;
 
-        $success &= Configuration::updateValue(Config::MOLLIE_ACCOUNT_SWITCH, $this->toolsAdapter->getValue(Config::MOLLIE_ACCOUNT_SWITCH));
-        $success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST));
-        $success &= Configuration::updateValue(Config::MOLLIE_API_KEY, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY));
+		$success &= Configuration::updateValue(Config::MOLLIE_ACCOUNT_SWITCH, $this->toolsAdapter->getValue(Config::MOLLIE_ACCOUNT_SWITCH));
+		$success &= Configuration::updateValue(Config::MOLLIE_API_KEY_TEST, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST));
+		$success &= Configuration::updateValue(Config::MOLLIE_API_KEY, $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY));
 		$success &= Configuration::updateValue(Config::MOLLIE_PROFILE_ID, $this->toolsAdapter->getValue(Config::MOLLIE_PROFILE_ID));
 		$success &= Configuration::updateValue(Config::MOLLIE_ENVIRONMENT, $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT));
 
