@@ -27,7 +27,7 @@ abstract class AbstractLegacyFormBuilder implements FormBuilderInterface
 	public function add($child, $type = null, array $options = [])
 	{
 		if ($type) {
-			/** @var TypeInterface $typeBlock */
+			/** @var TypeInterface|null $typeBlock */
 			$typeBlock = $this->module->getMollieContainer($type);
 
 			if ($typeBlock) {

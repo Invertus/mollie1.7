@@ -334,7 +334,7 @@ class Mollie extends PaymentModule
 		$html = '';
 		if ($this->context->controller->controller_name === 'AdminOrders') {
 			$this->context->smarty->assign([
-				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true),
+				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true). '&configure=mollie&ajax=1',
 				'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int) Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),
 			]);
 			$html .= $this->display(__FILE__, 'views/templates/admin/ordergrid.tpl');
