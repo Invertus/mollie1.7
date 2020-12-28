@@ -7,7 +7,6 @@ use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Adapter\ToolsAdapter;
 use Mollie\Config\Config;
 use Mollie\Exception\FormSettingVerificationException;
-use Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder;
 
 class CanSettingFormBeSaved implements FormSettingVerification
 {
@@ -49,10 +48,10 @@ class CanSettingFormBeSaved implements FormSettingVerification
 		$mollieApiKeyTest = $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST, $this->configurationAdapter->get(Config::MOLLIE_API_KEY_TEST));
 		$environment = (int) $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT, $this->configurationAdapter->get(Config::MOLLIE_ENVIRONMENT));
 
-        if ($environment === Config::ENVIRONMENT_LIVE) {
-            return strpos($mollieApiKey, 'live') === 0;
-        } else {
-            return strpos($mollieApiKeyTest, 'test') === 0;
-        }
+		if ($environment === Config::ENVIRONMENT_LIVE) {
+			return strpos($mollieApiKey, 'live') === 0;
+		} else {
+			return strpos($mollieApiKeyTest, 'test') === 0;
+		}
 	}
 }

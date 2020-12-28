@@ -87,28 +87,28 @@ class GeneralSettingsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-        if ($this->toolsAdapter->getValue(Config::METHODS_CONFIG, null) !== null) {
-            $success &= $this->savePaymentMethodSettings();
-        }
+		if ($this->toolsAdapter->getValue(Config::METHODS_CONFIG, null) !== null) {
+			$success &= $this->savePaymentMethodSettings();
+		}
 
-        if ($this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION, null) !== null) {
-            $success &= $this->savePaymentOptionPositions();
-        }
+		if ($this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION, null) !== null) {
+			$success &= $this->savePaymentOptionPositions();
+		}
 
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_IFRAME,
-            $this->toolsAdapter->getValue(Config::MOLLIE_IFRAME, Configuration::get(Config::MOLLIE_IFRAME))
-        );
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_IFRAME,
+			$this->toolsAdapter->getValue(Config::MOLLIE_IFRAME, Configuration::get(Config::MOLLIE_IFRAME))
+		);
 
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_SINGLE_CLICK_PAYMENT,
-            $this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, Configuration::get(Config::MOLLIE_SINGLE_CLICK_PAYMENT))
-        );
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_SINGLE_CLICK_PAYMENT,
+			$this->toolsAdapter->getValue(Config::MOLLIE_SINGLE_CLICK_PAYMENT, Configuration::get(Config::MOLLIE_SINGLE_CLICK_PAYMENT))
+		);
 
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_ISSUERS,
-            $this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS, Configuration::get(Config::MOLLIE_ISSUERS))
-        );
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_ISSUERS,
+			$this->toolsAdapter->getValue(Config::MOLLIE_ISSUERS, Configuration::get(Config::MOLLIE_ISSUERS))
+		);
 
 		return (bool) $success;
 	}
@@ -152,21 +152,21 @@ class GeneralSettingsFormDataProvider implements FormDataProviderInterface
 		return (bool) $success;
 	}
 
-    /**
-     * @return bool
-     */
+	/**
+	 * @return bool
+	 */
 	public function savePaymentOptionPositions()
-    {
-        $success = true;
+	{
+		$success = true;
 
-        $paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
+		$paymentOptionPositions = $this->toolsAdapter->getValue(Config::MOLLIE_FORM_PAYMENT_OPTION_POSITION);
 
-        if ($paymentOptionPositions) {
-            $success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
-        }
+		if ($paymentOptionPositions) {
+			$success &= (bool) $this->paymentMethodPositionHandler->savePositions($paymentOptionPositions);
+		}
 
-        return $success;
-    }
+		return $success;
+	}
 
 	/**
 	 * @return bool

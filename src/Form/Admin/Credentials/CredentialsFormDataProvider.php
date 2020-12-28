@@ -30,10 +30,10 @@ class CredentialsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_ACCOUNT_SWITCH,
-            Tools::getValue(Config::MOLLIE_ACCOUNT_SWITCH, Configuration::get(Config::MOLLIE_ACCOUNT_SWITCH))
-        );
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_ACCOUNT_SWITCH,
+			Tools::getValue(Config::MOLLIE_ACCOUNT_SWITCH, Configuration::get(Config::MOLLIE_ACCOUNT_SWITCH))
+		);
 
 		$success &= $this->saveApiSettings();
 
@@ -61,21 +61,21 @@ class CredentialsFormDataProvider implements FormDataProviderInterface
 		$success = true;
 
 		$success &= Configuration::updateValue(
-		    Config::MOLLIE_ENVIRONMENT,
-            Tools::getValue(Config::MOLLIE_ENVIRONMENT, Configuration::get(Config::MOLLIE_ENVIRONMENT))
-        );
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_API_KEY_TEST,
-            Tools::getValue(Config::MOLLIE_API_KEY_TEST, Configuration::get(Config::MOLLIE_API_KEY_TEST))
-        );
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_API_KEY,
-            Tools::getValue(Config::MOLLIE_API_KEY, Configuration::get(Config::MOLLIE_API_KEY))
-        );
-        $success &= Configuration::updateValue(
-            Config::MOLLIE_PROFILE_ID,
-            Tools::getValue(Config::MOLLIE_PROFILE_ID, Configuration::get(Config::MOLLIE_PROFILE_ID))
-        );
+			Config::MOLLIE_ENVIRONMENT,
+			Tools::getValue(Config::MOLLIE_ENVIRONMENT, Configuration::get(Config::MOLLIE_ENVIRONMENT))
+		);
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_API_KEY_TEST,
+			Tools::getValue(Config::MOLLIE_API_KEY_TEST, Configuration::get(Config::MOLLIE_API_KEY_TEST))
+		);
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_API_KEY,
+			Tools::getValue(Config::MOLLIE_API_KEY, Configuration::get(Config::MOLLIE_API_KEY))
+		);
+		$success &= Configuration::updateValue(
+			Config::MOLLIE_PROFILE_ID,
+			Tools::getValue(Config::MOLLIE_PROFILE_ID, Configuration::get(Config::MOLLIE_PROFILE_ID))
+		);
 
 		return (bool) $success;
 	}

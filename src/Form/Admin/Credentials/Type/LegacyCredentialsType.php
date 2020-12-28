@@ -93,29 +93,29 @@ class LegacyCredentialsType extends LegacyTranslatorAwareType implements TypeInt
 				'form_group_class' => 'js-test-api-group',
 			])
 			->add(Config::MOLLIE_API_KEY, null, [
-                'type' => 'mollie-password',
-                'label' => $this->module->l('API Key Live', 'FormBuilder'),
-                'name' => Config::MOLLIE_API_KEY,
-                'required' => true,
-                'class' => 'fixed-width-xxl',
-                'form_group_class' => 'js-live-api-group',
+				'type' => 'mollie-password',
+				'label' => $this->module->l('API Key Live', 'FormBuilder'),
+				'name' => Config::MOLLIE_API_KEY,
+				'required' => true,
+				'class' => 'fixed-width-xxl',
+				'form_group_class' => 'js-live-api-group',
 			])
 		;
 
 		if (EnvironmentUtility::getApiKey()) {
-		    $builder
-                ->add(Config::MOLLIE_PROFILE_ID, null, [
-                    'type' => 'mollie-password',
-                    'label' => $this->module->l('Profile ID', 'FormBuilder'),
-                    'desc' => TagsUtility::ppTags(
-                        $this->module->l('You can find your Profile ID in your [1]Mollie Profile[/1]', 'FormBuilder'),
-                        [$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
-                    ),
-                    'name' => Config::MOLLIE_PROFILE_ID,
-                    'required' => true,
-                    'class' => 'fixed-width-xxl',
-                    'form_group_class' => 'js-api-profile-id',
-                ])
+			$builder
+				->add(Config::MOLLIE_PROFILE_ID, null, [
+					'type' => 'mollie-password',
+					'label' => $this->module->l('Profile ID', 'FormBuilder'),
+					'desc' => TagsUtility::ppTags(
+						$this->module->l('You can find your Profile ID in your [1]Mollie Profile[/1]', 'FormBuilder'),
+						[$this->module->display($this->module->getPathUri(), 'views/templates/admin/profile.tpl')]
+					),
+					'name' => Config::MOLLIE_PROFILE_ID,
+					'required' => true,
+					'class' => 'fixed-width-xxl',
+					'form_group_class' => 'js-api-profile-id',
+				])
 				->add(Config::MOLLIE_API_KEY_TESTING_BUTTON, null, [
 					'type' => 'mollie-button',
 					'label' => '',
