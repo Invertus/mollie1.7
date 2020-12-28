@@ -111,7 +111,7 @@ class AbstractAdminController extends ModuleAdminController
 
 	public function initContent()
 	{
-	    parent::initContent();
+		parent::initContent();
 		/** @var ModuleRepository $moduleRepository */
 		$moduleRepository = $this->module->getMollieContainer(ModuleRepository::class);
 		$moduleDatabaseVersion = $moduleRepository->getModuleDatabaseVersion($this->module->name);
