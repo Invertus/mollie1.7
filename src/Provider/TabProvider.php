@@ -32,7 +32,7 @@ class TabProvider
 			],
             [
                 'name' => $this->module->l('AdminMollieAjax'),
-                'parent_class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
+                'parent_class_name' => 0,
                 'class_name' => Mollie::ADMIN_MOLLIE_AJAX_CONTROLLER,
                 'active' => false,
                 'module_tab' => true,
