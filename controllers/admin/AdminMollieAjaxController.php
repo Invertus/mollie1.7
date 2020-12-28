@@ -61,12 +61,6 @@ class AdminMollieAjaxController extends ModuleAdminController
 				break;
 		}
 	}
-
-    /**
-     * @return array
-     *
-     * @since 3.3.0
-     */
     public function displayAjaxMollieOrderInfo()
     {
         header('Content-Type: application/json;charset=UTF-8');
@@ -81,7 +75,6 @@ class AdminMollieAjaxController extends ModuleAdminController
 
     /**
      * Used in orderGrid.tpl to update configuration values
-     * @return array
      * @throws PrestaShopException
      */
 	private function displayAjaxMollieMethodConfig()
@@ -91,6 +84,7 @@ class AdminMollieAjaxController extends ModuleAdminController
         $apiService = $this->module->getMollieContainer(ApiService::class);
         /** @var CountryService $countryService */
         $countryService = $this->module->getMollieContainer(CountryService::class);
+        $methodsForConfig = [];
         try {
             $methodsForConfig = $apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri());
         } catch (MolliePrefix\Mollie\Api\Exceptions\ApiException $e) {
