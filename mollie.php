@@ -60,7 +60,7 @@ class Mollie extends PaymentModule
 	const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
-	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjaxController';
+	const ADMIN_MOLLIE_AJAX_CONTROLLER = 'AdminMollieAjax';
 
 	/**
 	 * Mollie constructor.
@@ -211,14 +211,6 @@ class Mollie extends PaymentModule
 			exit(json_encode($this->{'displayAjax' . Tools::ucfirst(Tools::getValue('action'))}()));
 		}
 
-		/*
-		 * TODO
-		 * Fix forms
-		 * hide tabs if no api keys inserted (fruugo)
-		 * fix saving
-		 * fix display issues
-		 * fix issues with PS 1.6 display.
-		 */
 		if (\Mollie\Utility\EnvironmentUtility::getApiKey()) {
 			Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
 		}
@@ -325,7 +317,6 @@ class Mollie extends PaymentModule
 
 	/**
 	 * @throws PrestaShopException
-	 * @throws SmartyException
 	 */
 	public function hookDisplayBackOfficeHeader()
 	{
@@ -334,7 +325,7 @@ class Mollie extends PaymentModule
 		$html = '';
 		if ($this->context->controller->controller_name === 'AdminOrders') {
 			$this->context->smarty->assign([
-				'mollieProcessUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=mollie&ajax=1',
+				'mollieProcessUrl' => $this->context->link->getAdminLink(self::ADMIN_MOLLIE_AJAX_CONTROLLER, true),
 				'mollieCheckMethods' => Mollie\Utility\TimeUtility::getCurrentTimeStamp() > ((int) Configuration::get(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK) + Mollie\Config\Config::MOLLIE_METHODS_CHECK_INTERVAL),
 			]);
 			$html .= $this->display(__FILE__, 'views/templates/admin/ordergrid.tpl');
@@ -566,92 +557,6 @@ class Mollie extends PaymentModule
 		}
 
 		return '';
-	}
-
-	//TODO Pretty sure this is not used anywhere
-
-	/**
-	 * @return array
-	 *
-	 * @since 3.3.0
-	 */
-	public function displayAjaxMollieMethodConfig()
-	{
-		header('Content-Type: application/json;charset=UTF-8');
-		/** @var \Mollie\Service\ApiService $apiService */
-		$apiService = $this->getMollieContainer(\Mollie\Service\ApiService::class);
-		/** @var \Mollie\Service\CountryService $countryService */
-		$countryService = $this->getMollieContainer(\Mollie\Service\CountryService::class);
-		try {
-			$methodsForConfig = $apiService->getMethodsForConfig($this->api, $this->getPathUri());
-		} catch (MolliePrefix\Mollie\Api\Exceptions\ApiException $e) {
-			return [
-				'success' => false,
-				'methods' => null,
-				'message' => $e->getMessage(),
-			];
-		} catch (PrestaShopException $e) {
-			return [
-				'success' => false,
-				'methods' => null,
-				'message' => $e->getMessage(),
-			];
-		}
-		Configuration::updateValue(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK, Mollie\Utility\TimeUtility::getCurrentTimeStamp());
-		if (!is_array($methodsForConfig)) {
-			return [
-				'success' => false,
-				'methods' => null,
-				'message' => $this->l('No payment methods found'),
-			];
-		}
-
-		$dbMethods = @json_decode(Configuration::get(Mollie\Config\Config::METHODS_CONFIG), true);
-
-		// Auto update images and issuers
-		$shouldSave = false;
-		if (is_array($dbMethods)) {
-			foreach ($dbMethods as $index => &$dbMethod) {
-				$found = false;
-				foreach ($methodsForConfig as $methodForConfig) {
-					if ($dbMethod['id'] === $methodForConfig['id']) {
-						$found = true;
-						foreach (['issuers', 'image', 'name', 'available'] as $prop) {
-							if (isset($methodForConfig[$prop])) {
-								$dbMethod[$prop] = $methodForConfig[$prop];
-								$shouldSave = true;
-							}
-						}
-						break;
-					}
-				}
-				if (!$found) {
-					unset($dbMethods[$index]);
-					$shouldSave = true;
-				}
-			}
-		} else {
-			$shouldSave = true;
-			$dbMethods = [];
-			foreach ($methodsForConfig as $index => $method) {
-				$dbMethods[] = array_merge(
-					$method,
-					[
-						'position' => $index,
-					]
-				);
-			}
-		}
-
-		if ($shouldSave && !empty($dbMethods)) {
-			Configuration::updateValue(Mollie\Config\Config::METHODS_CONFIG, json_encode($dbMethods));
-		}
-
-		return [
-			'success' => true,
-			'methods' => $methodsForConfig,
-			'countries' => $countryService->getActiveCountriesList(),
-		];
 	}
 
 	//TODO Pretty sure this is not used anywhere

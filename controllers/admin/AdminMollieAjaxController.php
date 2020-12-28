@@ -48,10 +48,96 @@ class AdminMollieAjaxController extends ModuleAdminController
 			case 'refreshOrderTotalRestriction':
 				$this->refreshOrderTotalRestriction();
 				break;
+            case 'MollieMethodConfig':
+                $this->displayAjaxMollieMethodConfig();
+                break;
 			default:
 				break;
 		}
 	}
+
+    /**
+     * Used in orderGrid.tpl to update configuration values
+     * @return array
+     */
+	private function displayAjaxMollieMethodConfig()
+    {
+        header('Content-Type: application/json;charset=UTF-8');
+        /** @var \Mollie\Service\ApiService $apiService */
+        $apiService = $this->module->getMollieContainer(\Mollie\Service\ApiService::class);
+        /** @var \Mollie\Service\CountryService $countryService */
+        $countryService = $this->module->getMollieContainer(\Mollie\Service\CountryService::class);
+        try {
+            $methodsForConfig = $apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri());
+        } catch (MolliePrefix\Mollie\Api\Exceptions\ApiException $e) {
+            $this->ajaxDie(json_encode([
+                'success' => false,
+                'methods' => null,
+                'message' => $e->getMessage(),
+            ]));
+        } catch (PrestaShopException $e) {
+            $this->ajaxDie(json_encode([
+                'success' => false,
+                'methods' => null,
+                'message' => $e->getMessage(),
+            ]));
+        }
+        Configuration::updateValue(Mollie\Config\Config::MOLLIE_METHODS_LAST_CHECK, Mollie\Utility\TimeUtility::getCurrentTimeStamp());
+        if (!is_array($methodsForConfig)) {
+            $this->ajaxDie(json_encode([
+                'success' => false,
+                'methods' => null,
+                'message' => $this->l('No payment methods found'),
+            ]));
+        }
+
+        $dbMethods = @json_decode(Configuration::get(Mollie\Config\Config::METHODS_CONFIG), true);
+
+        // Auto update images and issuers
+        $shouldSave = false;
+        if (is_array($dbMethods)) {
+            foreach ($dbMethods as $index => &$dbMethod) {
+                $found = false;
+                foreach ($methodsForConfig as $methodForConfig) {
+                    if ($dbMethod['id'] === $methodForConfig['id']) {
+                        $found = true;
+                        foreach (['issuers', 'image', 'name', 'available'] as $prop) {
+                            if (isset($methodForConfig[$prop])) {
+                                $dbMethod[$prop] = $methodForConfig[$prop];
+                                $shouldSave = true;
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (!$found) {
+                    unset($dbMethods[$index]);
+                    $shouldSave = true;
+                }
+            }
+        } else {
+            $shouldSave = true;
+            $dbMethods = [];
+            foreach ($methodsForConfig as $index => $method) {
+                $dbMethods[] = array_merge(
+                    $method,
+                    [
+                        'position' => $index,
+                    ]
+                );
+            }
+        }
+
+        if ($shouldSave && !empty($dbMethods)) {
+            Configuration::updateValue(Mollie\Config\Config::METHODS_CONFIG, json_encode($dbMethods));
+        }
+
+        $this->ajaxDie(json_encode([
+            'success' => true,
+            'methods' => $methodsForConfig,
+            'countries' => $countryService->getActiveCountriesList(),
+        ]));
+    }
 
 	/**
 	 * @throws PrestaShopDatabaseException
