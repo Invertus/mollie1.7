@@ -66,7 +66,7 @@ class LegacyDebugSettingsType extends LegacyTranslatorAwareType implements TypeI
 					],
 				],
 			])
-			->add(Config::MOLLIE_DISPLAY_ERRORS, null, [
+			->add(Config::MOLLIE_DEBUG_LOG, null, [
 				'type' => 'select',
 				'label' => $this->module->l('Log level', 'FormBuilder'),
 				'desc' => TagsUtility::ppTags(
