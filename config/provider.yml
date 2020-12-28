@@ -44,3 +44,8 @@ services:
     arguments:
       - '@mollie'
       - '@Mollie\Service\ApiService'
+
+  Mollie\Provider\TabProvider:
+    class: Mollie\Provider\TabProvider
+    arguments:
+      - '@mollie'

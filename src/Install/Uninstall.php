@@ -15,6 +15,7 @@ namespace Mollie\Install;
 
 use Configuration;
 use Mollie\Config\Config;
+use Mollie\Provider\TabProvider;
 use Mollie\Repository\OrderStateRepository;
 use Tab;
 
@@ -35,13 +36,20 @@ class Uninstall implements UninstallerInterface
 	 */
 	private $orderStateRepository;
 
-	public function __construct(
+    /**
+     * @var TabProvider
+     */
+    private $tabProvider;
+
+    public function __construct(
 		UninstallerInterface $databaseUninstaller,
-		OrderStateRepository $orderStateRepository
+		OrderStateRepository $orderStateRepository,
+        TabProvider $tabProvider
 	) {
 		$this->databaseUninstaller = $databaseUninstaller;
 		$this->orderStateRepository = $orderStateRepository;
-	}
+        $this->tabProvider = $tabProvider;
+    }
 
 	public function uninstall()
 	{
@@ -113,24 +121,28 @@ class Uninstall implements UninstallerInterface
 		}
 	}
 
-	private function uninstallTabs()
-	{
-		$tabs = [
-			'AdminMollieAjax',
-			'AdminMollieModule',
-		];
+    /**
+     * @return bool
+     * @throws \PrestaShopDatabaseException
+     * @throws \PrestaShopException
+     */
+    private function uninstallTabs()
+    {
+        $tabs = $this->tabProvider->getModuleTabs();
 
-		foreach ($tabs as $tab) {
-			$idTab = Tab::getIdFromClassName($tab);
+        foreach ($tabs as $tab) {
+            $idTab = Tab::getIdFromClassName($tab['class_name']);
 
-			if (!$idTab) {
-				continue;
-			}
+            if (!$idTab) {
+                continue;
+            }
 
-			$tab = new Tab($idTab);
-			if (!$tab->delete()) {
-				return false;
-			}
-		}
-	}
+            $tab = new Tab($idTab);
+            if (!$tab->delete()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

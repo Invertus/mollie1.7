@@ -56,7 +56,8 @@ class Mollie extends PaymentModule
 
 	const SUPPORTED_PHP_VERSION = '5.6';
 
-	const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+    const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+	const ADMIN_MOLLIE_MODULE_CONTROLLER = 'AdminMollieModule';
 	const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
 	const ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER = 'AdminMollieAdvancedSettings';
@@ -694,29 +695,10 @@ class Mollie extends PaymentModule
 	 */
 	public function getTabs()
 	{
-		return [
-			[
-				'name' => $this->name,
-				'parent_class_name' => 'AdminParentModulesSf',
-				'class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-				'visible' => false,
-			],
-			[
-				'name' => $this->l('Credentials'),
-				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-				'class_name' => self::ADMIN_MOLLIE_CREDENTIALS_CONTROLLER,
-			],
-			[
-				'name' => $this->l('General Settings'),
-				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-				'class_name' => self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER,
-			],
-			[
-				'name' => $this->l('Advanced Settings'),
-				'parent_class_name' => self::ADMIN_MOLLIE_PARENT_CONTROLLER,
-				'class_name' => self::ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER,
-			],
-		];
+	    /** @var \Mollie\Provider\TabProvider $tabProvider */
+	    $tabProvider = $this->getMollieContainer(\Mollie\Provider\TabProvider::class);
+
+	    return $tabProvider->getModuleTabs();
 	}
 
 	public function hookActionAdminOrdersListingFieldsModifier($params)

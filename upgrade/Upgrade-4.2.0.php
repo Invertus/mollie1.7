@@ -66,5 +66,21 @@ function upgrade_module_4_2_0($module)
 		}
 	}
 
+    $dbQuery = new DbQuery();
+    $dbQuery->select('id_tab');
+    $dbQuery->from('tab');
+    $dbQuery->where("`module` = '" . pSQL($module->name) . "'");
+    $tabs = Db::getInstance()->executeS($dbQuery);
+    foreach ($tabs as $tab) {
+        $tabClass = new TabCore($tab['id_tab']);
+        $tabClass->delete();
+    }
+
+    /** @var \Mollie\Provider\TabProvider $tabProvider */
+    $tabProvider = $module->getMollieContainer(\Mollie\Provider\TabProvider::class);
+
+    $installer->installTabs($tabProvider->getSidebarTabs());
+    $installer->installTabs($tabProvider->getModuleTabs());
+
 	return true;
 }

@@ -28,11 +28,13 @@ services:
       - '@mollie'
       - '@Mollie\Service\OrderStateImageService'
       - '@Mollie\Install\DatabaseTableInstaller'
+      - '@Mollie\Provider\TabProvider'
 
   Mollie\Install\Uninstall:
     arguments:
       - '@Mollie\Install\DatabaseTableUninstaller'
       - '@Mollie\Repository\OrderStateRepository'
+      - '@Mollie\Provider\TabProvider'
 
   Mollie\Install\DatabaseTableInstaller:
 
