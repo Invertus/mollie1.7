@@ -372,7 +372,7 @@ class Mollie extends PaymentModule
 
 		$order = new Order($params['id_order']);
 		$this->context->smarty->assign([
-			'ajaxEndpoint' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=mollie&ajax=1&action=MollieOrderInfo',
+			'ajaxEndpoint' => $this->context->link->getAdminLink(self::ADMIN_MOLLIE_AJAX_CONTROLLER, true) . '&ajax=1&action=MollieOrderInfo',
 			'transactionId' => $transaction['transaction_id'],
 			'currencies' => $currencies,
 			'tracking' => $shipmentService->getShipmentInformation($order->reference),

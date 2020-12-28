@@ -17,7 +17,10 @@ use Mollie\Exception\OrderTotalRestrictionException;
 use Mollie\Handler\OrderTotal\OrderTotalUpdaterHandlerInterface;
 use Mollie\Provider\CreditCardLogoProvider;
 use Mollie\Repository\PaymentMethodRepository;
+use Mollie\Service\ApiService;
+use Mollie\Service\CountryService;
 use Mollie\Service\ExceptionService;
+use Mollie\Service\MollieOrderInfoService;
 use Mollie\Service\MolliePaymentMailService;
 use Mollie\Utility\TimeUtility;
 
@@ -51,22 +54,43 @@ class AdminMollieAjaxController extends ModuleAdminController
             case 'MollieMethodConfig':
                 $this->displayAjaxMollieMethodConfig();
                 break;
+            case 'MollieOrderInfo':
+                $this->displayAjaxMollieOrderInfo();
+                break;
 			default:
 				break;
 		}
 	}
 
     /**
+     * @return array
+     *
+     * @since 3.3.0
+     */
+    public function displayAjaxMollieOrderInfo()
+    {
+        header('Content-Type: application/json;charset=UTF-8');
+
+        /** @var MollieOrderInfoService $orderInfoService */
+        $orderInfoService = $this->module->getMollieContainer(MollieOrderInfoService::class);
+
+        $input = @json_decode(Tools::file_get_contents('php://input'), true);
+
+        $this->ajaxDie(json_encode($orderInfoService->displayMollieOrderInfo($input)));
+    }
+
+    /**
      * Used in orderGrid.tpl to update configuration values
      * @return array
+     * @throws PrestaShopException
      */
 	private function displayAjaxMollieMethodConfig()
     {
         header('Content-Type: application/json;charset=UTF-8');
-        /** @var \Mollie\Service\ApiService $apiService */
-        $apiService = $this->module->getMollieContainer(\Mollie\Service\ApiService::class);
-        /** @var \Mollie\Service\CountryService $countryService */
-        $countryService = $this->module->getMollieContainer(\Mollie\Service\CountryService::class);
+        /** @var ApiService $apiService */
+        $apiService = $this->module->getMollieContainer(ApiService::class);
+        /** @var CountryService $countryService */
+        $countryService = $this->module->getMollieContainer(CountryService::class);
         try {
             $methodsForConfig = $apiService->getMethodsForConfig($this->module->api, $this->module->getPathUri());
         } catch (MolliePrefix\Mollie\Api\Exceptions\ApiException $e) {
