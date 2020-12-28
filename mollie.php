@@ -199,18 +199,6 @@ class Mollie extends PaymentModule
 
 	public function getContent()
 	{
-		/* Unsure why anything should be allowed to call main controller through ajax. */
-		if (Tools::getValue('ajax')) {
-			header('Content-Type: application/json;charset=UTF-8');
-
-			if (!method_exists($this, 'displayAjax' . Tools::ucfirst(Tools::getValue('action')))) {
-				exit(json_encode([
-					'success' => false,
-				]));
-			}
-			exit(json_encode($this->{'displayAjax' . Tools::ucfirst(Tools::getValue('action'))}()));
-		}
-
 		if (\Mollie\Utility\EnvironmentUtility::getApiKey()) {
 			Tools::redirectAdmin($this->context->link->getAdminLink(self::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER));
 		}
