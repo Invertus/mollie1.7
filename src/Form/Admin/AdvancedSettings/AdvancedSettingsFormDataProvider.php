@@ -145,8 +145,15 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-		$success &= Configuration::updateValue(Config::MOLLIE_SEND_ORDER_CONFIRMATION, Tools::getValue(Config::MOLLIE_SEND_ORDER_CONFIRMATION));
-		$success &= Configuration::updateValue(Config::MOLLIE_SEND_NEW_ORDER, Tools::getValue(Config::MOLLIE_SEND_NEW_ORDER));
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_SEND_ORDER_CONFIRMATION,
+            Tools::getValue(Config::MOLLIE_SEND_ORDER_CONFIRMATION, Configuration::get(Config::MOLLIE_SEND_ORDER_CONFIRMATION))
+        );
+
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_SEND_NEW_ORDER,
+            Tools::getValue(Config::MOLLIE_SEND_NEW_ORDER, Configuration::get(Config::MOLLIE_SEND_NEW_ORDER))
+        );
 
 		return (bool) $success;
 	}
@@ -158,8 +165,15 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-		$success &= Configuration::updateValue(Config::MOLLIE_IMAGES, Tools::getValue(Config::MOLLIE_IMAGES));
-		$success &= Configuration::updateValue(Config::MOLLIE_CSS, Tools::getValue(Config::MOLLIE_CSS));
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_IMAGES,
+            Tools::getValue(Config::MOLLIE_IMAGES, Configuration::get(Config::MOLLIE_IMAGES))
+        );
+
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_CSS,
+            Tools::getValue(Config::MOLLIE_CSS, Configuration::get(Config::MOLLIE_CSS))
+        );
 
 		return (bool) $success;
 	}
@@ -171,17 +185,24 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-		$success &= Configuration::updateValue(
-			Config::MOLLIE_TRACKING_URLS,
-			json_encode(@json_decode(Tools::getValue(Config::MOLLIE_TRACKING_URLS)))
-		);
+        if (Tools::getValue(Config::MOLLIE_TRACKING_URLS, null) !== null) {
+            $success &= Configuration::updateValue(
+                Config::MOLLIE_TRACKING_URLS,
+                json_encode(@json_decode(Tools::getValue(Config::MOLLIE_TRACKING_URLS)))
+            );
+        }
 
-		$success &= Configuration::updateValue(
-			Config::MOLLIE_AUTO_SHIP_STATUSES,
-			json_encode($this->getStatusesValue(Config::MOLLIE_AUTO_SHIP_STATUSES))
-		);
+		if (Tools::getValue(Config::MOLLIE_AUTO_SHIP_STATUSES, null) !== null) {
+            $success &= Configuration::updateValue(
+                Config::MOLLIE_AUTO_SHIP_STATUSES,
+                json_encode($this->getStatusesValue(Config::MOLLIE_AUTO_SHIP_STATUSES))
+            );
+        }
 
-		$success &= Configuration::updateValue(Config::MOLLIE_AUTO_SHIP_MAIN, Tools::getValue(Config::MOLLIE_AUTO_SHIP_MAIN));
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_AUTO_SHIP_MAIN,
+            Tools::getValue(Config::MOLLIE_AUTO_SHIP_MAIN, Configuration::get(Config::MOLLIE_AUTO_SHIP_MAIN))
+        );
 
 		$carriers = Carrier::getCarriers(
 			Context::getContext()->language->id,
@@ -193,6 +214,14 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 		);
 
 		foreach ($carriers as $carrier) {
+            if (Tools::getValue(Config::MOLLIE_CARRIER_URL_SOURCE . $carrier['id_carrier'], null) === null) {
+                continue;
+            }
+
+            if (Tools::getValue(Config::MOLLIE_CARRIER_CUSTOM_URL . $carrier['id_carrier'], null) === null) {
+                continue;
+            }
+
 			$success &= $this->carrierInformationService->saveMolCarrierInfo(
 				$carrier['id_carrier'],
 				Tools::getValue(Config::MOLLIE_CARRIER_URL_SOURCE . $carrier['id_carrier']),
@@ -210,8 +239,15 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 	{
 		$success = true;
 
-		$success &= Configuration::updateValue(Config::MOLLIE_DISPLAY_ERRORS, Tools::getValue(Config::MOLLIE_DISPLAY_ERRORS));
-		$success &= Configuration::updateValue(Config::MOLLIE_DEBUG_LOG, Tools::getValue(Config::MOLLIE_DEBUG_LOG));
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_DISPLAY_ERRORS,
+            Tools::getValue(Config::MOLLIE_DISPLAY_ERRORS, Configuration::get(Config::MOLLIE_DISPLAY_ERRORS))
+        );
+
+        $success &= Configuration::updateValue(
+            Config::MOLLIE_DEBUG_LOG,
+            Tools::getValue(Config::MOLLIE_DEBUG_LOG, Configuration::get(Config::MOLLIE_DEBUG_LOG))
+        );
 
 		return (bool) $success;
 	}
@@ -225,6 +261,11 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 
 		foreach (array_keys(Config::getStatuses()) as $name) {
 			$name = Tools::strtoupper($name);
+
+            if (Tools::getValue("MOLLIE_STATUS_{$name}", null) === null) {
+                continue;
+            }
+
 			if (false === Tools::getValue("MOLLIE_STATUS_{$name}")) {
 				continue;
 			}
@@ -233,6 +274,10 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 			Config::getStatuses()[Tools::strtolower($name)] = $new;
 
 			if (PaymentStatus::STATUS_OPEN != $name) {
+                if (Tools::getValue("MOLLIE_MAIL_WHEN_{$name}", null) === null) {
+                    continue;
+                }
+
 				$success &= Configuration::updateValue(
 					"MOLLIE_MAIL_WHEN_{$name}",
 					Tools::getValue("MOLLIE_MAIL_WHEN_{$name}") ? true : false
@@ -263,6 +308,10 @@ class AdvancedSettingsFormDataProvider implements FormDataProviderInterface
 
 	private function handleKlarnaInvoiceStatus()
 	{
+        if (Tools::getValue(Config::MOLLIE_KLARNA_INVOICE_ON, null) === null) {
+            return;
+        }
+
 		$klarnaInvoiceStatus = Tools::getValue(Config::MOLLIE_KLARNA_INVOICE_ON);
 		Configuration::updateValue(Config::MOLLIE_KLARNA_INVOICE_ON, $klarnaInvoiceStatus);
 		if (Config::MOLLIE_STATUS_KLARNA_SHIPPED === $klarnaInvoiceStatus) {

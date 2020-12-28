@@ -7,6 +7,7 @@ use Mollie\Adapter\ConfigurationAdapter;
 use Mollie\Adapter\ToolsAdapter;
 use Mollie\Config\Config;
 use Mollie\Exception\FormSettingVerificationException;
+use Mollie\Form\Admin\Credentials\FormBuilder\LegacyCredentialsFormBuilder;
 
 class CanSettingFormBeSaved implements FormSettingVerification
 {
@@ -44,27 +45,14 @@ class CanSettingFormBeSaved implements FormSettingVerification
 	//TODO fix this
 	private function areCredentialsCorrect()
 	{
-		$mollieApiKey = $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY);
-		$mollieApiKeyTest = $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST);
-		$environment = (int) $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT);
+		$mollieApiKey = $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY, $this->configurationAdapter->get(Config::MOLLIE_API_KEY));
+		$mollieApiKeyTest = $this->toolsAdapter->getValue(Config::MOLLIE_API_KEY_TEST, $this->configurationAdapter->get(Config::MOLLIE_API_KEY_TEST));
+		$environment = (int) $this->toolsAdapter->getValue(Config::MOLLIE_ENVIRONMENT, $this->configurationAdapter->get(Config::MOLLIE_ENVIRONMENT));
 
-		//TODO providers for this to check if is correct.
-		if (empty($this->toolsAdapter->getValue('submitCredentialsConfiguration'))) {
-			$mollieApiKey = $this->configurationAdapter->get(Config::MOLLIE_API_KEY);
-			$mollieApiKeyTest = $this->configurationAdapter->get(Config::MOLLIE_API_KEY_TEST);
-
-			if (strpos($mollieApiKey, 'live') !== 0) {
-				return true;
-			}
-
-			if (strpos($mollieApiKeyTest, 'test') !== 0) {
-				return true;
-			}
-		}
-
-		$apiKey = Config::ENVIRONMENT_LIVE === (int) $environment ? $mollieApiKey : $mollieApiKeyTest;
-		$isApiKeyIncorrect = 0 !== strpos($apiKey, 'live') && 0 !== strpos($apiKey, 'test');
-
-		return !$isApiKeyIncorrect;
+        if ($environment === Config::ENVIRONMENT_LIVE) {
+            return strpos($mollieApiKey, 'live') === 0;
+        } else {
+            return strpos($mollieApiKeyTest, 'test') === 0;
+        }
 	}
 }
