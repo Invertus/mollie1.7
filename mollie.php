@@ -577,23 +577,6 @@ class Mollie extends PaymentModule
 	}
 
 	/**
-	 * @return array
-	 *
-	 * @since 3.3.0
-	 */
-	public function displayAjaxMollieOrderInfo()
-	{
-		header('Content-Type: application/json;charset=UTF-8');
-
-		/** @var \Mollie\Service\MollieOrderInfoService $orderInfoService */
-		$orderInfoService = $this->getMollieContainer(\Mollie\Service\MollieOrderInfoService::class);
-
-		$input = @json_decode(Tools::file_get_contents('php://input'), true);
-
-		return $orderInfoService->displayMollieOrderInfo($input);
-	}
-
-	/**
 	 * actionOrderStatusUpdate hook.
 	 *
 	 * @param array $params
