@@ -2,7 +2,7 @@
 
 namespace Mollie\Form\Admin\GeneralSettings\Type;
 
-use Attribute;
+use AttributeCore as Attribute;
 use Category;
 use Configuration;
 use Mollie;

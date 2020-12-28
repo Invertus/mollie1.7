@@ -10,6 +10,8 @@ parameters:
     - ../../src/Controller/AdminMollieEmailController
     - ../../src/Handler/PaymentOption
     - ../../src/Provider/PaymentOption
+    - ../../src/Form/Admin/*/*Form.php
+    - ../../src/Form/FormInterface.php
   ignoreErrors:
     - '#Access to an undefined property AdminController\|FrontController::\$warning.#'
     - '#Parameter \#4 \$templateVars of static method MailCore::send\(\) expects string, array<string, mixed> given.#'
@@ -26,5 +28,3 @@ parameters:
     - '#Call to method setModuleName\(\) on an unknown class PrestaShop\\PrestaShop\\Core\\Payment\\PaymentOption.#'
     - '#Call to method setLogo\(\) on an unknown class PrestaShop\\PrestaShop\\Core\\Payment\\PaymentOption.#'
     - '#Method AdminControllerCore::setMedia\(\) invoked with 1 parameter, 0 required.#'
-    - '#Return typehint of method Mollie\\Form\\Admin\\[a-zA-Z0-9\\_]\\[a-zA-Z0-9\\_]::createView\(\) has invalid type Symfony\\Component\\Form\\FormView.#'
-    - '#Call to an undefined static method Attribute::getAttributes\(\).#'
