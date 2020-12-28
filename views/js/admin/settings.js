@@ -14,6 +14,16 @@ $(document).ready(function () {
     handleRequiredProfileId();
     handlePaymentMethodDescriptions();
     handleApiKeyVisibility();
+    setFullWidth();
+
+    /** Removes form-input classes and sets full width */
+    function setFullWidth()
+    {
+        $('.js-full-width').each((key, item) => {
+            $(item).parent().removeClass('col-lg-9 col-lg-offset-3');
+            $(item).parent().addClass('col-lg-12');
+        });
+    }
 
     function disableCharactersInAmountInput() {
         $('.js-mollie-amount').keypress(function (event) {

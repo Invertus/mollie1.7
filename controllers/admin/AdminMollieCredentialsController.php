@@ -24,9 +24,9 @@ class AdminMollieCredentialsController extends AbstractAdminController
 {
 	public function __construct()
 	{
-		$this->bootstrap = true;
-		parent::__construct();
-	}
+        parent::__construct();
+        $this->bootstrap = true;
+    }
 
 	public function initContent()
 	{

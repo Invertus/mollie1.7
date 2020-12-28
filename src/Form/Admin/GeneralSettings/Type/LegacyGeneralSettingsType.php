@@ -107,15 +107,6 @@ class LegacyGeneralSettingsType extends LegacyTranslatorAwareType implements Typ
 				'form_group_class' => 'js-refresh-order-total',
 				'help' => $this->module->l('Will refresh all available payment method order total restriction values by all currencies', 'FormBuilder'),
 			])
-			->add(Config::MOLLIE_BUTTON_ORDER_TOTAL_REFRESH, null, [
-				'type' => 'mollie-button-update-order-total-restriction',
-				'label' => '',
-				'name' => Config::MOLLIE_BUTTON_ORDER_TOTAL_REFRESH,
-				'text' => $this->module->l('Refresh order total restriction values', 'FormBuilder'),
-				'class' => 'js-refresh-order-total-values',
-				'form_group_class' => 'js-refresh-order-total',
-				'help' => $this->module->l('Will refresh all available payment method order total restriction values by all currencies', 'FormBuilder'),
-			])
 			->add('InformationBottom', null, [
 				'type' => 'mollie-h2',
 				'name' => '',

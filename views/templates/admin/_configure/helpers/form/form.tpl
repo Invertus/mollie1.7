@@ -11,7 +11,7 @@
 
 {block name="input"}
     {if $input.type === 'mollie-support'}
-        <div data-tab-id="general_settings">
+        <div class="js-full-width" data-tab-id="general_settings">
             <div class="mm-block-mollie">
                 <a class="helpbutton" href="https://www.mollie.com/dashboard/settings/profiles" target="_blank"></a>
                 <p>
@@ -42,6 +42,7 @@
             </div>
         </div>
     {elseif $input.type === 'mollie-methods'}
+        <div class="js-full-width">
         <script type="text/javascript">
             (function () {
                 window.MollieModule = window.MollieModule || {ldelim}{rdelim};
@@ -342,6 +343,7 @@
         {foreach $webpack_urls as $webpack_url}
             <script type="text/javascript" src={$webpack_url|escape:'html':'UTF-8'}></script>
         {/foreach}
+        </div>
     {elseif $input.type === 'mollie-h1'}
         <br>
         <h1>{$input.title|escape:'html':'UTF-8'}</h1>
@@ -702,8 +704,7 @@
     {elseif $input.type === 'mollie-button'}
         <button type="button" class="btn btn-default {if isset($input.class)}{$input.class|escape:'html':'UTF-8'}{/if}">{$input.text|escape:'html':'UTF-8'}</button>
     {elseif $input.type === 'mollie-payment-empty-alert'}
-
-        <div data-tab-id="general_settings">
+        <div class="js-full-width" data-tab-id="general_settings">
             <div class="alert alert-info">
                 {l s='You haven\'t enabled any of the Mollie payments.' mod='mollie'}<br>
                 {l s='Please enable payments in your Mollie Account Dashboard.' mod='mollie'}&nbsp;<b><a href="https://www.mollie.com/dashboard/settings/profiles">{l s='Click here to configure.' mod='mollie'}</a></b>
