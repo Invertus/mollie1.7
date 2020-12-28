@@ -56,7 +56,7 @@ class Mollie extends PaymentModule
 
 	const SUPPORTED_PHP_VERSION = '5.6';
 
-    const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
+	const ADMIN_MOLLIE_PARENT_CONTROLLER = 'AdminMollieParent';
 	const ADMIN_MOLLIE_MODULE_CONTROLLER = 'AdminMollieModule';
 	const ADMIN_MOLLIE_CREDENTIALS_CONTROLLER = 'AdminMollieCredentials';
 	const ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER = 'AdminMollieGeneralSettings';
@@ -695,10 +695,10 @@ class Mollie extends PaymentModule
 	 */
 	public function getTabs()
 	{
-	    /** @var \Mollie\Provider\TabProvider $tabProvider */
-	    $tabProvider = $this->getMollieContainer(\Mollie\Provider\TabProvider::class);
+		/** @var \Mollie\Provider\TabProvider $tabProvider */
+		$tabProvider = $this->getMollieContainer(\Mollie\Provider\TabProvider::class);
 
-	    return $tabProvider->getModuleTabs();
+		return $tabProvider->getModuleTabs();
 	}
 
 	public function hookActionAdminOrdersListingFieldsModifier($params)

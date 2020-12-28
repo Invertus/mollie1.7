@@ -36,20 +36,20 @@ class Uninstall implements UninstallerInterface
 	 */
 	private $orderStateRepository;
 
-    /**
-     * @var TabProvider
-     */
-    private $tabProvider;
+	/**
+	 * @var TabProvider
+	 */
+	private $tabProvider;
 
-    public function __construct(
+	public function __construct(
 		UninstallerInterface $databaseUninstaller,
 		OrderStateRepository $orderStateRepository,
-        TabProvider $tabProvider
+		TabProvider $tabProvider
 	) {
 		$this->databaseUninstaller = $databaseUninstaller;
 		$this->orderStateRepository = $orderStateRepository;
-        $this->tabProvider = $tabProvider;
-    }
+		$this->tabProvider = $tabProvider;
+	}
 
 	public function uninstall()
 	{
@@ -121,28 +121,29 @@ class Uninstall implements UninstallerInterface
 		}
 	}
 
-    /**
-     * @return bool
-     * @throws \PrestaShopDatabaseException
-     * @throws \PrestaShopException
-     */
-    private function uninstallTabs()
-    {
-        $tabs = $this->tabProvider->getModuleTabs();
+	/**
+	 * @return bool
+	 *
+	 * @throws \PrestaShopDatabaseException
+	 * @throws \PrestaShopException
+	 */
+	private function uninstallTabs()
+	{
+		$tabs = $this->tabProvider->getModuleTabs();
 
-        foreach ($tabs as $tab) {
-            $idTab = Tab::getIdFromClassName($tab['class_name']);
+		foreach ($tabs as $tab) {
+			$idTab = Tab::getIdFromClassName($tab['class_name']);
 
-            if (!$idTab) {
-                continue;
-            }
+			if (!$idTab) {
+				continue;
+			}
 
-            $tab = new Tab($idTab);
-            if (!$tab->delete()) {
-                return false;
-            }
-        }
+			$tab = new Tab($idTab);
+			if (!$tab->delete()) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

@@ -56,103 +56,103 @@ class Installer implements InstallerInterface
 	 */
 	private $databaseTableInstaller;
 
-    /**
-     * @var TabProvider
-     */
-    private $tabProvider;
+	/**
+	 * @var TabProvider
+	 */
+	private $tabProvider;
 
-    public function __construct(
+	public function __construct(
 		Mollie $module,
 		OrderStateImageService $imageService,
 		InstallerInterface $databaseTableInstaller,
-        TabProvider $tabProvider
+		TabProvider $tabProvider
 	) {
 		$this->module = $module;
 		$this->imageService = $imageService;
 		$this->databaseTableInstaller = $databaseTableInstaller;
-        $this->tabProvider = $tabProvider;
-    }
+		$this->tabProvider = $tabProvider;
+	}
 
 	public function install()
-    {
-        foreach (self::getHooks() as $hook) {
-            if (version_compare(_PS_VERSION_, '1.7.0.0', '>=') && 'displayPaymentEU' === $hook) {
-                continue;
-            }
+	{
+		foreach (self::getHooks() as $hook) {
+			if (version_compare(_PS_VERSION_, '1.7.0.0', '>=') && 'displayPaymentEU' === $hook) {
+				continue;
+			}
 
-            $this->module->registerHook($hook);
-        }
+			$this->module->registerHook($hook);
+		}
 
-        try {
-            $this->createMollieStatuses();
-        } catch (Exception $e) {
-            $this->errors[] = $this->module->l('Unable to install Mollie statuses', self::FILE_NAME);
+		try {
+			$this->createMollieStatuses();
+		} catch (Exception $e) {
+			$this->errors[] = $this->module->l('Unable to install Mollie statuses', self::FILE_NAME);
 
-            return false;
-        }
+			return false;
+		}
 
-        try {
-            $this->initConfig();
-        } catch (Exception $e) {
-            $this->errors[] = $this->module->l('Unable to install config', self::FILE_NAME);
+		try {
+			$this->initConfig();
+		} catch (Exception $e) {
+			$this->errors[] = $this->module->l('Unable to install config', self::FILE_NAME);
 
-            return false;
-        }
-        try {
-            $this->setDefaultCarrierStatuses();
-        } catch (Exception $e) {
-            $this->errors[] = $this->module->l('Unable to install default carrier statuses', self::FILE_NAME);
+			return false;
+		}
+		try {
+			$this->setDefaultCarrierStatuses();
+		} catch (Exception $e) {
+			$this->errors[] = $this->module->l('Unable to install default carrier statuses', self::FILE_NAME);
 
-            return false;
-        }
+			return false;
+		}
 
-        try {
-            $this->installTabs($this->tabProvider->getSidebarTabs());
+		try {
+			$this->installTabs($this->tabProvider->getSidebarTabs());
 
-            if (!Config::isVersion17()) {
-                $tabs = $this->tabProvider->getModuleTabs();
-                $this->installTabs($tabs);
-            }
-        } catch (Exception $e) {
-            $this->errors[] = $this->module->l('Unable to install new controllers', self::FILE_NAME);
+			if (!Config::isVersion17()) {
+				$tabs = $this->tabProvider->getModuleTabs();
+				$this->installTabs($tabs);
+			}
+		} catch (Exception $e) {
+			$this->errors[] = $this->module->l('Unable to install new controllers', self::FILE_NAME);
 
-            return false;
-        }
+			return false;
+		}
 
-        try {
-            $this->installVoucherFeatures();
-        } catch (Exception $e) {
-            $this->errors[] = $this->module->l('Unable to install voucher attributes', self::FILE_NAME);
+		try {
+			$this->installVoucherFeatures();
+		} catch (Exception $e) {
+			$this->errors[] = $this->module->l('Unable to install voucher attributes', self::FILE_NAME);
 
-            return false;
-        }
+			return false;
+		}
 
-        $this->copyEmailTemplates();
+		$this->copyEmailTemplates();
 
-        return $this->databaseTableInstaller->install();
-    }
+		return $this->databaseTableInstaller->install();
+	}
 
-    /**
-     * @param array $tabs
-     *
-     * @return bool
-     */
+	/**
+	 * @param array $tabs
+	 *
+	 * @return bool
+	 */
 	public function installTabs($tabs)
-    {
-        foreach ($tabs as $tab) {
-            if (Tab::getIdFromClassName($tab['class_name'])) {
-                continue;
-            }
-            $active = isset($tab['active']) ? $tab['active'] : true;
-            $iconName = isset($tab['icon']) ? $tab['icon'] : '';
+	{
+		foreach ($tabs as $tab) {
+			if (Tab::getIdFromClassName($tab['class_name'])) {
+				continue;
+			}
+			$active = isset($tab['active']) ? $tab['active'] : true;
+			$iconName = isset($tab['icon']) ? $tab['icon'] : '';
 
-            if (!$this->installTab($tab['class_name'], $tab['parent_class_name'], $tab['name'], $active, $iconName)) {
-                return false;
-            }
-        }
+			if (!$this->installTab($tab['class_name'], $tab['parent_class_name'], $tab['name'], $active, $iconName)) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
 	public function getErrors()
 	{
