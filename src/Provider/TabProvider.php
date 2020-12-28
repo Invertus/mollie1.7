@@ -28,7 +28,15 @@ class TabProvider
 				'class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
 				'visible' => false,
 				'active' => false,
+                'module_tab' => true,
 			],
+            [
+                'name' => $this->module->l('AdminMollieAjax'),
+                'parent_class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
+                'class_name' => Mollie::ADMIN_MOLLIE_AJAX_CONTROLLER,
+                'active' => false,
+                'module_tab' => true,
+            ],
 			[
 				'name' => $this->module->l('Credentials'),
 				'parent_class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
@@ -38,11 +46,13 @@ class TabProvider
 				'name' => $this->module->l('General Settings'),
 				'parent_class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
 				'class_name' => Mollie::ADMIN_MOLLIE_GENERAL_SETTINGS_CONTROLLER,
+                'module_tab' => true,
 			],
 			[
 				'name' => $this->module->l('Advanced Settings'),
 				'parent_class_name' => Mollie::ADMIN_MOLLIE_PARENT_CONTROLLER,
 				'class_name' => Mollie::ADMIN_MOLLIE_ADVANCED_SETTINGS_CONTROLLER,
+                'module_tab' => true,
 			],
 		];
 	}
