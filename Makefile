@@ -10,7 +10,7 @@ build-vendor:
 	find vendor/sentry/sentry/lib/Raven/Client.php -type f -exec sed -i 's/Raven_Processor_SanitizeDataProcessor/MolliePrefix\\\\Raven_Processor_SanitizeDataProcessor/g' {} \;
 	find vendor/sentry/sentry/lib/Raven/Client.php -type f -exec sed -i 's/MolliePrefix\\\\Y-m-d\\\\TH:i:s\\\\Z/Y-m-d\\TH:i:s\\Z/g' {} \;
 	cat deploy/replace/random.php > vendor/paragonie/random_compat/lib/random.php
-    cat deploy/replace/random_bytes_mcrypt.php > vendor/paragonie/random_compat/lib/random_bytes_mcrypt.php
+	cat deploy/replace/random_bytes_mcrypt.php > vendor/paragonie/random_compat/lib/random_bytes_mcrypt.php
 
 bvn: build-vendor-no-dev
 build-vendor-no-dev:
@@ -25,7 +25,7 @@ build-vendor-no-dev:
 	find vendor/sentry/sentry/lib/Raven/Client.php -type f -exec sed -i 's/Raven_Processor_SanitizeDataProcessor/MolliePrefix\\\\Raven_Processor_SanitizeDataProcessor/g' {} \;
 	find vendor/sentry/sentry/lib/Raven/Client.php -type f -exec sed -i 's/MolliePrefix\\\\Y-m-d\\\\TH:i:s\\\\Z/Y-m-d\\TH:i:s\\Z/g' {} \;
 	cat deploy/replace/random.php > vendor/paragonie/random_compat/lib/random.php
-    cat deploy/replace/random_bytes_mcrypt.php > vendor/paragonie/random_compat/lib/random_bytes_mcrypt.php
+	cat deploy/replace/random_bytes_mcrypt.php > vendor/paragonie/random_compat/lib/random_bytes_mcrypt.php
 
 fl: fix-lint
 fix-lint:
