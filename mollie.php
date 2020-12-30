@@ -133,8 +133,7 @@ class Mollie extends PaymentModule
 
 	private function compile()
 	{
-		if (!class_exists('MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder') ||
-			!class_exists('MolliePrefix\Segment')) {
+		if (!class_exists('MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder')) {
 			// If you wonder why this happens then this problem occurs in rare case when upgrading mollie from old versions
 			// where dependency injection container was without "MolliePrefix".
 			// On Upgrade PrestaShop cached previous vendor thus causing missing class issues - the only way is to convince
