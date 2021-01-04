@@ -1,8 +1,8 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Filter;
+namespace DeepCopy\Filter;
 
-class KeepFilter implements \MolliePrefix\DeepCopy\Filter\Filter
+class KeepFilter implements Filter
 {
     /**
      * Keeps the value of the object property.

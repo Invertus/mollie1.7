@@ -1,11 +1,11 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\TypeFilter;
+namespace DeepCopy\TypeFilter;
 
 /**
  * @final
  */
-class ShallowCopyFilter implements \MolliePrefix\DeepCopy\TypeFilter\TypeFilter
+class ShallowCopyFilter implements TypeFilter
 {
     /**
      * {@inheritdoc}

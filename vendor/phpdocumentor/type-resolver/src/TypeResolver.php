@@ -1,42 +1,115 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of phpDocumentor.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @copyright 2010-2015 Mike van Riel<mike@phpdoc.org>
- * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      http://phpdoc.org
  */
-namespace MolliePrefix\phpDocumentor\Reflection;
 
-use MolliePrefix\phpDocumentor\Reflection\Types\Array_;
-use MolliePrefix\phpDocumentor\Reflection\Types\Compound;
-use MolliePrefix\phpDocumentor\Reflection\Types\Context;
-use MolliePrefix\phpDocumentor\Reflection\Types\Iterable_;
-use MolliePrefix\phpDocumentor\Reflection\Types\Nullable;
-use MolliePrefix\phpDocumentor\Reflection\Types\Object_;
+namespace phpDocumentor\Reflection;
+
+use ArrayIterator;
+use InvalidArgumentException;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\ClassString;
+use phpDocumentor\Reflection\Types\Collection;
+use phpDocumentor\Reflection\Types\Compound;
+use phpDocumentor\Reflection\Types\Context;
+use phpDocumentor\Reflection\Types\Expression;
+use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Types\Intersection;
+use phpDocumentor\Reflection\Types\Iterable_;
+use phpDocumentor\Reflection\Types\Nullable;
+use phpDocumentor\Reflection\Types\Object_;
+use phpDocumentor\Reflection\Types\String_;
+use RuntimeException;
+use function array_key_exists;
+use function array_pop;
+use function array_values;
+use function class_exists;
+use function class_implements;
+use function count;
+use function end;
+use function in_array;
+use function key;
+use function preg_split;
+use function strpos;
+use function strtolower;
+use function trim;
+use const PREG_SPLIT_DELIM_CAPTURE;
+use const PREG_SPLIT_NO_EMPTY;
+
 final class TypeResolver
 {
     /** @var string Definition of the ARRAY operator for types */
-    const OPERATOR_ARRAY = '[]';
+    private const OPERATOR_ARRAY = '[]';
+
     /** @var string Definition of the NAMESPACE operator in PHP */
-    const OPERATOR_NAMESPACE = '\\';
-    /** @var string[] List of recognized keywords and unto which Value Object they map */
-    private $keywords = array('string' => \MolliePrefix\phpDocumentor\Reflection\Types\String_::class, 'int' => \MolliePrefix\phpDocumentor\Reflection\Types\Integer::class, 'integer' => \MolliePrefix\phpDocumentor\Reflection\Types\Integer::class, 'bool' => \MolliePrefix\phpDocumentor\Reflection\Types\Boolean::class, 'boolean' => \MolliePrefix\phpDocumentor\Reflection\Types\Boolean::class, 'float' => \MolliePrefix\phpDocumentor\Reflection\Types\Float_::class, 'double' => \MolliePrefix\phpDocumentor\Reflection\Types\Float_::class, 'object' => \MolliePrefix\phpDocumentor\Reflection\Types\Object_::class, 'mixed' => \MolliePrefix\phpDocumentor\Reflection\Types\Mixed_::class, 'array' => \MolliePrefix\phpDocumentor\Reflection\Types\Array_::class, 'resource' => \MolliePrefix\phpDocumentor\Reflection\Types\Resource_::class, 'void' => \MolliePrefix\phpDocumentor\Reflection\Types\Void_::class, 'null' => \MolliePrefix\phpDocumentor\Reflection\Types\Null_::class, 'scalar' => \MolliePrefix\phpDocumentor\Reflection\Types\Scalar::class, 'callback' => \MolliePrefix\phpDocumentor\Reflection\Types\Callable_::class, 'callable' => \MolliePrefix\phpDocumentor\Reflection\Types\Callable_::class, 'false' => \MolliePrefix\phpDocumentor\Reflection\Types\Boolean::class, 'true' => \MolliePrefix\phpDocumentor\Reflection\Types\Boolean::class, 'self' => \MolliePrefix\phpDocumentor\Reflection\Types\Self_::class, '$this' => \MolliePrefix\phpDocumentor\Reflection\Types\This::class, 'static' => \MolliePrefix\phpDocumentor\Reflection\Types\Static_::class, 'parent' => \MolliePrefix\phpDocumentor\Reflection\Types\Parent_::class, 'iterable' => \MolliePrefix\phpDocumentor\Reflection\Types\Iterable_::class);
-    /** @var FqsenResolver */
+    private const OPERATOR_NAMESPACE = '\\';
+
+    /** @var int the iterator parser is inside a compound context */
+    private const PARSER_IN_COMPOUND = 0;
+
+    /** @var int the iterator parser is inside a nullable expression context */
+    private const PARSER_IN_NULLABLE = 1;
+
+    /** @var int the iterator parser is inside an array expression context */
+    private const PARSER_IN_ARRAY_EXPRESSION = 2;
+
+    /** @var int the iterator parser is inside a collection expression context */
+    private const PARSER_IN_COLLECTION_EXPRESSION = 3;
+
+    /**
+     * @var array<string, string> List of recognized keywords and unto which Value Object they map
+     * @psalm-var array<string, class-string<Type>>
+     */
+    private $keywords = [
+        'string' => Types\String_::class,
+        'class-string' => Types\ClassString::class,
+        'int' => Types\Integer::class,
+        'integer' => Types\Integer::class,
+        'bool' => Types\Boolean::class,
+        'boolean' => Types\Boolean::class,
+        'real' => Types\Float_::class,
+        'float' => Types\Float_::class,
+        'double' => Types\Float_::class,
+        'object' => Object_::class,
+        'mixed' => Types\Mixed_::class,
+        'array' => Array_::class,
+        'resource' => Types\Resource_::class,
+        'void' => Types\Void_::class,
+        'null' => Types\Null_::class,
+        'scalar' => Types\Scalar::class,
+        'callback' => Types\Callable_::class,
+        'callable' => Types\Callable_::class,
+        'false' => PseudoTypes\False_::class,
+        'true' => PseudoTypes\True_::class,
+        'self' => Types\Self_::class,
+        '$this' => Types\This::class,
+        'static' => Types\Static_::class,
+        'parent' => Types\Parent_::class,
+        'iterable' => Iterable_::class,
+    ];
+
+    /**
+     * @var FqsenResolver
+     * @psalm-readonly
+     */
     private $fqsenResolver;
+
     /**
      * Initializes this TypeResolver with the means to create and resolve Fqsen objects.
-     *
-     * @param FqsenResolver $fqsenResolver
      */
-    public function __construct(\MolliePrefix\phpDocumentor\Reflection\FqsenResolver $fqsenResolver = null)
+    public function __construct(?FqsenResolver $fqsenResolver = null)
     {
-        $this->fqsenResolver = $fqsenResolver ?: new \MolliePrefix\phpDocumentor\Reflection\FqsenResolver();
+        $this->fqsenResolver = $fqsenResolver ?: new FqsenResolver();
     }
+
     /**
      * Analyzes the given type and returns the FQCN variant.
      *
@@ -47,193 +120,424 @@ final class TypeResolver
      * This method only works as expected if the namespace and aliases are set;
      * no dynamic reflection is being performed here.
      *
-     * @param string $type     The relative or absolute type.
-     * @param Context $context
-     *
-     * @uses Context::getNamespace()        to determine with what to prefix the type name.
      * @uses Context::getNamespaceAliases() to check whether the first part of the relative type name should not be
-     *     replaced with another namespace.
+     * replaced with another namespace.
+     * @uses Context::getNamespace()        to determine with what to prefix the type name.
      *
-     * @return Type|null
+     * @param string $type The relative or absolute type.
      */
-    public function resolve($type, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context = null)
+    public function resolve(string $type, ?Context $context = null) : Type
     {
-        if (!\is_string($type)) {
-            throw new \InvalidArgumentException('Attempted to resolve type but it appeared not to be a string, received: ' . \var_export($type, \true));
-        }
-        $type = \trim($type);
+        $type = trim($type);
         if (!$type) {
-            throw new \InvalidArgumentException('Attempted to resolve "' . $type . '" but it appears to be empty');
+            throw new InvalidArgumentException('Attempted to resolve "' . $type . '" but it appears to be empty');
         }
+
         if ($context === null) {
-            $context = new \MolliePrefix\phpDocumentor\Reflection\Types\Context('');
+            $context = new Context('');
         }
-        switch (\true) {
-            case $this->isNullableType($type):
-                return $this->resolveNullableType($type, $context);
+
+        // split the type string into tokens `|`, `?`, `<`, `>`, `,`, `(`, `)`, `[]`, '<', '>' and type names
+        $tokens = preg_split(
+            '/(\\||\\?|<|>|&|, ?|\\(|\\)|\\[\\]+)/',
+            $type,
+            -1,
+            PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
+        );
+
+        if ($tokens === false) {
+            throw new InvalidArgumentException('Unable to split the type string "' . $type . '" into tokens');
+        }
+
+        /** @var ArrayIterator<int, string|null> $tokenIterator */
+        $tokenIterator = new ArrayIterator($tokens);
+
+        return $this->parseTypes($tokenIterator, $context, self::PARSER_IN_COMPOUND);
+    }
+
+    /**
+     * Analyse each tokens and creates types
+     *
+     * @param ArrayIterator<int, string|null> $tokens        the iterator on tokens
+     * @param int                        $parserContext on of self::PARSER_* constants, indicating
+     * the context where we are in the parsing
+     */
+    private function parseTypes(ArrayIterator $tokens, Context $context, int $parserContext) : Type
+    {
+        $types = [];
+        $token = '';
+        $compoundToken = '|';
+        while ($tokens->valid()) {
+            $token = $tokens->current();
+            if ($token === null) {
+                throw new RuntimeException(
+                    'Unexpected nullable character'
+                );
+            }
+
+            if ($token === '|' || $token === '&') {
+                if (count($types) === 0) {
+                    throw new RuntimeException(
+                        'A type is missing before a type separator'
+                    );
+                }
+
+                if (!in_array($parserContext, [
+                    self::PARSER_IN_COMPOUND,
+                    self::PARSER_IN_ARRAY_EXPRESSION,
+                    self::PARSER_IN_COLLECTION_EXPRESSION,
+                ], true)
+                ) {
+                    throw new RuntimeException(
+                        'Unexpected type separator'
+                    );
+                }
+
+                $compoundToken = $token;
+                $tokens->next();
+            } elseif ($token === '?') {
+                if (!in_array($parserContext, [
+                    self::PARSER_IN_COMPOUND,
+                    self::PARSER_IN_ARRAY_EXPRESSION,
+                    self::PARSER_IN_COLLECTION_EXPRESSION,
+                ], true)
+                ) {
+                    throw new RuntimeException(
+                        'Unexpected nullable character'
+                    );
+                }
+
+                $tokens->next();
+                $type    = $this->parseTypes($tokens, $context, self::PARSER_IN_NULLABLE);
+                $types[] = new Nullable($type);
+            } elseif ($token === '(') {
+                $tokens->next();
+                $type = $this->parseTypes($tokens, $context, self::PARSER_IN_ARRAY_EXPRESSION);
+
+                $token = $tokens->current();
+                if ($token === null) { // Someone did not properly close their array expression ..
+                    break;
+                }
+
+                $tokens->next();
+
+                $resolvedType = new Expression($type);
+
+                $types[] = $resolvedType;
+            } elseif ($parserContext === self::PARSER_IN_ARRAY_EXPRESSION && $token[0] === ')') {
+                break;
+            } elseif ($token === '<') {
+                if (count($types) === 0) {
+                    throw new RuntimeException(
+                        'Unexpected collection operator "<", class name is missing'
+                    );
+                }
+
+                $classType = array_pop($types);
+                if ($classType !== null) {
+                    if ((string) $classType === 'class-string') {
+                        $types[] = $this->resolveClassString($tokens, $context);
+                    } else {
+                        $types[] = $this->resolveCollection($tokens, $classType, $context);
+                    }
+                }
+
+                $tokens->next();
+            } elseif ($parserContext === self::PARSER_IN_COLLECTION_EXPRESSION
+                && ($token === '>' || trim($token) === ',')
+            ) {
+                break;
+            } elseif ($token === self::OPERATOR_ARRAY) {
+                end($types);
+                $last = key($types);
+                $lastItem = $types[$last];
+                if ($lastItem instanceof Expression) {
+                    $lastItem = $lastItem->getValueType();
+                }
+
+                $types[$last] = new Array_($lastItem);
+
+                $tokens->next();
+            } else {
+                $type = $this->resolveSingleType($token, $context);
+                $tokens->next();
+                if ($parserContext === self::PARSER_IN_NULLABLE) {
+                    return $type;
+                }
+
+                $types[] = $type;
+            }
+        }
+
+        if ($token === '|' || $token === '&') {
+            throw new RuntimeException(
+                'A type is missing after a type separator'
+            );
+        }
+
+        if (count($types) === 0) {
+            if ($parserContext === self::PARSER_IN_NULLABLE) {
+                throw new RuntimeException(
+                    'A type is missing after a nullable character'
+                );
+            }
+
+            if ($parserContext === self::PARSER_IN_ARRAY_EXPRESSION) {
+                throw new RuntimeException(
+                    'A type is missing in an array expression'
+                );
+            }
+
+            if ($parserContext === self::PARSER_IN_COLLECTION_EXPRESSION) {
+                throw new RuntimeException(
+                    'A type is missing in a collection expression'
+                );
+            }
+        } elseif (count($types) === 1) {
+            return $types[0];
+        }
+
+        if ($compoundToken === '|') {
+            return new Compound(array_values($types));
+        }
+
+        return new Intersection(array_values($types));
+    }
+
+    /**
+     * resolve the given type into a type object
+     *
+     * @param string $type the type string, representing a single type
+     *
+     * @return Type|Array_|Object_
+     *
+     * @psalm-mutation-free
+     */
+    private function resolveSingleType(string $type, Context $context) : object
+    {
+        switch (true) {
             case $this->isKeyword($type):
                 return $this->resolveKeyword($type);
-            case $this->isCompoundType($type):
-                return $this->resolveCompoundType($type, $context);
-            case $this->isTypedArray($type):
-                return $this->resolveTypedArray($type, $context);
             case $this->isFqsen($type):
                 return $this->resolveTypedObject($type);
             case $this->isPartialStructuralElementName($type):
                 return $this->resolveTypedObject($type, $context);
+
             // @codeCoverageIgnoreStart
             default:
                 // I haven't got the foggiest how the logic would come here but added this as a defense.
-                throw new \RuntimeException('Unable to resolve type "' . $type . '", there is no known method to resolve it');
+                throw new RuntimeException(
+                    'Unable to resolve type "' . $type . '", there is no known method to resolve it'
+                );
         }
+
         // @codeCoverageIgnoreEnd
     }
+
     /**
      * Adds a keyword to the list of Keywords and associates it with a specific Value Object.
      *
-     * @param string $keyword
-     * @param string $typeClassName
-     *
-     * @return void
+     * @psalm-param class-string<Type> $typeClassName
      */
-    public function addKeyword($keyword, $typeClassName)
+    public function addKeyword(string $keyword, string $typeClassName) : void
     {
-        if (!\class_exists($typeClassName)) {
-            throw new \InvalidArgumentException('The Value Object that needs to be created with a keyword "' . $keyword . '" must be an existing class' . ' but we could not find the class ' . $typeClassName);
+        if (!class_exists($typeClassName)) {
+            throw new InvalidArgumentException(
+                'The Value Object that needs to be created with a keyword "' . $keyword . '" must be an existing class'
+                . ' but we could not find the class ' . $typeClassName
+            );
         }
-        if (!\in_array(\MolliePrefix\phpDocumentor\Reflection\Type::class, \class_implements($typeClassName))) {
-            throw new \InvalidArgumentException('The class "' . $typeClassName . '" must implement the interface "phpDocumentor\\Reflection\\Type"');
+
+        if (!in_array(Type::class, class_implements($typeClassName), true)) {
+            throw new InvalidArgumentException(
+                'The class "' . $typeClassName . '" must implement the interface "phpDocumentor\Reflection\Type"'
+            );
         }
+
         $this->keywords[$keyword] = $typeClassName;
     }
-    /**
-     * Detects whether the given type represents an array.
-     *
-     * @param string $type A relative or absolute type as defined in the phpDocumentor documentation.
-     *
-     * @return bool
-     */
-    private function isTypedArray($type)
-    {
-        return \substr($type, -2) === self::OPERATOR_ARRAY;
-    }
+
     /**
      * Detects whether the given type represents a PHPDoc keyword.
      *
      * @param string $type A relative or absolute type as defined in the phpDocumentor documentation.
      *
-     * @return bool
+     * @psalm-mutation-free
      */
-    private function isKeyword($type)
+    private function isKeyword(string $type) : bool
     {
-        return \in_array(\strtolower($type), \array_keys($this->keywords), \true);
+        return array_key_exists(strtolower($type), $this->keywords);
     }
+
     /**
      * Detects whether the given type represents a relative structural element name.
      *
      * @param string $type A relative or absolute type as defined in the phpDocumentor documentation.
      *
-     * @return bool
+     * @psalm-mutation-free
      */
-    private function isPartialStructuralElementName($type)
+    private function isPartialStructuralElementName(string $type) : bool
     {
-        return $type[0] !== self::OPERATOR_NAMESPACE && !$this->isKeyword($type);
+        return ($type[0] !== self::OPERATOR_NAMESPACE) && !$this->isKeyword($type);
     }
+
     /**
      * Tests whether the given type is a Fully Qualified Structural Element Name.
      *
-     * @param string $type
-     *
-     * @return bool
+     * @psalm-mutation-free
      */
-    private function isFqsen($type)
+    private function isFqsen(string $type) : bool
     {
-        return \strpos($type, self::OPERATOR_NAMESPACE) === 0;
+        return strpos($type, self::OPERATOR_NAMESPACE) === 0;
     }
-    /**
-     * Tests whether the given type is a compound type (i.e. `string|int`).
-     *
-     * @param string $type
-     *
-     * @return bool
-     */
-    private function isCompoundType($type)
-    {
-        return \strpos($type, '|') !== \false;
-    }
-    /**
-     * Test whether the given type is a nullable type (i.e. `?string`)
-     *
-     * @param string $type
-     *
-     * @return bool
-     */
-    private function isNullableType($type)
-    {
-        return $type[0] === '?';
-    }
-    /**
-     * Resolves the given typed array string (i.e. `string[]`) into an Array object with the right types set.
-     *
-     * @param string $type
-     * @param Context $context
-     *
-     * @return Array_
-     */
-    private function resolveTypedArray($type, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context)
-    {
-        return new \MolliePrefix\phpDocumentor\Reflection\Types\Array_($this->resolve(\substr($type, 0, -2), $context));
-    }
+
     /**
      * Resolves the given keyword (such as `string`) into a Type object representing that keyword.
      *
-     * @param string $type
-     *
-     * @return Type
+     * @psalm-mutation-free
      */
-    private function resolveKeyword($type)
+    private function resolveKeyword(string $type) : Type
     {
-        $className = $this->keywords[\strtolower($type)];
+        $className = $this->keywords[strtolower($type)];
+
         return new $className();
     }
+
     /**
      * Resolves the given FQSEN string into an FQSEN object.
      *
-     * @param string $type
-     * @param Context|null $context
-     *
-     * @return Object_
+     * @psalm-mutation-free
      */
-    private function resolveTypedObject($type, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context = null)
+    private function resolveTypedObject(string $type, ?Context $context = null) : Object_
     {
-        return new \MolliePrefix\phpDocumentor\Reflection\Types\Object_($this->fqsenResolver->resolve($type, $context));
+        return new Object_($this->fqsenResolver->resolve($type, $context));
     }
+
     /**
-     * Resolves a compound type (i.e. `string|int`) into the appropriate Type objects or FQSEN.
+     * Resolves class string
      *
-     * @param string $type
-     * @param Context $context
-     *
-     * @return Compound
+     * @param ArrayIterator<int, (string|null)> $tokens
      */
-    private function resolveCompoundType($type, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context)
+    private function resolveClassString(ArrayIterator $tokens, Context $context) : Type
     {
-        $types = [];
-        foreach (\explode('|', $type) as $part) {
-            $types[] = $this->resolve($part, $context);
+        $tokens->next();
+
+        $classType = $this->parseTypes($tokens, $context, self::PARSER_IN_COLLECTION_EXPRESSION);
+
+        if (!$classType instanceof Object_ || $classType->getFqsen() === null) {
+            throw new RuntimeException(
+                $classType . ' is not a class string'
+            );
         }
-        return new \MolliePrefix\phpDocumentor\Reflection\Types\Compound($types);
+
+        $token = $tokens->current();
+        if ($token !== '>') {
+            if (empty($token)) {
+                throw new RuntimeException(
+                    'class-string: ">" is missing'
+                );
+            }
+
+            throw new RuntimeException(
+                'Unexpected character "' . $token . '", ">" is missing'
+            );
+        }
+
+        return new ClassString($classType->getFqsen());
     }
+
     /**
-     * Resolve nullable types (i.e. `?string`) into a Nullable type wrapper
+     * Resolves the collection values and keys
      *
-     * @param string $type
-     * @param Context $context
+     * @param ArrayIterator<int, (string|null)> $tokens
      *
-     * @return Nullable
+     * @return Array_|Iterable_|Collection
      */
-    private function resolveNullableType($type, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context)
+    private function resolveCollection(ArrayIterator $tokens, Type $classType, Context $context) : Type
     {
-        return new \MolliePrefix\phpDocumentor\Reflection\Types\Nullable($this->resolve(\ltrim($type, '?'), $context));
+        $isArray    = ((string) $classType === 'array');
+        $isIterable = ((string) $classType === 'iterable');
+
+        // allow only "array", "iterable" or class name before "<"
+        if (!$isArray && !$isIterable
+            && (!$classType instanceof Object_ || $classType->getFqsen() === null)) {
+            throw new RuntimeException(
+                $classType . ' is not a collection'
+            );
+        }
+
+        $tokens->next();
+
+        $valueType = $this->parseTypes($tokens, $context, self::PARSER_IN_COLLECTION_EXPRESSION);
+        $keyType   = null;
+
+        $token = $tokens->current();
+        if ($token !== null && trim($token) === ',') {
+            // if we have a comma, then we just parsed the key type, not the value type
+            $keyType = $valueType;
+            if ($isArray) {
+                // check the key type for an "array" collection. We allow only
+                // strings or integers.
+                if (!$keyType instanceof String_ &&
+                    !$keyType instanceof Integer &&
+                    !$keyType instanceof Compound
+                ) {
+                    throw new RuntimeException(
+                        'An array can have only integers or strings as keys'
+                    );
+                }
+
+                if ($keyType instanceof Compound) {
+                    foreach ($keyType->getIterator() as $item) {
+                        if (!$item instanceof String_ &&
+                            !$item instanceof Integer
+                        ) {
+                            throw new RuntimeException(
+                                'An array can have only integers or strings as keys'
+                            );
+                        }
+                    }
+                }
+            }
+
+            $tokens->next();
+            // now let's parse the value type
+            $valueType = $this->parseTypes($tokens, $context, self::PARSER_IN_COLLECTION_EXPRESSION);
+        }
+
+        $token = $tokens->current();
+        if ($token !== '>') {
+            if (empty($token)) {
+                throw new RuntimeException(
+                    'Collection: ">" is missing'
+                );
+            }
+
+            throw new RuntimeException(
+                'Unexpected character "' . $token . '", ">" is missing'
+            );
+        }
+
+        if ($isArray) {
+            return new Array_($valueType, $keyType);
+        }
+
+        if ($isIterable) {
+            return new Iterable_($valueType, $keyType);
+        }
+
+        if ($classType instanceof Object_) {
+            return $this->makeCollectionFromObject($classType, $valueType, $keyType);
+        }
+
+        throw new RuntimeException('Invalid $classType provided');
+    }
+
+    /**
+     * @psalm-pure
+     */
+    private function makeCollectionFromObject(Object_ $object, Type $valueType, ?Type $keyType = null) : Collection
+    {
+        return new Collection($object->getFqsen(), $valueType, $keyType);
     }
 }

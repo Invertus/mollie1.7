@@ -1,46 +1,53 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of phpDocumentor.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @copyright 2010-2015 Mike van Riel<mike@phpdoc.org>
- * @license   http://www.opensource.org/licenses/mit-license.php MIT
- * @link      http://phpdoc.org
+ * @link http://phpdoc.org
  */
-namespace MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags;
 
-use MolliePrefix\phpDocumentor\Reflection\DocBlock;
-use MolliePrefix\phpDocumentor\Reflection\DocBlock\Description;
+namespace phpDocumentor\Reflection\DocBlock\Tags;
+
+use phpDocumentor\Reflection\DocBlock;
+use phpDocumentor\Reflection\DocBlock\Description;
+
 /**
  * Parses a tag definition for a DocBlock.
  */
-abstract class BaseTag implements \MolliePrefix\phpDocumentor\Reflection\DocBlock\Tag
+abstract class BaseTag implements DocBlock\Tag
 {
     /** @var string Name of the tag */
     protected $name = '';
+
     /** @var Description|null Description of the tag. */
     protected $description;
+
     /**
      * Gets the name of this tag.
      *
      * @return string The name of this tag.
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
-    public function getDescription()
+
+    public function getDescription() : ?Description
     {
         return $this->description;
     }
-    public function render(\MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter $formatter = null)
+
+    public function render(?Formatter $formatter = null) : string
     {
         if ($formatter === null) {
-            $formatter = new \MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter\PassthroughFormatter();
+            $formatter = new Formatter\PassthroughFormatter();
         }
+
         return $formatter->format($this);
     }
 }

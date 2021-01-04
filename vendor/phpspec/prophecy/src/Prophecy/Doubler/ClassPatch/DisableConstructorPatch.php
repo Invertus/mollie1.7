@@ -8,17 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Doubler\ClassPatch;
 
-use MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode;
-use MolliePrefix\Prophecy\Doubler\Generator\Node\MethodNode;
+namespace Prophecy\Doubler\ClassPatch;
+
+use Prophecy\Doubler\Generator\Node\ClassNode;
+use Prophecy\Doubler\Generator\Node\MethodNode;
+
 /**
  * Disable constructor.
  * Makes all constructor arguments optional.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class DisableConstructorPatch implements \MolliePrefix\Prophecy\Doubler\ClassPatch\ClassPatchInterface
+class DisableConstructorPatch implements ClassPatchInterface
 {
     /**
      * Checks if class has `__construct` method.
@@ -27,35 +29,41 @@ class DisableConstructorPatch implements \MolliePrefix\Prophecy\Doubler\ClassPat
      *
      * @return bool
      */
-    public function supports(\MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $node)
+    public function supports(ClassNode $node)
     {
-        return \true;
+        return true;
     }
+
     /**
      * Makes all class constructor arguments optional.
      *
      * @param ClassNode $node
      */
-    public function apply(\MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $node)
+    public function apply(ClassNode $node)
     {
         if (!$node->isExtendable('__construct')) {
             return;
         }
+
         if (!$node->hasMethod('__construct')) {
-            $node->addMethod(new \MolliePrefix\Prophecy\Doubler\Generator\Node\MethodNode('__construct', ''));
+            $node->addMethod(new MethodNode('__construct', ''));
+
             return;
         }
+
         $constructor = $node->getMethod('__construct');
         foreach ($constructor->getArguments() as $argument) {
             $argument->setDefault(null);
         }
+
         $constructor->setCode(<<<PHP
 if (0 < func_num_args()) {
     call_user_func_array(array('parent', '__construct'), func_get_args());
 }
 PHP
-);
+        );
     }
+
     /**
      * Returns patch priority, which determines when patch will be applied.
      *

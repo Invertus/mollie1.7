@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,101 +7,100 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-// Workaround for http://bugs.php.net/bug.php?id=47987,
-// see https://github.com/sebastianbergmann/phpunit/issues#issue/125 for details
-// Use dirname(__DIR__) instead of using /../ because of https://github.com/facebook/hhvm/issues/5215
-require_once \dirname(__DIR__) . '/Framework/Error.php';
-require_once \dirname(__DIR__) . '/Framework/Error/Notice.php';
-require_once \dirname(__DIR__) . '/Framework/Error/Warning.php';
-require_once \dirname(__DIR__) . '/Framework/Error/Deprecated.php';
+namespace PHPUnit\Util;
+
+use PHPUnit\Framework\Error\Deprecated;
+use PHPUnit\Framework\Error\Error;
+use PHPUnit\Framework\Error\Notice;
+use PHPUnit\Framework\Error\Warning;
+
 /**
  * Error handler that converts PHP errors and warnings to exceptions.
- *
- * @since Class available since Release 3.3.0
  */
-class PHPUnit_Util_ErrorHandler
+final class ErrorHandler
 {
-    protected static $errorStack = [];
+    private static $errorStack = [];
+
     /**
      * Returns the error stack.
-     *
-     * @return array
      */
-    public static function getErrorStack()
+    public static function getErrorStack(): array
     {
         return self::$errorStack;
     }
-    /**
-     * @param int    $errno
-     * @param string $errstr
-     * @param string $errfile
-     * @param int    $errline
-     *
-     * @throws PHPUnit_Framework_Error
-     */
-    public static function handleError($errno, $errstr, $errfile, $errline)
+
+    public static function handleError(int $errorNumber, string $errorString, string $errorFile, int $errorLine): bool
     {
-        if (!($errno & \error_reporting())) {
-            return \false;
+        if (!($errorNumber & \error_reporting())) {
+            return false;
         }
-        self::$errorStack[] = [$errno, $errstr, $errfile, $errline];
-        $trace = \debug_backtrace(\false);
+
+        self::$errorStack[] = [$errorNumber, $errorString, $errorFile, $errorLine];
+
+        $trace = \debug_backtrace();
         \array_shift($trace);
+
         foreach ($trace as $frame) {
-            if ($frame['function'] == '__toString') {
-                return \false;
+            if ($frame['function'] === '__toString') {
+                return false;
             }
         }
-        if ($errno == \E_NOTICE || $errno == \E_USER_NOTICE || $errno == \E_STRICT) {
-            if (\MolliePrefix\PHPUnit_Framework_Error_Notice::$enabled !== \true) {
-                return \false;
+
+        if ($errorNumber === \E_NOTICE || $errorNumber === \E_USER_NOTICE || $errorNumber === \E_STRICT) {
+            if (Notice::$enabled !== true) {
+                return false;
             }
-            $exception = 'PHPUnit_Framework_Error_Notice';
-        } elseif ($errno == \E_WARNING || $errno == \E_USER_WARNING) {
-            if (\MolliePrefix\PHPUnit_Framework_Error_Warning::$enabled !== \true) {
-                return \false;
+
+            $exception = Notice::class;
+        } elseif ($errorNumber === \E_WARNING || $errorNumber === \E_USER_WARNING) {
+            if (Warning::$enabled !== true) {
+                return false;
             }
-            $exception = 'PHPUnit_Framework_Error_Warning';
-        } elseif ($errno == \E_DEPRECATED || $errno == \E_USER_DEPRECATED) {
-            if (\MolliePrefix\PHPUnit_Framework_Error_Deprecated::$enabled !== \true) {
-                return \false;
+
+            $exception = Warning::class;
+        } elseif ($errorNumber === \E_DEPRECATED || $errorNumber === \E_USER_DEPRECATED) {
+            if (Deprecated::$enabled !== true) {
+                return false;
             }
-            $exception = 'PHPUnit_Framework_Error_Deprecated';
+
+            $exception = Deprecated::class;
         } else {
-            $exception = 'PHPUnit_Framework_Error';
+            $exception = Error::class;
         }
-        throw new $exception($errstr, $errno, $errfile, $errline);
+
+        throw new $exception($errorString, $errorNumber, $errorFile, $errorLine);
     }
+
     /**
      * Registers an error handler and returns a function that will restore
      * the previous handler when invoked
      *
      * @param int $severity PHP predefined error constant
      *
-     * @throws Exception if event of specified severity is emitted
+     * @throws \Exception if event of specified severity is emitted
      */
-    public static function handleErrorOnce($severity = \E_WARNING)
+    public static function handleErrorOnce($severity = \E_WARNING): callable
     {
         $terminator = function () {
-            static $expired = \false;
+            static $expired = false;
+
             if (!$expired) {
-                $expired = \true;
-                // cleans temporary error handler
+                $expired = true;
+
                 return \restore_error_handler();
             }
         };
-        \set_error_handler(function ($errno, $errstr) use($severity) {
-            if ($errno === $severity) {
-                return;
+
+        \set_error_handler(
+            function ($errorNumber, $errorString) use ($severity) {
+                if ($errorNumber === $severity) {
+                    return;
+                }
+
+                return false;
             }
-            return \false;
-        });
+        );
+
         return $terminator;
     }
 }
-/**
- * Error handler that converts PHP errors and warnings to exceptions.
- *
- * @since Class available since Release 3.3.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Util_ErrorHandler', 'PHPUnit_Util_ErrorHandler', \false);

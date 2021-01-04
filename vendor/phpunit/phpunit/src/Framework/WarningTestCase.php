@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,33 +7,38 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework;
+
 /**
  * A warning.
- *
- * @since Class available since Release 2.0.0
  */
-class PHPUnit_Framework_WarningTestCase extends \MolliePrefix\PHPUnit_Framework_TestCase
+class WarningTestCase extends TestCase
 {
     /**
      * @var string
      */
     protected $message = '';
+
     /**
      * @var bool
      */
-    protected $backupGlobals = \false;
+    protected $backupGlobals = false;
+
     /**
      * @var bool
      */
-    protected $backupStaticAttributes = \false;
+    protected $backupStaticAttributes = false;
+
     /**
      * @var bool
      */
-    protected $runTestInSeparateProcess = \false;
+    protected $runTestInSeparateProcess = false;
+
     /**
      * @var bool
      */
-    protected $useErrorHandler = \false;
+    protected $useErrorHandler = false;
+
     /**
      * @param string $message
      */
@@ -45,45 +47,25 @@ class PHPUnit_Framework_WarningTestCase extends \MolliePrefix\PHPUnit_Framework_
         $this->message = $message;
         parent::__construct('Warning');
     }
-    /**
-     * @throws PHPUnit_Framework_Exception
-     */
-    protected function runTest()
-    {
-        throw new \MolliePrefix\PHPUnit_Framework_Warning($this->message);
-    }
-    /**
-     * @return string
-     *
-     * @since Method available since Release 3.0.0
-     */
-    public function getMessage()
+
+    public function getMessage(): string
     {
         return $this->message;
     }
+
     /**
      * Returns a string representation of the test case.
-     *
-     * @return string
-     *
-     * @since Method available since Release 3.4.0
      */
-    public function toString()
+    public function toString(): string
     {
         return 'Warning';
     }
+
+    /**
+     * @throws Exception
+     */
+    protected function runTest(): void
+    {
+        throw new Warning($this->message);
+    }
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * A warning.
- *
- * @since Class available since Release 2.0.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Framework_WarningTestCase', 'PHPUnit_Framework_WarningTestCase', \false);

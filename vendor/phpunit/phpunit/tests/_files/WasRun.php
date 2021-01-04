@@ -1,13 +1,20 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class WasRun extends \MolliePrefix\PHPUnit_Framework_TestCase
+class WasRun extends TestCase
 {
-    public $wasRun = \false;
-    protected function runTest()
+    public $wasRun = false;
+
+    protected function runTest(): void
     {
-        $this->wasRun = \true;
+        $this->wasRun = true;
     }
 }
-\class_alias('MolliePrefix\\WasRun', 'WasRun', \false);

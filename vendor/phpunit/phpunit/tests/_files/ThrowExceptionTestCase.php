@@ -1,12 +1,18 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class ThrowExceptionTestCase extends \MolliePrefix\PHPUnit_Framework_TestCase
+class ThrowExceptionTestCase extends TestCase
 {
-    public function test()
+    public function test(): void
     {
-        throw new \RuntimeException('A runtime error occurred');
+        throw new RuntimeException('A runtime error occurred');
     }
 }
-\class_alias('MolliePrefix\\ThrowExceptionTestCase', 'ThrowExceptionTestCase', \false);

@@ -1,33 +1,35 @@
 <?php
-
 /*
- * This file is part of the Comparator package.
+ * This file is part of sebastian/comparator.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\Comparator;
+namespace SebastianBergmann\Comparator;
 
 use DOMDocument;
 use DOMNode;
+
 /**
  * Compares DOMNode instances for equality.
  */
-class DOMNodeComparator extends \MolliePrefix\SebastianBergmann\Comparator\ObjectComparator
+class DOMNodeComparator extends ObjectComparator
 {
     /**
      * Returns whether the comparator can compare two values.
      *
-     * @param  mixed $expected The first value to compare
-     * @param  mixed $actual   The second value to compare
+     * @param mixed $expected The first value to compare
+     * @param mixed $actual   The second value to compare
+     *
      * @return bool
      */
     public function accepts($expected, $actual)
     {
-        return $expected instanceof \DOMNode && $actual instanceof \DOMNode;
+        return $expected instanceof DOMNode && $actual instanceof DOMNode;
     }
+
     /**
      * Asserts that two values are equal.
      *
@@ -40,50 +42,45 @@ class DOMNodeComparator extends \MolliePrefix\SebastianBergmann\Comparator\Objec
      *
      * @throws ComparisonFailure
      */
-    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = \false, $ignoreCase = \false, array &$processed = array())
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = [])
     {
-        $expectedAsString = $this->nodeToText($expected, \true, $ignoreCase);
-        $actualAsString = $this->nodeToText($actual, \true, $ignoreCase);
+        $expectedAsString = $this->nodeToText($expected, true, $ignoreCase);
+        $actualAsString   = $this->nodeToText($actual, true, $ignoreCase);
+
         if ($expectedAsString !== $actualAsString) {
-            if ($expected instanceof \DOMDocument) {
-                $type = 'documents';
-            } else {
-                $type = 'nodes';
-            }
-            throw new \MolliePrefix\SebastianBergmann\Comparator\ComparisonFailure($expected, $actual, $expectedAsString, $actualAsString, \false, \sprintf("Failed asserting that two DOM %s are equal.\n", $type));
+            $type = $expected instanceof DOMDocument ? 'documents' : 'nodes';
+
+            throw new ComparisonFailure(
+                $expected,
+                $actual,
+                $expectedAsString,
+                $actualAsString,
+                false,
+                \sprintf("Failed asserting that two DOM %s are equal.\n", $type)
+            );
         }
     }
+
     /**
      * Returns the normalized, whitespace-cleaned, and indented textual
      * representation of a DOMNode.
-     *
-     * @param  DOMNode $node
-     * @param  bool    $canonicalize
-     * @param  bool    $ignoreCase
-     * @return string
      */
-    private function nodeToText(\DOMNode $node, $canonicalize, $ignoreCase)
+    private function nodeToText(DOMNode $node, bool $canonicalize, bool $ignoreCase): string
     {
         if ($canonicalize) {
-            $document = new \DOMDocument();
-            $document->loadXML($node->C14N());
+            $document = new DOMDocument;
+            @$document->loadXML($node->C14N());
+
             $node = $document;
         }
-        if ($node instanceof \DOMDocument) {
-            $document = $node;
-        } else {
-            $document = $node->ownerDocument;
-        }
-        $document->formatOutput = \true;
+
+        $document = $node instanceof DOMDocument ? $node : $node->ownerDocument;
+
+        $document->formatOutput = true;
         $document->normalizeDocument();
-        if ($node instanceof \DOMDocument) {
-            $text = $node->saveXML();
-        } else {
-            $text = $document->saveXML($node);
-        }
-        if ($ignoreCase) {
-            $text = \strtolower($text);
-        }
-        return $text;
+
+        $text = $node instanceof DOMDocument ? $node->saveXML() : $document->saveXML($node);
+
+        return $ignoreCase ? \strtolower($text) : $text;
     }
 }

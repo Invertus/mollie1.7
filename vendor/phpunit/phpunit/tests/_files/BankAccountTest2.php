@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,39 +7,50 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use MolliePrefix\PHPUnit\Framework\TestCase;
-class BankAccountTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+
+use PHPUnit\Framework\TestCase;
+
+class BankAccountTest extends TestCase
 {
     private $ba;
-    protected function setUp()
+
+    protected function setUp(): void
     {
-        $this->ba = new \MolliePrefix\BankAccount();
+        $this->ba = new BankAccount;
     }
-    public function testBalanceIsInitiallyZero()
+
+    public function testBalanceIsInitiallyZero(): void
     {
-        $ba = new \MolliePrefix\BankAccount();
+        $ba = new BankAccount;
+
         $balance = $ba->getBalance();
+
         $this->assertEquals(0, $balance);
     }
-    public function testBalanceCannotBecomeNegative()
+
+    public function testBalanceCannotBecomeNegative(): void
     {
         try {
             $this->ba->withdrawMoney(1);
-        } catch (\MolliePrefix\BankAccountException $e) {
+        } catch (BankAccountException $e) {
             $this->assertEquals(0, $this->ba->getBalance());
+
             return;
         }
+
         $this->fail();
     }
-    public function testBalanceCannotBecomeNegative2()
+
+    public function testBalanceCannotBecomeNegative2(): void
     {
         try {
             $this->ba->depositMoney(-1);
-        } catch (\MolliePrefix\BankAccountException $e) {
+        } catch (BankAccountException $e) {
             $this->assertEquals(0, $this->ba->getBalance());
+
             return;
         }
+
         $this->fail();
     }
 }
-\class_alias('MolliePrefix\\BankAccountTest', 'BankAccountTest', \false);

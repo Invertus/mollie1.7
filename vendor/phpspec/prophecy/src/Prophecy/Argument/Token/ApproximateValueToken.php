@@ -8,36 +8,41 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Argument\Token;
+
+namespace Prophecy\Argument\Token;
 
 /**
  * Approximate value token
  *
  * @author Daniel Leech <daniel@dantleech.com>
  */
-class ApproximateValueToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInterface
+class ApproximateValueToken implements TokenInterface
 {
     private $value;
     private $precision;
+
     public function __construct($value, $precision = 0)
     {
         $this->value = $value;
         $this->precision = $precision;
     }
+
     /**
      * {@inheritdoc}
      */
     public function scoreArgument($argument)
     {
-        return \round($argument, $this->precision) === \round($this->value, $this->precision) ? 10 : \false;
+        return round((float)$argument, $this->precision) === round($this->value, $this->precision) ? 10 : false;
     }
+
     /**
      * {@inheritdoc}
      */
     public function isLast()
     {
-        return \false;
+        return false;
     }
+
     /**
      * Returns string representation for token.
      *
@@ -45,6 +50,6 @@ class ApproximateValueToken implements \MolliePrefix\Prophecy\Argument\Token\Tok
      */
     public function __toString()
     {
-        return \sprintf('≅%s', \round($this->value, $this->precision));
+        return sprintf('≅%s', round($this->value, $this->precision));
     }
 }

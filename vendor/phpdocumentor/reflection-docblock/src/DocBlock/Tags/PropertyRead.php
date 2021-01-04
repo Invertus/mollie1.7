@@ -1,97 +1,119 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of phpDocumentor.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @copyright 2010-2015 Mike van Riel<mike@phpdoc.org>
- * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      http://phpdoc.org
  */
-namespace MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags;
 
-use MolliePrefix\phpDocumentor\Reflection\DocBlock\Description;
-use MolliePrefix\phpDocumentor\Reflection\DocBlock\DescriptionFactory;
-use MolliePrefix\phpDocumentor\Reflection\Type;
-use MolliePrefix\phpDocumentor\Reflection\TypeResolver;
-use MolliePrefix\phpDocumentor\Reflection\Types\Context as TypeContext;
-use MolliePrefix\Webmozart\Assert\Assert;
+namespace phpDocumentor\Reflection\DocBlock\Tags;
+
+use phpDocumentor\Reflection\DocBlock\Description;
+use phpDocumentor\Reflection\DocBlock\DescriptionFactory;
+use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\TypeResolver;
+use phpDocumentor\Reflection\Types\Context as TypeContext;
+use phpDocumentor\Reflection\Utils;
+use Webmozart\Assert\Assert;
+use function array_shift;
+use function array_unshift;
+use function implode;
+use function strpos;
+use function substr;
+use const PREG_SPLIT_DELIM_CAPTURE;
+
 /**
  * Reflection class for a {@}property-read tag in a Docblock.
  */
-class PropertyRead extends \MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\BaseTag implements \MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Factory\StaticMethod
+final class PropertyRead extends TagWithType implements Factory\StaticMethod
 {
-    /** @var string */
-    protected $name = 'property-read';
-    /** @var Type */
-    private $type;
-    /** @var string */
-    protected $variableName = '';
-    /**
-     * @param string      $variableName
-     * @param Type        $type
-     * @param Description $description
-     */
-    public function __construct($variableName, \MolliePrefix\phpDocumentor\Reflection\Type $type = null, \MolliePrefix\phpDocumentor\Reflection\DocBlock\Description $description = null)
+    /** @var string|null */
+    protected $variableName;
+
+    public function __construct(?string $variableName, ?Type $type = null, ?Description $description = null)
     {
-        \MolliePrefix\Webmozart\Assert\Assert::string($variableName);
+        Assert::string($variableName);
+
+        $this->name         = 'property-read';
         $this->variableName = $variableName;
-        $this->type = $type;
-        $this->description = $description;
+        $this->type         = $type;
+        $this->description  = $description;
     }
-    /**
-     * {@inheritdoc}
-     */
-    public static function create($body, \MolliePrefix\phpDocumentor\Reflection\TypeResolver $typeResolver = null, \MolliePrefix\phpDocumentor\Reflection\DocBlock\DescriptionFactory $descriptionFactory = null, \MolliePrefix\phpDocumentor\Reflection\Types\Context $context = null)
-    {
-        \MolliePrefix\Webmozart\Assert\Assert::stringNotEmpty($body);
-        \MolliePrefix\Webmozart\Assert\Assert::allNotNull([$typeResolver, $descriptionFactory]);
-        $parts = \preg_split('/(\\s+)/Su', $body, 3, \PREG_SPLIT_DELIM_CAPTURE);
-        $type = null;
+
+    public static function create(
+        string $body,
+        ?TypeResolver $typeResolver = null,
+        ?DescriptionFactory $descriptionFactory = null,
+        ?TypeContext $context = null
+    ) : self {
+        Assert::stringNotEmpty($body);
+        Assert::notNull($typeResolver);
+        Assert::notNull($descriptionFactory);
+
+        [$firstPart, $body] = self::extractTypeFromBody($body);
+        $type               = null;
+        $parts              = Utils::pregSplit('/(\s+)/Su', $body, 2, PREG_SPLIT_DELIM_CAPTURE);
         $variableName = '';
+
         // if the first item that is encountered is not a variable; it is a type
-        if (isset($parts[0]) && \strlen($parts[0]) > 0 && $parts[0][0] !== '$') {
-            $type = $typeResolver->resolve(\array_shift($parts), $context);
-            \array_shift($parts);
+        if ($firstPart && $firstPart[0] !== '$') {
+            $type = $typeResolver->resolve($firstPart, $context);
+        } else {
+            // first part is not a type; we should prepend it to the parts array for further processing
+            array_unshift($parts, $firstPart);
         }
-        // if the next item starts with a $ or ...$ it must be the variable name
-        if (isset($parts[0]) && \strlen($parts[0]) > 0 && $parts[0][0] == '$') {
-            $variableName = \array_shift($parts);
-            \array_shift($parts);
-            if (\substr($variableName, 0, 1) === '$') {
-                $variableName = \substr($variableName, 1);
+
+        // if the next item starts with a $ it must be the variable name
+        if (isset($parts[0]) && strpos($parts[0], '$') === 0) {
+            $variableName = array_shift($parts);
+            if ($type) {
+                array_shift($parts);
             }
+
+            Assert::notNull($variableName);
+
+            $variableName = substr($variableName, 1);
         }
-        $description = $descriptionFactory->create(\implode('', $parts), $context);
+
+        $description = $descriptionFactory->create(implode('', $parts), $context);
+
         return new static($variableName, $type, $description);
     }
+
     /**
      * Returns the variable's name.
-     *
-     * @return string
      */
-    public function getVariableName()
+    public function getVariableName() : ?string
     {
         return $this->variableName;
     }
-    /**
-     * Returns the variable's type or null if unknown.
-     *
-     * @return Type|null
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
+
     /**
      * Returns a string representation for this tag.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
-        return ($this->type ? $this->type . ' ' : '') . '$' . $this->variableName . ($this->description ? ' ' . $this->description : '');
+        if ($this->description) {
+            $description = $this->description->render();
+        } else {
+            $description = '';
+        }
+
+        if ($this->variableName) {
+            $variableName = '$' . $this->variableName;
+        } else {
+            $variableName = '';
+        }
+
+        $type = (string) $this->type;
+
+        return $type
+            . ($variableName !== '' ? ($type !== '' ? ' ' : '') . $variableName : '')
+            . ($description !== '' ? ($type !== '' || $variableName !== '' ? ' ' : '') . $description : '');
     }
 }

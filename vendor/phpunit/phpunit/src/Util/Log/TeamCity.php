@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,317 +7,385 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use MolliePrefix\SebastianBergmann\Comparator\ComparisonFailure;
+namespace PHPUnit\Util\Log;
+
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\ExceptionWrapper;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestFailure;
+use PHPUnit\Framework\TestResult;
+use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\Warning;
+use PHPUnit\TextUI\ResultPrinter;
+use PHPUnit\Util\Filter;
+use ReflectionClass;
+use SebastianBergmann\Comparator\ComparisonFailure;
+
 /**
  * A TestListener that generates a logfile of the test execution using the
  * TeamCity format (for use with PhpStorm, for instance).
- *
- * @since Class available since Release 5.0.0
  */
-class PHPUnit_Util_Log_TeamCity extends \MolliePrefix\PHPUnit_TextUI_ResultPrinter
+class TeamCity extends ResultPrinter
 {
     /**
      * @var bool
      */
-    private $isSummaryTestCountPrinted = \false;
+    private $isSummaryTestCountPrinted = false;
+
     /**
      * @var string
      */
     private $startedTestName;
+
     /**
-     * @var string
+     * @var false|int
      */
     private $flowId;
-    /**
-     * @param string $progress
-     */
-    protected function writeProgress($progress)
-    {
-    }
-    /**
-     * @param PHPUnit_Framework_TestResult $result
-     */
-    public function printResult(\MolliePrefix\PHPUnit_Framework_TestResult $result)
+
+    public function printResult(TestResult $result): void
     {
         $this->printHeader();
         $this->printFooter($result);
     }
+
     /**
      * An error occurred.
      *
-     * @param PHPUnit_Framework_Test $test
-     * @param Exception              $e
-     * @param float                  $time
+     * @throws \InvalidArgumentException
      */
-    public function addError(\MolliePrefix\PHPUnit_Framework_Test $test, \Exception $e, $time)
+    public function addError(Test $test, \Throwable $t, float $time): void
     {
-        $this->printEvent('testFailed', ['name' => $test->getName(), 'message' => self::getMessage($e), 'details' => self::getDetails($e)]);
+        $this->printEvent(
+            'testFailed',
+            [
+                'name'     => $test->getName(),
+                'message'  => self::getMessage($t),
+                'details'  => self::getDetails($t),
+                'duration' => self::toMilliseconds($time),
+            ]
+        );
     }
+
     /**
      * A warning occurred.
      *
-     * @param PHPUnit_Framework_Test    $test
-     * @param PHPUnit_Framework_Warning $e
-     * @param float                     $time
-     *
-     * @since Method available since Release 5.1.0
+     * @throws \InvalidArgumentException
      */
-    public function addWarning(\MolliePrefix\PHPUnit_Framework_Test $test, \MolliePrefix\PHPUnit_Framework_Warning $e, $time)
+    public function addWarning(Test $test, Warning $e, float $time): void
     {
-        $this->printEvent('testFailed', ['name' => $test->getName(), 'message' => self::getMessage($e), 'details' => self::getDetails($e)]);
+        $this->printEvent(
+            'testFailed',
+            [
+                'name'     => $test->getName(),
+                'message'  => self::getMessage($e),
+                'details'  => self::getDetails($e),
+                'duration' => self::toMilliseconds($time),
+            ]
+        );
     }
+
     /**
      * A failure occurred.
      *
-     * @param PHPUnit_Framework_Test                 $test
-     * @param PHPUnit_Framework_AssertionFailedError $e
-     * @param float                                  $time
+     * @throws \InvalidArgumentException
      */
-    public function addFailure(\MolliePrefix\PHPUnit_Framework_Test $test, \MolliePrefix\PHPUnit_Framework_AssertionFailedError $e, $time)
+    public function addFailure(Test $test, AssertionFailedError $e, float $time): void
     {
-        $parameters = ['name' => $test->getName(), 'message' => self::getMessage($e), 'details' => self::getDetails($e)];
-        if ($e instanceof \MolliePrefix\PHPUnit_Framework_ExpectationFailedException) {
+        $parameters = [
+            'name'     => $test->getName(),
+            'message'  => self::getMessage($e),
+            'details'  => self::getDetails($e),
+            'duration' => self::toMilliseconds($time),
+        ];
+
+        if ($e instanceof ExpectationFailedException) {
             $comparisonFailure = $e->getComparisonFailure();
-            if ($comparisonFailure instanceof \MolliePrefix\SebastianBergmann\Comparator\ComparisonFailure) {
+
+            if ($comparisonFailure instanceof ComparisonFailure) {
                 $expectedString = $comparisonFailure->getExpectedAsString();
-                if (\is_null($expectedString) || empty($expectedString)) {
+
+                if ($expectedString === null || empty($expectedString)) {
                     $expectedString = self::getPrimitiveValueAsString($comparisonFailure->getExpected());
                 }
+
                 $actualString = $comparisonFailure->getActualAsString();
-                if (\is_null($actualString) || empty($actualString)) {
+
+                if ($actualString === null || empty($actualString)) {
                     $actualString = self::getPrimitiveValueAsString($comparisonFailure->getActual());
                 }
-                if (!\is_null($actualString) && !\is_null($expectedString)) {
-                    $parameters['type'] = 'comparisonFailure';
-                    $parameters['actual'] = $actualString;
+
+                if ($actualString !== null && $expectedString !== null) {
+                    $parameters['type']     = 'comparisonFailure';
+                    $parameters['actual']   = $actualString;
                     $parameters['expected'] = $expectedString;
                 }
             }
         }
+
         $this->printEvent('testFailed', $parameters);
     }
+
     /**
      * Incomplete test.
-     *
-     * @param PHPUnit_Framework_Test $test
-     * @param Exception              $e
-     * @param float                  $time
      */
-    public function addIncompleteTest(\MolliePrefix\PHPUnit_Framework_Test $test, \Exception $e, $time)
+    public function addIncompleteTest(Test $test, \Throwable $t, float $time): void
     {
-        $this->printIgnoredTest($test->getName(), $e);
+        $this->printIgnoredTest($test->getName(), $t, $time);
     }
+
     /**
      * Risky test.
      *
-     * @param PHPUnit_Framework_Test $test
-     * @param Exception              $e
-     * @param float                  $time
+     * @throws \InvalidArgumentException
      */
-    public function addRiskyTest(\MolliePrefix\PHPUnit_Framework_Test $test, \Exception $e, $time)
+    public function addRiskyTest(Test $test, \Throwable $t, float $time): void
     {
-        $this->addError($test, $e, $time);
+        $this->addError($test, $t, $time);
     }
+
     /**
      * Skipped test.
      *
-     * @param PHPUnit_Framework_Test $test
-     * @param Exception              $e
-     * @param float                  $time
+     * @throws \ReflectionException
      */
-    public function addSkippedTest(\MolliePrefix\PHPUnit_Framework_Test $test, \Exception $e, $time)
+    public function addSkippedTest(Test $test, \Throwable $t, float $time): void
     {
         $testName = $test->getName();
-        if ($this->startedTestName != $testName) {
+
+        if ($this->startedTestName !== $testName) {
             $this->startTest($test);
-            $this->printIgnoredTest($testName, $e);
+            $this->printIgnoredTest($testName, $t, $time);
             $this->endTest($test, $time);
         } else {
-            $this->printIgnoredTest($testName, $e);
+            $this->printIgnoredTest($testName, $t, $time);
         }
     }
-    public function printIgnoredTest($testName, \Exception $e)
+
+    public function printIgnoredTest($testName, \Throwable $t, float $time): void
     {
-        $this->printEvent('testIgnored', ['name' => $testName, 'message' => self::getMessage($e), 'details' => self::getDetails($e)]);
+        $this->printEvent(
+            'testIgnored',
+            [
+                'name'     => $testName,
+                'message'  => self::getMessage($t),
+                'details'  => self::getDetails($t),
+                'duration' => self::toMilliseconds($time),
+            ]
+        );
     }
+
     /**
      * A testsuite started.
      *
-     * @param PHPUnit_Framework_TestSuite $suite
+     * @throws \ReflectionException
      */
-    public function startTestSuite(\MolliePrefix\PHPUnit_Framework_TestSuite $suite)
+    public function startTestSuite(TestSuite $suite): void
     {
-        if (\stripos(\ini_get('disable_functions'), 'getmypid') === \false) {
+        if (\stripos(\ini_get('disable_functions'), 'getmypid') === false) {
             $this->flowId = \getmypid();
         } else {
-            $this->flowId = \false;
+            $this->flowId = false;
         }
+
         if (!$this->isSummaryTestCountPrinted) {
-            $this->isSummaryTestCountPrinted = \true;
-            $this->printEvent('testCount', ['count' => \count($suite)]);
+            $this->isSummaryTestCountPrinted = true;
+
+            $this->printEvent(
+                'testCount',
+                ['count' => \count($suite)]
+            );
         }
+
         $suiteName = $suite->getName();
+
         if (empty($suiteName)) {
             return;
         }
+
         $parameters = ['name' => $suiteName];
-        if (\class_exists($suiteName, \false)) {
-            $fileName = self::getFileName($suiteName);
-            $parameters['locationHint'] = "php_qn://{$fileName}::\\{$suiteName}";
+
+        if (\class_exists($suiteName, false)) {
+            $fileName                   = self::getFileName($suiteName);
+            $parameters['locationHint'] = "php_qn://$fileName::\\$suiteName";
         } else {
-            $split = \preg_split('/::/', $suiteName);
-            if (\count($split) == 2 && \method_exists($split[0], $split[1])) {
-                $fileName = self::getFileName($split[0]);
-                $parameters['locationHint'] = "php_qn://{$fileName}::\\{$suiteName}";
-                $parameters['name'] = $split[1];
+            $split = \explode('::', $suiteName);
+
+            if (\count($split) === 2 && \class_exists($split[0]) && \method_exists($split[0], $split[1])) {
+                $fileName                   = self::getFileName($split[0]);
+                $parameters['locationHint'] = "php_qn://$fileName::\\$suiteName";
+                $parameters['name']         = $split[1];
             }
         }
+
         $this->printEvent('testSuiteStarted', $parameters);
     }
+
     /**
      * A testsuite ended.
-     *
-     * @param PHPUnit_Framework_TestSuite $suite
      */
-    public function endTestSuite(\MolliePrefix\PHPUnit_Framework_TestSuite $suite)
+    public function endTestSuite(TestSuite $suite): void
     {
         $suiteName = $suite->getName();
+
         if (empty($suiteName)) {
             return;
         }
+
         $parameters = ['name' => $suiteName];
-        if (!\class_exists($suiteName, \false)) {
-            $split = \preg_split('/::/', $suiteName);
-            if (\count($split) == 2 && \method_exists($split[0], $split[1])) {
+
+        if (!\class_exists($suiteName, false)) {
+            $split = \explode('::', $suiteName);
+
+            if (\count($split) === 2 && \class_exists($split[0]) && \method_exists($split[0], $split[1])) {
                 $parameters['name'] = $split[1];
             }
         }
+
         $this->printEvent('testSuiteFinished', $parameters);
     }
+
     /**
      * A test started.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @throws \ReflectionException
      */
-    public function startTest(\MolliePrefix\PHPUnit_Framework_Test $test)
+    public function startTest(Test $test): void
     {
-        $testName = $test->getName();
+        $testName              = $test->getName();
         $this->startedTestName = $testName;
-        $params = ['name' => $testName];
-        if ($test instanceof \MolliePrefix\PHPUnit_Framework_TestCase) {
-            $className = \get_class($test);
-            $fileName = self::getFileName($className);
-            $params['locationHint'] = "php_qn://{$fileName}::\\{$className}::{$testName}";
+        $params                = ['name' => $testName];
+
+        if ($test instanceof TestCase) {
+            $className              = \get_class($test);
+            $fileName               = self::getFileName($className);
+            $params['locationHint'] = "php_qn://$fileName::\\$className::$testName";
         }
+
         $this->printEvent('testStarted', $params);
     }
+
     /**
      * A test ended.
-     *
-     * @param PHPUnit_Framework_Test $test
-     * @param float                  $time
      */
-    public function endTest(\MolliePrefix\PHPUnit_Framework_Test $test, $time)
+    public function endTest(Test $test, float $time): void
     {
         parent::endTest($test, $time);
-        $this->printEvent('testFinished', ['name' => $test->getName(), 'duration' => (int) (\round($time, 2) * 1000)]);
+
+        $this->printEvent(
+            'testFinished',
+            [
+                'name'     => $test->getName(),
+                'duration' => self::toMilliseconds($time),
+            ]
+        );
     }
+
+    protected function writeProgress(string $progress): void
+    {
+    }
+
     /**
      * @param string $eventName
      * @param array  $params
      */
-    private function printEvent($eventName, $params = [])
+    private function printEvent($eventName, $params = []): void
     {
-        $this->write("\n##teamcity[{$eventName}");
+        $this->write("\n##teamcity[$eventName");
+
         if ($this->flowId) {
             $params['flowId'] = $this->flowId;
         }
+
         foreach ($params as $key => $value) {
             $escapedValue = self::escapeValue($value);
-            $this->write(" {$key}='{$escapedValue}'");
+            $this->write(" $key='$escapedValue'");
         }
+
         $this->write("]\n");
     }
-    /**
-     * @param Exception $e
-     *
-     * @return string
-     */
-    private static function getMessage(\Exception $e)
+
+    private static function getMessage(\Throwable $t): string
     {
         $message = '';
-        if (!$e instanceof \MolliePrefix\PHPUnit_Framework_Exception) {
-            if (\strlen(\get_class($e)) != 0) {
-                $message = $message . \get_class($e);
+
+        if ($t instanceof ExceptionWrapper) {
+            if ($t->getClassName() !== '') {
+                $message .= $t->getClassName();
             }
-            if (\strlen($message) != 0 && \strlen($e->getMessage()) != 0) {
-                $message = $message . ' : ';
+
+            if ($message !== '' && $t->getMessage() !== '') {
+                $message .= ' : ';
             }
         }
-        return $message . $e->getMessage();
+
+        return $message . $t->getMessage();
     }
+
     /**
-     * @param Exception $e
-     *
-     * @return string
+     * @throws \InvalidArgumentException
      */
-    private static function getDetails(\Exception $e)
+    private static function getDetails(\Throwable $t): string
     {
-        $stackTrace = \MolliePrefix\PHPUnit_Util_Filter::getFilteredStacktrace($e);
-        $previous = $e->getPrevious();
+        $stackTrace = Filter::getFilteredStacktrace($t);
+        $previous   = $t instanceof ExceptionWrapper ? $t->getPreviousWrapped() : $t->getPrevious();
+
         while ($previous) {
-            $stackTrace .= "\nCaused by\n" . \MolliePrefix\PHPUnit_Framework_TestFailure::exceptionToString($previous) . "\n" . \MolliePrefix\PHPUnit_Util_Filter::getFilteredStacktrace($previous);
-            $previous = $previous->getPrevious();
+            $stackTrace .= "\nCaused by\n" .
+                TestFailure::exceptionToString($previous) . "\n" .
+                Filter::getFilteredStacktrace($previous);
+
+            $previous = $previous instanceof ExceptionWrapper ?
+                $previous->getPreviousWrapped() : $previous->getPrevious();
         }
+
         return ' ' . \str_replace("\n", "\n ", $stackTrace);
     }
-    /**
-     * @param mixed $value
-     *
-     * @return string
-     */
-    private static function getPrimitiveValueAsString($value)
+
+    private static function getPrimitiveValueAsString($value): ?string
     {
-        if (\is_null($value)) {
+        if ($value === null) {
             return 'null';
-        } elseif (\is_bool($value)) {
-            return $value == \true ? 'true' : 'false';
-        } elseif (\is_scalar($value)) {
-            return \print_r($value, \true);
         }
-        return;
+
+        if (\is_bool($value)) {
+            return $value === true ? 'true' : 'false';
+        }
+
+        if (\is_scalar($value)) {
+            return \print_r($value, true);
+        }
+
+        return null;
     }
-    /**
-     * @param  $text
-     *
-     * @return string
-     */
-    private static function escapeValue($text)
+
+    private static function escapeValue(string $text): string
     {
-        $text = \str_replace('|', '||', $text);
-        $text = \str_replace("'", "|'", $text);
-        $text = \str_replace("\n", '|n', $text);
-        $text = \str_replace("\r", '|r', $text);
-        $text = \str_replace(']', '|]', $text);
-        $text = \str_replace('[', '|[', $text);
-        return $text;
+        return \str_replace(
+            ['|', "'", "\n", "\r", ']', '['],
+            ['||', "|'", '|n', '|r', '|]', '|['],
+            $text
+        );
     }
+
     /**
      * @param string $className
      *
-     * @return string
+     * @throws \ReflectionException
      */
-    private static function getFileName($className)
+    private static function getFileName($className): string
     {
-        $reflectionClass = new \ReflectionClass($className);
-        $fileName = $reflectionClass->getFileName();
-        return $fileName;
+        $reflectionClass = new ReflectionClass($className);
+
+        return $reflectionClass->getFileName();
+    }
+
+    /**
+     * @param float $time microseconds
+     */
+    private static function toMilliseconds(float $time): int
+    {
+        return \round($time * 1000);
     }
 }
-/**
- * A TestListener that generates a logfile of the test execution using the
- * TeamCity format (for use with PhpStorm, for instance).
- *
- * @since Class available since Release 5.0.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Util_Log_TeamCity', 'PHPUnit_Util_Log_TeamCity', \false);

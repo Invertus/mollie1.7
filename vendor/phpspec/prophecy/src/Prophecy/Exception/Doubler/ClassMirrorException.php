@@ -8,17 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Exception\Doubler;
+
+namespace Prophecy\Exception\Doubler;
 
 use ReflectionClass;
-class ClassMirrorException extends \RuntimeException implements \MolliePrefix\Prophecy\Exception\Doubler\DoublerException
+
+class ClassMirrorException extends \RuntimeException implements DoublerException
 {
     private $class;
-    public function __construct($message, \ReflectionClass $class)
+
+    public function __construct($message, ReflectionClass $class)
     {
         parent::__construct($message);
+
         $this->class = $class;
     }
+
     public function getReflectedClass()
     {
         return $this->class;

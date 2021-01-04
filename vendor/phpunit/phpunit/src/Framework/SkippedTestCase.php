@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,80 +7,70 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework;
+
 /**
  * A skipped test case
- *
- * @since Class available since Release 4.3.0
  */
-class PHPUnit_Framework_SkippedTestCase extends \MolliePrefix\PHPUnit_Framework_TestCase
+class SkippedTestCase extends TestCase
 {
     /**
      * @var string
      */
     protected $message = '';
+
     /**
      * @var bool
      */
-    protected $backupGlobals = \false;
+    protected $backupGlobals = false;
+
     /**
      * @var bool
      */
-    protected $backupStaticAttributes = \false;
+    protected $backupStaticAttributes = false;
+
     /**
      * @var bool
      */
-    protected $runTestInSeparateProcess = \false;
+    protected $runTestInSeparateProcess = false;
+
     /**
      * @var bool
      */
-    protected $useErrorHandler = \false;
+    protected $useErrorHandler = false;
+
     /**
      * @var bool
      */
-    protected $useOutputBuffering = \false;
-    /**
-     * @param string $message
-     */
-    public function __construct($className, $methodName, $message = '')
+    protected $useOutputBuffering = false;
+
+    public function __construct(string $className, string $methodName, string $message = '')
     {
-        $this->message = $message;
         parent::__construct($className . '::' . $methodName);
+
+        $this->message = $message;
     }
-    /**
-     * @throws PHPUnit_Framework_Exception
-     */
-    protected function runTest()
-    {
-        $this->markTestSkipped($this->message);
-    }
-    /**
-     * @return string
-     */
-    public function getMessage()
+
+    public function getMessage(): string
     {
         return $this->message;
     }
+
     /**
      * Returns a string representation of the test case.
      *
-     * @return string
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function toString()
+    public function toString(): string
     {
         return $this->getName();
     }
+
+    /**
+     * @throws Exception
+     */
+    protected function runTest(): void
+    {
+        $this->markTestSkipped($this->message);
+    }
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * A skipped test case
- *
- * @since Class available since Release 4.3.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Framework_SkippedTestCase', 'PHPUnit_Framework_SkippedTestCase', \false);

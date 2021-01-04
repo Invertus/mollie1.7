@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -8,85 +7,83 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\CodeCoverage\Node;
+namespace SebastianBergmann\CodeCoverage\Node;
 
 /**
  * Recursive iterator for node object graphs.
  */
-class Iterator implements \RecursiveIterator
+final class Iterator implements \RecursiveIterator
 {
     /**
      * @var int
      */
     private $position;
+
     /**
      * @var AbstractNode[]
      */
     private $nodes;
-    /**
-     * @param Directory $node
-     */
-    public function __construct(\MolliePrefix\SebastianBergmann\CodeCoverage\Node\Directory $node)
+
+    public function __construct(Directory $node)
     {
         $this->nodes = $node->getChildNodes();
     }
+
     /**
      * Rewinds the Iterator to the first element.
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
+
     /**
      * Checks if there is a current element after calls to rewind() or next().
-     *
-     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->position < \count($this->nodes);
     }
+
     /**
      * Returns the key of the current element.
-     *
-     * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
+
     /**
      * Returns the current element.
-     *
-     * @return \PHPUnit_Framework_Test
      */
-    public function current()
+    public function current(): AbstractNode
     {
         return $this->valid() ? $this->nodes[$this->position] : null;
     }
+
     /**
      * Moves forward to next element.
      */
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
+
     /**
      * Returns the sub iterator for the current element.
      *
      * @return Iterator
      */
-    public function getChildren()
+    public function getChildren(): self
     {
         return new self($this->nodes[$this->position]);
     }
+
     /**
      * Checks whether the current element has children.
-     *
-     * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
-        return $this->nodes[$this->position] instanceof \MolliePrefix\SebastianBergmann\CodeCoverage\Node\Directory;
+        return $this->nodes[$this->position] instanceof Directory;
     }
 }

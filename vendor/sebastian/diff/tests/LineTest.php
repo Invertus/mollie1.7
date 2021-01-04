@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types=1);
 /*
  * This file is part of sebastian/diff.
  *
@@ -8,32 +7,38 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\Diff;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
+namespace SebastianBergmann\Diff;
+
+use PHPUnit\Framework\TestCase;
+
 /**
  * @covers SebastianBergmann\Diff\Line
  */
-class LineTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+final class LineTest extends TestCase
 {
     /**
      * @var Line
      */
     private $line;
-    protected function setUp()
+
+    protected function setUp(): void
     {
-        $this->line = new \MolliePrefix\SebastianBergmann\Diff\Line();
+        $this->line = new Line;
     }
-    public function testCanBeCreatedWithoutArguments()
+
+    public function testCanBeCreatedWithoutArguments(): void
     {
-        $this->assertInstanceOf('MolliePrefix\\SebastianBergmann\\Diff\\Line', $this->line);
+        $this->assertInstanceOf(Line::class, $this->line);
     }
-    public function testTypeCanBeRetrieved()
+
+    public function testTypeCanBeRetrieved(): void
     {
-        $this->assertEquals(\MolliePrefix\SebastianBergmann\Diff\Line::UNCHANGED, $this->line->getType());
+        $this->assertSame(Line::UNCHANGED, $this->line->getType());
     }
-    public function testContentCanBeRetrieved()
+
+    public function testContentCanBeRetrieved(): void
     {
-        $this->assertEquals('', $this->line->getContent());
+        $this->assertSame('', $this->line->getContent());
     }
 }

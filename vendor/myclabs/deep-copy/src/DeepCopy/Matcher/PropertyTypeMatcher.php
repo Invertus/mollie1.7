@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Matcher;
+namespace DeepCopy\Matcher;
 
-use MolliePrefix\DeepCopy\Reflection\ReflectionHelper;
+use DeepCopy\Reflection\ReflectionHelper;
 use ReflectionException;
+
 /**
  * Matches a property by its type.
  *
@@ -12,12 +13,13 @@ use ReflectionException;
  *
  * @final
  */
-class PropertyTypeMatcher implements \MolliePrefix\DeepCopy\Matcher\Matcher
+class PropertyTypeMatcher implements Matcher
 {
     /**
      * @var string
      */
     private $propertyType;
+
     /**
      * @param string $propertyType Property type
      */
@@ -25,17 +27,26 @@ class PropertyTypeMatcher implements \MolliePrefix\DeepCopy\Matcher\Matcher
     {
         $this->propertyType = $propertyType;
     }
+
     /**
      * {@inheritdoc}
      */
     public function matches($object, $property)
     {
         try {
-            $reflectionProperty = \MolliePrefix\DeepCopy\Reflection\ReflectionHelper::getProperty($object, $property);
-        } catch (\ReflectionException $exception) {
-            return \false;
+            $reflectionProperty = ReflectionHelper::getProperty($object, $property);
+        } catch (ReflectionException $exception) {
+            return false;
         }
-        $reflectionProperty->setAccessible(\true);
+
+        $reflectionProperty->setAccessible(true);
+
+        // Uninitialized properties (for PHP >7.4)
+        if (method_exists($reflectionProperty, 'isInitialized') && !$reflectionProperty->isInitialized($object)) {
+            // null instanceof $this->propertyType
+            return false;
+        }
+
         return $reflectionProperty->getValue($object) instanceof $this->propertyType;
     }
 }

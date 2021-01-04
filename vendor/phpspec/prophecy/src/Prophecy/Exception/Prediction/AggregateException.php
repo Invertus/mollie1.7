@@ -8,21 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Exception\Prediction;
 
-use MolliePrefix\Prophecy\Prophecy\ObjectProphecy;
-class AggregateException extends \RuntimeException implements \MolliePrefix\Prophecy\Exception\Prediction\PredictionException
+namespace Prophecy\Exception\Prediction;
+
+use Prophecy\Prophecy\ObjectProphecy;
+
+class AggregateException extends \RuntimeException implements PredictionException
 {
     private $exceptions = array();
     private $objectProphecy;
-    public function append(\MolliePrefix\Prophecy\Exception\Prediction\PredictionException $exception)
+
+    public function append(PredictionException $exception)
     {
         $message = $exception->getMessage();
-        $message = \strtr($message, array("\n" => "\n  ")) . "\n";
+        $message = strtr($message, array("\n" => "\n  "))."\n";
         $message = empty($this->exceptions) ? $message : "\n" . $message;
-        $this->message = \rtrim($this->message . $message);
+
+        $this->message      = rtrim($this->message.$message);
         $this->exceptions[] = $exception;
     }
+
     /**
      * @return PredictionException[]
      */
@@ -30,10 +35,12 @@ class AggregateException extends \RuntimeException implements \MolliePrefix\Prop
     {
         return $this->exceptions;
     }
-    public function setObjectProphecy(\MolliePrefix\Prophecy\Prophecy\ObjectProphecy $objectProphecy)
+
+    public function setObjectProphecy(ObjectProphecy $objectProphecy)
     {
         $this->objectProphecy = $objectProphecy;
     }
+
     /**
      * @return ObjectProphecy
      */

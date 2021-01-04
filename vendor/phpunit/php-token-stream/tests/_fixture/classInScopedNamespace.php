@@ -1,7 +1,9 @@
 <?php
+namespace Foo\BarScoped {
 
-namespace MolliePrefix\Foo\BarScoped;
+    class TestClass {
 
-class TestClass
-{
+    }
+
 }
+

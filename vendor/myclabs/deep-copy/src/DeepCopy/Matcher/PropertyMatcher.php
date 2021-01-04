@@ -1,20 +1,22 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Matcher;
+namespace DeepCopy\Matcher;
 
 /**
  * @final
  */
-class PropertyMatcher implements \MolliePrefix\DeepCopy\Matcher\Matcher
+class PropertyMatcher implements Matcher
 {
     /**
      * @var string
      */
     private $class;
+
     /**
      * @var string
      */
     private $property;
+
     /**
      * @param string $class    Class name
      * @param string $property Property name
@@ -24,6 +26,7 @@ class PropertyMatcher implements \MolliePrefix\DeepCopy\Matcher\Matcher
         $this->class = $class;
         $this->property = $property;
     }
+
     /**
      * Matches a specific property of a specific class.
      *
@@ -31,6 +34,6 @@ class PropertyMatcher implements \MolliePrefix\DeepCopy\Matcher\Matcher
      */
     public function matches($object, $property)
     {
-        return $object instanceof $this->class && $property == $this->property;
+        return ($object instanceof $this->class) && $property == $this->property;
     }
 }

@@ -1,18 +1,25 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class IgnoreCodeCoverageClassTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class IgnoreCodeCoverageClassTest extends TestCase
 {
-    public function testReturnTrue()
+    public function testReturnTrue(): void
     {
-        $sut = new \MolliePrefix\IgnoreCodeCoverageClass();
+        $sut = new IgnoreCodeCoverageClass;
         $this->assertTrue($sut->returnTrue());
     }
-    public function testReturnFalse()
+
+    public function testReturnFalse(): void
     {
-        $sut = new \MolliePrefix\IgnoreCodeCoverageClass();
+        $sut = new IgnoreCodeCoverageClass;
         $this->assertFalse($sut->returnFalse());
     }
 }
-\class_alias('MolliePrefix\\IgnoreCodeCoverageClassTest', 'IgnoreCodeCoverageClassTest', \false);

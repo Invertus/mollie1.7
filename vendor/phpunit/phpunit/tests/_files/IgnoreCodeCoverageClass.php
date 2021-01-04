@@ -1,6 +1,12 @@
 <?php
-
-namespace MolliePrefix;
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 /**
  * @codeCoverageIgnore
@@ -9,14 +15,11 @@ class IgnoreCodeCoverageClass
 {
     public function returnTrue()
     {
-        return \true;
+        return true;
     }
+
     public function returnFalse()
     {
-        return \false;
+        return false;
     }
 }
-/**
- * @codeCoverageIgnore
- */
-\class_alias('MolliePrefix\\IgnoreCodeCoverageClass', 'IgnoreCodeCoverageClass', \false);

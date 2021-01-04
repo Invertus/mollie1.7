@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Exception\Prediction;
 
-use MolliePrefix\Prophecy\Exception\Exception;
-interface PredictionException extends \MolliePrefix\Prophecy\Exception\Exception
+namespace Prophecy\Exception\Prediction;
+
+use Prophecy\Exception\Exception;
+
+interface PredictionException extends Exception
 {
 }

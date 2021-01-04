@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -8,35 +7,79 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Project extends \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Node
+final class Project extends Node
 {
-    public function __construct($name)
+    public function __construct(string $directory)
     {
         $this->init();
-        $this->setProjectName($name);
+        $this->setProjectSourceDirectory($directory);
     }
-    private function init()
+
+    public function getProjectSourceDirectory(): string
     {
-        $dom = new \DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><project/></phpunit>');
-        $this->setContextNode($dom->getElementsByTagNameNS('http://schema.phpunit.de/coverage/1.0', 'project')->item(0));
+        return $this->getContextNode()->getAttribute('source');
     }
-    private function setProjectName($name)
+
+    public function getBuildInformation(): BuildInformation
     {
-        $this->getContextNode()->setAttribute('name', $name);
-    }
-    public function getTests()
-    {
-        $testsNode = $this->getContextNode()->getElementsByTagNameNS('http://schema.phpunit.de/coverage/1.0', 'tests')->item(0);
-        if (!$testsNode) {
-            $testsNode = $this->getContextNode()->appendChild($this->getDom()->createElementNS('http://schema.phpunit.de/coverage/1.0', 'tests'));
+        $buildNode = $this->getDom()->getElementsByTagNameNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'build'
+        )->item(0);
+
+        if (!$buildNode) {
+            $buildNode = $this->getDom()->documentElement->appendChild(
+                $this->getDom()->createElementNS(
+                    'https://schema.phpunit.de/coverage/1.0',
+                    'build'
+                )
+            );
         }
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Tests($testsNode);
+
+        return new BuildInformation($buildNode);
     }
-    public function asDom()
+
+    public function getTests(): Tests
+    {
+        $testsNode = $this->getContextNode()->getElementsByTagNameNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'tests'
+        )->item(0);
+
+        if (!$testsNode) {
+            $testsNode = $this->getContextNode()->appendChild(
+                $this->getDom()->createElementNS(
+                    'https://schema.phpunit.de/coverage/1.0',
+                    'tests'
+                )
+            );
+        }
+
+        return new Tests($testsNode);
+    }
+
+    public function asDom(): \DOMDocument
     {
         return $this->getDom();
+    }
+
+    private function init(): void
+    {
+        $dom = new \DOMDocument;
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><build/><project/></phpunit>');
+
+        $this->setContextNode(
+            $dom->getElementsByTagNameNS(
+                'https://schema.phpunit.de/coverage/1.0',
+                'project'
+            )->item(0)
+        );
+    }
+
+    private function setProjectSourceDirectory(string $name): void
+    {
+        $this->getContextNode()->setAttribute('source', $name);
     }
 }

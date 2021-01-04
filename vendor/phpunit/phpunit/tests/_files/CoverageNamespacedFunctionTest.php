@@ -1,15 +1,21 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class CoverageNamespacedFunctionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class CoverageNamespacedFunctionTest extends TestCase
 {
     /**
      * @covers foo\func()
      */
-    public function testFunc()
+    public function testFunc(): void
     {
-        \MolliePrefix\foo\func();
+        foo\func();
     }
 }
-\class_alias('MolliePrefix\\CoverageNamespacedFunctionTest', 'CoverageNamespacedFunctionTest', \false);

@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,163 +7,455 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework;
+
+use Iterator;
+use IteratorAggregate;
+use PHPUnit\Runner\BaseTestRunner;
+use PHPUnit\Runner\Filter\Factory;
+use PHPUnit\Runner\PhptTestCase;
+use PHPUnit\Util\FileLoader;
+use PHPUnit\Util\InvalidArgumentHelper;
+use ReflectionClass;
+use ReflectionMethod;
+use Throwable;
+
 /**
  * A TestSuite is a composite of Tests. It runs a collection of test cases.
- *
- * @since Class available since Release 2.0.0
  */
-class PHPUnit_Framework_TestSuite implements \MolliePrefix\PHPUnit_Framework_Test, \MolliePrefix\PHPUnit_Framework_SelfDescribing, \IteratorAggregate
+class TestSuite implements IteratorAggregate, SelfDescribing, Test
 {
-    /**
-     * Last count of tests in this suite.
-     *
-     * @var int|null
-     */
-    private $cachedNumTests;
     /**
      * Enable or disable the backup and restoration of the $GLOBALS array.
      *
      * @var bool
      */
-    protected $backupGlobals = null;
+    protected $backupGlobals;
+
     /**
      * Enable or disable the backup and restoration of static attributes.
      *
      * @var bool
      */
-    protected $backupStaticAttributes = null;
+    protected $backupStaticAttributes;
+
     /**
      * @var bool
      */
-    private $beStrictAboutChangesToGlobalState = null;
-    /**
-     * @var bool
-     */
-    protected $runTestInSeparateProcess = \false;
+    protected $runTestInSeparateProcess = false;
+
     /**
      * The name of the test suite.
      *
      * @var string
      */
     protected $name = '';
+
     /**
      * The test groups of the test suite.
      *
      * @var array
      */
     protected $groups = [];
+
     /**
      * The tests in the test suite.
      *
-     * @var array
+     * @var Test[]
      */
     protected $tests = [];
+
     /**
      * The number of tests in the test suite.
      *
      * @var int
      */
     protected $numTests = -1;
+
     /**
      * @var bool
      */
-    protected $testCase = \false;
+    protected $testCase = false;
+
     /**
      * @var array
      */
     protected $foundClasses = [];
+
     /**
-     * @var PHPUnit_Runner_Filter_Factory
+     * Last count of tests in this suite.
+     *
+     * @var null|int
      */
-    private $iteratorFilter = null;
+    private $cachedNumTests;
+
+    /**
+     * @var bool
+     */
+    private $beStrictAboutChangesToGlobalState;
+
+    /**
+     * @var Factory
+     */
+    private $iteratorFilter;
+
+    /**
+     * @var string[]
+     */
+    private $declaredClasses;
+
+    /**
+     * @param string $name
+     *
+     * @throws Exception
+     */
+    public static function createTest(ReflectionClass $theClass, $name): Test
+    {
+        $className = $theClass->getName();
+
+        if (!$theClass->isInstantiable()) {
+            return self::warning(
+                \sprintf('Cannot instantiate class "%s".', $className)
+            );
+        }
+
+        $backupSettings = \PHPUnit\Util\Test::getBackupSettings(
+            $className,
+            $name
+        );
+
+        $preserveGlobalState = \PHPUnit\Util\Test::getPreserveGlobalStateSettings(
+            $className,
+            $name
+        );
+
+        $runTestInSeparateProcess = \PHPUnit\Util\Test::getProcessIsolationSettings(
+            $className,
+            $name
+        );
+
+        $runClassInSeparateProcess = \PHPUnit\Util\Test::getClassProcessIsolationSettings(
+            $className,
+            $name
+        );
+
+        $constructor = $theClass->getConstructor();
+
+        if ($constructor === null) {
+            throw new Exception('No valid test provided.');
+        }
+        $parameters = $constructor->getParameters();
+
+        // TestCase() or TestCase($name)
+        if (\count($parameters) < 2) {
+            $test = new $className;
+        } // TestCase($name, $data)
+        else {
+            try {
+                $data = \PHPUnit\Util\Test::getProvidedData(
+                    $className,
+                    $name
+                );
+            } catch (IncompleteTestError $e) {
+                $message = \sprintf(
+                    'Test for %s::%s marked incomplete by data provider',
+                    $className,
+                    $name
+                );
+
+                $_message = $e->getMessage();
+
+                if (!empty($_message)) {
+                    $message .= "\n" . $_message;
+                }
+
+                $data = self::incompleteTest($className, $name, $message);
+            } catch (SkippedTestError $e) {
+                $message = \sprintf(
+                    'Test for %s::%s skipped by data provider',
+                    $className,
+                    $name
+                );
+
+                $_message = $e->getMessage();
+
+                if (!empty($_message)) {
+                    $message .= "\n" . $_message;
+                }
+
+                $data = self::skipTest($className, $name, $message);
+            } catch (Throwable $t) {
+                $message = \sprintf(
+                    'The data provider specified for %s::%s is invalid.',
+                    $className,
+                    $name
+                );
+
+                $_message = $t->getMessage();
+
+                if (!empty($_message)) {
+                    $message .= "\n" . $_message;
+                }
+
+                $data = self::warning($message);
+            }
+
+            // Test method with @dataProvider.
+            if (isset($data)) {
+                $test = new DataProviderTestSuite(
+                    $className . '::' . $name
+                );
+
+                if (empty($data)) {
+                    $data = self::warning(
+                        \sprintf(
+                            'No tests found in suite "%s".',
+                            $test->getName()
+                        )
+                    );
+                }
+
+                $groups = \PHPUnit\Util\Test::getGroups($className, $name);
+
+                if ($data instanceof WarningTestCase ||
+                    $data instanceof SkippedTestCase ||
+                    $data instanceof IncompleteTestCase) {
+                    $test->addTest($data, $groups);
+                } else {
+                    foreach ($data as $_dataName => $_data) {
+                        $_test = new $className($name, $_data, $_dataName);
+
+                        /* @var TestCase $_test */
+
+                        if ($runTestInSeparateProcess) {
+                            $_test->setRunTestInSeparateProcess(true);
+
+                            if ($preserveGlobalState !== null) {
+                                $_test->setPreserveGlobalState($preserveGlobalState);
+                            }
+                        }
+
+                        if ($runClassInSeparateProcess) {
+                            $_test->setRunClassInSeparateProcess(true);
+
+                            if ($preserveGlobalState !== null) {
+                                $_test->setPreserveGlobalState($preserveGlobalState);
+                            }
+                        }
+
+                        if ($backupSettings['backupGlobals'] !== null) {
+                            $_test->setBackupGlobals(
+                                $backupSettings['backupGlobals']
+                            );
+                        }
+
+                        if ($backupSettings['backupStaticAttributes'] !== null) {
+                            $_test->setBackupStaticAttributes(
+                                $backupSettings['backupStaticAttributes']
+                            );
+                        }
+
+                        $test->addTest($_test, $groups);
+                    }
+                }
+            } else {
+                $test = new $className;
+            }
+        }
+
+        if ($test instanceof TestCase) {
+            $test->setName($name);
+
+            if ($runTestInSeparateProcess) {
+                $test->setRunTestInSeparateProcess(true);
+
+                if ($preserveGlobalState !== null) {
+                    $test->setPreserveGlobalState($preserveGlobalState);
+                }
+            }
+
+            if ($runClassInSeparateProcess) {
+                $test->setRunClassInSeparateProcess(true);
+
+                if ($preserveGlobalState !== null) {
+                    $test->setPreserveGlobalState($preserveGlobalState);
+                }
+            }
+
+            if ($backupSettings['backupGlobals'] !== null) {
+                $test->setBackupGlobals($backupSettings['backupGlobals']);
+            }
+
+            if ($backupSettings['backupStaticAttributes'] !== null) {
+                $test->setBackupStaticAttributes(
+                    $backupSettings['backupStaticAttributes']
+                );
+            }
+        }
+
+        return $test;
+    }
+
+    public static function isTestMethod(ReflectionMethod $method): bool
+    {
+        if (\strpos($method->name, 'test') === 0) {
+            return true;
+        }
+
+        $annotations = \PHPUnit\Util\Test::parseAnnotations($method->getDocComment());
+
+        return isset($annotations['test']);
+    }
+
     /**
      * Constructs a new TestSuite:
      *
-     *   - PHPUnit_Framework_TestSuite() constructs an empty TestSuite.
+     *   - PHPUnit\Framework\TestSuite() constructs an empty TestSuite.
      *
-     *   - PHPUnit_Framework_TestSuite(ReflectionClass) constructs a
+     *   - PHPUnit\Framework\TestSuite(ReflectionClass) constructs a
      *     TestSuite from the given class.
      *
-     *   - PHPUnit_Framework_TestSuite(ReflectionClass, String)
+     *   - PHPUnit\Framework\TestSuite(ReflectionClass, String)
      *     constructs a TestSuite from the given class with the given
      *     name.
      *
-     *   - PHPUnit_Framework_TestSuite(String) either constructs a
+     *   - PHPUnit\Framework\TestSuite(String) either constructs a
      *     TestSuite from the given class (if the passed string is the
      *     name of an existing class) or constructs an empty TestSuite
      *     with the given name.
      *
-     * @param mixed  $theClass
      * @param string $name
      *
-     * @throws PHPUnit_Framework_Exception
+     * @throws Exception
      */
     public function __construct($theClass = '', $name = '')
     {
-        $argumentsValid = \false;
-        if (\is_object($theClass) && $theClass instanceof \ReflectionClass) {
-            $argumentsValid = \true;
-        } elseif (\is_string($theClass) && $theClass !== '' && \class_exists($theClass, \false)) {
-            $argumentsValid = \true;
+        $this->declaredClasses = \get_declared_classes();
+
+        $argumentsValid = false;
+
+        if (\is_object($theClass) &&
+            $theClass instanceof ReflectionClass) {
+            $argumentsValid = true;
+        } elseif (\is_string($theClass) &&
+            $theClass !== '' &&
+            \class_exists($theClass, true)) {
+            $argumentsValid = true;
+
             if ($name == '') {
                 $name = $theClass;
             }
-            $theClass = new \ReflectionClass($theClass);
+
+            $theClass = new ReflectionClass($theClass);
         } elseif (\is_string($theClass)) {
             $this->setName($theClass);
+
             return;
         }
+
         if (!$argumentsValid) {
-            throw new \MolliePrefix\PHPUnit_Framework_Exception();
+            throw new Exception;
         }
-        if (!$theClass->isSubclassOf('PHPUnit_Framework_TestCase')) {
-            throw new \MolliePrefix\PHPUnit_Framework_Exception('Class "' . $theClass->name . '" does not extend PHPUnit_Framework_TestCase.');
+
+        if (!$theClass->isSubclassOf(TestCase::class)) {
+            $this->setName($theClass);
+
+            return;
         }
+
         if ($name != '') {
             $this->setName($name);
         } else {
             $this->setName($theClass->getName());
         }
+
         $constructor = $theClass->getConstructor();
-        if ($constructor !== null && !$constructor->isPublic()) {
-            $this->addTest(self::warning(\sprintf('Class "%s" has no public constructor.', $theClass->getName())));
+
+        if ($constructor !== null &&
+            !$constructor->isPublic()) {
+            $this->addTest(
+                self::warning(
+                    \sprintf(
+                        'Class "%s" has no public constructor.',
+                        $theClass->getName()
+                    )
+                )
+            );
+
             return;
         }
+
         foreach ($theClass->getMethods() as $method) {
+            if ($method->getDeclaringClass()->getName() === Assert::class) {
+                continue;
+            }
+
+            if ($method->getDeclaringClass()->getName() === TestCase::class) {
+                continue;
+            }
+
             $this->addTestMethod($theClass, $method);
         }
+
         if (empty($this->tests)) {
-            $this->addTest(self::warning(\sprintf('No tests found in class "%s".', $theClass->getName())));
+            $this->addTest(
+                self::warning(
+                    \sprintf(
+                        'No tests found in class "%s".',
+                        $theClass->getName()
+                    )
+                )
+            );
         }
-        $this->testCase = \true;
+
+        $this->testCase = true;
     }
+
+    /**
+     * Template Method that is called before the tests
+     * of this test suite are run.
+     */
+    protected function setUp(): void
+    {
+    }
+
+    /**
+     * Template Method that is called after the tests
+     * of this test suite have finished running.
+     */
+    protected function tearDown(): void
+    {
+    }
+
     /**
      * Returns a string representation of the test suite.
-     *
-     * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         return $this->getName();
     }
+
     /**
      * Adds a test to the suite.
      *
-     * @param PHPUnit_Framework_Test $test
-     * @param array                  $groups
+     * @param array $groups
      */
-    public function addTest(\MolliePrefix\PHPUnit_Framework_Test $test, $groups = [])
+    public function addTest(Test $test, $groups = []): void
     {
-        $class = new \ReflectionClass($test);
+        $class = new ReflectionClass($test);
+
         if (!$class->isAbstract()) {
-            $this->tests[] = $test;
+            $this->tests[]  = $test;
             $this->numTests = -1;
+
             if ($test instanceof self && empty($groups)) {
                 $groups = $test->getGroups();
             }
+
             if (empty($groups)) {
                 $groups = ['default'];
             }
+
             foreach ($groups as $group) {
                 if (!isset($this->groups[$group])) {
                     $this->groups[$group] = [$test];
@@ -174,617 +463,500 @@ class PHPUnit_Framework_TestSuite implements \MolliePrefix\PHPUnit_Framework_Tes
                     $this->groups[$group][] = $test;
                 }
             }
-            if ($test instanceof \MolliePrefix\PHPUnit_Framework_TestCase) {
+
+            if ($test instanceof TestCase) {
                 $test->setGroups($groups);
             }
         }
     }
+
     /**
      * Adds the tests from the given class to the suite.
      *
-     * @param mixed $testClass
-     *
-     * @throws PHPUnit_Framework_Exception
+     * @throws Exception
      */
-    public function addTestSuite($testClass)
+    public function addTestSuite($testClass): void
     {
         if (\is_string($testClass) && \class_exists($testClass)) {
-            $testClass = new \ReflectionClass($testClass);
+            $testClass = new ReflectionClass($testClass);
         }
+
         if (!\is_object($testClass)) {
-            throw \MolliePrefix\PHPUnit_Util_InvalidArgumentHelper::factory(1, 'class name or object');
+            throw InvalidArgumentHelper::factory(
+                1,
+                'class name or object'
+            );
         }
+
         if ($testClass instanceof self) {
             $this->addTest($testClass);
-        } elseif ($testClass instanceof \ReflectionClass) {
-            $suiteMethod = \false;
-            if (!$testClass->isAbstract()) {
-                if ($testClass->hasMethod(\MolliePrefix\PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
-                    $method = $testClass->getMethod(\MolliePrefix\PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME);
-                    if ($method->isStatic()) {
-                        $this->addTest($method->invoke(null, $testClass->getName()));
-                        $suiteMethod = \true;
-                    }
+        } elseif ($testClass instanceof ReflectionClass) {
+            $suiteMethod = false;
+
+            if (!$testClass->isAbstract() && $testClass->hasMethod(BaseTestRunner::SUITE_METHODNAME)) {
+                $method = $testClass->getMethod(
+                    BaseTestRunner::SUITE_METHODNAME
+                );
+
+                if ($method->isStatic()) {
+                    $this->addTest(
+                        $method->invoke(null, $testClass->getName())
+                    );
+
+                    $suiteMethod = true;
                 }
             }
-            if (!$suiteMethod && !$testClass->isAbstract()) {
+
+            if (!$suiteMethod && !$testClass->isAbstract() && $testClass->isSubclassOf(TestCase::class)) {
                 $this->addTest(new self($testClass));
             }
         } else {
-            throw new \MolliePrefix\PHPUnit_Framework_Exception();
+            throw new Exception;
         }
     }
+
     /**
      * Wraps both <code>addTest()</code> and <code>addTestSuite</code>
      * as well as the separate import statements for the user's convenience.
      *
      * If the named file cannot be read or there are no new tests that can be
-     * added, a <code>PHPUnit_Framework_WarningTestCase</code> will be created instead,
+     * added, a <code>PHPUnit\Framework\WarningTestCase</code> will be created instead,
      * leaving the current test run untouched.
      *
-     * @param string $filename
-     *
-     * @throws PHPUnit_Framework_Exception
-     *
-     * @since Method available since Release 2.3.0
+     * @throws Exception
      */
-    public function addTestFile($filename)
+    public function addTestFile(string $filename): void
     {
-        if (!\is_string($filename)) {
-            throw \MolliePrefix\PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string');
-        }
         if (\file_exists($filename) && \substr($filename, -5) == '.phpt') {
-            $this->addTest(new \MolliePrefix\PHPUnit_Extensions_PhptTestCase($filename));
+            $this->addTest(
+                new PhptTestCase($filename)
+            );
+
             return;
         }
+
         // The given file may contain further stub classes in addition to the
         // test class itself. Figure out the actual test class.
-        $classes = \get_declared_classes();
-        $filename = \MolliePrefix\PHPUnit_Util_Fileloader::checkAndLoad($filename);
-        $newClasses = \array_diff(\get_declared_classes(), $classes);
+        $filename   = FileLoader::checkAndLoad($filename);
+        $newClasses = \array_diff(\get_declared_classes(), $this->declaredClasses);
+
         // The diff is empty in case a parent class (with test methods) is added
         // AFTER a child class that inherited from it. To account for that case,
-        // cumulate all discovered classes, so the parent class may be found in
+        // accumulate all discovered classes, so the parent class may be found in
         // a later invocation.
         if (!empty($newClasses)) {
             // On the assumption that test classes are defined first in files,
             // process discovered classes in approximate LIFO order, so as to
             // avoid unnecessary reflection.
-            $this->foundClasses = \array_merge($newClasses, $this->foundClasses);
+            $this->foundClasses    = \array_merge($newClasses, $this->foundClasses);
+            $this->declaredClasses = \get_declared_classes();
         }
+
         // The test class's name must match the filename, either in full, or as
-        // a PEAR/PSR-0 prefixed shortname ('NameSpace_ShortName'), or as a
-        // PSR-1 local shortname ('NameSpace\ShortName'). The comparison must be
+        // a PEAR/PSR-0 prefixed short name ('NameSpace_ShortName'), or as a
+        // PSR-1 local short name ('NameSpace\ShortName'). The comparison must be
         // anchored to prevent false-positive matches (e.g., 'OtherShortName').
-        $shortname = \basename($filename, '.php');
-        $shortnameRegEx = '/(?:^|_|\\\\)' . \preg_quote($shortname, '/') . '$/';
+        $shortName      = \basename($filename, '.php');
+        $shortNameRegEx = '/(?:^|_|\\\\)' . \preg_quote($shortName, '/') . '$/';
+
         foreach ($this->foundClasses as $i => $className) {
-            if (\preg_match($shortnameRegEx, $className)) {
-                $class = new \ReflectionClass($className);
+            if (\preg_match($shortNameRegEx, $className)) {
+                $class = new ReflectionClass($className);
+
                 if ($class->getFileName() == $filename) {
                     $newClasses = [$className];
                     unset($this->foundClasses[$i]);
+
                     break;
                 }
             }
         }
+
         foreach ($newClasses as $className) {
-            $class = new \ReflectionClass($className);
+            $class = new ReflectionClass($className);
+
+            if (\dirname($class->getFileName()) === __DIR__) {
+                continue;
+            }
+
             if (!$class->isAbstract()) {
-                if ($class->hasMethod(\MolliePrefix\PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME)) {
-                    $method = $class->getMethod(\MolliePrefix\PHPUnit_Runner_BaseTestRunner::SUITE_METHODNAME);
+                if ($class->hasMethod(BaseTestRunner::SUITE_METHODNAME)) {
+                    $method = $class->getMethod(
+                        BaseTestRunner::SUITE_METHODNAME
+                    );
+
                     if ($method->isStatic()) {
                         $this->addTest($method->invoke(null, $className));
                     }
-                } elseif ($class->implementsInterface('PHPUnit_Framework_Test')) {
+                } elseif ($class->implementsInterface(Test::class)) {
                     $this->addTestSuite($class);
                 }
             }
         }
+
         $this->numTests = -1;
     }
+
     /**
      * Wrapper for addTestFile() that adds multiple test files.
      *
-     * @param array|Iterator $filenames
+     * @param array|Iterator $fileNames
      *
-     * @throws PHPUnit_Framework_Exception
-     *
-     * @since Method available since Release 2.3.0
+     * @throws Exception
      */
-    public function addTestFiles($filenames)
+    public function addTestFiles($fileNames): void
     {
-        if (!(\is_array($filenames) || \is_object($filenames) && $filenames instanceof \Iterator)) {
-            throw \MolliePrefix\PHPUnit_Util_InvalidArgumentHelper::factory(1, 'array or iterator');
+        if (!(\is_array($fileNames) ||
+            (\is_object($fileNames) && $fileNames instanceof Iterator))) {
+            throw InvalidArgumentHelper::factory(
+                1,
+                'array or iterator'
+            );
         }
-        foreach ($filenames as $filename) {
+
+        foreach ($fileNames as $filename) {
             $this->addTestFile((string) $filename);
         }
     }
+
     /**
      * Counts the number of test cases that will be run by this test.
      *
-     * @param bool $preferCache Indicates if cache is preferred.
-     *
-     * @return int
+     * @param bool $preferCache indicates if cache is preferred
      */
-    public function count($preferCache = \false)
+    public function count($preferCache = false): int
     {
         if ($preferCache && $this->cachedNumTests !== null) {
-            $numTests = $this->cachedNumTests;
-        } else {
-            $numTests = 0;
-            foreach ($this as $test) {
-                $numTests += \count($test);
-            }
-            $this->cachedNumTests = $numTests;
+            return $this->cachedNumTests;
         }
+
+        $numTests = 0;
+
+        foreach ($this as $test) {
+            $numTests += \count($test);
+        }
+
+        $this->cachedNumTests = $numTests;
+
         return $numTests;
     }
-    /**
-     * @param ReflectionClass $theClass
-     * @param string          $name
-     *
-     * @return PHPUnit_Framework_Test
-     *
-     * @throws PHPUnit_Framework_Exception
-     */
-    public static function createTest(\ReflectionClass $theClass, $name)
-    {
-        $className = $theClass->getName();
-        if (!$theClass->isInstantiable()) {
-            return self::warning(\sprintf('Cannot instantiate class "%s".', $className));
-        }
-        $backupSettings = \MolliePrefix\PHPUnit_Util_Test::getBackupSettings($className, $name);
-        $preserveGlobalState = \MolliePrefix\PHPUnit_Util_Test::getPreserveGlobalStateSettings($className, $name);
-        $runTestInSeparateProcess = \MolliePrefix\PHPUnit_Util_Test::getProcessIsolationSettings($className, $name);
-        $constructor = $theClass->getConstructor();
-        if ($constructor !== null) {
-            $parameters = $constructor->getParameters();
-            // TestCase() or TestCase($name)
-            if (\count($parameters) < 2) {
-                $test = new $className();
-            } else {
-                try {
-                    $data = \MolliePrefix\PHPUnit_Util_Test::getProvidedData($className, $name);
-                } catch (\MolliePrefix\PHPUnit_Framework_IncompleteTestError $e) {
-                    $message = \sprintf('Test for %s::%s marked incomplete by data provider', $className, $name);
-                    $_message = $e->getMessage();
-                    if (!empty($_message)) {
-                        $message .= "\n" . $_message;
-                    }
-                    $data = self::incompleteTest($className, $name, $message);
-                } catch (\MolliePrefix\PHPUnit_Framework_SkippedTestError $e) {
-                    $message = \sprintf('Test for %s::%s skipped by data provider', $className, $name);
-                    $_message = $e->getMessage();
-                    if (!empty($_message)) {
-                        $message .= "\n" . $_message;
-                    }
-                    $data = self::skipTest($className, $name, $message);
-                } catch (\Throwable $_t) {
-                    $t = $_t;
-                } catch (\Exception $_t) {
-                    $t = $_t;
-                }
-                if (isset($t)) {
-                    $message = \sprintf('The data provider specified for %s::%s is invalid.', $className, $name);
-                    $_message = $t->getMessage();
-                    if (!empty($_message)) {
-                        $message .= "\n" . $_message;
-                    }
-                    $data = self::warning($message);
-                }
-                // Test method with @dataProvider.
-                if (isset($data)) {
-                    $test = new \MolliePrefix\PHPUnit_Framework_TestSuite_DataProvider($className . '::' . $name);
-                    if (empty($data)) {
-                        $data = self::warning(\sprintf('No tests found in suite "%s".', $test->getName()));
-                    }
-                    $groups = \MolliePrefix\PHPUnit_Util_Test::getGroups($className, $name);
-                    if ($data instanceof \MolliePrefix\PHPUnit_Framework_WarningTestCase || $data instanceof \MolliePrefix\PHPUnit_Framework_SkippedTestCase || $data instanceof \MolliePrefix\PHPUnit_Framework_IncompleteTestCase) {
-                        $test->addTest($data, $groups);
-                    } else {
-                        foreach ($data as $_dataName => $_data) {
-                            $_test = new $className($name, $_data, $_dataName);
-                            if ($runTestInSeparateProcess) {
-                                $_test->setRunTestInSeparateProcess(\true);
-                                if ($preserveGlobalState !== null) {
-                                    $_test->setPreserveGlobalState($preserveGlobalState);
-                                }
-                            }
-                            if ($backupSettings['backupGlobals'] !== null) {
-                                $_test->setBackupGlobals($backupSettings['backupGlobals']);
-                            }
-                            if ($backupSettings['backupStaticAttributes'] !== null) {
-                                $_test->setBackupStaticAttributes($backupSettings['backupStaticAttributes']);
-                            }
-                            $test->addTest($_test, $groups);
-                        }
-                    }
-                } else {
-                    $test = new $className();
-                }
-            }
-        }
-        if (!isset($test)) {
-            throw new \MolliePrefix\PHPUnit_Framework_Exception('No valid test provided.');
-        }
-        if ($test instanceof \MolliePrefix\PHPUnit_Framework_TestCase) {
-            $test->setName($name);
-            if ($runTestInSeparateProcess) {
-                $test->setRunTestInSeparateProcess(\true);
-                if ($preserveGlobalState !== null) {
-                    $test->setPreserveGlobalState($preserveGlobalState);
-                }
-            }
-            if ($backupSettings['backupGlobals'] !== null) {
-                $test->setBackupGlobals($backupSettings['backupGlobals']);
-            }
-            if ($backupSettings['backupStaticAttributes'] !== null) {
-                $test->setBackupStaticAttributes($backupSettings['backupStaticAttributes']);
-            }
-        }
-        return $test;
-    }
-    /**
-     * Creates a default TestResult object.
-     *
-     * @return PHPUnit_Framework_TestResult
-     */
-    protected function createResult()
-    {
-        return new \MolliePrefix\PHPUnit_Framework_TestResult();
-    }
+
     /**
      * Returns the name of the suite.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
+
     /**
      * Returns the test groups of the suite.
-     *
-     * @return array
-     *
-     * @since Method available since Release 3.2.0
      */
-    public function getGroups()
+    public function getGroups(): array
     {
         return \array_keys($this->groups);
     }
+
     public function getGroupDetails()
     {
         return $this->groups;
     }
+
     /**
      * Set tests groups of the test case
-     *
-     * @param array $groups
-     *
-     * @since Method available since Release 4.0.0
      */
-    public function setGroupDetails(array $groups)
+    public function setGroupDetails(array $groups): void
     {
         $this->groups = $groups;
     }
+
     /**
      * Runs the tests and collects their result in a TestResult.
      *
-     * @param PHPUnit_Framework_TestResult $result
-     *
-     * @return PHPUnit_Framework_TestResult
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function run(\MolliePrefix\PHPUnit_Framework_TestResult $result = null)
+    public function run(TestResult $result = null): TestResult
     {
         if ($result === null) {
             $result = $this->createResult();
         }
+
         if (\count($this) == 0) {
             return $result;
         }
-        $hookMethods = \MolliePrefix\PHPUnit_Util_Test::getHookMethods($this->name);
+
+        $hookMethods = \PHPUnit\Util\Test::getHookMethods($this->name);
+
         $result->startTestSuite($this);
+
         try {
             $this->setUp();
+
             foreach ($hookMethods['beforeClass'] as $beforeClassMethod) {
-                if ($this->testCase === \true && \class_exists($this->name, \false) && \method_exists($this->name, $beforeClassMethod)) {
-                    if ($missingRequirements = \MolliePrefix\PHPUnit_Util_Test::getMissingRequirements($this->name, $beforeClassMethod)) {
+                if ($this->testCase === true &&
+                    \class_exists($this->name, false) &&
+                    \method_exists($this->name, $beforeClassMethod)) {
+                    if ($missingRequirements = \PHPUnit\Util\Test::getMissingRequirements($this->name, $beforeClassMethod)) {
                         $this->markTestSuiteSkipped(\implode(\PHP_EOL, $missingRequirements));
                     }
+
                     \call_user_func([$this->name, $beforeClassMethod]);
                 }
             }
-        } catch (\MolliePrefix\PHPUnit_Framework_SkippedTestSuiteError $e) {
-            $numTests = \count($this);
-            for ($i = 0; $i < $numTests; $i++) {
-                $result->startTest($this);
-                $result->addFailure($this, $e, 0);
-                $result->endTest($this, 0);
+        } catch (SkippedTestSuiteError $error) {
+            foreach ($this->tests() as $test) {
+                $result->startTest($test);
+                $result->addFailure($test, $error, 0);
+                $result->endTest($test, 0);
             }
+
             $this->tearDown();
             $result->endTestSuite($this);
+
             return $result;
-        } catch (\Throwable $_t) {
-            $t = $_t;
-        } catch (\Exception $_t) {
-            $t = $_t;
-        }
-        if (isset($t)) {
-            $numTests = \count($this);
-            for ($i = 0; $i < $numTests; $i++) {
-                $result->startTest($this);
-                $result->addError($this, $t, 0);
-                $result->endTest($this, 0);
+        } catch (Throwable $t) {
+            foreach ($this->tests() as $test) {
+                if ($result->shouldStop()) {
+                    break;
+                }
+
+                $result->startTest($test);
+                $result->addError($test, $t, 0);
+                $result->endTest($test, 0);
             }
+
             $this->tearDown();
             $result->endTestSuite($this);
+
             return $result;
         }
+
         foreach ($this as $test) {
             if ($result->shouldStop()) {
                 break;
             }
-            if ($test instanceof \MolliePrefix\PHPUnit_Framework_TestCase || $test instanceof self) {
-                $test->setbeStrictAboutChangesToGlobalState($this->beStrictAboutChangesToGlobalState);
+
+            if ($test instanceof TestCase || $test instanceof self) {
+                $test->setBeStrictAboutChangesToGlobalState($this->beStrictAboutChangesToGlobalState);
                 $test->setBackupGlobals($this->backupGlobals);
                 $test->setBackupStaticAttributes($this->backupStaticAttributes);
                 $test->setRunTestInSeparateProcess($this->runTestInSeparateProcess);
             }
+
             $test->run($result);
         }
-        foreach ($hookMethods['afterClass'] as $afterClassMethod) {
-            if ($this->testCase === \true && \class_exists($this->name, \false) && \method_exists($this->name, $afterClassMethod)) {
-                \call_user_func([$this->name, $afterClassMethod]);
+
+        try {
+            foreach ($hookMethods['afterClass'] as $afterClassMethod) {
+                if ($this->testCase === true && \class_exists($this->name, false) && \method_exists(
+                    $this->name,
+                    $afterClassMethod
+                )) {
+                    \call_user_func([$this->name, $afterClassMethod]);
+                }
             }
+        } catch (Throwable $t) {
+            $message = "Exception in {$this->name}::$afterClassMethod" . \PHP_EOL . $t->getMessage();
+            $error   = new SyntheticError($message, 0, $t->getFile(), $t->getLine(), $t->getTrace());
+
+            $placeholderTest = clone $test;
+            $placeholderTest->setName($afterClassMethod);
+
+            $result->startTest($placeholderTest);
+            $result->addFailure($placeholderTest, $error, 0);
+            $result->endTest($placeholderTest, 0);
         }
+
         $this->tearDown();
+
         $result->endTestSuite($this);
+
         return $result;
     }
-    /**
-     * @param bool $runTestInSeparateProcess
-     *
-     * @throws PHPUnit_Framework_Exception
-     *
-     * @since Method available since Release 3.7.0
-     */
-    public function setRunTestInSeparateProcess($runTestInSeparateProcess)
+
+    public function setRunTestInSeparateProcess(bool $runTestInSeparateProcess): void
     {
-        if (\is_bool($runTestInSeparateProcess)) {
-            $this->runTestInSeparateProcess = $runTestInSeparateProcess;
-        } else {
-            throw \MolliePrefix\PHPUnit_Util_InvalidArgumentHelper::factory(1, 'boolean');
-        }
+        $this->runTestInSeparateProcess = $runTestInSeparateProcess;
     }
-    /**
-     * Runs a test.
-     *
-     * @deprecated
-     *
-     * @param PHPUnit_Framework_Test       $test
-     * @param PHPUnit_Framework_TestResult $result
-     */
-    public function runTest(\MolliePrefix\PHPUnit_Framework_Test $test, \MolliePrefix\PHPUnit_Framework_TestResult $result)
-    {
-        $test->run($result);
-    }
-    /**
-     * Sets the name of the suite.
-     *
-     * @param  string
-     */
-    public function setName($name)
+
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
+
     /**
      * Returns the test at the given index.
      *
-     * @param  int|false
-     *
-     * @return PHPUnit_Framework_Test
+     * @return false|Test
      */
-    public function testAt($index)
+    public function testAt(int $index)
     {
         if (isset($this->tests[$index])) {
             return $this->tests[$index];
-        } else {
-            return \false;
         }
+
+        return false;
     }
+
     /**
      * Returns the tests as an enumeration.
      *
-     * @return array
+     * @return Test[]
      */
-    public function tests()
+    public function tests(): array
     {
         return $this->tests;
     }
+
     /**
      * Set tests of the test suite
      *
-     * @param array $tests
-     *
-     * @since Method available since Release 4.0.0
+     * @param Test[] $tests
      */
-    public function setTests(array $tests)
+    public function setTests(array $tests): void
     {
         $this->tests = $tests;
     }
+
     /**
      * Mark the test suite as skipped.
      *
      * @param string $message
      *
-     * @throws PHPUnit_Framework_SkippedTestSuiteError
-     *
-     * @since Method available since Release 3.0.0
+     * @throws SkippedTestSuiteError
      */
-    public function markTestSuiteSkipped($message = '')
+    public function markTestSuiteSkipped($message = ''): void
     {
-        throw new \MolliePrefix\PHPUnit_Framework_SkippedTestSuiteError($message);
+        throw new SkippedTestSuiteError($message);
     }
-    /**
-     * @param ReflectionClass  $class
-     * @param ReflectionMethod $method
-     */
-    protected function addTestMethod(\ReflectionClass $class, \ReflectionMethod $method)
-    {
-        if (!$this->isTestMethod($method)) {
-            return;
-        }
-        $name = $method->getName();
-        if (!$method->isPublic()) {
-            $this->addTest(self::warning(\sprintf('Test method "%s" in test class "%s" is not public.', $name, $class->getName())));
-            return;
-        }
-        $test = self::createTest($class, $name);
-        if ($test instanceof \MolliePrefix\PHPUnit_Framework_TestCase || $test instanceof \MolliePrefix\PHPUnit_Framework_TestSuite_DataProvider) {
-            $test->setDependencies(\MolliePrefix\PHPUnit_Util_Test::getDependencies($class->getName(), $name));
-        }
-        $this->addTest($test, \MolliePrefix\PHPUnit_Util_Test::getGroups($class->getName(), $name));
-    }
-    /**
-     * @param ReflectionMethod $method
-     *
-     * @return bool
-     */
-    public static function isTestMethod(\ReflectionMethod $method)
-    {
-        if (\strpos($method->name, 'test') === 0) {
-            return \true;
-        }
-        // @scenario on TestCase::testMethod()
-        // @test     on TestCase::testMethod()
-        $docComment = $method->getDocComment();
-        return \strpos($docComment, '@test') !== \false || \strpos($docComment, '@scenario') !== \false;
-    }
-    /**
-     * @param string $message
-     *
-     * @return PHPUnit_Framework_WarningTestCase
-     */
-    protected static function warning($message)
-    {
-        return new \MolliePrefix\PHPUnit_Framework_WarningTestCase($message);
-    }
-    /**
-     * @param string $class
-     * @param string $methodName
-     * @param string $message
-     *
-     * @return PHPUnit_Framework_SkippedTestCase
-     *
-     * @since Method available since Release 4.3.0
-     */
-    protected static function skipTest($class, $methodName, $message)
-    {
-        return new \MolliePrefix\PHPUnit_Framework_SkippedTestCase($class, $methodName, $message);
-    }
-    /**
-     * @param string $class
-     * @param string $methodName
-     * @param string $message
-     *
-     * @return PHPUnit_Framework_IncompleteTestCase
-     *
-     * @since Method available since Release 4.3.0
-     */
-    protected static function incompleteTest($class, $methodName, $message)
-    {
-        return new \MolliePrefix\PHPUnit_Framework_IncompleteTestCase($class, $methodName, $message);
-    }
+
     /**
      * @param bool $beStrictAboutChangesToGlobalState
-     *
-     * @since Method available since Release 4.6.0
      */
-    public function setbeStrictAboutChangesToGlobalState($beStrictAboutChangesToGlobalState)
+    public function setBeStrictAboutChangesToGlobalState($beStrictAboutChangesToGlobalState): void
     {
-        if (\is_null($this->beStrictAboutChangesToGlobalState) && \is_bool($beStrictAboutChangesToGlobalState)) {
+        if (null === $this->beStrictAboutChangesToGlobalState && \is_bool($beStrictAboutChangesToGlobalState)) {
             $this->beStrictAboutChangesToGlobalState = $beStrictAboutChangesToGlobalState;
         }
     }
+
     /**
      * @param bool $backupGlobals
-     *
-     * @since Method available since Release 3.3.0
      */
-    public function setBackupGlobals($backupGlobals)
+    public function setBackupGlobals($backupGlobals): void
     {
-        if (\is_null($this->backupGlobals) && \is_bool($backupGlobals)) {
+        if (null === $this->backupGlobals && \is_bool($backupGlobals)) {
             $this->backupGlobals = $backupGlobals;
         }
     }
+
     /**
      * @param bool $backupStaticAttributes
-     *
-     * @since Method available since Release 3.4.0
      */
-    public function setBackupStaticAttributes($backupStaticAttributes)
+    public function setBackupStaticAttributes($backupStaticAttributes): void
     {
-        if (\is_null($this->backupStaticAttributes) && \is_bool($backupStaticAttributes)) {
+        if (null === $this->backupStaticAttributes && \is_bool($backupStaticAttributes)) {
             $this->backupStaticAttributes = $backupStaticAttributes;
         }
     }
+
     /**
      * Returns an iterator for this test suite.
-     *
-     * @return RecursiveIteratorIterator
-     *
-     * @since Method available since Release 3.1.0
      */
-    public function getIterator()
+    public function getIterator(): Iterator
     {
-        $iterator = new \MolliePrefix\PHPUnit_Util_TestSuiteIterator($this);
+        $iterator = new TestSuiteIterator($this);
+
         if ($this->iteratorFilter !== null) {
             $iterator = $this->iteratorFilter->factory($iterator, $this);
         }
+
         return $iterator;
     }
-    public function injectFilter(\MolliePrefix\PHPUnit_Runner_Filter_Factory $filter)
+
+    public function injectFilter(Factory $filter): void
     {
         $this->iteratorFilter = $filter;
+
         foreach ($this as $test) {
             if ($test instanceof self) {
                 $test->injectFilter($filter);
             }
         }
     }
+
     /**
-     * Template Method that is called before the tests
-     * of this test suite are run.
-     *
-     * @since Method available since Release 3.1.0
+     * Creates a default TestResult object.
      */
-    protected function setUp()
+    protected function createResult(): TestResult
     {
+        return new TestResult;
     }
+
     /**
-     * Template Method that is called after the tests
-     * of this test suite have finished running.
-     *
-     * @since Method available since Release 3.1.0
+     * @throws Exception
      */
-    protected function tearDown()
+    protected function addTestMethod(ReflectionClass $class, ReflectionMethod $method): void
     {
+        if (!$this->isTestMethod($method)) {
+            return;
+        }
+
+        $name = $method->getName();
+
+        if (!$method->isPublic()) {
+            $this->addTest(
+                self::warning(
+                    \sprintf(
+                        'Test method "%s" in test class "%s" is not public.',
+                        $name,
+                        $class->getName()
+                    )
+                )
+            );
+
+            return;
+        }
+
+        $test = self::createTest($class, $name);
+
+        if ($test instanceof TestCase || $test instanceof DataProviderTestSuite) {
+            $test->setDependencies(
+                \PHPUnit\Util\Test::getDependencies($class->getName(), $name)
+            );
+        }
+
+        $this->addTest(
+            $test,
+            \PHPUnit\Util\Test::getGroups($class->getName(), $name)
+        );
+    }
+
+    /**
+     * @param string $message
+     */
+    protected static function warning($message): WarningTestCase
+    {
+        return new WarningTestCase($message);
+    }
+
+    /**
+     * @param string $class
+     * @param string $methodName
+     * @param string $message
+     */
+    protected static function skipTest($class, $methodName, $message): SkippedTestCase
+    {
+        return new SkippedTestCase($class, $methodName, $message);
+    }
+
+    /**
+     * @param string $class
+     * @param string $methodName
+     * @param string $message
+     */
+    protected static function incompleteTest($class, $methodName, $message): IncompleteTestCase
+    {
+        return new IncompleteTestCase($class, $methodName, $message);
     }
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * A TestSuite is a composite of Tests. It runs a collection of test cases.
- *
- * @since Class available since Release 2.0.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Framework_TestSuite', 'PHPUnit_Framework_TestSuite', \false);

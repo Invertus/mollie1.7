@@ -1,12 +1,13 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Filter;
+namespace DeepCopy\Filter;
 
-use MolliePrefix\DeepCopy\Reflection\ReflectionHelper;
+use DeepCopy\Reflection\ReflectionHelper;
+
 /**
  * @final
  */
-class SetNullFilter implements \MolliePrefix\DeepCopy\Filter\Filter
+class SetNullFilter implements Filter
 {
     /**
      * Sets the object property to null.
@@ -15,8 +16,9 @@ class SetNullFilter implements \MolliePrefix\DeepCopy\Filter\Filter
      */
     public function apply($object, $property, $objectCopier)
     {
-        $reflectionProperty = \MolliePrefix\DeepCopy\Reflection\ReflectionHelper::getProperty($object, $property);
-        $reflectionProperty->setAccessible(\true);
+        $reflectionProperty = ReflectionHelper::getProperty($object, $property);
+
+        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($object, null);
     }
 }

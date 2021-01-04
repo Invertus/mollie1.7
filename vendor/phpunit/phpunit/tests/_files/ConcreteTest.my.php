@@ -1,11 +1,16 @@
 <?php
-
-namespace MolliePrefix;
-
-class ConcreteWithMyCustomExtensionTest extends \MolliePrefix\AbstractTest
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+class ConcreteWithMyCustomExtensionTest extends AbstractTest
 {
-    public function testTwo()
+    public function testTwo(): void
     {
+        $this->assertTrue(true);
     }
 }
-\class_alias('MolliePrefix\\ConcreteWithMyCustomExtensionTest', 'ConcreteWithMyCustomExtensionTest', \false);

@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Exception\Prediction;
+
+namespace Prophecy\Exception\Prediction;
 
 use RuntimeException;
+
 /**
  * Basic failed prediction exception.
  * Use it for custom prediction failures.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class FailedPredictionException extends \RuntimeException implements \MolliePrefix\Prophecy\Exception\Prediction\PredictionException
+class FailedPredictionException extends RuntimeException implements PredictionException
 {
 }

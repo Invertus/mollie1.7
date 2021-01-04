@@ -1,16 +1,22 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class CoverageMethodTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class CoverageMethodTest extends TestCase
 {
     /**
      * @covers CoveredClass::publicMethod
      */
-    public function testSomething()
+    public function testSomething(): void
     {
-        $o = new \MolliePrefix\CoveredClass();
+        $o = new CoveredClass;
         $o->publicMethod();
     }
 }
-\class_alias('MolliePrefix\\CoverageMethodTest', 'CoverageMethodTest', \false);

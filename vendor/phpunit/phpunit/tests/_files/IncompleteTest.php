@@ -1,12 +1,18 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class IncompleteTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class IncompleteTest extends TestCase
 {
-    public function testIncomplete()
+    public function testIncomplete(): void
     {
         $this->markTestIncomplete('Test incomplete');
     }
 }
-\class_alias('MolliePrefix\\IncompleteTest', 'IncompleteTest', \false);

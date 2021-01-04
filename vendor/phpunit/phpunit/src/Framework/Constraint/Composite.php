@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,23 +7,24 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-/**
- * @since Class available since Release 3.1.0
- */
-abstract class PHPUnit_Framework_Constraint_Composite extends \MolliePrefix\PHPUnit_Framework_Constraint
+namespace PHPUnit\Framework\Constraint;
+
+use PHPUnit\Framework\ExpectationFailedException;
+
+abstract class Composite extends Constraint
 {
     /**
-     * @var PHPUnit_Framework_Constraint
+     * @var Constraint
      */
-    protected $innerConstraint;
-    /**
-     * @param PHPUnit_Framework_Constraint $innerConstraint
-     */
-    public function __construct(\MolliePrefix\PHPUnit_Framework_Constraint $innerConstraint)
+    private $innerConstraint;
+
+    public function __construct(Constraint $innerConstraint)
     {
         parent::__construct();
+
         $this->innerConstraint = $innerConstraint;
     }
+
     /**
      * Evaluates the constraint for parameter $other
      *
@@ -37,41 +35,36 @@ abstract class PHPUnit_Framework_Constraint_Composite extends \MolliePrefix\PHPU
      * a boolean value instead: true in case of success, false in case of a
      * failure.
      *
-     * @param mixed  $other        Value or object to evaluate.
+     * @param mixed  $other        value or object to evaluate
      * @param string $description  Additional information about the test
      * @param bool   $returnResult Whether to return a result or throw an exception
      *
-     * @return mixed
-     *
-     * @throws PHPUnit_Framework_ExpectationFailedException
+     * @throws ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function evaluate($other, $description = '', $returnResult = \false)
+    public function evaluate($other, $description = '', $returnResult = false)
     {
         try {
-            return $this->innerConstraint->evaluate($other, $description, $returnResult);
-        } catch (\MolliePrefix\PHPUnit_Framework_ExpectationFailedException $e) {
-            $this->fail($other, $description);
+            return $this->innerConstraint->evaluate(
+                $other,
+                $description,
+                $returnResult
+            );
+        } catch (ExpectationFailedException $e) {
+            $this->fail($other, $description, $e->getComparisonFailure());
         }
     }
+
     /**
      * Counts the number of constraint elements.
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return \count($this->innerConstraint);
     }
+
+    protected function innerConstraint(): Constraint
+    {
+        return $this->innerConstraint;
+    }
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * @since Class available since Release 3.1.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Framework_Constraint_Composite', 'PHPUnit_Framework_Constraint_Composite', \false);

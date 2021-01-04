@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -8,41 +7,86 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Report extends \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\File
+final class Report extends File
 {
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        $this->dom = new \DOMDocument();
-        $this->dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="http://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
-        $this->contextNode = $this->dom->getElementsByTagNameNS('http://schema.phpunit.de/coverage/1.0', 'file')->item(0);
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><phpunit xmlns="https://schema.phpunit.de/coverage/1.0"><file /></phpunit>');
+
+        $contextNode = $dom->getElementsByTagNameNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'file'
+        )->item(0);
+
+        parent::__construct($contextNode);
+
         $this->setName($name);
     }
-    private function setName($name)
+
+    public function asDom(): \DOMDocument
     {
-        $this->contextNode->setAttribute('name', $name);
+        return $this->getDomDocument();
     }
-    public function asDom()
+
+    public function getFunctionObject($name): Method
     {
-        return $this->dom;
+        $node = $this->getContextNode()->appendChild(
+            $this->getDomDocument()->createElementNS(
+                'https://schema.phpunit.de/coverage/1.0',
+                'function'
+            )
+        );
+
+        return new Method($node, $name);
     }
-    public function getFunctionObject($name)
-    {
-        $node = $this->contextNode->appendChild($this->dom->createElementNS('http://schema.phpunit.de/coverage/1.0', 'function'));
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Method($node, $name);
-    }
-    public function getClassObject($name)
+
+    public function getClassObject($name): Unit
     {
         return $this->getUnitObject('class', $name);
     }
-    public function getTraitObject($name)
+
+    public function getTraitObject($name): Unit
     {
         return $this->getUnitObject('trait', $name);
     }
-    private function getUnitObject($tagName, $name)
+
+    public function getSource(): Source
     {
-        $node = $this->contextNode->appendChild($this->dom->createElementNS('http://schema.phpunit.de/coverage/1.0', $tagName));
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Unit($node, $name);
+        $source = $this->getContextNode()->getElementsByTagNameNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'source'
+        )->item(0);
+
+        if (!$source) {
+            $source = $this->getContextNode()->appendChild(
+                $this->getDomDocument()->createElementNS(
+                    'https://schema.phpunit.de/coverage/1.0',
+                    'source'
+                )
+            );
+        }
+
+        return new Source($source);
+    }
+
+    private function setName($name): void
+    {
+        $this->getContextNode()->setAttribute('name', \basename($name));
+        $this->getContextNode()->setAttribute('path', \dirname($name));
+    }
+
+    private function getUnitObject($tagName, $name): Unit
+    {
+        $node = $this->getContextNode()->appendChild(
+            $this->getDomDocument()->createElementNS(
+                'https://schema.phpunit.de/coverage/1.0',
+                $tagName
+            )
+        );
+
+        return new Unit($node, $name);
     }
 }

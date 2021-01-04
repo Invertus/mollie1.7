@@ -1,22 +1,30 @@
 <?php
-
-namespace MolliePrefix;
-
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 class Singleton
 {
     private static $uniqueInstance = null;
-    protected function __construct()
-    {
-    }
-    private final function __clone()
-    {
-    }
+
     public static function getInstance()
     {
         if (self::$uniqueInstance === null) {
-            self::$uniqueInstance = new self();
+            self::$uniqueInstance = new self;
         }
+
         return self::$uniqueInstance;
     }
+
+    protected function __construct()
+    {
+    }
+
+    private function __clone()
+    {
+    }
 }
-\class_alias('MolliePrefix\\Singleton', 'Singleton', \false);

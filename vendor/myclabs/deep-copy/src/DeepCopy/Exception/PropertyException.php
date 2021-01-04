@@ -1,8 +1,9 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Exception;
+namespace DeepCopy\Exception;
 
 use ReflectionException;
-class PropertyException extends \ReflectionException
+
+class PropertyException extends ReflectionException
 {
 }

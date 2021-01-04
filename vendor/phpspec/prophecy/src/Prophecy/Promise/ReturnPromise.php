@@ -8,18 +8,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Promise;
 
-use MolliePrefix\Prophecy\Prophecy\ObjectProphecy;
-use MolliePrefix\Prophecy\Prophecy\MethodProphecy;
+namespace Prophecy\Promise;
+
+use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\Prophecy\MethodProphecy;
+
 /**
  * Return promise.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class ReturnPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
+class ReturnPromise implements PromiseInterface
 {
     private $returnValues = array();
+
     /**
      * Initializes promise.
      *
@@ -29,6 +32,7 @@ class ReturnPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
     {
         $this->returnValues = $returnValues;
     }
+
     /**
      * Returns saved values one by one until last one, then continuously returns last value.
      *
@@ -38,12 +42,14 @@ class ReturnPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
      *
      * @return mixed
      */
-    public function execute(array $args, \MolliePrefix\Prophecy\Prophecy\ObjectProphecy $object, \MolliePrefix\Prophecy\Prophecy\MethodProphecy $method)
+    public function execute(array $args, ObjectProphecy $object, MethodProphecy $method)
     {
-        $value = \array_shift($this->returnValues);
-        if (!\count($this->returnValues)) {
+        $value = array_shift($this->returnValues);
+
+        if (!count($this->returnValues)) {
             $this->returnValues[] = $value;
         }
+
         return $value;
     }
 }

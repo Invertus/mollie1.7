@@ -8,7 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Doubler\Generator;
+
+namespace Prophecy\Doubler\Generator;
+
+use Prophecy\Doubler\Generator\Node\ReturnTypeNode;
+use Prophecy\Doubler\Generator\Node\TypeNodeAbstract;
 
 /**
  * Class code creator.
@@ -18,14 +22,10 @@ namespace MolliePrefix\Prophecy\Doubler\Generator;
  */
 class ClassCodeGenerator
 {
-    /**
-     * @var TypeHintReference
-     */
-    private $typeHintReference;
-    public function __construct(\MolliePrefix\Prophecy\Doubler\Generator\TypeHintReference $typeHintReference = null)
+    public function __construct(TypeHintReference $typeHintReference = null)
     {
-        $this->typeHintReference = $typeHintReference ?: new \MolliePrefix\Prophecy\Doubler\Generator\TypeHintReference();
     }
+
     /**
      * Generates PHP code for class node.
      *
@@ -34,62 +34,76 @@ class ClassCodeGenerator
      *
      * @return string
      */
-    public function generate($classname, \MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $class)
+    public function generate($classname, Node\ClassNode $class)
     {
-        $parts = \explode('\\', $classname);
-        $classname = \array_pop($parts);
-        $namespace = \implode('\\', $parts);
-        $code = \sprintf("class %s extends \\%s implements %s {\n", $classname, $class->getParentClass(), \implode(', ', \array_map(function ($interface) {
-            return '\\' . $interface;
-        }, $class->getInterfaces())));
+        $parts     = explode('\\', $classname);
+        $classname = array_pop($parts);
+        $namespace = implode('\\', $parts);
+
+        $code = sprintf("class %s extends \%s implements %s {\n",
+            $classname, $class->getParentClass(), implode(', ',
+                array_map(function ($interface) {return '\\'.$interface;}, $class->getInterfaces())
+            )
+        );
+
         foreach ($class->getProperties() as $name => $visibility) {
-            $code .= \sprintf("%s \$%s;\n", $visibility, $name);
+            $code .= sprintf("%s \$%s;\n", $visibility, $name);
         }
         $code .= "\n";
+
         foreach ($class->getMethods() as $method) {
-            $code .= $this->generateMethod($method) . "\n";
+            $code .= $this->generateMethod($method)."\n";
         }
         $code .= "\n}";
-        return \sprintf("namespace %s {\n%s\n}", $namespace, $code);
+
+        return sprintf("namespace %s {\n%s\n}", $namespace, $code);
     }
-    private function generateMethod(\MolliePrefix\Prophecy\Doubler\Generator\Node\MethodNode $method)
+
+    private function generateMethod(Node\MethodNode $method)
     {
-        $php = \sprintf("%s %s function %s%s(%s)%s {\n", $method->getVisibility(), $method->isStatic() ? 'static' : '', $method->returnsReference() ? '&' : '', $method->getName(), \implode(', ', $this->generateArguments($method->getArguments())), $this->getReturnType($method));
-        $php .= $method->getCode() . "\n";
-        return $php . '}';
+        $php = sprintf("%s %s function %s%s(%s)%s {\n",
+            $method->getVisibility(),
+            $method->isStatic() ? 'static' : '',
+            $method->returnsReference() ? '&':'',
+            $method->getName(),
+            implode(', ', $this->generateArguments($method->getArguments())),
+            ($ret = $this->generateTypes($method->getReturnTypeNode())) ? ': '.$ret : ''
+        );
+        $php .= $method->getCode()."\n";
+
+        return $php.'}';
     }
-    /**
-     * @return string
-     */
-    private function getReturnType(\MolliePrefix\Prophecy\Doubler\Generator\Node\MethodNode $method)
+
+    private function generateTypes(TypeNodeAbstract $typeNode): string
     {
-        if (\version_compare(\PHP_VERSION, '7.1', '>=')) {
-            if ($method->hasReturnType()) {
-                return $method->hasNullableReturnType() ? \sprintf(': ?%s', $method->getReturnType()) : \sprintf(': %s', $method->getReturnType());
-            }
+        if (!$typeNode->getTypes()) {
+            return '';
         }
-        if (\version_compare(\PHP_VERSION, '7.0', '>=')) {
-            return $method->hasReturnType() && $method->getReturnType() !== 'void' ? \sprintf(': %s', $method->getReturnType()) : '';
+
+        // When we require PHP 8 we can stop generating ?foo nullables and remove this first block
+        if ($typeNode->canUseNullShorthand()) {
+            return sprintf( '?%s', $typeNode->getNonNullTypes()[0]);
+        } else {
+            return join('|', $typeNode->getTypes());
         }
-        return '';
     }
+
     private function generateArguments(array $arguments)
     {
-        $typeHintReference = $this->typeHintReference;
-        return \array_map(function (\MolliePrefix\Prophecy\Doubler\Generator\Node\ArgumentNode $argument) use($typeHintReference) {
-            $php = '';
-            if (\version_compare(\PHP_VERSION, '7.1', '>=')) {
-                $php .= $argument->isNullable() ? '?' : '';
-            }
-            if ($hint = $argument->getTypeHint()) {
-                $php .= $typeHintReference->isBuiltInParamTypeHint($hint) ? $hint : '\\' . $hint;
-            }
-            $php .= ' ' . ($argument->isPassedByReference() ? '&' : '');
+        return array_map(function (Node\ArgumentNode $argument){
+
+            $php = $this->generateTypes($argument->getTypeNode());
+
+            $php .= ' '.($argument->isPassedByReference() ? '&' : '');
+
             $php .= $argument->isVariadic() ? '...' : '';
-            $php .= '$' . $argument->getName();
+
+            $php .= '$'.$argument->getName();
+
             if ($argument->isOptional() && !$argument->isVariadic()) {
-                $php .= ' = ' . \var_export($argument->getDefault(), \true);
+                $php .= ' = '.var_export($argument->getDefault(), true);
             }
+
             return $php;
         }, $arguments);
     }

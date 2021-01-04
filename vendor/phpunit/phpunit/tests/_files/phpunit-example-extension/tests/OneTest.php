@@ -1,14 +1,21 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\ExampleExtension\TestCaseTrait;
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-use MolliePrefix\PHPUnit\ExampleExtension\TestCaseTrait;
-class OneTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+class OneTest extends TestCase
 {
     use TestCaseTrait;
-    public function testOne()
+
+    public function testOne(): void
     {
-        $this->assertExampleExtensionInitialized();
+        $this->assertTrue(true);
     }
 }
-\class_alias('MolliePrefix\\OneTest', 'OneTest', \false);

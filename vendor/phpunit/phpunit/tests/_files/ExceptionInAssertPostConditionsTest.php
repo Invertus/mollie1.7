@@ -1,34 +1,50 @@
 <?php
+/*
+ * This file is part of PHPUnit.
+ *
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class ExceptionInAssertPostConditionsTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class ExceptionInAssertPostConditionsTest extends TestCase
 {
-    public $setUp = \false;
-    public $assertPreConditions = \false;
-    public $assertPostConditions = \false;
-    public $tearDown = \false;
-    public $testSomething = \false;
-    protected function setUp()
+    public $setUp                = false;
+
+    public $assertPreConditions  = false;
+
+    public $assertPostConditions = false;
+
+    public $tearDown             = false;
+
+    public $testSomething        = false;
+
+    protected function setUp(): void
     {
-        $this->setUp = \true;
+        $this->setUp = true;
     }
-    protected function assertPreConditions()
+
+    protected function tearDown(): void
     {
-        $this->assertPreConditions = \true;
+        $this->tearDown = true;
     }
-    public function testSomething()
+
+    public function testSomething(): void
     {
-        $this->testSomething = \true;
+        $this->testSomething = true;
     }
-    protected function assertPostConditions()
+
+    protected function assertPreConditions(): void
     {
-        $this->assertPostConditions = \true;
-        throw new \Exception();
+        $this->assertPreConditions = true;
     }
-    protected function tearDown()
+
+    protected function assertPostConditions(): void
     {
-        $this->tearDown = \true;
+        $this->assertPostConditions = true;
+
+        throw new Exception;
     }
 }
-\class_alias('MolliePrefix\\ExceptionInAssertPostConditionsTest', 'ExceptionInAssertPostConditionsTest', \false);

@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of phpDocumentor.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @copyright 2010-2015 Mike van Riel<mike@phpdoc.org>
- * @license   http://www.opensource.org/licenses/mit-license.php MIT
  * @link      http://phpdoc.org
  */
-namespace MolliePrefix\phpDocumentor\Reflection\DocBlock;
 
-use MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter;
-use MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter\PassthroughFormatter;
-use MolliePrefix\Webmozart\Assert\Assert;
+namespace phpDocumentor\Reflection\DocBlock;
+
+use phpDocumentor\Reflection\DocBlock\Tags\Formatter;
+use phpDocumentor\Reflection\DocBlock\Tags\Formatter\PassthroughFormatter;
+use function vsprintf;
+
 /**
  * Object representing to description for a DocBlock.
  *
@@ -51,54 +53,61 @@ class Description
 {
     /** @var string */
     private $bodyTemplate;
+
     /** @var Tag[] */
     private $tags;
+
     /**
      * Initializes a Description with its body (template) and a listing of the tags used in the body template.
      *
-     * @param string $bodyTemplate
      * @param Tag[] $tags
      */
-    public function __construct($bodyTemplate, array $tags = [])
+    public function __construct(string $bodyTemplate, array $tags = [])
     {
-        \MolliePrefix\Webmozart\Assert\Assert::string($bodyTemplate);
         $this->bodyTemplate = $bodyTemplate;
-        $this->tags = $tags;
+        $this->tags         = $tags;
     }
+
+    /**
+     * Returns the body template.
+     */
+    public function getBodyTemplate() : string
+    {
+        return $this->bodyTemplate;
+    }
+
     /**
      * Returns the tags for this DocBlock.
      *
      * @return Tag[]
      */
-    public function getTags()
+    public function getTags() : array
     {
         return $this->tags;
     }
+
     /**
      * Renders this description as a string where the provided formatter will format the tags in the expected string
      * format.
-     *
-     * @param Formatter|null $formatter
-     *
-     * @return string
      */
-    public function render(\MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter $formatter = null)
+    public function render(?Formatter $formatter = null) : string
     {
         if ($formatter === null) {
-            $formatter = new \MolliePrefix\phpDocumentor\Reflection\DocBlock\Tags\Formatter\PassthroughFormatter();
+            $formatter = new PassthroughFormatter();
         }
+
         $tags = [];
         foreach ($this->tags as $tag) {
             $tags[] = '{' . $formatter->format($tag) . '}';
         }
-        return \vsprintf($this->bodyTemplate, $tags);
+
+        return vsprintf($this->bodyTemplate, $tags);
     }
+
     /**
      * Returns a plain string representation of this description.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->render();
     }

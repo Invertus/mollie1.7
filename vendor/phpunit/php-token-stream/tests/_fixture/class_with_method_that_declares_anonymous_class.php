@@ -1,36 +1,15 @@
 <?php
-
-namespace MolliePrefix;
-
-interface foo
-{
+interface foo {
 }
-\class_alias('MolliePrefix\\foo', 'foo', \false);
+
 class class_with_method_that_declares_anonymous_class
 {
     public function method()
     {
-        $o = new class
-        {
-            public function foo()
-            {
-            }
-        };
-        $o = new class
-        {
-            public function foo()
-            {
-            }
-        };
-        $o = new class extends \stdClass
-        {
-        };
-        $o = new class extends \stdClass
-        {
-        };
-        $o = new class implements \MolliePrefix\foo
-        {
-        };
+        $o = new class { public function foo() {} };
+        $o = new class{public function foo(){}};
+        $o = new class extends stdClass {};
+        $o = new class extends stdClass {};
+        $o = new class implements foo {};
     }
 }
-\class_alias('MolliePrefix\\class_with_method_that_declares_anonymous_class', 'class_with_method_that_declares_anonymous_class', \false);

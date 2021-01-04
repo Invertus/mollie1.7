@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Filter;
+namespace DeepCopy\Filter;
 
 /**
  * Filter to apply to a property while copying an object

@@ -1,12 +1,10 @@
 <?php
-
-namespace MolliePrefix;
-
 if ($neverHappens) {
     // @codeCoverageIgnoreStart
     print '*';
     // @codeCoverageIgnoreEnd
 }
+
 /**
  * @codeCoverageIgnore
  */
@@ -16,10 +14,7 @@ class Foo
     {
     }
 }
-/**
- * @codeCoverageIgnore
- */
-\class_alias('MolliePrefix\\Foo', 'Foo', \false);
+
 class Bar
 {
     /**
@@ -29,14 +24,14 @@ class Bar
     {
     }
 }
-\class_alias('MolliePrefix\\Bar', 'Bar', \false);
+
 function baz()
 {
-    print '*';
-    // @codeCoverageIgnore
+    print '*'; // @codeCoverageIgnore
 }
+
 interface Bor
 {
     public function foo();
+
 }
-\class_alias('MolliePrefix\\Bor', 'Bor', \false);

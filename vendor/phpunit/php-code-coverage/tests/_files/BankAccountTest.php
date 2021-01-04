@@ -1,15 +1,17 @@
 <?php
-
-namespace MolliePrefix;
-
 require_once 'BankAccount.php';
-class BankAccountTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+
+use PHPUnit\Framework\TestCase;
+
+class BankAccountTest extends TestCase
 {
     protected $ba;
+
     protected function setUp()
     {
-        $this->ba = new \MolliePrefix\BankAccount();
+        $this->ba = new BankAccount;
     }
+
     /**
      * @covers BankAccount::getBalance
      */
@@ -17,6 +19,7 @@ class BankAccountTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     {
         $this->assertEquals(0, $this->ba->getBalance());
     }
+
     /**
      * @covers BankAccount::withdrawMoney
      */
@@ -24,12 +27,15 @@ class BankAccountTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     {
         try {
             $this->ba->withdrawMoney(1);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->assertEquals(0, $this->ba->getBalance());
+
             return;
         }
+
         $this->fail();
     }
+
     /**
      * @covers BankAccount::depositMoney
      */
@@ -37,12 +43,15 @@ class BankAccountTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     {
         try {
             $this->ba->depositMoney(-1);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->assertEquals(0, $this->ba->getBalance());
+
             return;
         }
+
         $this->fail();
     }
+
     /**
      * @covers BankAccount::getBalance
      * @covers BankAccount::depositMoney
@@ -57,4 +66,3 @@ class BankAccountTest extends \MolliePrefix\PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->ba->getBalance());
     }
 }
-\class_alias('MolliePrefix\\BankAccountTest', 'BankAccountTest', \false);

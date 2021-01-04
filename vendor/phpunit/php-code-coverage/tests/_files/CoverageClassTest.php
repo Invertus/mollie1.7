@@ -1,16 +1,14 @@
 <?php
+use PHPUnit\Framework\TestCase;
 
-namespace MolliePrefix;
-
-class CoverageClassTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class CoverageClassTest extends TestCase
 {
     /**
      * @covers CoveredClass
      */
     public function testSomething()
     {
-        $o = new \MolliePrefix\CoveredClass();
+        $o = new CoveredClass;
         $o->publicMethod();
     }
 }
-\class_alias('MolliePrefix\\CoverageClassTest', 'CoverageClassTest', \false);

@@ -1,41 +1,42 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Some comment
  */
-class Foo
-{
-    function foo()
-    {
-    }
+class Foo{function foo(){}
+
     /**
      * @param Baz $baz
      */
-    public function bar(\MolliePrefix\Baz $baz)
+    public function bar(Baz $baz)
     {
     }
+
     /**
      * @param Foobar $foobar
      */
-    public static function foobar(\MolliePrefix\Foobar $foobar)
+    static public function foobar(Foobar $foobar)
     {
     }
-    public function barfoo(\MolliePrefix\Barfoo $barfoo)
+
+    public function barfoo(Barfoo $barfoo)
     {
     }
+
     /**
      * This docblock does not belong to the baz function
      */
+
     public function baz()
     {
     }
+
     public function blaz($x, $y)
     {
     }
+
+    public function buzz($foo)
+    {
+        echo "${foo}";
+        return true;
+    }
 }
-/**
- * Some comment
- */
-\class_alias('MolliePrefix\\Foo', 'Foo', \false);

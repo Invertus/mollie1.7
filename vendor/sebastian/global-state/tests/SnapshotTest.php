@@ -1,91 +1,116 @@
 <?php
-
 /*
- * This file is part of the GlobalState package.
+ * This file is part of sebastian/global-state.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\GlobalState;
+
+declare(strict_types=1);
+
+namespace SebastianBergmann\GlobalState;
 
 use ArrayObject;
-use MolliePrefix\PHPUnit_Framework_TestCase;
-use MolliePrefix\SebastianBergmann\GlobalState\TestFixture\SnapshotClass;
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\GlobalState\TestFixture\BlacklistedInterface;
+use SebastianBergmann\GlobalState\TestFixture\SnapshotClass;
+use SebastianBergmann\GlobalState\TestFixture\SnapshotTrait;
+
 /**
+ * @covers \SebastianBergmann\GlobalState\Snapshot
  */
-class SnapshotTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class SnapshotTest extends TestCase
 {
+    /**
+     * @var Blacklist
+     */
+    private $blacklist;
+
+    protected function setUp()
+    {
+        $this->blacklist = $this->createMock(Blacklist::class);
+    }
+
     public function testStaticAttributes()
     {
-        $blacklist = $this->getBlacklist();
-        $blacklist->method('isStaticAttributeBlacklisted')->willReturnCallback(function ($class) {
-            return $class !== 'SebastianBergmann\\GlobalState\\TestFixture\\SnapshotClass';
-        });
-        \MolliePrefix\SebastianBergmann\GlobalState\TestFixture\SnapshotClass::init();
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($blacklist, \false, \true, \false, \false, \false, \false, \false, \false, \false);
-        $expected = array('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\SnapshotClass' => array('string' => 'snapshot', 'arrayObject' => new \ArrayObject(array(1, 2, 3)), 'stdClass' => new \stdClass()));
+        $this->blacklist->method('isStaticAttributeBlacklisted')->willReturnCallback(
+            function ($class) {
+                return $class !== SnapshotClass::class;
+            }
+        );
+
+        SnapshotClass::init();
+
+        $snapshot = new Snapshot($this->blacklist, false, true, false, false, false, false, false, false, false);
+
+        $expected = [
+            SnapshotClass::class => [
+                'string'      => 'snapshot',
+                'arrayObject' => new ArrayObject([1, 2, 3]),
+                'stdClass'    => new \stdClass(),
+            ]
+        ];
+
         $this->assertEquals($expected, $snapshot->staticAttributes());
     }
+
     public function testConstants()
     {
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \true, \false, \false, \false, \false, \false, \false);
+        $snapshot = new Snapshot($this->blacklist, false, false, true, false, false, false, false, false, false);
+
         $this->assertArrayHasKey('GLOBALSTATE_TESTSUITE', $snapshot->constants());
     }
+
     public function testFunctions()
     {
-        require_once __DIR__ . '/_fixture/SnapshotFunctions.php';
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \true, \false, \false, \false, \false, \false);
+        $snapshot  = new Snapshot($this->blacklist, false, false, false, true, false, false, false, false, false);
         $functions = $snapshot->functions();
-        $this->assertThat($functions, $this->logicalOr(
-            // Zend
-            $this->contains('MolliePrefix\\sebastianbergmann\\globalstate\\testfixture\\snapshotfunction'),
-            // HHVM
-            $this->contains('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\snapshotFunction')
-        ));
+
+        $this->assertContains('sebastianbergmann\globalstate\testfixture\snapshotfunction', $functions);
         $this->assertNotContains('assert', $functions);
     }
+
     public function testClasses()
     {
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \false, \true, \false, \false, \false, \false);
-        $classes = $snapshot->classes();
-        $this->assertContains('PHPUnit_Framework_TestCase', $classes);
-        $this->assertNotContains('Exception', $classes);
+        $snapshot = new Snapshot($this->blacklist, false, false, false, false, true, false, false, false, false);
+        $classes  = $snapshot->classes();
+
+        $this->assertContains(TestCase::class, $classes);
+        $this->assertNotContains(Exception::class, $classes);
     }
+
     public function testInterfaces()
     {
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \false, \false, \true, \false, \false, \false);
+        $snapshot   = new Snapshot($this->blacklist, false, false, false, false, false, true, false, false, false);
         $interfaces = $snapshot->interfaces();
-        $this->assertContains('PHPUnit_Framework_Test', $interfaces);
-        $this->assertNotContains('Countable', $interfaces);
+
+        $this->assertContains(BlacklistedInterface::class, $interfaces);
+        $this->assertNotContains(\Countable::class, $interfaces);
     }
-    /**
-     * @requires PHP 5.4
-     */
+
     public function testTraits()
     {
-        \spl_autoload_call('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\SnapshotTrait');
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \false, \false, \false, \true, \false, \false);
-        $this->assertContains('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\SnapshotTrait', $snapshot->traits());
+        \spl_autoload_call('SebastianBergmann\GlobalState\TestFixture\SnapshotTrait');
+
+        $snapshot = new Snapshot($this->blacklist, false, false, false, false, false, false, true, false, false);
+
+        $this->assertContains(SnapshotTrait::class, $snapshot->traits());
     }
+
     public function testIniSettings()
     {
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \false, \false, \false, \false, \true, \false);
+        $snapshot    = new Snapshot($this->blacklist, false, false, false, false, false, false, false, true, false);
         $iniSettings = $snapshot->iniSettings();
+
         $this->assertArrayHasKey('date.timezone', $iniSettings);
         $this->assertEquals('Etc/UTC', $iniSettings['date.timezone']);
     }
+
     public function testIncludedFiles()
     {
-        $snapshot = new \MolliePrefix\SebastianBergmann\GlobalState\Snapshot($this->getBlacklist(), \false, \false, \false, \false, \false, \false, \false, \false, \true);
+        $snapshot = new Snapshot($this->blacklist, false, false, false, false, false, false, false, false, true);
         $this->assertContains(__FILE__, $snapshot->includedFiles());
-    }
-    /**
-     * @return \SebastianBergmann\GlobalState\Blacklist
-     */
-    private function getBlacklist()
-    {
-        return $this->getMockBuilder('MolliePrefix\\SebastianBergmann\\GlobalState\\Blacklist')->disableOriginalConstructor()->getMock();
     }
 }

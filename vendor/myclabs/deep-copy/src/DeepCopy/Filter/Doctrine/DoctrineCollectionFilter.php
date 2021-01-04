@@ -1,13 +1,14 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Filter\Doctrine;
+namespace DeepCopy\Filter\Doctrine;
 
-use MolliePrefix\DeepCopy\Filter\Filter;
-use MolliePrefix\DeepCopy\Reflection\ReflectionHelper;
+use DeepCopy\Filter\Filter;
+use DeepCopy\Reflection\ReflectionHelper;
+
 /**
  * @final
  */
-class DoctrineCollectionFilter implements \MolliePrefix\DeepCopy\Filter\Filter
+class DoctrineCollectionFilter implements Filter
 {
     /**
      * Copies the object property doctrine collection.
@@ -16,12 +17,17 @@ class DoctrineCollectionFilter implements \MolliePrefix\DeepCopy\Filter\Filter
      */
     public function apply($object, $property, $objectCopier)
     {
-        $reflectionProperty = \MolliePrefix\DeepCopy\Reflection\ReflectionHelper::getProperty($object, $property);
-        $reflectionProperty->setAccessible(\true);
+        $reflectionProperty = ReflectionHelper::getProperty($object, $property);
+
+        $reflectionProperty->setAccessible(true);
         $oldCollection = $reflectionProperty->getValue($object);
-        $newCollection = $oldCollection->map(function ($item) use($objectCopier) {
-            return $objectCopier($item);
-        });
+
+        $newCollection = $oldCollection->map(
+            function ($item) use ($objectCopier) {
+                return $objectCopier($item);
+            }
+        );
+
         $reflectionProperty->setValue($object, $newCollection);
     }
 }

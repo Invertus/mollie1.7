@@ -8,24 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Argument\Token;
+
+namespace Prophecy\Argument\Token;
 
 /**
  * Logical NOT token.
  *
  * @author Boris Mikhaylov <kaguxmail@gmail.com>
  */
-class LogicalNotToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInterface
+class LogicalNotToken implements TokenInterface
 {
     /** @var \Prophecy\Argument\Token\TokenInterface  */
     private $token;
+
     /**
      * @param mixed $value exact value or token
      */
     public function __construct($value)
     {
-        $this->token = $value instanceof \MolliePrefix\Prophecy\Argument\Token\TokenInterface ? $value : new \MolliePrefix\Prophecy\Argument\Token\ExactValueToken($value);
+        $this->token = $value instanceof TokenInterface? $value : new ExactValueToken($value);
     }
+
     /**
      * Scores 4 when preset token does not match the argument.
      *
@@ -35,8 +38,9 @@ class LogicalNotToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     public function scoreArgument($argument)
     {
-        return \false === $this->token->scoreArgument($argument) ? 4 : \false;
+        return false === $this->token->scoreArgument($argument) ? 4 : false;
     }
+
     /**
      * Returns true if preset token is last.
      *
@@ -46,6 +50,7 @@ class LogicalNotToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
     {
         return $this->token->isLast();
     }
+
     /**
      * Returns originating token.
      *
@@ -55,6 +60,7 @@ class LogicalNotToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
     {
         return $this->token;
     }
+
     /**
      * Returns string representation for token.
      *
@@ -62,6 +68,6 @@ class LogicalNotToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     public function __toString()
     {
-        return \sprintf('not(%s)', $this->token);
+        return sprintf('not(%s)', $this->token);
     }
 }

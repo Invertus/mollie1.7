@@ -1,17 +1,19 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\Filter;
+namespace DeepCopy\Filter;
 
-use MolliePrefix\DeepCopy\Reflection\ReflectionHelper;
+use DeepCopy\Reflection\ReflectionHelper;
+
 /**
  * @final
  */
-class ReplaceFilter implements \MolliePrefix\DeepCopy\Filter\Filter
+class ReplaceFilter implements Filter
 {
     /**
      * @var callable
      */
     protected $callback;
+
     /**
      * @param callable $callable Will be called to get the new value for each property to replace
      */
@@ -19,6 +21,7 @@ class ReplaceFilter implements \MolliePrefix\DeepCopy\Filter\Filter
     {
         $this->callback = $callable;
     }
+
     /**
      * Replaces the object property by the result of the callback called with the object property.
      *
@@ -26,9 +29,11 @@ class ReplaceFilter implements \MolliePrefix\DeepCopy\Filter\Filter
      */
     public function apply($object, $property, $objectCopier)
     {
-        $reflectionProperty = \MolliePrefix\DeepCopy\Reflection\ReflectionHelper::getProperty($object, $property);
-        $reflectionProperty->setAccessible(\true);
-        $value = \call_user_func($this->callback, $reflectionProperty->getValue($object));
+        $reflectionProperty = ReflectionHelper::getProperty($object, $property);
+        $reflectionProperty->setAccessible(true);
+
+        $value = call_user_func($this->callback, $reflectionProperty->getValue($object));
+
         $reflectionProperty->setValue($object, $value);
     }
 }

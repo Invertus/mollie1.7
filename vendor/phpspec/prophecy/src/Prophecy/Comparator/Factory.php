@@ -8,34 +8,40 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Comparator;
 
-use MolliePrefix\SebastianBergmann\Comparator\Factory as BaseFactory;
+namespace Prophecy\Comparator;
+
+use SebastianBergmann\Comparator\Factory as BaseFactory;
+
 /**
  * Prophecy comparator factory.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
-final class Factory extends \MolliePrefix\SebastianBergmann\Comparator\Factory
+final class Factory extends BaseFactory
 {
     /**
      * @var Factory
      */
     private static $instance;
+
     public function __construct()
     {
         parent::__construct();
-        $this->register(new \MolliePrefix\Prophecy\Comparator\ClosureComparator());
-        $this->register(new \MolliePrefix\Prophecy\Comparator\ProphecyComparator());
+
+        $this->register(new ClosureComparator());
+        $this->register(new ProphecyComparator());
     }
+
     /**
      * @return Factory
      */
     public static function getInstance()
     {
         if (self::$instance === null) {
-            self::$instance = new \MolliePrefix\Prophecy\Comparator\Factory();
+            self::$instance = new Factory;
         }
+
         return self::$instance;
     }
 }

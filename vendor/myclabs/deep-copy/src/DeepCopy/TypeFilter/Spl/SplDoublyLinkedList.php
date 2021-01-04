@@ -1,10 +1,10 @@
 <?php
 
-namespace MolliePrefix\DeepCopy\TypeFilter\Spl;
+namespace DeepCopy\TypeFilter\Spl;
 
 /**
  * @deprecated Use {@see SplDoublyLinkedListFilter} instead.
  */
-class SplDoublyLinkedList extends \MolliePrefix\DeepCopy\TypeFilter\Spl\SplDoublyLinkedListFilter
+class SplDoublyLinkedList extends SplDoublyLinkedListFilter
 {
 }

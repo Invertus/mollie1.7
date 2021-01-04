@@ -1,31 +1,32 @@
 <?php
-
 /*
- * This file is part of the Comparator package.
+ * This file is part of sebastian/comparator.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\Comparator;
+namespace SebastianBergmann\Comparator;
 
 /**
  * Compares values for type equality.
  */
-class TypeComparator extends \MolliePrefix\SebastianBergmann\Comparator\Comparator
+class TypeComparator extends Comparator
 {
     /**
      * Returns whether the comparator can compare two values.
      *
-     * @param  mixed $expected The first value to compare
-     * @param  mixed $actual   The second value to compare
+     * @param mixed $expected The first value to compare
+     * @param mixed $actual   The second value to compare
+     *
      * @return bool
      */
     public function accepts($expected, $actual)
     {
-        return \true;
+        return true;
     }
+
     /**
      * Asserts that two values are equal.
      *
@@ -37,17 +38,21 @@ class TypeComparator extends \MolliePrefix\SebastianBergmann\Comparator\Comparat
      *
      * @throws ComparisonFailure
      */
-    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = \false, $ignoreCase = \false)
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false)
     {
         if (\gettype($expected) != \gettype($actual)) {
-            throw new \MolliePrefix\SebastianBergmann\Comparator\ComparisonFailure(
+            throw new ComparisonFailure(
                 $expected,
                 $actual,
                 // we don't need a diff
                 '',
                 '',
-                \false,
-                \sprintf('%s does not match expected type "%s".', $this->exporter->shortenedExport($actual), \gettype($expected))
+                false,
+                \sprintf(
+                    '%s does not match expected type "%s".',
+                    $this->exporter->shortenedExport($actual),
+                    \gettype($expected)
+                )
             );
         }
     }

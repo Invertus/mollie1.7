@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -8,53 +7,92 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\CodeCoverage\Report\Html;
+namespace SebastianBergmann\CodeCoverage\Report\Html;
 
-use MolliePrefix\SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
-use MolliePrefix\SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
+use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
+
 /**
  * Renders a directory node.
  */
-class Directory extends \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Html\Renderer
+final class Directory extends Renderer
 {
     /**
-     * @param DirectoryNode $node
-     * @param string        $file
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
-    public function render(\MolliePrefix\SebastianBergmann\CodeCoverage\Node\Directory $node, $file)
+    public function render(DirectoryNode $node, string $file): void
     {
-        $template = new \MolliePrefix\Text_Template($this->templatePath . 'directory.html', '{{', '}}');
+        $template = new \Text_Template($this->templatePath . 'directory.html', '{{', '}}');
+
         $this->setCommonTemplateVariables($template, $node);
-        $items = $this->renderItem($node, \true);
+
+        $items = $this->renderItem($node, true);
+
         foreach ($node->getDirectories() as $item) {
             $items .= $this->renderItem($item);
         }
+
         foreach ($node->getFiles() as $item) {
             $items .= $this->renderItem($item);
         }
-        $template->setVar(['id' => $node->getId(), 'items' => $items]);
+
+        $template->setVar(
+            [
+                'id'    => $node->getId(),
+                'items' => $items,
+            ]
+        );
+
         $template->renderTo($file);
     }
-    /**
-     * @param Node $node
-     * @param bool $total
-     *
-     * @return string
-     */
-    protected function renderItem(\MolliePrefix\SebastianBergmann\CodeCoverage\Node\AbstractNode $node, $total = \false)
+
+    protected function renderItem(Node $node, bool $total = false): string
     {
-        $data = ['numClasses' => $node->getNumClassesAndTraits(), 'numTestedClasses' => $node->getNumTestedClassesAndTraits(), 'numMethods' => $node->getNumMethods(), 'numTestedMethods' => $node->getNumTestedMethods(), 'linesExecutedPercent' => $node->getLineExecutedPercent(\false), 'linesExecutedPercentAsString' => $node->getLineExecutedPercent(), 'numExecutedLines' => $node->getNumExecutedLines(), 'numExecutableLines' => $node->getNumExecutableLines(), 'testedMethodsPercent' => $node->getTestedMethodsPercent(\false), 'testedMethodsPercentAsString' => $node->getTestedMethodsPercent(), 'testedClassesPercent' => $node->getTestedClassesAndTraitsPercent(\false), 'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent()];
+        $data = [
+            'numClasses'                   => $node->getNumClassesAndTraits(),
+            'numTestedClasses'             => $node->getNumTestedClassesAndTraits(),
+            'numMethods'                   => $node->getNumFunctionsAndMethods(),
+            'numTestedMethods'             => $node->getNumTestedFunctionsAndMethods(),
+            'linesExecutedPercent'         => $node->getLineExecutedPercent(false),
+            'linesExecutedPercentAsString' => $node->getLineExecutedPercent(),
+            'numExecutedLines'             => $node->getNumExecutedLines(),
+            'numExecutableLines'           => $node->getNumExecutableLines(),
+            'testedMethodsPercent'         => $node->getTestedFunctionsAndMethodsPercent(false),
+            'testedMethodsPercentAsString' => $node->getTestedFunctionsAndMethodsPercent(),
+            'testedClassesPercent'         => $node->getTestedClassesAndTraitsPercent(false),
+            'testedClassesPercentAsString' => $node->getTestedClassesAndTraitsPercent(),
+        ];
+
         if ($total) {
             $data['name'] = 'Total';
         } else {
-            if ($node instanceof \MolliePrefix\SebastianBergmann\CodeCoverage\Node\Directory) {
-                $data['name'] = \sprintf('<a href="%s/index.html">%s</a>', $node->getName(), $node->getName());
-                $data['icon'] = '<span class="glyphicon glyphicon-folder-open"></span> ';
+            if ($node instanceof DirectoryNode) {
+                $data['name'] = \sprintf(
+                    '<a href="%s/index.html">%s</a>',
+                    $node->getName(),
+                    $node->getName()
+                );
+
+                $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
+
+                $data['icon'] = \sprintf('<img src="%s.icons/file-directory.svg" class="octicon" />', $up);
             } else {
-                $data['name'] = \sprintf('<a href="%s.html">%s</a>', $node->getName(), $node->getName());
-                $data['icon'] = '<span class="glyphicon glyphicon-file"></span> ';
+                $data['name'] = \sprintf(
+                    '<a href="%s.html">%s</a>',
+                    $node->getName(),
+                    $node->getName()
+                );
+
+                $up = \str_repeat('../', \count($node->getPathAsArray()) - 2);
+
+                $data['icon'] = \sprintf('<img src="%s.icons/file-code.svg" class="octicon" />', $up);
             }
         }
-        return $this->renderItemTemplate(new \MolliePrefix\Text_Template($this->templatePath . 'directory_item.html', '{{', '}}'), $data);
+
+        return $this->renderItemTemplate(
+            new \Text_Template($this->templatePath . 'directory_item.html', '{{', '}}'),
+            $data
+        );
     }
 }

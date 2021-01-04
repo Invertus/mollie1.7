@@ -8,25 +8,29 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Promise;
 
-use MolliePrefix\Doctrine\Instantiator\Instantiator;
-use MolliePrefix\Prophecy\Prophecy\ObjectProphecy;
-use MolliePrefix\Prophecy\Prophecy\MethodProphecy;
-use MolliePrefix\Prophecy\Exception\InvalidArgumentException;
+namespace Prophecy\Promise;
+
+use Doctrine\Instantiator\Instantiator;
+use Prophecy\Prophecy\ObjectProphecy;
+use Prophecy\Prophecy\MethodProphecy;
+use Prophecy\Exception\InvalidArgumentException;
 use ReflectionClass;
+
 /**
  * Throw promise.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
  */
-class ThrowPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
+class ThrowPromise implements PromiseInterface
 {
     private $exception;
+
     /**
      * @var \Doctrine\Instantiator\Instantiator
      */
     private $instantiator;
+
     /**
      * Initializes promise.
      *
@@ -36,15 +40,23 @@ class ThrowPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
      */
     public function __construct($exception)
     {
-        if (\is_string($exception)) {
-            if (!\class_exists($exception) && !\interface_exists($exception) || !$this->isAValidThrowable($exception)) {
-                throw new \MolliePrefix\Prophecy\Exception\InvalidArgumentException(\sprintf('Exception / Throwable class or instance expected as argument to ThrowPromise, but got %s.', $exception));
+        if (is_string($exception)) {
+            if ((!class_exists($exception) && !interface_exists($exception)) || !$this->isAValidThrowable($exception)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Exception / Throwable class or instance expected as argument to ThrowPromise, but got %s.',
+                    $exception
+                ));
             }
         } elseif (!$exception instanceof \Exception && !$exception instanceof \Throwable) {
-            throw new \MolliePrefix\Prophecy\Exception\InvalidArgumentException(\sprintf('Exception / Throwable class or instance expected as argument to ThrowPromise, but got %s.', \is_object($exception) ? \get_class($exception) : \gettype($exception)));
+            throw new InvalidArgumentException(sprintf(
+                'Exception / Throwable class or instance expected as argument to ThrowPromise, but got %s.',
+                is_object($exception) ? get_class($exception) : gettype($exception)
+            ));
         }
+
         $this->exception = $exception;
     }
+
     /**
      * Throws predefined exception.
      *
@@ -54,22 +66,27 @@ class ThrowPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
      *
      * @throws object
      */
-    public function execute(array $args, \MolliePrefix\Prophecy\Prophecy\ObjectProphecy $object, \MolliePrefix\Prophecy\Prophecy\MethodProphecy $method)
+    public function execute(array $args, ObjectProphecy $object, MethodProphecy $method)
     {
-        if (\is_string($this->exception)) {
-            $classname = $this->exception;
-            $reflection = new \ReflectionClass($classname);
+        if (is_string($this->exception)) {
+            $classname   = $this->exception;
+            $reflection  = new ReflectionClass($classname);
             $constructor = $reflection->getConstructor();
+
             if ($constructor->isPublic() && 0 == $constructor->getNumberOfRequiredParameters()) {
                 throw $reflection->newInstance();
             }
+
             if (!$this->instantiator) {
-                $this->instantiator = new \MolliePrefix\Doctrine\Instantiator\Instantiator();
+                $this->instantiator = new Instantiator();
             }
+
             throw $this->instantiator->instantiate($classname);
         }
+
         throw $this->exception;
     }
+
     /**
      * @param string $exception
      *
@@ -77,6 +94,7 @@ class ThrowPromise implements \MolliePrefix\Prophecy\Promise\PromiseInterface
      */
     private function isAValidThrowable($exception)
     {
-        return \is_a($exception, 'Exception', \true) || \is_a($exception, 'Throwable', \true);
+        return is_a($exception, 'Exception', true)
+            || is_a($exception, 'Throwable', true);
     }
 }

@@ -8,16 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Argument\Token;
+
+namespace Prophecy\Argument\Token;
 
 /**
  * String contains token.
  *
  * @author Peter Mitchell <pete@peterjmit.com>
  */
-class StringContainsToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInterface
+class StringContainsToken implements TokenInterface
 {
     private $value;
+
     /**
      * Initializes token.
      *
@@ -27,10 +29,12 @@ class StringContainsToken implements \MolliePrefix\Prophecy\Argument\Token\Token
     {
         $this->value = $value;
     }
+
     public function scoreArgument($argument)
     {
-        return \is_string($argument) && \strpos($argument, $this->value) !== \false ? 6 : \false;
+        return is_string($argument) && strpos($argument, $this->value) !== false ? 6 : false;
     }
+
     /**
      * Returns preset value against which token checks arguments.
      *
@@ -40,6 +44,7 @@ class StringContainsToken implements \MolliePrefix\Prophecy\Argument\Token\Token
     {
         return $this->value;
     }
+
     /**
      * Returns false.
      *
@@ -47,8 +52,9 @@ class StringContainsToken implements \MolliePrefix\Prophecy\Argument\Token\Token
      */
     public function isLast()
     {
-        return \false;
+        return false;
     }
+
     /**
      * Returns string representation for token.
      *
@@ -56,6 +62,6 @@ class StringContainsToken implements \MolliePrefix\Prophecy\Argument\Token\Token
      */
     public function __toString()
     {
-        return \sprintf('contains("%s")', $this->value);
+        return sprintf('contains("%s")', $this->value);
     }
 }

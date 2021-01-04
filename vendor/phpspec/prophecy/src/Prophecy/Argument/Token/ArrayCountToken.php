@@ -8,16 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Argument\Token;
+
+namespace Prophecy\Argument\Token;
 
 /**
  * Array elements count token.
  *
  * @author Boris Mikhaylov <kaguxmail@gmail.com>
  */
-class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInterface
+
+class ArrayCountToken implements TokenInterface
 {
     private $count;
+
     /**
      * @param integer $value
      */
@@ -25,6 +28,7 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
     {
         $this->count = $value;
     }
+
     /**
      * Scores 6 when argument has preset number of elements.
      *
@@ -34,8 +38,9 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     public function scoreArgument($argument)
     {
-        return $this->isCountable($argument) && $this->hasProperCount($argument) ? 6 : \false;
+        return $this->isCountable($argument) && $this->hasProperCount($argument) ? 6 : false;
     }
+
     /**
      * Returns false.
      *
@@ -43,8 +48,9 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     public function isLast()
     {
-        return \false;
+        return false;
     }
+
     /**
      * Returns string representation for token.
      *
@@ -52,8 +58,9 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     public function __toString()
     {
-        return \sprintf('count(%s)', $this->count);
+        return sprintf('count(%s)', $this->count);
     }
+
     /**
      * Returns true if object is either array or instance of \Countable
      *
@@ -62,8 +69,9 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     private function isCountable($argument)
     {
-        return \is_array($argument) || $argument instanceof \Countable;
+        return (is_array($argument) || $argument instanceof \Countable);
     }
+
     /**
      * Returns true if $argument has expected number of elements
      *
@@ -73,6 +81,6 @@ class ArrayCountToken implements \MolliePrefix\Prophecy\Argument\Token\TokenInte
      */
     private function hasProperCount($argument)
     {
-        return $this->count === \count($argument);
+        return $this->count === count($argument);
     }
 }

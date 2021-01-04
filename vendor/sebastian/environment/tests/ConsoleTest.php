@@ -1,56 +1,64 @@
-<?php
-
+<?php declare(strict_types=1);
 /*
- * This file is part of the Environment package.
+ * This file is part of sebastian/environment.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\Environment;
+namespace SebastianBergmann\Environment;
 
-use MolliePrefix\PHPUnit_Framework_TestCase;
-class ConsoleTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers \SebastianBergmann\Environment\Console
+ */
+final class ConsoleTest extends TestCase
 {
     /**
      * @var \SebastianBergmann\Environment\Console
      */
     private $console;
-    protected function setUp()
+
+    protected function setUp(): void
     {
-        $this->console = new \MolliePrefix\SebastianBergmann\Environment\Console();
+        $this->console = new Console;
     }
+
     /**
-     * @covers \SebastianBergmann\Environment\Console::isInteractive
+     * @todo Now that this component is PHP 7-only and uses return type declarations
+     * this test makes even less sense than before
      */
-    public function testCanDetectIfStdoutIsInteractiveByDefault()
+    public function testCanDetectIfStdoutIsInteractiveByDefault(): void
     {
-        $this->assertInternalType('boolean', $this->console->isInteractive());
+        $this->assertIsBool($this->console->isInteractive());
     }
+
     /**
-     * @covers \SebastianBergmann\Environment\Console::isInteractive
+     * @todo Now that this component is PHP 7-only and uses return type declarations
+     * this test makes even less sense than before
      */
-    public function testCanDetectIfFileDescriptorIsInteractive()
+    public function testCanDetectIfFileDescriptorIsInteractive(): void
     {
-        $this->assertInternalType('boolean', $this->console->isInteractive(\STDOUT));
+        $this->assertIsBool($this->console->isInteractive(\STDOUT));
     }
+
     /**
-     * @covers \SebastianBergmann\Environment\Console::hasColorSupport
-     *
-     * @uses   \SebastianBergmann\Environment\Console::isInteractive
+     * @todo Now that this component is PHP 7-only and uses return type declarations
+     * this test makes even less sense than before
      */
-    public function testCanDetectColorSupport()
+    public function testCanDetectColorSupport(): void
     {
-        $this->assertInternalType('boolean', $this->console->hasColorSupport());
+        $this->assertIsBool($this->console->hasColorSupport());
     }
+
     /**
-     * @covers \SebastianBergmann\Environment\Console::getNumberOfColumns
-     *
-     * @uses   \SebastianBergmann\Environment\Console::isInteractive
+     * @todo Now that this component is PHP 7-only and uses return type declarations
+     * this test makes even less sense than before
      */
-    public function testCanDetectNumberOfColumns()
+    public function testCanDetectNumberOfColumns(): void
     {
-        $this->assertInternalType('integer', $this->console->getNumberOfColumns());
+        $this->assertIsInt($this->console->getNumberOfColumns());
     }
 }

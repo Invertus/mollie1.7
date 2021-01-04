@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,22 +7,13 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class BankAccountException extends \RuntimeException
+
+class BankAccountException extends RuntimeException
 {
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-\class_alias('MolliePrefix\\BankAccountException', 'BankAccountException', \false);
+
 /**
  * A bank account.
- *
- * @since      Class available since Release 2.3.0
  */
 class BankAccount
 {
@@ -35,6 +23,7 @@ class BankAccount
      * @var float
      */
     protected $balance = 0;
+
     /**
      * Returns the bank account's balance.
      *
@@ -44,21 +33,7 @@ class BankAccount
     {
         return $this->balance;
     }
-    /**
-     * Sets the bank account's balance.
-     *
-     * @param float $balance
-     *
-     * @throws BankAccountException
-     */
-    protected function setBalance($balance)
-    {
-        if ($balance >= 0) {
-            $this->balance = $balance;
-        } else {
-            throw new \MolliePrefix\BankAccountException();
-        }
-    }
+
     /**
      * Deposits an amount of money to the bank account.
      *
@@ -69,8 +44,10 @@ class BankAccount
     public function depositMoney($balance)
     {
         $this->setBalance($this->getBalance() + $balance);
+
         return $this->getBalance();
     }
+
     /**
      * Withdraws an amount of money from the bank account.
      *
@@ -81,12 +58,23 @@ class BankAccount
     public function withdrawMoney($balance)
     {
         $this->setBalance($this->getBalance() - $balance);
+
         return $this->getBalance();
     }
+
+    /**
+     * Sets the bank account's balance.
+     *
+     * @param float $balance
+     *
+     * @throws BankAccountException
+     */
+    protected function setBalance($balance): void
+    {
+        if ($balance >= 0) {
+            $this->balance = $balance;
+        } else {
+            throw new BankAccountException;
+        }
+    }
 }
-/**
- * A bank account.
- *
- * @since      Class available since Release 2.3.0
- */
-\class_alias('MolliePrefix\\BankAccount', 'BankAccount', \false);

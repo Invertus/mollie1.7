@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -8,56 +7,81 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml;
+namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-class Node
+abstract class Node
 {
     /**
      * @var \DOMDocument
      */
     private $dom;
+
     /**
      * @var \DOMElement
      */
     private $contextNode;
+
     public function __construct(\DOMElement $context)
     {
         $this->setContextNode($context);
     }
-    protected function setContextNode(\DOMElement $context)
-    {
-        $this->dom = $context->ownerDocument;
-        $this->contextNode = $context;
-    }
-    public function getDom()
+
+    public function getDom(): \DOMDocument
     {
         return $this->dom;
     }
-    protected function getContextNode()
-    {
-        return $this->contextNode;
-    }
-    public function getTotals()
+
+    public function getTotals(): Totals
     {
         $totalsContainer = $this->getContextNode()->firstChild;
+
         if (!$totalsContainer) {
-            $totalsContainer = $this->getContextNode()->appendChild($this->dom->createElementNS('http://schema.phpunit.de/coverage/1.0', 'totals'));
+            $totalsContainer = $this->getContextNode()->appendChild(
+                $this->dom->createElementNS(
+                    'https://schema.phpunit.de/coverage/1.0',
+                    'totals'
+                )
+            );
         }
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Totals($totalsContainer);
+
+        return new Totals($totalsContainer);
     }
-    public function addDirectory($name)
+
+    public function addDirectory(string $name): Directory
     {
-        $dirNode = $this->getDom()->createElementNS('http://schema.phpunit.de/coverage/1.0', 'directory');
+        $dirNode = $this->getDom()->createElementNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'directory'
+        );
+
         $dirNode->setAttribute('name', $name);
         $this->getContextNode()->appendChild($dirNode);
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\Directory($dirNode);
+
+        return new Directory($dirNode);
     }
-    public function addFile($name, $href)
+
+    public function addFile(string $name, string $href): File
     {
-        $fileNode = $this->getDom()->createElementNS('http://schema.phpunit.de/coverage/1.0', 'file');
+        $fileNode = $this->getDom()->createElementNS(
+            'https://schema.phpunit.de/coverage/1.0',
+            'file'
+        );
+
         $fileNode->setAttribute('name', $name);
         $fileNode->setAttribute('href', $href);
         $this->getContextNode()->appendChild($fileNode);
-        return new \MolliePrefix\SebastianBergmann\CodeCoverage\Report\Xml\File($fileNode);
+
+        return new File($fileNode);
+    }
+
+    protected function setContextNode(\DOMElement $context): void
+    {
+        $this->dom         = $context->ownerDocument;
+        $this->contextNode = $context;
+    }
+
+    protected function getContextNode(): \DOMElement
+    {
+        return $this->contextNode;
     }
 }

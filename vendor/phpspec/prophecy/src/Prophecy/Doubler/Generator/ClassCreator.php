@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Doubler\Generator;
 
-use MolliePrefix\Prophecy\Exception\Doubler\ClassCreatorException;
+namespace Prophecy\Doubler\Generator;
+
+use Prophecy\Exception\Doubler\ClassCreatorException;
+
 /**
  * Class creator.
  * Creates specific class in current environment.
@@ -20,15 +22,17 @@ use MolliePrefix\Prophecy\Exception\Doubler\ClassCreatorException;
 class ClassCreator
 {
     private $generator;
+
     /**
      * Initializes creator.
      *
      * @param ClassCodeGenerator $generator
      */
-    public function __construct(\MolliePrefix\Prophecy\Doubler\Generator\ClassCodeGenerator $generator = null)
+    public function __construct(ClassCodeGenerator $generator = null)
     {
-        $this->generator = $generator ?: new \MolliePrefix\Prophecy\Doubler\Generator\ClassCodeGenerator();
+        $this->generator = $generator ?: new ClassCodeGenerator;
     }
+
     /**
      * Creates class.
      *
@@ -39,16 +43,25 @@ class ClassCreator
      *
      * @throws \Prophecy\Exception\Doubler\ClassCreatorException
      */
-    public function create($classname, \MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $class)
+    public function create($classname, Node\ClassNode $class)
     {
         $code = $this->generator->generate($classname, $class);
         $return = eval($code);
-        if (!\class_exists($classname, \false)) {
-            if (\count($class->getInterfaces())) {
-                throw new \MolliePrefix\Prophecy\Exception\Doubler\ClassCreatorException(\sprintf('Could not double `%s` and implement interfaces: [%s].', $class->getParentClass(), \implode(', ', $class->getInterfaces())), $class);
+
+        if (!class_exists($classname, false)) {
+            if (count($class->getInterfaces())) {
+                throw new ClassCreatorException(sprintf(
+                    'Could not double `%s` and implement interfaces: [%s].',
+                    $class->getParentClass(), implode(', ', $class->getInterfaces())
+                ), $class);
             }
-            throw new \MolliePrefix\Prophecy\Exception\Doubler\ClassCreatorException(\sprintf('Could not double `%s`.', $class->getParentClass()), $class);
+
+            throw new ClassCreatorException(
+                sprintf('Could not double `%s`.', $class->getParentClass()),
+                $class
+            );
         }
+
         return $return;
     }
 }

@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /*
  * This file is part of PHPUnit.
  *
@@ -10,12 +7,12 @@ namespace MolliePrefix;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework;
+
 /**
  * Creates a synthetic failed assertion.
- *
- * @since Class available since Release 3.5.0
  */
-class PHPUnit_Framework_SyntheticError extends \MolliePrefix\PHPUnit_Framework_AssertionFailedError
+class SyntheticError extends AssertionFailedError
 {
     /**
      * The synthetic file.
@@ -23,67 +20,42 @@ class PHPUnit_Framework_SyntheticError extends \MolliePrefix\PHPUnit_Framework_A
      * @var string
      */
     protected $syntheticFile = '';
+
     /**
      * The synthetic line number.
      *
      * @var int
      */
     protected $syntheticLine = 0;
+
     /**
      * The synthetic trace.
      *
      * @var array
      */
     protected $syntheticTrace = [];
-    /**
-     * Constructor.
-     *
-     * @param string $message
-     * @param int    $code
-     * @param string $file
-     * @param int    $line
-     * @param array  $trace
-     */
-    public function __construct($message, $code, $file, $line, $trace)
+
+    public function __construct(string $message, int $code, string $file, int $line, array $trace)
     {
         parent::__construct($message, $code);
-        $this->syntheticFile = $file;
-        $this->syntheticLine = $line;
+
+        $this->syntheticFile  = $file;
+        $this->syntheticLine  = $line;
         $this->syntheticTrace = $trace;
     }
-    /**
-     * @return string
-     */
-    public function getSyntheticFile()
+
+    public function getSyntheticFile(): string
     {
         return $this->syntheticFile;
     }
-    /**
-     * @return int
-     */
-    public function getSyntheticLine()
+
+    public function getSyntheticLine(): int
     {
         return $this->syntheticLine;
     }
-    /**
-     * @return array
-     */
-    public function getSyntheticTrace()
+
+    public function getSyntheticTrace(): array
     {
         return $this->syntheticTrace;
     }
 }
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-/**
- * Creates a synthetic failed assertion.
- *
- * @since Class available since Release 3.5.0
- */
-\class_alias('MolliePrefix\\PHPUnit_Framework_SyntheticError', 'PHPUnit_Framework_SyntheticError', \false);

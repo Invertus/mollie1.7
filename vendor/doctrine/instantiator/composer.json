@@ -1,45 +1,42 @@
 {
-    "name": "doctrine\/instantiator",
-    "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
-    "type": "library",
-    "license": "MIT",
-    "homepage": "https:\/\/github.com\/doctrine\/instantiator",
-    "keywords": [
+    "name":              "doctrine/instantiator",
+    "description":       "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+    "type":              "library",
+    "license":           "MIT",
+    "homepage":          "https://www.doctrine-project.org/projects/instantiator.html",
+    "keywords":          [
         "instantiate",
         "constructor"
     ],
     "authors": [
         {
-            "name": "Marco Pivetta",
-            "email": "ocramius@gmail.com",
-            "homepage": "http:\/\/ocramius.github.com\/"
+            "name":     "Marco Pivetta",
+            "email":    "ocramius@gmail.com",
+            "homepage": "https://ocramius.github.io/"
         }
     ],
     "require": {
-        "php": ">=5.3,<8.0-DEV"
+        "php": "^7.1 || ^8.0"
     },
     "require-dev": {
-        "ext-phar": "*",
-        "ext-pdo": "*",
-        "phpunit\/phpunit": "~4.0",
-        "squizlabs\/php_codesniffer": "~2.0",
-        "athletic\/athletic": "~0.1.8"
+        "ext-phar":                  "*",
+        "ext-pdo":                   "*",
+        "doctrine/coding-standard":  "^8.0",
+        "phpbench/phpbench":         "^0.13 || 1.0.0-alpha2",
+        "phpstan/phpstan":           "^0.12",
+        "phpstan/phpstan-phpunit":   "^0.12",
+        "phpunit/phpunit":           "^7.0 || ^8.0 || ^9.0"
     },
     "autoload": {
         "psr-4": {
-            "MolliePrefix\\Doctrine\\Instantiator\\": "src\/Doctrine\/Instantiator\/"
+            "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
         }
     },
     "autoload-dev": {
-        "psr-4": {
-            "MolliePrefix\\DoctrineTest\\InstantiatorPerformance\\": "tests\/DoctrineTest\/InstantiatorPerformance\/",
-            "MolliePrefix\\DoctrineTest\\InstantiatorTest\\": "tests\/DoctrineTest\/InstantiatorTest\/",
-            "MolliePrefix\\DoctrineTest\\InstantiatorTestAsset\\": "tests\/DoctrineTest\/InstantiatorTestAsset\/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0.x-dev"
+        "psr-0": {
+            "DoctrineTest\\InstantiatorPerformance\\": "tests",
+            "DoctrineTest\\InstantiatorTest\\": "tests",
+            "DoctrineTest\\InstantiatorTestAsset\\": "tests"
         }
     }
 }

@@ -1,64 +1,120 @@
 <?php
-
 /*
- * This file is part of the GlobalState package.
+ * This file is part of sebastian/global-state.
  *
  * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\SebastianBergmann\GlobalState;
 
-use MolliePrefix\PHPUnit_Framework_TestCase;
+declare(strict_types=1);
+
+namespace SebastianBergmann\GlobalState;
+
+use PHPUnit\Framework\TestCase;
+use SebastianBergmann\GlobalState\TestFixture\BlacklistedChildClass;
+use SebastianBergmann\GlobalState\TestFixture\BlacklistedClass;
+use SebastianBergmann\GlobalState\TestFixture\BlacklistedImplementor;
+use SebastianBergmann\GlobalState\TestFixture\BlacklistedInterface;
+
 /**
+ * @covers \SebastianBergmann\GlobalState\Blacklist
  */
-class BlacklistTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class BlacklistTest extends TestCase
 {
     /**
      * @var \SebastianBergmann\GlobalState\Blacklist
      */
     private $blacklist;
+
     protected function setUp()
     {
-        $this->blacklist = new \MolliePrefix\SebastianBergmann\GlobalState\Blacklist();
+        $this->blacklist = new Blacklist;
     }
+
     public function testGlobalVariableThatIsNotBlacklistedIsNotTreatedAsBlacklisted()
     {
         $this->assertFalse($this->blacklist->isGlobalVariableBlacklisted('variable'));
     }
+
     public function testGlobalVariableCanBeBlacklisted()
     {
         $this->blacklist->addGlobalVariable('variable');
+
         $this->assertTrue($this->blacklist->isGlobalVariableBlacklisted('variable'));
     }
+
     public function testStaticAttributeThatIsNotBlacklistedIsNotTreatedAsBlacklisted()
     {
-        $this->assertFalse($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass', 'attribute'));
+        $this->assertFalse(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedClass::class,
+                'attribute'
+            )
+        );
     }
+
     public function testClassCanBeBlacklisted()
     {
-        $this->blacklist->addClass('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass');
-        $this->assertTrue($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass', 'attribute'));
+        $this->blacklist->addClass(BlacklistedClass::class);
+
+        $this->assertTrue(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedClass::class,
+                'attribute'
+            )
+        );
     }
+
     public function testSubclassesCanBeBlacklisted()
     {
-        $this->blacklist->addSubclassesOf('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass');
-        $this->assertTrue($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedChildClass', 'attribute'));
+        $this->blacklist->addSubclassesOf(BlacklistedClass::class);
+
+        $this->assertTrue(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedChildClass::class,
+                'attribute'
+            )
+        );
     }
+
     public function testImplementorsCanBeBlacklisted()
     {
-        $this->blacklist->addImplementorsOf('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedInterface');
-        $this->assertTrue($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedImplementor', 'attribute'));
+        $this->blacklist->addImplementorsOf(BlacklistedInterface::class);
+
+        $this->assertTrue(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedImplementor::class,
+                'attribute'
+            )
+        );
     }
+
     public function testClassNamePrefixesCanBeBlacklisted()
     {
-        $this->blacklist->addClassNamePrefix('MolliePrefix\\SebastianBergmann\\GlobalState');
-        $this->assertTrue($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass', 'attribute'));
+        $this->blacklist->addClassNamePrefix('SebastianBergmann\GlobalState');
+
+        $this->assertTrue(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedClass::class,
+                'attribute'
+            )
+        );
     }
+
     public function testStaticAttributeCanBeBlacklisted()
     {
-        $this->blacklist->addStaticAttribute('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass', 'attribute');
-        $this->assertTrue($this->blacklist->isStaticAttributeBlacklisted('MolliePrefix\\SebastianBergmann\\GlobalState\\TestFixture\\BlacklistedClass', 'attribute'));
+        $this->blacklist->addStaticAttribute(
+            BlacklistedClass::class,
+            'attribute'
+        );
+
+        $this->assertTrue(
+            $this->blacklist->isStaticAttributeBlacklisted(
+                BlacklistedClass::class,
+                'attribute'
+            )
+        );
     }
 }

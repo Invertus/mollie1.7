@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Exception\Prediction;
 
-use MolliePrefix\Prophecy\Exception\Prophecy\MethodProphecyException;
-class NoCallsException extends \MolliePrefix\Prophecy\Exception\Prophecy\MethodProphecyException implements \MolliePrefix\Prophecy\Exception\Prediction\PredictionException
+namespace Prophecy\Exception\Prediction;
+
+use Prophecy\Exception\Prophecy\MethodProphecyException;
+
+class NoCallsException extends MethodProphecyException implements PredictionException
 {
 }

@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Prophecy\Doubler\ClassPatch;
 
-use MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode;
+namespace Prophecy\Doubler\ClassPatch;
+
+use Prophecy\Doubler\Generator\Node\ClassNode;
+
 /**
  * Exception patch for HHVM to remove the stubs from special methods
  *
  * @author Christophe Coevoet <stof@notk.org>
  */
-class HhvmExceptionPatch implements \MolliePrefix\Prophecy\Doubler\ClassPatch\ClassPatchInterface
+class HhvmExceptionPatch implements ClassPatchInterface
 {
     /**
      * Supports exceptions on HHVM.
@@ -25,13 +27,15 @@ class HhvmExceptionPatch implements \MolliePrefix\Prophecy\Doubler\ClassPatch\Cl
      *
      * @return bool
      */
-    public function supports(\MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $node)
+    public function supports(ClassNode $node)
     {
-        if (!\defined('HHVM_VERSION')) {
-            return \false;
+        if (!defined('HHVM_VERSION')) {
+            return false;
         }
-        return 'Exception' === $node->getParentClass() || \is_subclass_of($node->getParentClass(), 'Exception');
+
+        return 'Exception' === $node->getParentClass() || is_subclass_of($node->getParentClass(), 'Exception');
     }
+
     /**
      * Removes special exception static methods from the doubled methods.
      *
@@ -39,7 +43,7 @@ class HhvmExceptionPatch implements \MolliePrefix\Prophecy\Doubler\ClassPatch\Cl
      *
      * @return void
      */
-    public function apply(\MolliePrefix\Prophecy\Doubler\Generator\Node\ClassNode $node)
+    public function apply(ClassNode $node)
     {
         if ($node->hasMethod('setTraceOptions')) {
             $node->getMethod('setTraceOptions')->useParentCode();
@@ -48,6 +52,7 @@ class HhvmExceptionPatch implements \MolliePrefix\Prophecy\Doubler\ClassPatch\Cl
             $node->getMethod('getTraceOptions')->useParentCode();
         }
     }
+
     /**
      * {@inheritdoc}
      */
