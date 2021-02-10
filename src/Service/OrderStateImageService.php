@@ -14,9 +14,6 @@ namespace Mollie\Service;
 
 class OrderStateImageService
 {
-	/**
-	 * @param int $orderStateId
-	 */
 	public function createOrderStateLogo($orderStateId)
 	{
 		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
