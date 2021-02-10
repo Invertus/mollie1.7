@@ -24,9 +24,6 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-	/**
-	 * @param int $orderStateId
-	 */
 	public function deleteOrderStateLogo($orderStateId)
 	{
 		$destination = _PS_ORDER_STATE_IMG_DIR_ . $orderStateId . '.gif';
