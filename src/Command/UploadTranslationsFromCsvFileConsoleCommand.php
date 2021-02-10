@@ -64,12 +64,15 @@ class UploadTranslationsFromCsvFileConsoleCommand extends Command
 
 				while (($line = fgets($handle)) !== false) {
 					$line = preg_replace("/\r|\n/", '', $line);
-					$values = explode(',', $line);
+					$values = explode(';', $line);
 					if ('ID' === $values[self::CSV_POSITION_ID] ||
 						'' === $values[self::CSV_POSITION_ID]
 					) {
 						continue;
 					}
+					if($values['0'] === '<{mollie}prestashop>formbuilder_b2a2c5a69af7c04c5adc48261fb5dc13') {
+					    $a = 1;
+                    }
 					$this->updateTranslation($en, $values, self::CSV_POSITION_EN);
 					$this->updateTranslation($nl, $values, self::CSV_POSITION_NL);
 					$this->updateTranslation($de, $values, self::CSV_POSITION_DE);

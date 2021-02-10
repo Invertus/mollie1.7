@@ -33,9 +33,6 @@ class OrderStateImageService
 		@unlink($destination);
 	}
 
-	/**
-	 * @param int $orderStateId
-	 */
 	public function createTemporaryOrderStateLogo($orderStateId)
 	{
 		$source = _PS_MODULE_DIR_ . 'mollie/views/img/logo_small.png';
