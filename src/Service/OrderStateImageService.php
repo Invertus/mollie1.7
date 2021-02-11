@@ -34,9 +34,6 @@ class OrderStateImageService
 		@copy($source, $destination);
 	}
 
-	/**
-	 * @param int $orderStateId
-	 */
 	public function deleteTemporaryOrderStateLogo($orderStateId)
 	{
 		$destination = _PS_TMP_IMG_DIR_ . 'order_state_mini_' . $orderStateId . '_1.gif';
