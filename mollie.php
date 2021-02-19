@@ -1,7 +1,5 @@
 <?php
 
-use Dotenv\Dotenv;
-
 /**
  * Mollie       https://www.mollie.nl
  *
