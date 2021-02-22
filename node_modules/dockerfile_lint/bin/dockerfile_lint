@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+
+'use strict';
+
+var fs = require('fs'),
+    _ = require('lodash'),
+    yamlParser = require('js-yaml'),
+    commandline = require('commander'),
+    logger = require("../lib/logger"),
+    loadRules = require("../lib/rulefile-loader").load,
+    DockeFileValidator = require('../'),
+    DockerIO = require('dockerode'),
+    ImageLinter = require('../lib/image-linter'),
+    printResults = require('./functions').printResults,
+    printJsonResults = require('./functions').printJsonResults,
+    printJunitResults = require('./functions').printJunitResults,
+    getContent = require('./functions').getContent,
+    rulefileLocation = null,
+    rulefile = null,
+    remoteFile = false,
+    strictMode = true,
+    lintImage = false,
+    imageid = null;
+
+function collectArgs(arg, args) {
+  args.push(arg);
+  return args;
+}
+
+commandline
+    .option('-j, --json', 'Show results in JSON format')
+    .option('-u, --junit', 'Show results in JUnit XML format')
+    .option('-r, --rulefile [rulefile] (optional)', 'Rule file', rulefile)
+    .option('-f, --dockerfile [dockerfile] (optional)', 'File to lint. Accepts a local file or an http(s) URL. If not present attempts to lint dockerfile in current directory', collectArgs, [])
+    .option('-p, --permissive', 'Run in permissive mode (return 1 only on error but not on warning)')
+    .option('-e, --export-rules', 'Dump the effective rule file. All other options except -r are ignored.')
+    .option('-v, --verbose', 'Show debugging logs');
+
+commandline.command('image <imageid>')
+    .description("Lint a local docker image matching <imageid>.\n The --dockerfile option is ignored when this command is used.")
+    .action(function (id) {
+        lintImage = true;
+        imageid = id;
+    });
+commandline.parse(process.argv);
+if (commandline.verbose) {
+    if (logger.transports.console) logger.transports.console.level = 'debug';
+    if (logger.transports.file) logger.transports.file.level = 'debug';
+}
+if (commandline.rulefile) {
+    rulefileLocation = commandline.rulefile;
+}
+if (rulefileLocation !== null) {
+    if (!fs.existsSync(rulefileLocation)) {
+        console.error('ERROR: Rule file not found -> ' + rulefileLocation);
+        process.exit(1);
+    }
+}
+
+// Make sure both JSON and JUnit output options aren't set since they are mutually exclusive
+if (commandline.json && commandline.junit) {
+    console.error('ERROR: result format options ("--json and --junit") cannot be used together, please choose one only');
+    process.exit(1);
+}
+
+if (commandline.permissive) {
+    strictMode = false;
+}
+
+if (commandline.exportRules) {
+    var rules = loadRules(rulefileLocation);
+    console.log(yamlParser.dump(rules));
+    process.exit(0);
+}
+
+if (commandline.dockerfile.length === 0 && !lintImage) {
+    commandline.dockerfile = ['Dockerfile'];
+}
+
+
+function lintDockerFiles() {
+    var lintPromises = _.map(commandline.dockerfile, function (dockerfileLocation) {
+        if (!commandline.json && !commandline.junit) {
+            console.info('\n# Analyzing ' + dockerfileLocation + '\n');
+        }
+        return lintDockerFile(dockerfileLocation);
+    });
+    Promise.all(lintPromises).then(function (results) {
+        if (commandline.json) {
+            printJsonResults(results.length === 1 ? results[0] : results);
+        } else if (commandline.junit) {
+            printJunitResults(results.length === 1 ? results[0] : results);
+        } else {
+            results.forEach(printResults);
+        }
+        var errorCodesSum = results.reduce(function(total, result) {
+            return total + result.error.count + (strictMode ? result.warn.count : 0);
+        }, 0);
+        process.exit(errorCodesSum);
+    }).catch(function (error) {
+        console.error(error);
+        process.exit(-1);
+    });
+}
+
+function lintDockerFile(dockerfileLocation) {
+    return new Promise(function (resolve, reject) {
+        try {
+            var dockerfile = fs.readFileSync(dockerfileLocation, 'UTF-8');
+        } catch (e) {
+            if (/^http[s]?:\/\//.test(dockerfileLocation)) {
+                remoteFile = true;
+            } else {
+                throw new Error('Dockerfile ' + dockerfileLocation + ' not found');
+            }
+        }
+
+        function lint(dockerfileContent, rulefileLocation) {
+            var validator = new DockeFileValidator(rulefileLocation);
+            var result = validator.validate(dockerfileContent);
+            resolve(result);
+        }
+
+        if (remoteFile) {
+            getContent(dockerfileLocation).then(function (dockerfileContent) {
+                lint(dockerfileContent, rulefileLocation)
+            });
+        } else {
+            lint(dockerfile, rulefileLocation);
+        }
+    });
+}
+
+function lintImageFromInspect() {
+    var docker = new DockerIO(),
+        image = docker.getImage(imageid);
+    logger.debug("Image id is " + imageid);
+
+    function lint(inspectOutPut, rulefileLocation) {
+        var linter = new ImageLinter(rulefileLocation);
+        var results = linter.validate(inspectOutPut);
+        if (commandline.json) {
+            printJsonResults(results);
+        } else if (commandline.junit) {
+            printJunitResults(results);
+        } else {
+            printResults(results);
+        }
+        if (results.error.count > 0) {
+            process.exit(1);
+        } else {
+            process.exit(0);
+        }
+    }
+
+    image.inspect(function (err, data) {
+        if (err) {
+            logger.error("Unable to inspect image : " + imageid);
+            process.exit(1);
+        } else {
+            lint(JSON.stringify(data), rulefileLocation);
+        }
+    })
+}
+
+/**
+ *  Our 'main' function. Validates either an image or a dockerfile.
+ */
+if (lintImage) {
+    lintImageFromInspect();
+} else {
+    lintDockerFiles();
+}
