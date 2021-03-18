@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Yaml;
 
-use MolliePrefix\Symfony\Component\Yaml\Exception\ParseException;
+namespace Symfony\Component\Yaml;
+
+use Symfony\Component\Yaml\Exception\ParseException;
+
 /**
  * Unescaper encapsulates unescaping rules for single and double-quoted
  * YAML strings.
@@ -25,6 +27,7 @@ class Unescaper
      * Regex fragment that matches an escaped character in a double quoted string.
      */
     const REGEX_ESCAPED_CHARACTER = '\\\\(x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8}|.)';
+
     /**
      * Unescapes a single quoted string.
      *
@@ -34,8 +37,9 @@ class Unescaper
      */
     public function unescapeSingleQuotedString($value)
     {
-        return \str_replace('\'\'', '\'', $value);
+        return str_replace('\'\'', '\'', $value);
     }
+
     /**
      * Unescapes a double quoted string.
      *
@@ -48,9 +52,11 @@ class Unescaper
         $callback = function ($match) {
             return $this->unescapeCharacter($match[0]);
         };
+
         // evaluate the string
-        return \preg_replace_callback('/' . self::REGEX_ESCAPED_CHARACTER . '/u', $callback, $value);
+        return preg_replace_callback('/'.self::REGEX_ESCAPED_CHARACTER.'/u', $callback, $value);
     }
+
     /**
      * Unescapes a character that was found in a double-quoted string.
      *
@@ -62,11 +68,11 @@ class Unescaper
     {
         switch ($value[1]) {
             case '0':
-                return "\0";
+                return "\x0";
             case 'a':
-                return "\7";
+                return "\x7";
             case 'b':
-                return "\10";
+                return "\x8";
             case 't':
                 return "\t";
             case "\t":
@@ -74,13 +80,13 @@ class Unescaper
             case 'n':
                 return "\n";
             case 'v':
-                return "\v";
+                return "\xB";
             case 'f':
-                return "\f";
+                return "\xC";
             case 'r':
                 return "\r";
             case 'e':
-                return "\33";
+                return "\x1B";
             case ' ':
                 return ' ';
             case '"':
@@ -91,26 +97,27 @@ class Unescaper
                 return '\\';
             case 'N':
                 // U+0085 NEXT LINE
-                return "";
+                return "\xC2\x85";
             case '_':
                 // U+00A0 NO-BREAK SPACE
-                return " ";
+                return "\xC2\xA0";
             case 'L':
                 // U+2028 LINE SEPARATOR
-                return " ";
+                return "\xE2\x80\xA8";
             case 'P':
                 // U+2029 PARAGRAPH SEPARATOR
-                return " ";
+                return "\xE2\x80\xA9";
             case 'x':
-                return self::utf8chr(\hexdec(\substr($value, 2, 2)));
+                return self::utf8chr(hexdec(substr($value, 2, 2)));
             case 'u':
-                return self::utf8chr(\hexdec(\substr($value, 2, 4)));
+                return self::utf8chr(hexdec(substr($value, 2, 4)));
             case 'U':
-                return self::utf8chr(\hexdec(\substr($value, 2, 8)));
+                return self::utf8chr(hexdec(substr($value, 2, 8)));
             default:
-                throw new \MolliePrefix\Symfony\Component\Yaml\Exception\ParseException(\sprintf('Found unknown escape character "%s".', $value));
+                throw new ParseException(sprintf('Found unknown escape character "%s".', $value));
         }
     }
+
     /**
      * Get the UTF-8 character for the given code point.
      *
@@ -120,15 +127,16 @@ class Unescaper
      */
     private static function utf8chr($c)
     {
-        if (0x80 > ($c %= 0x200000)) {
+        if (0x80 > $c %= 0x200000) {
             return \chr($c);
         }
         if (0x800 > $c) {
-            return \chr(0xc0 | $c >> 6) . \chr(0x80 | $c & 0x3f);
+            return \chr(0xC0 | $c >> 6).\chr(0x80 | $c & 0x3F);
         }
         if (0x10000 > $c) {
-            return \chr(0xe0 | $c >> 12) . \chr(0x80 | $c >> 6 & 0x3f) . \chr(0x80 | $c & 0x3f);
+            return \chr(0xE0 | $c >> 12).\chr(0x80 | $c >> 6 & 0x3F).\chr(0x80 | $c & 0x3F);
         }
-        return \chr(0xf0 | $c >> 18) . \chr(0x80 | $c >> 12 & 0x3f) . \chr(0x80 | $c >> 6 & 0x3f) . \chr(0x80 | $c & 0x3f);
+
+        return \chr(0xF0 | $c >> 18).\chr(0x80 | $c >> 12 & 0x3F).\chr(0x80 | $c >> 6 & 0x3F).\chr(0x80 | $c & 0x3F);
     }
 }

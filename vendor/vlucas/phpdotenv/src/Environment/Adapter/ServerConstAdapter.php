@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment\Adapter;
+namespace Dotenv\Environment\Adapter;
 
-use MolliePrefix\PhpOption\None;
-use MolliePrefix\PhpOption\Some;
-class ServerConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface
+use PhpOption\None;
+use PhpOption\Some;
+
+class ServerConstAdapter implements AdapterInterface
 {
     /**
      * Determines if the adapter is supported.
@@ -13,8 +14,9 @@ class ServerConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Ada
      */
     public function isSupported()
     {
-        return \true;
+        return true;
     }
+
     /**
      * Get an environment variable, if it exists.
      *
@@ -24,11 +26,13 @@ class ServerConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Ada
      */
     public function get($name)
     {
-        if (\array_key_exists($name, $_SERVER)) {
-            return \MolliePrefix\PhpOption\Some::create($_SERVER[$name]);
+        if (array_key_exists($name, $_SERVER)) {
+            return Some::create($_SERVER[$name]);
         }
-        return \MolliePrefix\PhpOption\None::create();
+
+        return None::create();
     }
+
     /**
      * Set an environment variable.
      *
@@ -41,6 +45,7 @@ class ServerConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Ada
     {
         $_SERVER[$name] = $value;
     }
+
     /**
      * Clear an environment variable.
      *

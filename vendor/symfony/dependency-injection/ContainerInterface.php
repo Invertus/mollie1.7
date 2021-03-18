@@ -8,24 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
 
-use MolliePrefix\Psr\Container\ContainerInterface as PsrContainerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+namespace Symfony\Component\DependencyInjection;
+
+use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+
 /**
  * ContainerInterface is the interface implemented by service container classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterface
+interface ContainerInterface extends PsrContainerInterface
 {
     const EXCEPTION_ON_INVALID_REFERENCE = 1;
     const NULL_ON_INVALID_REFERENCE = 2;
     const IGNORE_ON_INVALID_REFERENCE = 3;
     const IGNORE_ON_UNINITIALIZED_REFERENCE = 4;
+
     /**
      * Sets a service.
      *
@@ -33,6 +36,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @param object|null $service The service instance
      */
     public function set($id, $service);
+
     /**
      * Gets a service.
      *
@@ -47,6 +51,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @see Reference
      */
     public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE);
+
     /**
      * Returns true if the given service is defined.
      *
@@ -55,6 +60,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @return bool true if the service is defined, false otherwise
      */
     public function has($id);
+
     /**
      * Check for whether or not a service has been initialized.
      *
@@ -63,6 +69,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @return bool true if the service has been initialized, false otherwise
      */
     public function initialized($id);
+
     /**
      * Gets a parameter.
      *
@@ -73,6 +80,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @throws InvalidArgumentException if the parameter is not defined
      */
     public function getParameter($name);
+
     /**
      * Checks if a parameter exists.
      *
@@ -81,6 +89,7 @@ interface ContainerInterface extends \MolliePrefix\Psr\Container\ContainerInterf
      * @return bool The presence of parameter in container
      */
     public function hasParameter($name);
+
     /**
      * Sets a parameter.
      *

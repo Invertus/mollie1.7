@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Psr\Cache\InvalidArgumentException;
+namespace Symfony\Component\Cache\Adapter;
+
+use Psr\Cache\InvalidArgumentException;
+
 /**
  * Interface for invalidating cached items using tags.
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
-interface TagAwareAdapterInterface extends \MolliePrefix\Symfony\Component\Cache\Adapter\AdapterInterface
+interface TagAwareAdapterInterface extends AdapterInterface
 {
     /**
      * Invalidates cached items using tags.

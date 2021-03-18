@@ -1,8 +1,11 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', '%foo.class%')->setPublic(\true);
+$container = new ContainerBuilder();
+$container
+    ->register('foo', '%foo.class%')
+    ->setPublic(true)
+;
+
 return $container;

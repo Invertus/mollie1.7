@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
+
+namespace Symfony\Component\DependencyInjection\Compiler;
 
 /**
  * Interface that must be implemented by passes that are run as part of an
@@ -16,7 +17,7 @@ namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-interface RepeatablePassInterface extends \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface
+interface RepeatablePassInterface extends CompilerPassInterface
 {
-    public function setRepeatedPass(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RepeatedPass $repeatedPass);
+    public function setRepeatedPass(RepeatedPass $repeatedPass);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment;
+namespace Dotenv\Environment;
 
 /**
  * This environment factory interface.
@@ -16,6 +16,7 @@ interface FactoryInterface
      * @return \Dotenv\Environment\VariablesInterface
      */
     public function create();
+
     /**
      * Creates a new immutable environment variables instance.
      *

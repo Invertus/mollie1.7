@@ -8,32 +8,43 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\DefinitionErrorExceptionPass;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-class DefinitionErrorExceptionPassTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\DependencyInjection\Tests\Compiler;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\DefinitionErrorExceptionPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+
+class DefinitionErrorExceptionPassTest extends TestCase
 {
     public function testThrowsException()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\RuntimeException');
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\RuntimeException');
         $this->expectExceptionMessage('Things went wrong!');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-        $def = new \MolliePrefix\Symfony\Component\DependencyInjection\Definition();
+        $container = new ContainerBuilder();
+        $def = new Definition();
         $def->addError('Things went wrong!');
         $def->addError('Now something else!');
-        $container->register('foo_service_id')->setArguments([$def]);
-        $pass = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\DefinitionErrorExceptionPass();
+        $container->register('foo_service_id')
+            ->setArguments([
+                $def,
+            ]);
+
+        $pass = new DefinitionErrorExceptionPass();
         $pass->process($container);
     }
+
     public function testNoExceptionThrown()
     {
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-        $def = new \MolliePrefix\Symfony\Component\DependencyInjection\Definition();
-        $container->register('foo_service_id')->setArguments([$def]);
-        $pass = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\DefinitionErrorExceptionPass();
+        $container = new ContainerBuilder();
+        $def = new Definition();
+        $container->register('foo_service_id')
+            ->setArguments([
+                $def,
+            ]);
+
+        $pass = new DefinitionErrorExceptionPass();
         $pass->process($container);
         $this->assertSame($def, $container->getDefinition('foo_service_id')->getArgument(0));
     }

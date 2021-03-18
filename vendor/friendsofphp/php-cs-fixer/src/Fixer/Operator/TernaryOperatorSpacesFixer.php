@@ -9,28 +9,34 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Operator;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\CaseAnalysis;
-use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\GotoLabelAnalyzer;
-use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\SwitchAnalyzer;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Operator;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Analyzer\Analysis\CaseAnalysis;
+use PhpCsFixer\Tokenizer\Analyzer\GotoLabelAnalyzer;
+use PhpCsFixer\Tokenizer\Analyzer\SwitchAnalyzer;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class TernaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class TernaryOperatorSpacesFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Standardize spaces around ternary operator.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php \$a = \$a   ?1 :0;\n")]);
+        return new FixerDefinition(
+            'Standardize spaces around ternary operator.',
+            [new CodeSample("<?php \$a = \$a   ?1 :0;\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -40,111 +46,143 @@ final class TernaryOperatorSpacesFixer extends \MolliePrefix\PhpCsFixer\Abstract
     {
         return 0;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
         return $tokens->isAllTokenKindsFound(['?', ':']);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $gotoLabelAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\GotoLabelAnalyzer();
+        $gotoLabelAnalyzer = new GotoLabelAnalyzer();
         $ternaryOperatorIndices = [];
         $excludedIndices = [];
+
         foreach ($tokens as $index => $token) {
-            if ($token->isGivenKind(\T_SWITCH)) {
-                $excludedIndices = \array_merge($excludedIndices, $this->getColonIndicesForSwitch($tokens, $index));
+            if ($token->isGivenKind(T_SWITCH)) {
+                $excludedIndices = array_merge($excludedIndices, $this->getColonIndicesForSwitch($tokens, $index));
+
                 continue;
             }
+
             if (!$token->equalsAny(['?', ':'])) {
                 continue;
             }
-            if (\in_array($index, $excludedIndices, \true)) {
+
+            if (\in_array($index, $excludedIndices, true)) {
                 continue;
             }
+
             if ($this->belongsToAlternativeSyntax($tokens, $index)) {
                 continue;
             }
+
             if ($gotoLabelAnalyzer->belongsToGoToLabel($tokens, $index)) {
                 continue;
             }
+
             $ternaryOperatorIndices[] = $index;
         }
-        foreach (\array_reverse($ternaryOperatorIndices) as $index) {
+
+        foreach (array_reverse($ternaryOperatorIndices) as $index) {
             $token = $tokens[$index];
+
             if ($token->equals('?')) {
                 $nextNonWhitespaceIndex = $tokens->getNextNonWhitespace($index);
+
                 if ($tokens[$nextNonWhitespaceIndex]->equals(':')) {
                     // for `$a ?: $b` remove spaces between `?` and `:`
                     $tokens->ensureWhitespaceAtIndex($index + 1, 0, '');
                 } else {
                     // for `$a ? $b : $c` ensure space after `?`
-                    $this->ensureWhitespaceExistence($tokens, $index + 1, \true);
+                    $this->ensureWhitespaceExistence($tokens, $index + 1, true);
                 }
+
                 // for `$a ? $b : $c` ensure space before `?`
-                $this->ensureWhitespaceExistence($tokens, $index - 1, \false);
+                $this->ensureWhitespaceExistence($tokens, $index - 1, false);
+
                 continue;
             }
+
             if ($token->equals(':')) {
                 // for `$a ? $b : $c` ensure space after `:`
-                $this->ensureWhitespaceExistence($tokens, $index + 1, \true);
+                $this->ensureWhitespaceExistence($tokens, $index + 1, true);
+
                 $prevNonWhitespaceToken = $tokens[$tokens->getPrevNonWhitespace($index)];
+
                 if (!$prevNonWhitespaceToken->equals('?')) {
                     // for `$a ? $b : $c` ensure space before `:`
-                    $this->ensureWhitespaceExistence($tokens, $index - 1, \false);
+                    $this->ensureWhitespaceExistence($tokens, $index - 1, false);
                 }
             }
         }
     }
+
     /**
      * @param int $index
      *
      * @return bool
      */
-    private function belongsToAlternativeSyntax(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    private function belongsToAlternativeSyntax(Tokens $tokens, $index)
     {
         if (!$tokens[$index]->equals(':')) {
-            return \false;
+            return false;
         }
+
         $closeParenthesisIndex = $tokens->getPrevMeaningfulToken($index);
-        if ($tokens[$closeParenthesisIndex]->isGivenKind(\T_ELSE)) {
-            return \true;
+        if ($tokens[$closeParenthesisIndex]->isGivenKind(T_ELSE)) {
+            return true;
         }
         if (!$tokens[$closeParenthesisIndex]->equals(')')) {
-            return \false;
+            return false;
         }
-        $openParenthesisIndex = $tokens->findBlockStart(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $closeParenthesisIndex);
+
+        $openParenthesisIndex = $tokens->findBlockStart(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $closeParenthesisIndex);
+
         $alternativeControlStructureIndex = $tokens->getPrevMeaningfulToken($openParenthesisIndex);
-        return $tokens[$alternativeControlStructureIndex]->isGivenKind([\T_DECLARE, \T_ELSEIF, \T_FOR, \T_FOREACH, \T_IF, \T_SWITCH, \T_WHILE]);
+
+        return $tokens[$alternativeControlStructureIndex]->isGivenKind([T_DECLARE, T_ELSEIF, T_FOR, T_FOREACH, T_IF, T_SWITCH, T_WHILE]);
     }
+
     /**
      * @param int $switchIndex
      *
      * @return int[]
      */
-    private function getColonIndicesForSwitch(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $switchIndex)
+    private function getColonIndicesForSwitch(Tokens $tokens, $switchIndex)
     {
-        return \array_map(static function (\MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\CaseAnalysis $caseAnalysis) {
-            return $caseAnalysis->getColonIndex();
-        }, (new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\SwitchAnalyzer())->getSwitchAnalysis($tokens, $switchIndex)->getCases());
+        return array_map(
+            static function (CaseAnalysis $caseAnalysis) {
+                return $caseAnalysis->getColonIndex();
+            },
+            (new SwitchAnalyzer())->getSwitchAnalysis($tokens, $switchIndex)->getCases()
+        );
     }
+
     /**
      * @param int  $index
      * @param bool $after
      */
-    private function ensureWhitespaceExistence(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index, $after)
+    private function ensureWhitespaceExistence(Tokens $tokens, $index, $after)
     {
         if ($tokens[$index]->isWhitespace()) {
-            if (\false === \strpos($tokens[$index]->getContent(), "\n") && !$tokens[$index - 1]->isComment()) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']);
+            if (
+                false === strpos($tokens[$index]->getContent(), "\n")
+                && !$tokens[$index - 1]->isComment()
+            ) {
+                $tokens[$index] = new Token([T_WHITESPACE, ' ']);
             }
+
             return;
         }
+
         $index += $after ? 0 : 1;
-        $tokens->insertAt($index, new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\T_WHITESPACE, ' ']));
+        $tokens->insertAt($index, new Token([T_WHITESPACE, ' ']));
     }
 }

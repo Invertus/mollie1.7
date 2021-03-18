@@ -8,64 +8,72 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\IteratorArgument;
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Expression;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\ExpressionLanguage\Expression;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class ContainerConfigurator extends \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractConfigurator
+class ContainerConfigurator extends AbstractConfigurator
 {
     const FACTORY = 'container';
+
     private $container;
     private $loader;
     private $instanceof;
     private $path;
     private $file;
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder $container, \MolliePrefix\Symfony\Component\DependencyInjection\Loader\PhpFileLoader $loader, array &$instanceof, $path, $file)
+
+    public function __construct(ContainerBuilder $container, PhpFileLoader $loader, array &$instanceof, $path, $file)
     {
         $this->container = $container;
         $this->loader = $loader;
-        $this->instanceof =& $instanceof;
+        $this->instanceof = &$instanceof;
         $this->path = $path;
         $this->file = $file;
     }
-    public final function extension($namespace, array $config)
+
+    final public function extension($namespace, array $config)
     {
         if (!$this->container->hasExtension($namespace)) {
-            $extensions = \array_filter(\array_map(function ($ext) {
-                return $ext->getAlias();
-            }, $this->container->getExtensions()));
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('There is no extension able to load the configuration for "%s" (in "%s"). Looked for namespace "%s", found "%s".', $namespace, $this->file, $namespace, $extensions ? \implode('", "', $extensions) : 'none'));
+            $extensions = array_filter(array_map(function ($ext) { return $ext->getAlias(); }, $this->container->getExtensions()));
+            throw new InvalidArgumentException(sprintf('There is no extension able to load the configuration for "%s" (in "%s"). Looked for namespace "%s", found "%s".', $namespace, $this->file, $namespace, $extensions ? implode('", "', $extensions) : 'none'));
         }
+
         $this->container->loadFromExtension($namespace, static::processValue($config));
     }
-    public final function import($resource, $type = null, $ignoreErrors = \false)
+
+    final public function import($resource, $type = null, $ignoreErrors = false)
     {
         $this->loader->setCurrentDir(\dirname($this->path));
         $this->loader->import($resource, $type, $ignoreErrors, $this->file);
     }
+
     /**
      * @return ParametersConfigurator
      */
-    public final function parameters()
+    final public function parameters()
     {
-        return new \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ParametersConfigurator($this->container);
+        return new ParametersConfigurator($this->container);
     }
+
     /**
      * @return ServicesConfigurator
      */
-    public final function services()
+    final public function services()
     {
-        return new \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator($this->container, $this->loader, $this->instanceof);
+        return new ServicesConfigurator($this->container, $this->loader, $this->instanceof);
     }
 }
+
 /**
  * Creates a service reference.
  *
@@ -75,8 +83,9 @@ class ContainerConfigurator extends \MolliePrefix\Symfony\Component\DependencyIn
  */
 function ref($id)
 {
-    return new \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ReferenceConfigurator($id);
+    return new ReferenceConfigurator($id);
 }
+
 /**
  * Creates an inline service.
  *
@@ -86,8 +95,9 @@ function ref($id)
  */
 function inline($class = null)
 {
-    return new \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\InlineServiceConfigurator(new \MolliePrefix\Symfony\Component\DependencyInjection\Definition($class));
+    return new InlineServiceConfigurator(new Definition($class));
 }
+
 /**
  * Creates a lazy iterator.
  *
@@ -97,8 +107,9 @@ function inline($class = null)
  */
 function iterator(array $values)
 {
-    return new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\IteratorArgument(\MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractConfigurator::processValue($values, \true));
+    return new IteratorArgument(AbstractConfigurator::processValue($values, true));
 }
+
 /**
  * Creates a lazy iterator by tag name.
  *
@@ -108,8 +119,9 @@ function iterator(array $values)
  */
 function tagged($tag)
 {
-    return new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument($tag);
+    return new TaggedIteratorArgument($tag);
 }
+
 /**
  * Creates an expression.
  *
@@ -119,5 +131,5 @@ function tagged($tag)
  */
 function expr($expression)
 {
-    return new \MolliePrefix\Symfony\Component\ExpressionLanguage\Expression($expression);
+    return new Expression($expression);
 }

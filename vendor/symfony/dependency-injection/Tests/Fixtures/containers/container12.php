@@ -1,8 +1,13 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', 'MolliePrefix\\FooClass\\Foo')->addArgument('foo<>&bar')->addTag('MolliePrefix\\foo"bar\\bar', ['foo' => 'foo"barřž€'])->setPublic(\true);
+$container = new ContainerBuilder();
+$container->
+    register('foo', 'FooClass\\Foo')->
+    addArgument('foo<>&bar')->
+    addTag('foo"bar\\bar', ['foo' => 'foo"barřž€'])
+    ->setPublic(true)
+;
+
 return $container;

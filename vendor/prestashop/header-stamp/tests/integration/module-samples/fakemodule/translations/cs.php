@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Copyright 2003-2020 PrestaShop SA
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -26,8 +23,11 @@ namespace MolliePrefix;
  * @copyright 2003-2020 PrestaShop SA
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
+
+
 global $_MODULE;
 $_MODULE = array();
+
 $_MODULE['<{gamification}prestashop>gamification_3d4aafb2eedeba2fbf92e852f0af745a'] = 'Obchodní znalosti';
 $_MODULE['<{gamification}prestashop>gamification_bacc1bf300527bad9c6ac2d3b875a8d8'] = 'Staňte se e-commerce expertem mrknutím oka!';
 $_MODULE['<{gamification}prestashop>admingamificationcontroller_ca96b4f8d13722aac99da25f94ea1711'] = 'Vaše obchodní znalosti';

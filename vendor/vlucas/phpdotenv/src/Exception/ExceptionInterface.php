@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Exception;
+namespace Dotenv\Exception;
 
 /**
  * This is the exception interface.

@@ -8,22 +8,41 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage\Tests\Node;
 
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode;
-class UnaryNodeTest extends \MolliePrefix\Symfony\Component\ExpressionLanguage\Tests\Node\AbstractNodeTest
+namespace Symfony\Component\ExpressionLanguage\Tests\Node;
+
+use Symfony\Component\ExpressionLanguage\Node\ConstantNode;
+use Symfony\Component\ExpressionLanguage\Node\UnaryNode;
+
+class UnaryNodeTest extends AbstractNodeTest
 {
     public function getEvaluateData()
     {
-        return [[-1, new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('-', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(1))], [3, new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('+', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(3))], [\false, new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('!', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))], [\false, new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('not', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))]];
+        return [
+            [-1, new UnaryNode('-', new ConstantNode(1))],
+            [3, new UnaryNode('+', new ConstantNode(3))],
+            [false, new UnaryNode('!', new ConstantNode(true))],
+            [false, new UnaryNode('not', new ConstantNode(true))],
+        ];
     }
+
     public function getCompileData()
     {
-        return [['(-1)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('-', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(1))], ['(+3)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('+', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(3))], ['(!true)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('!', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))], ['(!true)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('not', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))]];
+        return [
+            ['(-1)', new UnaryNode('-', new ConstantNode(1))],
+            ['(+3)', new UnaryNode('+', new ConstantNode(3))],
+            ['(!true)', new UnaryNode('!', new ConstantNode(true))],
+            ['(!true)', new UnaryNode('not', new ConstantNode(true))],
+        ];
     }
+
     public function getDumpData()
     {
-        return [['(- 1)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('-', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(1))], ['(+ 3)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('+', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(3))], ['(! true)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('!', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))], ['(not true)', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\UnaryNode('not', new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode(\true))]];
+        return [
+            ['(- 1)', new UnaryNode('-', new ConstantNode(1))],
+            ['(+ 3)', new UnaryNode('+', new ConstantNode(3))],
+            ['(! true)', new UnaryNode('!', new ConstantNode(true))],
+            ['(not true)', new UnaryNode('not', new ConstantNode(true))],
+        ];
     }
 }

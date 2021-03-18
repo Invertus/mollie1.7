@@ -8,16 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  *
  * @method InstanceofConfigurator instanceof(string $fqcn)
  */
-class InstanceofConfigurator extends \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractServiceConfigurator
+class InstanceofConfigurator extends AbstractServiceConfigurator
 {
     const FACTORY = 'instanceof';
+
     use Traits\AutowireTrait;
     use Traits\CallTrait;
     use Traits\ConfiguratorTrait;
@@ -26,6 +28,7 @@ class InstanceofConfigurator extends \MolliePrefix\Symfony\Component\DependencyI
     use Traits\PublicTrait;
     use Traits\ShareTrait;
     use Traits\TagTrait;
+
     /**
      * Defines an instanceof-conditional to be applied to following service definitions.
      *
@@ -33,7 +36,7 @@ class InstanceofConfigurator extends \MolliePrefix\Symfony\Component\DependencyI
      *
      * @return self
      */
-    protected final function setInstanceof($fqcn)
+    final protected function setInstanceof($fqcn)
     {
         return $this->parent->instanceof($fqcn);
     }

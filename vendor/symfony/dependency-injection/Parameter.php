@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
+
+namespace Symfony\Component\DependencyInjection;
 
 /**
  * Parameter represents a parameter reference.
@@ -18,6 +19,7 @@ namespace MolliePrefix\Symfony\Component\DependencyInjection;
 class Parameter
 {
     private $id;
+
     /**
      * @param string $id The parameter key
      */
@@ -25,6 +27,7 @@ class Parameter
     {
         $this->id = $id;
     }
+
     /**
      * @return string The parameter key
      */

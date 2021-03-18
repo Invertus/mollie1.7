@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures\Container;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures\Container;
 
 class ConstructorWithOptionalArgumentsContainer
 {

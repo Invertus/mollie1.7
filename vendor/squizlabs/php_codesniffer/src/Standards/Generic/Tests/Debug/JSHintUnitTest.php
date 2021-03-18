@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Unit test class for the JSHint sniff.
  *
@@ -7,12 +6,16 @@
  * @copyright 2019 Juliette Reinders Folmer. All rights reserved.
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Generic\Tests\Debug;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-use MolliePrefix\PHP_CodeSniffer\Config;
-class JSHintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
+namespace PHP_CodeSniffer\Standards\Generic\Tests\Debug;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+use PHP_CodeSniffer\Config;
+
+class JSHintUnitTest extends AbstractSniffUnitTest
 {
+
+
     /**
      * Should this test be skipped for some reason.
      *
@@ -20,14 +23,17 @@ class JSHintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abstr
      */
     protected function shouldSkipTest()
     {
-        $rhinoPath = \MolliePrefix\PHP_CodeSniffer\Config::getExecutablePath('rhino');
-        $jshintPath = \MolliePrefix\PHP_CodeSniffer\Config::getExecutablePath('jshint');
+        $rhinoPath  = Config::getExecutablePath('rhino');
+        $jshintPath = Config::getExecutablePath('jshint');
         if ($rhinoPath === null && $jshintPath === null) {
-            return \true;
+            return true;
         }
-        return \false;
-    }
-    //end shouldSkipTest()
+
+        return false;
+
+    }//end shouldSkipTest()
+
+
     /**
      * Returns the lines where errors should occur.
      *
@@ -39,8 +45,10 @@ class JSHintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abstr
     public function getErrorList()
     {
         return [];
-    }
-    //end getErrorList()
+
+    }//end getErrorList()
+
+
     /**
      * Returns the lines where warnings should occur.
      *
@@ -52,7 +60,8 @@ class JSHintUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\Abstr
     public function getWarningList()
     {
         return [3 => 2];
-    }
-    //end getWarningList()
-}
-//end class
+
+    }//end getWarningList()
+
+
+}//end class

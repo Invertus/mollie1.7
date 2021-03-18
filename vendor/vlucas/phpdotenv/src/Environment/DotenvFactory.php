@@ -1,16 +1,17 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment;
+namespace Dotenv\Environment;
 
-use MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface;
-use MolliePrefix\Dotenv\Environment\Adapter\ApacheAdapter;
-use MolliePrefix\Dotenv\Environment\Adapter\EnvConstAdapter;
-use MolliePrefix\Dotenv\Environment\Adapter\PutenvAdapter;
-use MolliePrefix\Dotenv\Environment\Adapter\ServerConstAdapter;
+use Dotenv\Environment\Adapter\AdapterInterface;
+use Dotenv\Environment\Adapter\ApacheAdapter;
+use Dotenv\Environment\Adapter\EnvConstAdapter;
+use Dotenv\Environment\Adapter\PutenvAdapter;
+use Dotenv\Environment\Adapter\ServerConstAdapter;
+
 /**
  * The default implementation of the environment factory interface.
  */
-class DotenvFactory implements \MolliePrefix\Dotenv\Environment\FactoryInterface
+class DotenvFactory implements FactoryInterface
 {
     /**
      * The set of adapters to use.
@@ -18,6 +19,7 @@ class DotenvFactory implements \MolliePrefix\Dotenv\Environment\FactoryInterface
      * @var \Dotenv\Environment\Adapter\AdapterInterface[]
      */
     protected $adapters;
+
     /**
      * Create a new dotenv environment factory instance.
      *
@@ -29,10 +31,11 @@ class DotenvFactory implements \MolliePrefix\Dotenv\Environment\FactoryInterface
      */
     public function __construct(array $adapters = null)
     {
-        $this->adapters = \array_filter($adapters === null ? [new \MolliePrefix\Dotenv\Environment\Adapter\ApacheAdapter(), new \MolliePrefix\Dotenv\Environment\Adapter\EnvConstAdapter(), new \MolliePrefix\Dotenv\Environment\Adapter\ServerConstAdapter(), new \MolliePrefix\Dotenv\Environment\Adapter\PutenvAdapter()] : $adapters, function (\MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface $adapter) {
+        $this->adapters = array_filter($adapters === null ? [new ApacheAdapter(), new EnvConstAdapter(), new ServerConstAdapter(), new PutenvAdapter()] : $adapters, function (AdapterInterface $adapter) {
             return $adapter->isSupported();
         });
     }
+
     /**
      * Creates a new mutable environment variables instance.
      *
@@ -40,8 +43,9 @@ class DotenvFactory implements \MolliePrefix\Dotenv\Environment\FactoryInterface
      */
     public function create()
     {
-        return new \MolliePrefix\Dotenv\Environment\DotenvVariables($this->adapters, \false);
+        return new DotenvVariables($this->adapters, false);
     }
+
     /**
      * Creates a new immutable environment variables instance.
      *
@@ -49,6 +53,6 @@ class DotenvFactory implements \MolliePrefix\Dotenv\Environment\FactoryInterface
      */
     public function createImmutable()
     {
-        return new \MolliePrefix\Dotenv\Environment\DotenvVariables($this->adapters, \true);
+        return new DotenvVariables($this->adapters, true);
     }
 }

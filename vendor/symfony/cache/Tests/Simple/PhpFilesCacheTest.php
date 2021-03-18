@@ -8,27 +8,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Tests\Simple;
 
-use MolliePrefix\Psr\SimpleCache\CacheInterface;
-use MolliePrefix\Symfony\Component\Cache\Simple\PhpFilesCache;
+namespace Symfony\Component\Cache\Tests\Simple;
+
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Simple\PhpFilesCache;
+
 /**
  * @group time-sensitive
  */
-class PhpFilesCacheTest extends \MolliePrefix\Symfony\Component\Cache\Tests\Simple\CacheTestCase
+class PhpFilesCacheTest extends CacheTestCase
 {
-    protected $skippedTests = ['testDefaultLifeTime' => 'PhpFilesCache does not allow configuring a default lifetime.'];
+    protected $skippedTests = [
+        'testDefaultLifeTime' => 'PhpFilesCache does not allow configuring a default lifetime.',
+    ];
+
     public function createSimpleCache()
     {
-        if (!\MolliePrefix\Symfony\Component\Cache\Simple\PhpFilesCache::isSupported()) {
+        if (!PhpFilesCache::isSupported()) {
             $this->markTestSkipped('OPcache extension is not enabled.');
         }
-        return new \MolliePrefix\Symfony\Component\Cache\Simple\PhpFilesCache('sf-cache');
+
+        return new PhpFilesCache('sf-cache');
     }
-    protected function isPruned(\MolliePrefix\Psr\SimpleCache\CacheInterface $cache, $name)
+
+    protected function isPruned(CacheInterface $cache, $name)
     {
         $getFileMethod = (new \ReflectionObject($cache))->getMethod('getFile');
-        $getFileMethod->setAccessible(\true);
-        return !\file_exists($getFileMethod->invoke($cache, $name));
+        $getFileMethod->setAccessible(true);
+
+        return !file_exists($getFileMethod->invoke($cache, $name));
     }
 }

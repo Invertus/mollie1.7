@@ -1,8 +1,6 @@
 <?php
 
-namespace MolliePrefix;
-
-if (!\class_exists('MolliePrefix\\PhpParser\\Autoloader')) {
+if (!class_exists('PhpParser\Autoloader')) {
     require __DIR__ . '/PhpParser/Autoloader.php';
 }
-\MolliePrefix\PhpParser\Autoloader::register();
+PhpParser\Autoloader::register();

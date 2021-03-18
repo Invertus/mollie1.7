@@ -1,7 +1,7 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures;
 
-class ParentNotExists extends \MolliePrefix\NotExists
+class ParentNotExists extends \NotExists
 {
 }

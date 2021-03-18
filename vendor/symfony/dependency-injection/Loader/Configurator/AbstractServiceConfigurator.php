@@ -8,22 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractConfigurator
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+
+abstract class AbstractServiceConfigurator extends AbstractConfigurator
 {
     protected $parent;
     protected $id;
     private $defaultTags = [];
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator $parent, \MolliePrefix\Symfony\Component\DependencyInjection\Definition $definition, $id = null, array $defaultTags = [])
+
+    public function __construct(ServicesConfigurator $parent, Definition $definition, $id = null, array $defaultTags = [])
     {
         $this->parent = $parent;
         $this->definition = $definition;
         $this->id = $id;
         $this->defaultTags = $defaultTags;
     }
+
     public function __destruct()
     {
         // default tags should be added last
@@ -34,6 +38,7 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
         }
         $this->defaultTags = [];
     }
+
     /**
      * Registers a service.
      *
@@ -42,11 +47,13 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
      *
      * @return ServiceConfigurator
      */
-    public final function set($id, $class = null)
+    final public function set($id, $class = null)
     {
         $this->__destruct();
+
         return $this->parent->set($id, $class);
     }
+
     /**
      * Creates an alias.
      *
@@ -55,11 +62,13 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
      *
      * @return AliasConfigurator
      */
-    public final function alias($id, $referencedId)
+    final public function alias($id, $referencedId)
     {
         $this->__destruct();
+
         return $this->parent->alias($id, $referencedId);
     }
+
     /**
      * Registers a PSR-4 namespace using a glob pattern.
      *
@@ -68,11 +77,13 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
      *
      * @return PrototypeConfigurator
      */
-    public final function load($namespace, $resource)
+    final public function load($namespace, $resource)
     {
         $this->__destruct();
+
         return $this->parent->load($namespace, $resource);
     }
+
     /**
      * Gets an already defined service definition.
      *
@@ -82,11 +93,13 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
      *
      * @throws ServiceNotFoundException if the service definition does not exist
      */
-    public final function get($id)
+    final public function get($id)
     {
         $this->__destruct();
+
         return $this->parent->get($id);
     }
+
     /**
      * Registers a service.
      *
@@ -95,9 +108,10 @@ abstract class AbstractServiceConfigurator extends \MolliePrefix\Symfony\Compone
      *
      * @return ServiceConfigurator
      */
-    public final function __invoke($id, $class = null)
+    final public function __invoke($id, $class = null)
     {
         $this->__destruct();
+
         return $this->parent->set($id, $class);
     }
 }

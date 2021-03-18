@@ -1,17 +1,19 @@
 <?php
-
 /**
  * This file is part of the PrestaShop\Decimal package
  *
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal\Test\Operation;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Operation\Addition;
-class AdditionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+namespace PrestaShop\Decimal\Test\Operation;
+
+use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\Decimal\Operation\Addition;
+
+class AdditionTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * Given two decimal numbers
      * When computing the addition operation
@@ -25,14 +27,17 @@ class AdditionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testItAddsNumbers($number1, $number2, $expectedResult)
     {
-        $n1 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number1);
-        $n2 = new \MolliePrefix\PrestaShop\Decimal\DecimalNumber($number2);
-        $operation = new \MolliePrefix\PrestaShop\Decimal\Operation\Addition();
+        $n1 = new DecimalNumber($number1);
+        $n2 = new DecimalNumber($number2);
+
+        $operation = new Addition();
         $result1 = $operation->computeUsingBcMath($n1, $n2);
         $result2 = $operation->computeWithoutBcMath($n1, $n2);
-        $this->assertSame($expectedResult, (string) $result1, "Failed asserting {$number1} + {$number2} = {$expectedResult} (BC Math)");
-        $this->assertSame($expectedResult, (string) $result2, "Failed asserting {$number1} + {$number2} = {$expectedResult}");
+
+        $this->assertSame($expectedResult, (string) $result1, "Failed asserting $number1 + $number2 = $expectedResult (BC Math)");
+        $this->assertSame($expectedResult, (string) $result2, "Failed asserting $number1 + $number2 = $expectedResult");
     }
+
     public function provideNumbersToAdd()
     {
         return [
@@ -50,7 +55,11 @@ class AdditionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
             ['0.0000001', '10.01', '10.0100001'],
             ['9.999999', '9.999999', '19.999998'],
             ['9.999999999999999999', '9.999999999999999999', '19.999999999999999998'],
-            ['9223372036854775807.9223372036854775807', '1.01', '9223372036854775808.9323372036854775807'],
+            [
+                '9223372036854775807.9223372036854775807',
+                '1.01',
+                '9223372036854775808.9323372036854775807'
+            ],
             // test adding numbers to negative numbers
             ['-2', '1', '-1'],
             ['-2', '2', '0'],
@@ -64,7 +73,7 @@ class AdditionTest extends \MolliePrefix\PHPUnit_Framework_TestCase
             ['0', '-0.001', '-0.001'],
             ['0', '-1.001', '-1.001'],
             ['-1', '-2', '-3'],
-            ['100.12345567433134123236345', '-1.1', '99.02345567433134123236345'],
+            ['100.12345567433134123236345', '-1.1', '99.02345567433134123236345']
         ];
     }
 }

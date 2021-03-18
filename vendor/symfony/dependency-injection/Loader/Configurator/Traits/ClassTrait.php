@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
 
 /**
  * @method $this class(string $class)
@@ -22,9 +23,10 @@ trait ClassTrait
      *
      * @return $this
      */
-    protected final function setClass($class)
+    final protected function setClass($class)
     {
         $this->definition->setClass($class);
+
         return $this;
     }
 }

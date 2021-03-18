@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
+
+namespace PhpCsFixer;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -23,6 +24,7 @@ final class WordMatcher
      * @var string[]
      */
     private $candidates;
+
     /**
      * @param string[] $candidates
      */
@@ -30,6 +32,7 @@ final class WordMatcher
     {
         $this->candidates = $candidates;
     }
+
     /**
      * @param string $needle
      *
@@ -38,14 +41,17 @@ final class WordMatcher
     public function match($needle)
     {
         $word = null;
-        $distance = \ceil(\strlen($needle) * 0.35);
+        $distance = ceil(\strlen($needle) * 0.35);
+
         foreach ($this->candidates as $candidate) {
-            $candidateDistance = \levenshtein($needle, $candidate);
+            $candidateDistance = levenshtein($needle, $candidate);
+
             if ($candidateDistance < $distance) {
                 $word = $candidate;
                 $distance = $candidateDistance;
             }
         }
+
         return $word;
     }
 }

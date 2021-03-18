@@ -8,44 +8,50 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\DataCollector;
 
-use MolliePrefix\Symfony\Component\Cache\Adapter\TraceableAdapter;
-use MolliePrefix\Symfony\Component\Cache\Adapter\TraceableAdapterEvent;
-use MolliePrefix\Symfony\Component\HttpFoundation\Request;
-use MolliePrefix\Symfony\Component\HttpFoundation\Response;
-use MolliePrefix\Symfony\Component\HttpKernel\DataCollector\DataCollector;
-use MolliePrefix\Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
+namespace Symfony\Component\Cache\DataCollector;
+
+use Symfony\Component\Cache\Adapter\TraceableAdapter;
+use Symfony\Component\Cache\Adapter\TraceableAdapterEvent;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
+
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\DataCollector\DataCollector implements \MolliePrefix\Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface
+class CacheDataCollector extends DataCollector implements LateDataCollectorInterface
 {
     /**
      * @var TraceableAdapter[]
      */
     private $instances = [];
+
     /**
      * @param string $name
      */
-    public function addInstance($name, \MolliePrefix\Symfony\Component\Cache\Adapter\TraceableAdapter $instance)
+    public function addInstance($name, TraceableAdapter $instance)
     {
         $this->instances[$name] = $instance;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function collect(\MolliePrefix\Symfony\Component\HttpFoundation\Request $request, \MolliePrefix\Symfony\Component\HttpFoundation\Response $response, \Exception $exception = null)
+    public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $empty = ['calls' => [], 'config' => [], 'options' => [], 'statistics' => []];
         $this->data = ['instances' => $empty, 'total' => $empty];
         foreach ($this->instances as $name => $instance) {
             $this->data['instances']['calls'][$name] = $instance->getCalls();
         }
+
         $this->data['instances']['statistics'] = $this->calculateStatistics();
         $this->data['total']['statistics'] = $this->calculateTotalStatistics();
     }
+
     public function reset()
     {
         $this->data = [];
@@ -53,10 +59,12 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
             $instance->clearCalls();
         }
     }
+
     public function lateCollect()
     {
         $this->data = $this->cloneVar($this->data);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -64,6 +72,7 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
     {
         return 'cache';
     }
+
     /**
      * Method returns amount of logged Cache reads: "get" calls.
      *
@@ -73,6 +82,7 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
     {
         return $this->data['instances']['statistics'];
     }
+
     /**
      * Method returns the statistic totals.
      *
@@ -82,6 +92,7 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
     {
         return $this->data['total']['statistics'];
     }
+
     /**
      * Method returns all logged Cache call objects.
      *
@@ -91,6 +102,7 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
     {
         return $this->data['instances']['calls'];
     }
+
     /**
      * @return array
      */
@@ -98,7 +110,15 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
     {
         $statistics = [];
         foreach ($this->data['instances']['calls'] as $name => $calls) {
-            $statistics[$name] = ['calls' => 0, 'time' => 0, 'reads' => 0, 'writes' => 0, 'deletes' => 0, 'hits' => 0, 'misses' => 0];
+            $statistics[$name] = [
+                'calls' => 0,
+                'time' => 0,
+                'reads' => 0,
+                'writes' => 0,
+                'deletes' => 0,
+                'hits' => 0,
+                'misses' => 0,
+            ];
             /** @var TraceableAdapterEvent $call */
             foreach ($calls as $call) {
                 ++$statistics[$name]['calls'];
@@ -116,7 +136,7 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
                     $statistics[$name]['misses'] += $call->misses;
                 } elseif ('hasItem' === $call->name) {
                     ++$statistics[$name]['reads'];
-                    if (\false === $call->result) {
+                    if (false === $call->result) {
                         ++$statistics[$name]['misses'];
                     } else {
                         ++$statistics[$name]['hits'];
@@ -128,30 +148,41 @@ class CacheDataCollector extends \MolliePrefix\Symfony\Component\HttpKernel\Data
                 }
             }
             if ($statistics[$name]['reads']) {
-                $statistics[$name]['hit_read_ratio'] = \round(100 * $statistics[$name]['hits'] / $statistics[$name]['reads'], 2);
+                $statistics[$name]['hit_read_ratio'] = round(100 * $statistics[$name]['hits'] / $statistics[$name]['reads'], 2);
             } else {
                 $statistics[$name]['hit_read_ratio'] = null;
             }
         }
+
         return $statistics;
     }
+
     /**
      * @return array
      */
     private function calculateTotalStatistics()
     {
         $statistics = $this->getStatistics();
-        $totals = ['calls' => 0, 'time' => 0, 'reads' => 0, 'writes' => 0, 'deletes' => 0, 'hits' => 0, 'misses' => 0];
+        $totals = [
+            'calls' => 0,
+            'time' => 0,
+            'reads' => 0,
+            'writes' => 0,
+            'deletes' => 0,
+            'hits' => 0,
+            'misses' => 0,
+        ];
         foreach ($statistics as $name => $values) {
             foreach ($totals as $key => $value) {
                 $totals[$key] += $statistics[$name][$key];
             }
         }
         if ($totals['reads']) {
-            $totals['hit_read_ratio'] = \round(100 * $totals['hits'] / $totals['reads'], 2);
+            $totals['hit_read_ratio'] = round(100 * $totals['hits'] / $totals['reads'], 2);
         } else {
             $totals['hit_read_ratio'] = null;
         }
+
         return $totals;
     }
 }

@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Resource;
+
+namespace Symfony\Component\Config\Resource;
 
 /**
  * FileResource represents a resource stored on the filesystem.
@@ -17,12 +18,13 @@ namespace MolliePrefix\Symfony\Component\Config\Resource;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class FileResource implements \MolliePrefix\Symfony\Component\Config\Resource\SelfCheckingResourceInterface, \Serializable
+class FileResource implements SelfCheckingResourceInterface, \Serializable
 {
     /**
      * @var string|false
      */
     private $resource;
+
     /**
      * @param string $resource The file path to the resource
      *
@@ -30,11 +32,13 @@ class FileResource implements \MolliePrefix\Symfony\Component\Config\Resource\Se
      */
     public function __construct($resource)
     {
-        $this->resource = \realpath($resource) ?: (\file_exists($resource) ? $resource : \false);
-        if (\false === $this->resource) {
-            throw new \InvalidArgumentException(\sprintf('The file "%s" does not exist.', $resource));
+        $this->resource = realpath($resource) ?: (file_exists($resource) ? $resource : false);
+
+        if (false === $this->resource) {
+            throw new \InvalidArgumentException(sprintf('The file "%s" does not exist.', $resource));
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -42,6 +46,7 @@ class FileResource implements \MolliePrefix\Symfony\Component\Config\Resource\Se
     {
         return $this->resource;
     }
+
     /**
      * @return string The canonicalized, absolute path to the resource
      */
@@ -49,25 +54,28 @@ class FileResource implements \MolliePrefix\Symfony\Component\Config\Resource\Se
     {
         return $this->resource;
     }
+
     /**
      * {@inheritdoc}
      */
     public function isFresh($timestamp)
     {
-        return \false !== ($filemtime = @\filemtime($this->resource)) && $filemtime <= $timestamp;
+        return false !== ($filemtime = @filemtime($this->resource)) && $filemtime <= $timestamp;
     }
+
     /**
      * @internal
      */
     public function serialize()
     {
-        return \serialize($this->resource);
+        return serialize($this->resource);
     }
+
     /**
      * @internal
      */
     public function unserialize($serialized)
     {
-        $this->resource = \unserialize($serialized);
+        $this->resource = unserialize($serialized);
     }
 }

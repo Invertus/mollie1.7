@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Report;
+
+namespace PhpCsFixer\Report;
 
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -22,26 +23,32 @@ final class ReportSummary
      * @var bool
      */
     private $addAppliedFixers;
+
     /**
      * @var array
      */
     private $changed;
+
     /**
      * @var bool
      */
     private $isDecoratedOutput;
+
     /**
      * @var bool
      */
     private $isDryRun;
+
     /**
      * @var int
      */
     private $memory;
+
     /**
      * @var int
      */
     private $time;
+
     /**
      * @param int  $time              duration in milliseconds
      * @param int  $memory            memory usage in bytes
@@ -49,8 +56,14 @@ final class ReportSummary
      * @param bool $isDryRun
      * @param bool $isDecoratedOutput
      */
-    public function __construct(array $changed, $time, $memory, $addAppliedFixers, $isDryRun, $isDecoratedOutput)
-    {
+    public function __construct(
+        array $changed,
+        $time,
+        $memory,
+        $addAppliedFixers,
+        $isDryRun,
+        $isDecoratedOutput
+    ) {
         $this->changed = $changed;
         $this->time = $time;
         $this->memory = $memory;
@@ -58,6 +71,7 @@ final class ReportSummary
         $this->isDryRun = $isDryRun;
         $this->isDecoratedOutput = $isDecoratedOutput;
     }
+
     /**
      * @return bool
      */
@@ -65,6 +79,7 @@ final class ReportSummary
     {
         return $this->isDecoratedOutput;
     }
+
     /**
      * @return bool
      */
@@ -72,6 +87,7 @@ final class ReportSummary
     {
         return $this->isDryRun;
     }
+
     /**
      * @return array
      */
@@ -79,6 +95,7 @@ final class ReportSummary
     {
         return $this->changed;
     }
+
     /**
      * @return int
      */
@@ -86,6 +103,7 @@ final class ReportSummary
     {
         return $this->memory;
     }
+
     /**
      * @return int
      */
@@ -93,6 +111,7 @@ final class ReportSummary
     {
         return $this->time;
     }
+
     /**
      * @return bool
      */

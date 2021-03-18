@@ -1,13 +1,15 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures\includes;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures\includes;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\Foo;
+use Symfony\Component\DependencyInjection\Tests\Compiler\Foo;
+
 class FooVariadic
 {
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\Foo $foo)
+    public function __construct(Foo $foo)
     {
     }
+
     public function bar(...$arguments)
     {
     }

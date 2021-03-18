@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Detects unconditional if- and elseif-statements.
  *
@@ -24,13 +23,17 @@
  * @copyright 2007-2014 Manuel Pichler. All rights reserved.
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
 
-use MolliePrefix\PHP_CodeSniffer\Files\File;
-use MolliePrefix\PHP_CodeSniffer\Sniffs\Sniff;
-use MolliePrefix\PHP_CodeSniffer\Util\Tokens;
-class UnconditionalIfStatementSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\Sniff
+namespace PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis;
+
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
+
+class UnconditionalIfStatementSniff implements Sniff
 {
+
+
     /**
      * Registers the tokens that this sniff wants to listen for.
      *
@@ -38,9 +41,14 @@ class UnconditionalIfStatementSniff implements \MolliePrefix\PHP_CodeSniffer\Sni
      */
     public function register()
     {
-        return [\T_IF, \T_ELSEIF];
-    }
-    //end register()
+        return [
+            T_IF,
+            T_ELSEIF,
+        ];
+
+    }//end register()
+
+
     /**
      * Processes this test, when one of its tokens is encountered.
      *
@@ -50,32 +58,36 @@ class UnconditionalIfStatementSniff implements \MolliePrefix\PHP_CodeSniffer\Sni
      *
      * @return void
      */
-    public function process(\MolliePrefix\PHP_CodeSniffer\Files\File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
-        $token = $tokens[$stackPtr];
+        $token  = $tokens[$stackPtr];
+
         // Skip if statement without body.
-        if (isset($token['parenthesis_opener']) === \false) {
+        if (isset($token['parenthesis_opener']) === false) {
             return;
         }
+
         $next = ++$token['parenthesis_opener'];
-        $end = --$token['parenthesis_closer'];
-        $goodCondition = \false;
+        $end  = --$token['parenthesis_closer'];
+
+        $goodCondition = false;
         for (; $next <= $end; ++$next) {
             $code = $tokens[$next]['code'];
-            if (isset(\MolliePrefix\PHP_CodeSniffer\Util\Tokens::$emptyTokens[$code]) === \true) {
+
+            if (isset(Tokens::$emptyTokens[$code]) === true) {
                 continue;
-            } else {
-                if ($code !== T_TRUE && $code !== T_FALSE) {
-                    $goodCondition = \true;
-                }
+            } else if ($code !== T_TRUE && $code !== T_FALSE) {
+                $goodCondition = true;
             }
         }
-        if ($goodCondition === \false) {
+
+        if ($goodCondition === false) {
             $error = 'Avoid IF statements that are always true or false';
             $phpcsFile->addWarning($error, $stackPtr, 'Found');
         }
-    }
-    //end process()
-}
-//end class
+
+    }//end process()
+
+
+}//end class

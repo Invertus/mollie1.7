@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures;
 
 final class ScalarFactory
 {

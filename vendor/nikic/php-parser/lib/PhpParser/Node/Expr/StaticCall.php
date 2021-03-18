@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Expr;
+namespace PhpParser\Node\Expr;
 
-use MolliePrefix\PhpParser\Node;
-use MolliePrefix\PhpParser\Node\Expr;
-class StaticCall extends \MolliePrefix\PhpParser\Node\Expr
+use PhpParser\Node;
+use PhpParser\Node\Expr;
+
+class StaticCall extends Expr
 {
     /** @var Node\Name|Expr Class name */
     public $class;
@@ -12,6 +13,7 @@ class StaticCall extends \MolliePrefix\PhpParser\Node\Expr
     public $name;
     /** @var Node\Arg[] Arguments */
     public $args;
+
     /**
      * Constructs a static method call node.
      *
@@ -20,15 +22,14 @@ class StaticCall extends \MolliePrefix\PhpParser\Node\Expr
      * @param Node\Arg[]     $args       Arguments
      * @param array          $attributes Additional attributes
      */
-    public function __construct($class, $name, array $args = array(), array $attributes = array())
-    {
+    public function __construct($class, $name, array $args = array(), array $attributes = array()) {
         parent::__construct($attributes);
         $this->class = $class;
         $this->name = $name;
         $this->args = $args;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('class', 'name', 'args');
     }
 }

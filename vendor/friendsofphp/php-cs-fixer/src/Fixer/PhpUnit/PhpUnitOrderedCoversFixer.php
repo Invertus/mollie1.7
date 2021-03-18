@@ -9,13 +9,15 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\PhpUnit;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\Phpdoc\PhpdocOrderByValueFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+namespace PhpCsFixer\Fixer\PhpUnit;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocOrderByValueFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+
 /**
  * @deprecated since 2.16, replaced by PhpdocOrderByValueFixer
  *
@@ -23,30 +25,47 @@ use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
  *
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class PhpUnitOrderedCoversFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface
+final class PhpUnitOrderedCoversFixer extends AbstractProxyFixer implements DeprecatedFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Order `@covers` annotation of PHPUnit tests.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'Order `@covers` annotation of PHPUnit tests.',
+            [
+                new CodeSample(
+                    '<?php
 /**
  * @covers Foo
  * @covers Bar
  */
-final class MyTest extends \\PHPUnit_Framework_TestCase
+final class MyTest extends \PHPUnit_Framework_TestCase
 {}
-')]);
+'
+                ),
+            ]
+        );
     }
+
     public function getSuccessorsNames()
     {
-        return \array_keys($this->proxyFixers);
+        return array_keys($this->proxyFixers);
     }
+
     protected function createProxyFixers()
     {
-        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\Phpdoc\PhpdocOrderByValueFixer();
-        $fixer->configure(['annotations' => ['covers']]);
-        return [$fixer];
+        $fixer = new PhpdocOrderByValueFixer();
+
+        $fixer->configure([
+            'annotations' => [
+                'covers',
+            ],
+        ]);
+
+        return [
+            $fixer,
+        ];
     }
 }

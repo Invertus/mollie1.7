@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+namespace Symfony\Component\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 /**
  * Compiler Pass Configuration.
  *
@@ -25,20 +27,72 @@ class PassConfig
     const TYPE_BEFORE_REMOVING = 'beforeRemoving';
     const TYPE_OPTIMIZE = 'optimization';
     const TYPE_REMOVE = 'removing';
+
     private $mergePass;
     private $afterRemovingPasses = [];
     private $beforeOptimizationPasses = [];
     private $beforeRemovingPasses = [];
     private $optimizationPasses;
     private $removingPasses;
+
     public function __construct()
     {
-        $this->mergePass = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\MergeExtensionConfigurationPass();
-        $this->beforeOptimizationPasses = [100 => [$resolveClassPass = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveClassPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RegisterEnvVarProcessorsPass()], -1000 => [new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ExtensionCompilerPass()]];
-        $this->optimizationPasses = [[new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RegisterServiceSubscribersPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveParameterPlaceHoldersPass(\false, \false), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveFactoryClassPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\FactoryReturnTypePass($resolveClassPass), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckDefinitionValidityPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveNamedArgumentsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AutowireRequiredMethodsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveBindingsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AutowirePass(\false), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveTaggedIteratorArgumentPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveServiceSubscribersPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveReferencesToAliasesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveInvalidReferencesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AnalyzeServiceReferencesPass(\true), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckCircularReferencesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckReferenceValidityPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckArgumentsValidityPass(\false)]];
-        $this->beforeRemovingPasses = [-100 => [new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolvePrivatesPass()]];
-        $this->removingPasses = [[new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RemoveAbstractDefinitionsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RepeatedPass([new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AnalyzeServiceReferencesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AnalyzeServiceReferencesPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass()]), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\DefinitionErrorExceptionPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckExceptionOnInvalidReferenceBehaviorPass(), new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveHotPathPass()]];
+        $this->mergePass = new MergeExtensionConfigurationPass();
+
+        $this->beforeOptimizationPasses = [
+            100 => [
+                $resolveClassPass = new ResolveClassPass(),
+                new ResolveInstanceofConditionalsPass(),
+                new RegisterEnvVarProcessorsPass(),
+            ],
+            -1000 => [new ExtensionCompilerPass()],
+        ];
+
+        $this->optimizationPasses = [[
+            new ResolveChildDefinitionsPass(),
+            new ServiceLocatorTagPass(),
+            new RegisterServiceSubscribersPass(),
+            new DecoratorServicePass(),
+            new ResolveParameterPlaceHoldersPass(false, false),
+            new ResolveFactoryClassPass(),
+            new FactoryReturnTypePass($resolveClassPass),
+            new CheckDefinitionValidityPass(),
+            new ResolveNamedArgumentsPass(),
+            new AutowireRequiredMethodsPass(),
+            new ResolveBindingsPass(),
+            new AutowirePass(false),
+            new ResolveTaggedIteratorArgumentPass(),
+            new ResolveServiceSubscribersPass(),
+            new ResolveReferencesToAliasesPass(),
+            new ResolveInvalidReferencesPass(),
+            new AnalyzeServiceReferencesPass(true),
+            new CheckCircularReferencesPass(),
+            new CheckReferenceValidityPass(),
+            new CheckArgumentsValidityPass(false),
+        ]];
+
+        $this->beforeRemovingPasses = [
+            -100 => [
+                new ResolvePrivatesPass(),
+            ],
+        ];
+
+        $this->removingPasses = [[
+            new RemovePrivateAliasesPass(),
+            new ReplaceAliasByActualDefinitionPass(),
+            new RemoveAbstractDefinitionsPass(),
+            new RepeatedPass([
+                new AnalyzeServiceReferencesPass(),
+                new InlineServiceDefinitionsPass(),
+                new AnalyzeServiceReferencesPass(),
+                new RemoveUnusedDefinitionsPass(),
+            ]),
+            new DefinitionErrorExceptionPass(),
+            new CheckExceptionOnInvalidReferenceBehaviorPass(),
+            new ResolveHotPathPass(),
+        ]];
     }
+
     /**
      * Returns all passes in order to be processed.
      *
@@ -46,8 +100,16 @@ class PassConfig
      */
     public function getPasses()
     {
-        return \array_merge([$this->mergePass], $this->getBeforeOptimizationPasses(), $this->getOptimizationPasses(), $this->getBeforeRemovingPasses(), $this->getRemovingPasses(), $this->getAfterRemovingPasses());
+        return array_merge(
+            [$this->mergePass],
+            $this->getBeforeOptimizationPasses(),
+            $this->getOptimizationPasses(),
+            $this->getBeforeRemovingPasses(),
+            $this->getRemovingPasses(),
+            $this->getAfterRemovingPasses()
+        );
     }
+
     /**
      * Adds a pass.
      *
@@ -56,29 +118,34 @@ class PassConfig
      *
      * @throws InvalidArgumentException when a pass type doesn't exist
      */
-    public function addPass(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION)
+    public function addPass(CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION/*, int $priority = 0*/)
     {
         if (\func_num_args() >= 3) {
-            $priority = \func_get_arg(2);
+            $priority = func_get_arg(2);
         } else {
             if (__CLASS__ !== static::class) {
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
-                    @\trigger_error(\sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since Symfony 3.2.', __METHOD__), \E_USER_DEPRECATED);
+                    @trigger_error(sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since Symfony 3.2.', __METHOD__), \E_USER_DEPRECATED);
                 }
             }
+
             $priority = 0;
         }
-        $property = $type . 'Passes';
-        if (!isset($this->{$property})) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('Invalid type "%s".', $type));
+
+        $property = $type.'Passes';
+        if (!isset($this->$property)) {
+            throw new InvalidArgumentException(sprintf('Invalid type "%s".', $type));
         }
-        $passes =& $this->{$property};
+
+        $passes = &$this->$property;
+
         if (!isset($passes[$priority])) {
             $passes[$priority] = [];
         }
         $passes[$priority][] = $pass;
     }
+
     /**
      * Gets all passes for the AfterRemoving pass.
      *
@@ -88,6 +155,7 @@ class PassConfig
     {
         return $this->sortPasses($this->afterRemovingPasses);
     }
+
     /**
      * Gets all passes for the BeforeOptimization pass.
      *
@@ -97,6 +165,7 @@ class PassConfig
     {
         return $this->sortPasses($this->beforeOptimizationPasses);
     }
+
     /**
      * Gets all passes for the BeforeRemoving pass.
      *
@@ -106,6 +175,7 @@ class PassConfig
     {
         return $this->sortPasses($this->beforeRemovingPasses);
     }
+
     /**
      * Gets all passes for the Optimization pass.
      *
@@ -115,6 +185,7 @@ class PassConfig
     {
         return $this->sortPasses($this->optimizationPasses);
     }
+
     /**
      * Gets all passes for the Removing pass.
      *
@@ -124,6 +195,7 @@ class PassConfig
     {
         return $this->sortPasses($this->removingPasses);
     }
+
     /**
      * Gets the Merge pass.
      *
@@ -133,10 +205,12 @@ class PassConfig
     {
         return $this->mergePass;
     }
-    public function setMergePass(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface $pass)
+
+    public function setMergePass(CompilerPassInterface $pass)
     {
         $this->mergePass = $pass;
     }
+
     /**
      * Sets the AfterRemoving passes.
      *
@@ -146,6 +220,7 @@ class PassConfig
     {
         $this->afterRemovingPasses = [$passes];
     }
+
     /**
      * Sets the BeforeOptimization passes.
      *
@@ -155,6 +230,7 @@ class PassConfig
     {
         $this->beforeOptimizationPasses = [$passes];
     }
+
     /**
      * Sets the BeforeRemoving passes.
      *
@@ -164,6 +240,7 @@ class PassConfig
     {
         $this->beforeRemovingPasses = [$passes];
     }
+
     /**
      * Sets the Optimization passes.
      *
@@ -173,6 +250,7 @@ class PassConfig
     {
         $this->optimizationPasses = [$passes];
     }
+
     /**
      * Sets the Removing passes.
      *
@@ -182,6 +260,7 @@ class PassConfig
     {
         $this->removingPasses = [$passes];
     }
+
     /**
      * Sort passes by priority.
      *
@@ -194,7 +273,9 @@ class PassConfig
         if (0 === \count($passes)) {
             return [];
         }
-        \krsort($passes);
+
+        krsort($passes);
+
         // Flatten the array
         return \call_user_func_array('array_merge', $passes);
     }

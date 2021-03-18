@@ -1,8 +1,12 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', 'MolliePrefix\\FooClass\\Foo')->setDecoratedService('bar', 'bar.woozy')->setPublic(\true);
+$container = new ContainerBuilder();
+$container
+    ->register('foo', 'FooClass\\Foo')
+    ->setDecoratedService('bar', 'bar.woozy')
+    ->setPublic(true)
+;
+
 return $container;

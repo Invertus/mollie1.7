@@ -9,26 +9,30 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
-final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\DeprecatedFixerOptionInterface
+namespace PhpCsFixer\FixerConfiguration;
+
+final class DeprecatedFixerOption implements DeprecatedFixerOptionInterface
 {
     /**
      * @var FixerOptionInterface
      */
     private $option;
+
     /**
      * @var string
      */
     private $deprecationMessage;
+
     /**
      * @param string $deprecationMessage
      */
-    public function __construct(\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $option, $deprecationMessage)
+    public function __construct(FixerOptionInterface $option, $deprecationMessage)
     {
         $this->option = $option;
         $this->deprecationMessage = $deprecationMessage;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -36,6 +40,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getName();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -43,6 +48,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getDescription();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -50,6 +56,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->hasDefault();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -57,6 +64,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getDefault();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -64,6 +72,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getAllowedTypes();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -71,6 +80,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getAllowedValues();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -78,6 +88,7 @@ final class DeprecatedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfi
     {
         return $this->option->getNormalizer();
     }
+
     /**
      * @return string
      */

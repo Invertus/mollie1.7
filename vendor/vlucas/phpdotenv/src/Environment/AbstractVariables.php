@@ -1,15 +1,16 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment;
+namespace Dotenv\Environment;
 
-use MolliePrefix\Dotenv\Environment\Adapter\ArrayAdapter;
+use Dotenv\Environment\Adapter\ArrayAdapter;
 use InvalidArgumentException;
+
 /**
  * This is the abstract variables implementation.
  *
  * Extend this as required, implementing "get", "set", and "clear".
  */
-abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\VariablesInterface
+abstract class AbstractVariables implements VariablesInterface
 {
     /**
      * Are we immutable?
@@ -17,12 +18,14 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      * @var bool
      */
     private $immutable;
+
     /**
      * The record of loaded variables.
      *
      * @var \Dotenv\Environment\Adapter\ArrayAdapter
      */
     private $loaded;
+
     /**
      * Create a new environment variables instance.
      *
@@ -33,8 +36,9 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
     public function __construct($immutable)
     {
         $this->immutable = $immutable;
-        $this->loaded = new \MolliePrefix\Dotenv\Environment\Adapter\ArrayAdapter();
+        $this->loaded = new ArrayAdapter();
     }
+
     /**
      * Get an environment variable.
      *
@@ -46,11 +50,13 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      */
     public function get($name)
     {
-        if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
+
         return $this->getInternal($name);
     }
+
     /**
      * Get an environment variable.
      *
@@ -59,6 +65,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      * @return string|null
      */
     protected abstract function getInternal($name);
+
     /**
      * Set an environment variable.
      *
@@ -71,17 +78,20 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      */
     public function set($name, $value = null)
     {
-        if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
+
         // Don't overwrite existing environment variables if we're immutable
         // Ruby's dotenv does this with `ENV[key] ||= value`.
         if ($this->isImmutable() && $this->get($name) !== null && $this->loaded->get($name)->isEmpty()) {
             return;
         }
+
         $this->setInternal($name, $value);
         $this->loaded->set($name, '');
     }
+
     /**
      * Set an environment variable.
      *
@@ -91,6 +101,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      * @return void
      */
     protected abstract function setInternal($name, $value = null);
+
     /**
      * Clear an environment variable.
      *
@@ -102,15 +113,18 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      */
     public function clear($name)
     {
-        if (!\is_string($name)) {
-            throw new \InvalidArgumentException('Expected name to be a string.');
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('Expected name to be a string.');
         }
+
         // Don't clear anything if we're immutable.
         if ($this->isImmutable()) {
             return;
         }
+
         $this->clearInternal($name);
     }
+
     /**
      * Clear an environment variable.
      *
@@ -119,6 +133,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      * @return void
      */
     protected abstract function clearInternal($name);
+
     /**
      * Determine if the environment is immutable.
      *
@@ -128,6 +143,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
     {
         return $this->immutable;
     }
+
     /**
      * Tells whether environment variable has been defined.
      *
@@ -137,8 +153,9 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
      */
     public function has($name)
     {
-        return \is_string($name) && $this->get($name) !== null;
+        return is_string($name) && $this->get($name) !== null;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -146,6 +163,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
     {
         return $this->has($offset);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -153,6 +171,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
     {
         return $this->get($offset);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -160,6 +179,7 @@ abstract class AbstractVariables implements \MolliePrefix\Dotenv\Environment\Var
     {
         $this->set($offset, $value);
     }
+
     /**
      * {@inheritdoc}
      */

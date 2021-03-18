@@ -8,116 +8,152 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
 
-use MolliePrefix\Psr\Container\ContainerInterface as PsrContainerInterface;
-use MolliePrefix\Symfony\Component\Config\Resource\ClassExistenceResource;
-use MolliePrefix\Symfony\Component\Config\Resource\ComposerResource;
-use MolliePrefix\Symfony\Component\Config\Resource\DirectoryResource;
-use MolliePrefix\Symfony\Component\Config\Resource\FileExistenceResource;
-use MolliePrefix\Symfony\Component\Config\Resource\FileResource;
-use MolliePrefix\Symfony\Component\Config\Resource\GlobResource;
-use MolliePrefix\Symfony\Component\Config\Resource\ReflectionClassResource;
-use MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\IteratorArgument;
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\Compiler;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveEnvPlaceholdersPass;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\LazyProxy\Instantiator\InstantiatorInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\LazyProxy\Instantiator\RealServiceInstantiator;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use MolliePrefix\Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Expression;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+namespace Symfony\Component\DependencyInjection;
+
+use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Symfony\Component\Config\Resource\ClassExistenceResource;
+use Symfony\Component\Config\Resource\ComposerResource;
+use Symfony\Component\Config\Resource\DirectoryResource;
+use Symfony\Component\Config\Resource\FileExistenceResource;
+use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Config\Resource\GlobResource;
+use Symfony\Component\Config\Resource\ReflectionClassResource;
+use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\DependencyInjection\Argument\IteratorArgument;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
+use Symfony\Component\DependencyInjection\Compiler\Compiler;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\Compiler\ResolveEnvPlaceholdersPass;
+use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\LazyProxy\Instantiator\InstantiatorInterface;
+use Symfony\Component\DependencyInjection\LazyProxy\Instantiator\RealServiceInstantiator;
+use Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
+
 /**
  * ContainerBuilder is a DI container that provides an API to easily describe services.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjection\Container implements \MolliePrefix\Symfony\Component\DependencyInjection\TaggedContainerInterface
+class ContainerBuilder extends Container implements TaggedContainerInterface
 {
     /**
      * @var ExtensionInterface[]
      */
     private $extensions = [];
+
     /**
      * @var ExtensionInterface[]
      */
     private $extensionsByNs = [];
+
     /**
      * @var Definition[]
      */
     private $definitions = [];
+
     /**
      * @var Alias[]
      */
     private $aliasDefinitions = [];
+
     /**
      * @var ResourceInterface[]
      */
     private $resources = [];
+
     private $extensionConfigs = [];
+
     /**
      * @var Compiler
      */
     private $compiler;
+
     private $trackResources;
+
     /**
      * @var InstantiatorInterface|null
      */
     private $proxyInstantiator;
+
     /**
      * @var ExpressionLanguage|null
      */
     private $expressionLanguage;
+
     /**
      * @var ExpressionFunctionProviderInterface[]
      */
     private $expressionLanguageProviders = [];
+
     /**
      * @var string[] with tag names used by findTaggedServiceIds
      */
     private $usedTags = [];
+
     /**
      * @var string[][] a map of env var names to their placeholders
      */
     private $envPlaceholders = [];
+
     /**
      * @var int[] a map of env vars to their resolution counter
      */
     private $envCounters = [];
+
     /**
      * @var string[] the list of vendor directories
      */
     private $vendors;
+
     private $autoconfiguredInstanceof = [];
+
     private $removedIds = [];
+
     private $removedBindingIds = [];
-    private static $internalTypes = ['int' => \true, 'float' => \true, 'string' => \true, 'bool' => \true, 'resource' => \true, 'object' => \true, 'array' => \true, 'null' => \true, 'callable' => \true, 'iterable' => \true, 'mixed' => \true];
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface $parameterBag = null)
+
+    private static $internalTypes = [
+        'int' => true,
+        'float' => true,
+        'string' => true,
+        'bool' => true,
+        'resource' => true,
+        'object' => true,
+        'array' => true,
+        'null' => true,
+        'callable' => true,
+        'iterable' => true,
+        'mixed' => true,
+    ];
+
+    public function __construct(ParameterBagInterface $parameterBag = null)
     {
         parent::__construct($parameterBag);
-        $this->trackResources = \interface_exists('MolliePrefix\\Symfony\\Component\\Config\\Resource\\ResourceInterface');
-        $this->setDefinition('service_container', (new \MolliePrefix\Symfony\Component\DependencyInjection\Definition(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::class))->setSynthetic(\true)->setPublic(\true));
-        $this->setAlias(\MolliePrefix\Psr\Container\ContainerInterface::class, new \MolliePrefix\Symfony\Component\DependencyInjection\Alias('service_container', \false));
-        $this->setAlias(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::class, new \MolliePrefix\Symfony\Component\DependencyInjection\Alias('service_container', \false));
+
+        $this->trackResources = interface_exists('Symfony\Component\Config\Resource\ResourceInterface');
+        $this->setDefinition('service_container', (new Definition(ContainerInterface::class))->setSynthetic(true)->setPublic(true));
+        $this->setAlias(PsrContainerInterface::class, new Alias('service_container', false));
+        $this->setAlias(ContainerInterface::class, new Alias('service_container', false));
     }
+
     /**
      * @var \ReflectionClass[] a list of class reflectors
      */
     private $classReflectors;
+
     /**
      * Sets the track resources flag.
      *
@@ -130,6 +166,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         $this->trackResources = (bool) $track;
     }
+
     /**
      * Checks if resources are tracked.
      *
@@ -139,20 +176,24 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->trackResources;
     }
+
     /**
      * Sets the instantiator to be used when fetching proxies.
      */
-    public function setProxyInstantiator(\MolliePrefix\Symfony\Component\DependencyInjection\LazyProxy\Instantiator\InstantiatorInterface $proxyInstantiator)
+    public function setProxyInstantiator(InstantiatorInterface $proxyInstantiator)
     {
         $this->proxyInstantiator = $proxyInstantiator;
     }
-    public function registerExtension(\MolliePrefix\Symfony\Component\DependencyInjection\Extension\ExtensionInterface $extension)
+
+    public function registerExtension(ExtensionInterface $extension)
     {
         $this->extensions[$extension->getAlias()] = $extension;
-        if (\false !== $extension->getNamespace()) {
+
+        if (false !== $extension->getNamespace()) {
             $this->extensionsByNs[$extension->getNamespace()] = $extension;
         }
     }
+
     /**
      * Returns an extension by alias or namespace.
      *
@@ -167,11 +208,14 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (isset($this->extensions[$name])) {
             return $this->extensions[$name];
         }
+
         if (isset($this->extensionsByNs[$name])) {
             return $this->extensionsByNs[$name];
         }
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException(\sprintf('Container extension "%s" is not registered.', $name));
+
+        throw new LogicException(sprintf('Container extension "%s" is not registered.', $name));
     }
+
     /**
      * Returns all registered extensions.
      *
@@ -181,6 +225,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->extensions;
     }
+
     /**
      * Checks if we have an extension.
      *
@@ -192,6 +237,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return isset($this->extensions[$name]) || isset($this->extensionsByNs[$name]);
     }
+
     /**
      * Returns an array of resources loaded to build this configuration.
      *
@@ -199,22 +245,27 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public function getResources()
     {
-        return \array_values($this->resources);
+        return array_values($this->resources);
     }
+
     /**
      * @return $this
      */
-    public function addResource(\MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface $resource)
+    public function addResource(ResourceInterface $resource)
     {
         if (!$this->trackResources) {
             return $this;
         }
-        if ($resource instanceof \MolliePrefix\Symfony\Component\Config\Resource\GlobResource && $this->inVendors($resource->getPrefix())) {
+
+        if ($resource instanceof GlobResource && $this->inVendors($resource->getPrefix())) {
             return $this;
         }
+
         $this->resources[(string) $resource] = $resource;
+
         return $this;
     }
+
     /**
      * Sets the resources for this configuration.
      *
@@ -227,9 +278,12 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (!$this->trackResources) {
             return $this;
         }
+
         $this->resources = $resources;
+
         return $this;
     }
+
     /**
      * Adds the object class hierarchy as resources.
      *
@@ -247,18 +301,19 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
                 $this->classReflectors[$object] = new \ReflectionClass($object);
             }
             $class = $this->classReflectors[$object];
+
             foreach ($class->getInterfaceNames() as $name) {
-                if (null === ($interface =& $this->classReflectors[$name])) {
+                if (null === $interface = &$this->classReflectors[$name]) {
                     $interface = new \ReflectionClass($name);
                 }
                 $file = $interface->getFileName();
-                if (\false !== $file && \file_exists($file)) {
+                if (false !== $file && file_exists($file)) {
                     $this->fileExists($file);
                 }
             }
             do {
                 $file = $class->getFileName();
-                if (\false !== $file && \file_exists($file)) {
+                if (false !== $file && file_exists($file)) {
                     $this->fileExists($file);
                 }
                 foreach ($class->getTraitNames() as $name) {
@@ -266,8 +321,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
                 }
             } while ($class = $class->getParentClass());
         }
+
         return $this;
     }
+
     /**
      * Adds the given class hierarchy as resources.
      *
@@ -277,9 +334,11 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public function addClassResource(\ReflectionClass $class)
     {
-        @\trigger_error('The ' . __METHOD__ . '() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the addObjectResource() or the getReflectionClass() method instead.', \E_USER_DEPRECATED);
+        @trigger_error('The '.__METHOD__.'() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the addObjectResource() or the getReflectionClass() method instead.', \E_USER_DEPRECATED);
+
         return $this->addObjectResource($class->name);
     }
+
     /**
      * Retrieves the requested reflection class and registers it for resource tracking.
      *
@@ -292,42 +351,49 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @final
      */
-    public function getReflectionClass($class, $throw = \true)
+    public function getReflectionClass($class, $throw = true)
     {
-        if (!($class = $this->getParameterBag()->resolveValue($class))) {
+        if (!$class = $this->getParameterBag()->resolveValue($class)) {
             return null;
         }
+
         if (isset(self::$internalTypes[$class])) {
             return null;
         }
+
         $resource = $classReflector = null;
+
         try {
             if (isset($this->classReflectors[$class])) {
                 $classReflector = $this->classReflectors[$class];
-            } elseif (\class_exists(\MolliePrefix\Symfony\Component\Config\Resource\ClassExistenceResource::class)) {
-                $resource = new \MolliePrefix\Symfony\Component\Config\Resource\ClassExistenceResource($class, \false);
-                $classReflector = $resource->isFresh(0) ? \false : new \ReflectionClass($class);
+            } elseif (class_exists(ClassExistenceResource::class)) {
+                $resource = new ClassExistenceResource($class, false);
+                $classReflector = $resource->isFresh(0) ? false : new \ReflectionClass($class);
             } else {
-                $classReflector = \class_exists($class) ? new \ReflectionClass($class) : \false;
+                $classReflector = class_exists($class) ? new \ReflectionClass($class) : false;
             }
         } catch (\ReflectionException $e) {
             if ($throw) {
                 throw $e;
             }
         }
+
         if ($this->trackResources) {
             if (!$classReflector) {
-                $this->addResource($resource ?: new \MolliePrefix\Symfony\Component\Config\Resource\ClassExistenceResource($class, \false));
+                $this->addResource($resource ?: new ClassExistenceResource($class, false));
             } elseif (!$classReflector->isInternal()) {
                 $path = $classReflector->getFileName();
+
                 if (!$this->inVendors($path)) {
-                    $this->addResource(new \MolliePrefix\Symfony\Component\Config\Resource\ReflectionClassResource($classReflector, $this->vendors));
+                    $this->addResource(new ReflectionClassResource($classReflector, $this->vendors));
                 }
             }
             $this->classReflectors[$class] = $classReflector;
         }
+
         return $classReflector ?: null;
     }
+
     /**
      * Checks whether the requested file or directory exists and registers the result for resource tracking.
      *
@@ -339,27 +405,33 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @final
      */
-    public function fileExists($path, $trackContents = \true)
+    public function fileExists($path, $trackContents = true)
     {
-        $exists = \file_exists($path);
+        $exists = file_exists($path);
+
         if (!$this->trackResources || $this->inVendors($path)) {
             return $exists;
         }
+
         if (!$exists) {
-            $this->addResource(new \MolliePrefix\Symfony\Component\Config\Resource\FileExistenceResource($path));
+            $this->addResource(new FileExistenceResource($path));
+
             return $exists;
         }
-        if (\is_dir($path)) {
+
+        if (is_dir($path)) {
             if ($trackContents) {
-                $this->addResource(new \MolliePrefix\Symfony\Component\Config\Resource\DirectoryResource($path, \is_string($trackContents) ? $trackContents : null));
+                $this->addResource(new DirectoryResource($path, \is_string($trackContents) ? $trackContents : null));
             } else {
-                $this->addResource(new \MolliePrefix\Symfony\Component\Config\Resource\GlobResource($path, '/*', \false));
+                $this->addResource(new GlobResource($path, '/*', false));
             }
         } elseif ($trackContents) {
-            $this->addResource(new \MolliePrefix\Symfony\Component\Config\Resource\FileResource($path));
+            $this->addResource(new FileResource($path));
         }
+
         return $exists;
     }
+
     /**
      * Loads the configuration for an extension.
      *
@@ -374,15 +446,20 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function loadFromExtension($extension, array $values = null)
     {
         if ($this->isCompiled()) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\BadMethodCallException('Cannot load from an extension on a compiled container.');
+            throw new BadMethodCallException('Cannot load from an extension on a compiled container.');
         }
+
         if (\func_num_args() < 2) {
             $values = [];
         }
+
         $namespace = $this->getExtension($extension)->getAlias();
+
         $this->extensionConfigs[$namespace][] = $values;
+
         return $this;
     }
+
     /**
      * Adds a compiler pass.
      *
@@ -392,23 +469,28 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @return $this
      */
-    public function addCompilerPass(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface $pass, $type = \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\PassConfig::TYPE_BEFORE_OPTIMIZATION)
+    public function addCompilerPass(CompilerPassInterface $pass, $type = PassConfig::TYPE_BEFORE_OPTIMIZATION/*, int $priority = 0*/)
     {
         if (\func_num_args() >= 3) {
-            $priority = \func_get_arg(2);
+            $priority = func_get_arg(2);
         } else {
             if (__CLASS__ !== static::class) {
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
-                    @\trigger_error(\sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since Symfony 3.2.', __METHOD__), \E_USER_DEPRECATED);
+                    @trigger_error(sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since Symfony 3.2.', __METHOD__), \E_USER_DEPRECATED);
                 }
             }
+
             $priority = 0;
         }
+
         $this->getCompiler()->addPass($pass, $type, $priority);
+
         $this->addObjectResource($pass);
+
         return $this;
     }
+
     /**
      * Returns the compiler pass config which can then be modified.
      *
@@ -418,6 +500,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->getCompiler()->getPassConfig();
     }
+
     /**
      * Returns the compiler.
      *
@@ -426,10 +509,12 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function getCompiler()
     {
         if (null === $this->compiler) {
-            $this->compiler = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\Compiler();
+            $this->compiler = new Compiler();
         }
+
         return $this->compiler;
     }
+
     /**
      * Sets a service.
      *
@@ -441,13 +526,17 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function set($id, $service)
     {
         $id = $this->normalizeId($id);
+
         if ($this->isCompiled() && (isset($this->definitions[$id]) && !$this->definitions[$id]->isSynthetic())) {
             // setting a synthetic service on a compiled container is alright
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\BadMethodCallException(\sprintf('Setting service "%s" for an unknown or non-synthetic service definition on a compiled container is not allowed.', $id));
+            throw new BadMethodCallException(sprintf('Setting service "%s" for an unknown or non-synthetic service definition on a compiled container is not allowed.', $id));
         }
+
         unset($this->definitions[$id], $this->aliasDefinitions[$id], $this->removedIds[$id]);
+
         parent::set($id, $service);
     }
+
     /**
      * Removes a service definition.
      *
@@ -457,9 +546,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         if (isset($this->definitions[$id = $this->normalizeId($id)])) {
             unset($this->definitions[$id]);
-            $this->removedIds[$id] = \true;
+            $this->removedIds[$id] = true;
         }
     }
+
     /**
      * Returns true if the given service is defined.
      *
@@ -470,8 +560,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function has($id)
     {
         $id = $this->normalizeId($id);
+
         return isset($this->definitions[$id]) || isset($this->aliasDefinitions[$id]) || parent::has($id);
     }
+
     /**
      * Gets a service.
      *
@@ -487,49 +579,57 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @see Reference
      */
-    public function get($id, $invalidBehavior = \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
+    public function get($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
     {
         if ($this->isCompiled() && isset($this->removedIds[$id = $this->normalizeId($id)])) {
-            @\trigger_error(\sprintf('Fetching the "%s" private service or alias is deprecated since Symfony 3.4 and will fail in 4.0. Make it public instead.', $id), \E_USER_DEPRECATED);
+            @trigger_error(sprintf('Fetching the "%s" private service or alias is deprecated since Symfony 3.4 and will fail in 4.0. Make it public instead.', $id), \E_USER_DEPRECATED);
         }
+
         return $this->doGet($id, $invalidBehavior);
     }
-    private function doGet($id, $invalidBehavior = \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, array &$inlineServices = null, $isConstructorArgument = \false)
+
+    private function doGet($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE, array &$inlineServices = null, $isConstructorArgument = false)
     {
         $id = $this->normalizeId($id);
+
         if (isset($inlineServices[$id])) {
             return $inlineServices[$id];
         }
         if (null === $inlineServices) {
-            $isConstructorArgument = \true;
+            $isConstructorArgument = true;
             $inlineServices = [];
         }
         try {
-            if (\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $invalidBehavior) {
+            if (ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $invalidBehavior) {
                 return parent::get($id, $invalidBehavior);
             }
-            if ($service = parent::get($id, \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::NULL_ON_INVALID_REFERENCE)) {
+            if ($service = parent::get($id, ContainerInterface::NULL_ON_INVALID_REFERENCE)) {
                 return $service;
             }
-        } catch (\MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException $e) {
+        } catch (ServiceCircularReferenceException $e) {
             if ($isConstructorArgument) {
                 throw $e;
             }
         }
+
         if (!isset($this->definitions[$id]) && isset($this->aliasDefinitions[$id])) {
             return $this->doGet((string) $this->aliasDefinitions[$id], $invalidBehavior, $inlineServices, $isConstructorArgument);
         }
+
         try {
             $definition = $this->getDefinition($id);
-        } catch (\MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException $e) {
-            if (\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE !== $invalidBehavior) {
+        } catch (ServiceNotFoundException $e) {
+            if (ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE !== $invalidBehavior) {
                 return null;
             }
+
             throw $e;
         }
+
         if ($isConstructorArgument) {
-            $this->loading[$id] = \true;
+            $this->loading[$id] = true;
         }
+
         try {
             return $this->createService($definition, $inlineServices, $isConstructorArgument, $id);
         } finally {
@@ -538,6 +638,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
             }
         }
     }
+
     /**
      * Merges a ContainerBuilder with the current ContainerBuilder configuration.
      *
@@ -561,28 +662,34 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function merge(self $container)
     {
         if ($this->isCompiled()) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\BadMethodCallException('Cannot merge on a compiled container.');
+            throw new BadMethodCallException('Cannot merge on a compiled container.');
         }
+
         $this->addDefinitions($container->getDefinitions());
         $this->addAliases($container->getAliases());
         $this->getParameterBag()->add($container->getParameterBag()->all());
+
         if ($this->trackResources) {
             foreach ($container->getResources() as $resource) {
                 $this->addResource($resource);
             }
         }
+
         foreach ($this->extensions as $name => $extension) {
             if (!isset($this->extensionConfigs[$name])) {
                 $this->extensionConfigs[$name] = [];
             }
-            $this->extensionConfigs[$name] = \array_merge($this->extensionConfigs[$name], $container->getExtensionConfig($name));
+
+            $this->extensionConfigs[$name] = array_merge($this->extensionConfigs[$name], $container->getExtensionConfig($name));
         }
-        if ($this->getParameterBag() instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag && $container->getParameterBag() instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag) {
+
+        if ($this->getParameterBag() instanceof EnvPlaceholderParameterBag && $container->getParameterBag() instanceof EnvPlaceholderParameterBag) {
             $envPlaceholders = $container->getParameterBag()->getEnvPlaceholders();
             $this->getParameterBag()->mergeEnvPlaceholders($container->getParameterBag());
         } else {
             $envPlaceholders = [];
         }
+
         foreach ($container->envCounters as $env => $count) {
             if (!$count && !isset($envPlaceholders[$env])) {
                 continue;
@@ -593,13 +700,16 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
                 $this->envCounters[$env] += $count;
             }
         }
+
         foreach ($container->getAutoconfiguredInstanceof() as $interface => $childDefinition) {
             if (isset($this->autoconfiguredInstanceof[$interface])) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('"%s" has already been autoconfigured and merge() does not support merging autoconfiguration for the same class/interface.', $interface));
+                throw new InvalidArgumentException(sprintf('"%s" has already been autoconfigured and merge() does not support merging autoconfiguration for the same class/interface.', $interface));
             }
+
             $this->autoconfiguredInstanceof[$interface] = $childDefinition;
         }
     }
+
     /**
      * Returns the configuration array for the given extension.
      *
@@ -612,8 +722,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (!isset($this->extensionConfigs[$name])) {
             $this->extensionConfigs[$name] = [];
         }
+
         return $this->extensionConfigs[$name];
     }
+
     /**
      * Prepends a config array to the configs of the given extension.
      *
@@ -625,8 +737,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (!isset($this->extensionConfigs[$name])) {
             $this->extensionConfigs[$name] = [];
         }
-        \array_unshift($this->extensionConfigs[$name], $config);
+
+        array_unshift($this->extensionConfigs[$name], $config);
     }
+
     /**
      * Compiles the container.
      *
@@ -646,56 +760,67 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *                                     Set to "true" when you want to use the current ContainerBuilder
      *                                     directly, keep to "false" when the container is dumped instead.
      */
-    public function compile()
+    public function compile(/*$resolveEnvPlaceholders = false*/)
     {
         if (1 <= \func_num_args()) {
-            $resolveEnvPlaceholders = \func_get_arg(0);
+            $resolveEnvPlaceholders = func_get_arg(0);
         } else {
             if (__CLASS__ !== static::class) {
                 $r = new \ReflectionMethod($this, __FUNCTION__);
                 if (__CLASS__ !== $r->getDeclaringClass()->getName() && (1 > $r->getNumberOfParameters() || 'resolveEnvPlaceholders' !== $r->getParameters()[0]->name)) {
-                    @\trigger_error(\sprintf('The %s::compile() method expects a first "$resolveEnvPlaceholders" argument since Symfony 3.3. It will be made mandatory in 4.0.', static::class), \E_USER_DEPRECATED);
+                    @trigger_error(sprintf('The %s::compile() method expects a first "$resolveEnvPlaceholders" argument since Symfony 3.3. It will be made mandatory in 4.0.', static::class), \E_USER_DEPRECATED);
                 }
             }
-            $resolveEnvPlaceholders = \false;
+            $resolveEnvPlaceholders = false;
         }
         $compiler = $this->getCompiler();
+
         if ($this->trackResources) {
             foreach ($compiler->getPassConfig()->getPasses() as $pass) {
                 $this->addObjectResource($pass);
             }
         }
         $bag = $this->getParameterBag();
-        if ($resolveEnvPlaceholders && $bag instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag) {
-            $compiler->addPass(new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveEnvPlaceholdersPass(), \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\PassConfig::TYPE_AFTER_REMOVING, -1000);
+
+        if ($resolveEnvPlaceholders && $bag instanceof EnvPlaceholderParameterBag) {
+            $compiler->addPass(new ResolveEnvPlaceholdersPass(), PassConfig::TYPE_AFTER_REMOVING, -1000);
         }
+
         $compiler->compile($this);
+
         foreach ($this->definitions as $id => $definition) {
             if ($this->trackResources && $definition->isLazy()) {
                 $this->getReflectionClass($definition->getClass());
             }
         }
+
         $this->extensionConfigs = [];
-        if ($bag instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag) {
+
+        if ($bag instanceof EnvPlaceholderParameterBag) {
             if ($resolveEnvPlaceholders) {
-                $this->parameterBag = new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($this->resolveEnvPlaceholders($bag->all(), \true));
+                $this->parameterBag = new ParameterBag($this->resolveEnvPlaceholders($bag->all(), true));
             }
+
             $this->envPlaceholders = $bag->getEnvPlaceholders();
         }
+
         parent::compile();
+
         foreach ($this->definitions + $this->aliasDefinitions as $id => $definition) {
             if (!$definition->isPublic() || $definition->isPrivate()) {
-                $this->removedIds[$id] = \true;
+                $this->removedIds[$id] = true;
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
     public function getServiceIds()
     {
-        return \array_map('strval', \array_unique(\array_merge(\array_keys($this->getDefinitions()), \array_keys($this->aliasDefinitions), parent::getServiceIds())));
+        return array_map('strval', array_unique(array_merge(array_keys($this->getDefinitions()), array_keys($this->aliasDefinitions), parent::getServiceIds())));
     }
+
     /**
      * Gets removed service or alias ids.
      *
@@ -705,6 +830,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->removedIds;
     }
+
     /**
      * Adds the service aliases.
      */
@@ -714,6 +840,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
             $this->setAlias($alias, $id);
         }
     }
+
     /**
      * Sets the service aliases.
      */
@@ -722,6 +849,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         $this->aliasDefinitions = [];
         $this->addAliases($aliases);
     }
+
     /**
      * Sets an alias for an existing service.
      *
@@ -736,20 +864,26 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function setAlias($alias, $id)
     {
         $alias = $this->normalizeId($alias);
-        if ('' === $alias || '\\' === \substr($alias, -1) || \strlen($alias) !== \strcspn($alias, "\0\r\n'")) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('Invalid alias id: "%s".', $alias));
+
+        if ('' === $alias || '\\' === substr($alias, -1) || \strlen($alias) !== strcspn($alias, "\0\r\n'")) {
+            throw new InvalidArgumentException(sprintf('Invalid alias id: "%s".', $alias));
         }
+
         if (\is_string($id)) {
-            $id = new \MolliePrefix\Symfony\Component\DependencyInjection\Alias($this->normalizeId($id));
-        } elseif (!$id instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Alias) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException('$id must be a string, or an Alias object.');
+            $id = new Alias($this->normalizeId($id));
+        } elseif (!$id instanceof Alias) {
+            throw new InvalidArgumentException('$id must be a string, or an Alias object.');
         }
+
         if ($alias === (string) $id) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('An alias can not reference itself, got a circular reference on "%s".', $alias));
+            throw new InvalidArgumentException(sprintf('An alias can not reference itself, got a circular reference on "%s".', $alias));
         }
+
         unset($this->definitions[$alias], $this->removedIds[$alias]);
+
         return $this->aliasDefinitions[$alias] = $id;
     }
+
     /**
      * Removes an alias.
      *
@@ -759,9 +893,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         if (isset($this->aliasDefinitions[$alias = $this->normalizeId($alias)])) {
             unset($this->aliasDefinitions[$alias]);
-            $this->removedIds[$alias] = \true;
+            $this->removedIds[$alias] = true;
         }
     }
+
     /**
      * Returns true if an alias exists under the given identifier.
      *
@@ -773,6 +908,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return isset($this->aliasDefinitions[$this->normalizeId($id)]);
     }
+
     /**
      * Gets all defined aliases.
      *
@@ -782,6 +918,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->aliasDefinitions;
     }
+
     /**
      * Gets an alias.
      *
@@ -794,11 +931,14 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function getAlias($id)
     {
         $id = $this->normalizeId($id);
+
         if (!isset($this->aliasDefinitions[$id])) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The service alias "%s" does not exist.', $id));
+            throw new InvalidArgumentException(sprintf('The service alias "%s" does not exist.', $id));
         }
+
         return $this->aliasDefinitions[$id];
     }
+
     /**
      * Registers a service definition.
      *
@@ -812,8 +952,9 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public function register($id, $class = null)
     {
-        return $this->setDefinition($id, new \MolliePrefix\Symfony\Component\DependencyInjection\Definition($class));
+        return $this->setDefinition($id, new Definition($class));
     }
+
     /**
      * Registers an autowired service definition.
      *
@@ -827,8 +968,9 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public function autowire($id, $class = null)
     {
-        return $this->setDefinition($id, (new \MolliePrefix\Symfony\Component\DependencyInjection\Definition($class))->setAutowired(\true));
+        return $this->setDefinition($id, (new Definition($class))->setAutowired(true));
     }
+
     /**
      * Adds the service definitions.
      *
@@ -840,6 +982,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
             $this->setDefinition($id, $definition);
         }
     }
+
     /**
      * Sets the service definitions.
      *
@@ -850,6 +993,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         $this->definitions = [];
         $this->addDefinitions($definitions);
     }
+
     /**
      * Gets all service definitions.
      *
@@ -859,6 +1003,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->definitions;
     }
+
     /**
      * Sets a service definition.
      *
@@ -869,18 +1014,23 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @throws BadMethodCallException When this ContainerBuilder is compiled
      */
-    public function setDefinition($id, \MolliePrefix\Symfony\Component\DependencyInjection\Definition $definition)
+    public function setDefinition($id, Definition $definition)
     {
         if ($this->isCompiled()) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\BadMethodCallException('Adding definition to a compiled container is not allowed.');
+            throw new BadMethodCallException('Adding definition to a compiled container is not allowed.');
         }
+
         $id = $this->normalizeId($id);
-        if ('' === $id || '\\' === \substr($id, -1) || \strlen($id) !== \strcspn($id, "\0\r\n'")) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('Invalid service id: "%s".', $id));
+
+        if ('' === $id || '\\' === substr($id, -1) || \strlen($id) !== strcspn($id, "\0\r\n'")) {
+            throw new InvalidArgumentException(sprintf('Invalid service id: "%s".', $id));
         }
+
         unset($this->aliasDefinitions[$id], $this->removedIds[$id]);
+
         return $this->definitions[$id] = $definition;
     }
+
     /**
      * Returns true if a service definition exists under the given identifier.
      *
@@ -892,6 +1042,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return isset($this->definitions[$this->normalizeId($id)]);
     }
+
     /**
      * Gets a service definition.
      *
@@ -904,11 +1055,14 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function getDefinition($id)
     {
         $id = $this->normalizeId($id);
+
         if (!isset($this->definitions[$id])) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException($id);
+            throw new ServiceNotFoundException($id);
         }
+
         return $this->definitions[$id];
     }
+
     /**
      * Gets a service definition by id or alias.
      *
@@ -923,19 +1077,25 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function findDefinition($id)
     {
         $id = $this->normalizeId($id);
+
         $seen = [];
         while (isset($this->aliasDefinitions[$id])) {
             $id = (string) $this->aliasDefinitions[$id];
+
             if (isset($seen[$id])) {
-                $seen = \array_values($seen);
-                $seen = \array_slice($seen, \array_search($id, $seen));
+                $seen = array_values($seen);
+                $seen = \array_slice($seen, array_search($id, $seen));
                 $seen[] = $id;
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException($id, $seen);
+
+                throw new ServiceCircularReferenceException($id, $seen);
             }
+
             $seen[$id] = $id;
         }
+
         return $this->getDefinition($id);
     }
+
     /**
      * Creates a service for a service definition.
      *
@@ -949,87 +1109,115 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      * @throws RuntimeException         When the service is a synthetic service
      * @throws InvalidArgumentException When configure callable is not callable
      */
-    private function createService(\MolliePrefix\Symfony\Component\DependencyInjection\Definition $definition, array &$inlineServices, $isConstructorArgument = \false, $id = null, $tryProxy = \true)
+    private function createService(Definition $definition, array &$inlineServices, $isConstructorArgument = false, $id = null, $tryProxy = true)
     {
-        if (null === $id && isset($inlineServices[$h = \spl_object_hash($definition)])) {
+        if (null === $id && isset($inlineServices[$h = spl_object_hash($definition)])) {
             return $inlineServices[$h];
         }
-        if ($definition instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ChildDefinition) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException(\sprintf('Constructing service "%s" from a parent definition is not supported at build time.', $id));
+
+        if ($definition instanceof ChildDefinition) {
+            throw new RuntimeException(sprintf('Constructing service "%s" from a parent definition is not supported at build time.', $id));
         }
+
         if ($definition->isSynthetic()) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException(\sprintf('You have requested a synthetic service ("%s"). The DIC does not know how to construct this service.', $id));
+            throw new RuntimeException(sprintf('You have requested a synthetic service ("%s"). The DIC does not know how to construct this service.', $id));
         }
+
         if ($definition->isDeprecated()) {
-            @\trigger_error($definition->getDeprecationMessage($id), \E_USER_DEPRECATED);
+            @trigger_error($definition->getDeprecationMessage($id), \E_USER_DEPRECATED);
         }
-        if ($tryProxy && $definition->isLazy() && !($tryProxy = !($proxy = $this->proxyInstantiator) || $proxy instanceof \MolliePrefix\Symfony\Component\DependencyInjection\LazyProxy\Instantiator\RealServiceInstantiator)) {
-            $proxy = $proxy->instantiateProxy($this, $definition, $id, function () use($definition, &$inlineServices, $id) {
-                return $this->createService($definition, $inlineServices, \true, $id, \false);
-            });
+
+        if ($tryProxy && $definition->isLazy() && !$tryProxy = !($proxy = $this->proxyInstantiator) || $proxy instanceof RealServiceInstantiator) {
+            $proxy = $proxy->instantiateProxy(
+                $this,
+                $definition,
+                $id, function () use ($definition, &$inlineServices, $id) {
+                    return $this->createService($definition, $inlineServices, true, $id, false);
+                }
+            );
             $this->shareService($definition, $proxy, $id, $inlineServices);
+
             return $proxy;
         }
+
         $parameterBag = $this->getParameterBag();
+
         if (null !== $definition->getFile()) {
             require_once $parameterBag->resolveValue($definition->getFile());
         }
+
         $arguments = $this->doResolveServices($parameterBag->unescapeValue($parameterBag->resolveValue($definition->getArguments())), $inlineServices, $isConstructorArgument);
-        if (null !== ($factory = $definition->getFactory())) {
+
+        if (null !== $factory = $definition->getFactory()) {
             if (\is_array($factory)) {
                 $factory = [$this->doResolveServices($parameterBag->resolveValue($factory[0]), $inlineServices, $isConstructorArgument), $factory[1]];
             } elseif (!\is_string($factory)) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException(\sprintf('Cannot create service "%s" because of invalid factory.', $id));
+                throw new RuntimeException(sprintf('Cannot create service "%s" because of invalid factory.', $id));
             }
         }
+
         if (null !== $id && $definition->isShared() && isset($this->services[$id]) && ($tryProxy || !$definition->isLazy())) {
             return $this->services[$id];
         }
+
         if (null !== $factory) {
             $service = \call_user_func_array($factory, $arguments);
+
             if (!$definition->isDeprecated() && \is_array($factory) && \is_string($factory[0])) {
                 $r = new \ReflectionClass($factory[0]);
-                if (0 < \strpos($r->getDocComment(), "\n * @deprecated ")) {
-                    @\trigger_error(\sprintf('The "%s" service relies on the deprecated "%s" factory class. It should either be deprecated or its factory upgraded.', $id, $r->name), \E_USER_DEPRECATED);
+
+                if (0 < strpos($r->getDocComment(), "\n * @deprecated ")) {
+                    @trigger_error(sprintf('The "%s" service relies on the deprecated "%s" factory class. It should either be deprecated or its factory upgraded.', $id, $r->name), \E_USER_DEPRECATED);
                 }
             }
         } else {
             $r = new \ReflectionClass($class = $parameterBag->resolveValue($definition->getClass()));
-            $service = null === $r->getConstructor() ? $r->newInstance() : $r->newInstanceArgs(\array_values($arguments));
+
+            $service = null === $r->getConstructor() ? $r->newInstance() : $r->newInstanceArgs(array_values($arguments));
             // don't trigger deprecations for internal uses
             // @deprecated since version 3.3, to be removed in 4.0 along with the deprecated class
-            $deprecationAllowlist = ['event_dispatcher' => \MolliePrefix\Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher::class];
-            if (!$definition->isDeprecated() && 0 < \strpos($r->getDocComment(), "\n * @deprecated ") && (!isset($deprecationAllowlist[$id]) || $deprecationAllowlist[$id] !== $class)) {
-                @\trigger_error(\sprintf('The "%s" service relies on the deprecated "%s" class. It should either be deprecated or its implementation upgraded.', $id, $r->name), \E_USER_DEPRECATED);
+            $deprecationAllowlist = ['event_dispatcher' => ContainerAwareEventDispatcher::class];
+
+            if (!$definition->isDeprecated() && 0 < strpos($r->getDocComment(), "\n * @deprecated ") && (!isset($deprecationAllowlist[$id]) || $deprecationAllowlist[$id] !== $class)) {
+                @trigger_error(sprintf('The "%s" service relies on the deprecated "%s" class. It should either be deprecated or its implementation upgraded.', $id, $r->name), \E_USER_DEPRECATED);
             }
         }
+
         if ($tryProxy || !$definition->isLazy()) {
             // share only if proxying failed, or if not a proxy
             $this->shareService($definition, $service, $id, $inlineServices);
         }
+
         $properties = $this->doResolveServices($parameterBag->unescapeValue($parameterBag->resolveValue($definition->getProperties())), $inlineServices);
         foreach ($properties as $name => $value) {
-            $service->{$name} = $value;
+            $service->$name = $value;
         }
+
         foreach ($definition->getMethodCalls() as $call) {
             $this->callMethod($service, $call, $inlineServices);
         }
+
         if ($callable = $definition->getConfigurator()) {
             if (\is_array($callable)) {
                 $callable[0] = $parameterBag->resolveValue($callable[0]);
-                if ($callable[0] instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference) {
+
+                if ($callable[0] instanceof Reference) {
                     $callable[0] = $this->doGet((string) $callable[0], $callable[0]->getInvalidBehavior(), $inlineServices);
-                } elseif ($callable[0] instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Definition) {
+                } elseif ($callable[0] instanceof Definition) {
                     $callable[0] = $this->createService($callable[0], $inlineServices);
                 }
             }
+
             if (!\is_callable($callable)) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The configure callable for class "%s" is not a callable.', \get_class($service)));
+                throw new InvalidArgumentException(sprintf('The configure callable for class "%s" is not a callable.', \get_class($service)));
             }
+
             \call_user_func($callable, $service);
         }
+
         return $service;
     }
+
     /**
      * Replaces service references by the real service instance and evaluates expressions.
      *
@@ -1042,19 +1230,20 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->doResolveServices($value);
     }
-    private function doResolveServices($value, array &$inlineServices = [], $isConstructorArgument = \false)
+
+    private function doResolveServices($value, array &$inlineServices = [], $isConstructorArgument = false)
     {
         if (\is_array($value)) {
             foreach ($value as $k => $v) {
                 $value[$k] = $this->doResolveServices($v, $inlineServices, $isConstructorArgument);
             }
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument) {
+        } elseif ($value instanceof ServiceClosureArgument) {
             $reference = $value->getValues()[0];
-            $value = function () use($reference) {
+            $value = function () use ($reference) {
                 return $this->resolveServices($reference);
             };
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Argument\IteratorArgument) {
-            $value = new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () use($value) {
+        } elseif ($value instanceof IteratorArgument) {
+            $value = new RewindableGenerator(function () use ($value) {
                 foreach ($value->getValues() as $k => $v) {
                     foreach (self::getServiceConditionals($v) as $s) {
                         if (!$this->has($s)) {
@@ -1062,13 +1251,14 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
                         }
                     }
                     foreach (self::getInitializedConditionals($v) as $s) {
-                        if (!$this->doGet($s, \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE)) {
+                        if (!$this->doGet($s, ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE)) {
                             continue 2;
                         }
                     }
-                    (yield $k => $this->resolveServices($v));
+
+                    yield $k => $this->resolveServices($v);
                 }
-            }, function () use($value) {
+            }, function () use ($value) {
                 $count = 0;
                 foreach ($value->getValues() as $v) {
                     foreach (self::getServiceConditionals($v) as $s) {
@@ -1077,25 +1267,29 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
                         }
                     }
                     foreach (self::getInitializedConditionals($v) as $s) {
-                        if (!$this->doGet($s, \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE)) {
+                        if (!$this->doGet($s, ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE)) {
                             continue 2;
                         }
                     }
+
                     ++$count;
                 }
+
                 return $count;
             });
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference) {
+        } elseif ($value instanceof Reference) {
             $value = $this->doGet((string) $value, $value->getInvalidBehavior(), $inlineServices, $isConstructorArgument);
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Definition) {
+        } elseif ($value instanceof Definition) {
             $value = $this->createService($value, $inlineServices, $isConstructorArgument);
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Parameter) {
+        } elseif ($value instanceof Parameter) {
             $value = $this->getParameter((string) $value);
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\ExpressionLanguage\Expression) {
+        } elseif ($value instanceof Expression) {
             $value = $this->getExpressionLanguage()->evaluate($value, ['container' => $this]);
         }
+
         return $value;
     }
+
     /**
      * Returns service ids for a given tag.
      *
@@ -1115,20 +1309,22 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      *
      * @return array An array of tags with the tagged service as key, holding a list of attribute arrays
      */
-    public function findTaggedServiceIds($name, $throwOnAbstract = \false)
+    public function findTaggedServiceIds($name, $throwOnAbstract = false)
     {
         $this->usedTags[] = $name;
         $tags = [];
         foreach ($this->getDefinitions() as $id => $definition) {
             if ($definition->hasTag($name)) {
                 if ($throwOnAbstract && $definition->isAbstract()) {
-                    throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The service "%s" tagged "%s" must not be abstract.', $id, $name));
+                    throw new InvalidArgumentException(sprintf('The service "%s" tagged "%s" must not be abstract.', $id, $name));
                 }
                 $tags[$id] = $definition->getTag($name);
             }
         }
+
         return $tags;
     }
+
     /**
      * Returns all tags the defined services use.
      *
@@ -1138,10 +1334,12 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         $tags = [];
         foreach ($this->getDefinitions() as $id => $definition) {
-            $tags = \array_merge(\array_keys($definition->getTags()), $tags);
+            $tags = array_merge(array_keys($definition->getTags()), $tags);
         }
-        return \array_unique($tags);
+
+        return array_unique($tags);
     }
+
     /**
      * Returns all tags not queried by findTaggedServiceIds.
      *
@@ -1149,12 +1347,14 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public function findUnusedTags()
     {
-        return \array_values(\array_diff($this->findTags(), $this->usedTags));
+        return array_values(array_diff($this->findTags(), $this->usedTags));
     }
-    public function addExpressionLanguageProvider(\MolliePrefix\Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface $provider)
+
+    public function addExpressionLanguageProvider(ExpressionFunctionProviderInterface $provider)
     {
         $this->expressionLanguageProviders[] = $provider;
     }
+
     /**
      * @return ExpressionFunctionProviderInterface[]
      */
@@ -1162,6 +1362,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->expressionLanguageProviders;
     }
+
     /**
      * Returns a ChildDefinition that will be used for autoconfiguring the interface/class.
      *
@@ -1172,10 +1373,12 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function registerForAutoconfiguration($interface)
     {
         if (!isset($this->autoconfiguredInstanceof[$interface])) {
-            $this->autoconfiguredInstanceof[$interface] = new \MolliePrefix\Symfony\Component\DependencyInjection\ChildDefinition('');
+            $this->autoconfiguredInstanceof[$interface] = new ChildDefinition('');
         }
+
         return $this->autoconfiguredInstanceof[$interface];
     }
+
     /**
      * Returns an array of ChildDefinition[] keyed by interface.
      *
@@ -1185,6 +1388,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->autoconfiguredInstanceof;
     }
+
     /**
      * Resolves env parameter placeholders in a string or an array.
      *
@@ -1201,49 +1405,57 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (null === $format) {
             $format = '%%env(%s)%%';
         }
+
         $bag = $this->getParameterBag();
-        if (\true === $format) {
+        if (true === $format) {
             $value = $bag->resolveValue($value);
         }
+
         if (\is_array($value)) {
             $result = [];
             foreach ($value as $k => $v) {
                 $result[\is_string($k) ? $this->resolveEnvPlaceholders($k, $format, $usedEnvs) : $k] = $this->resolveEnvPlaceholders($v, $format, $usedEnvs);
             }
+
             return $result;
         }
+
         if (!\is_string($value) || 38 > \strlen($value)) {
             return $value;
         }
-        $envPlaceholders = $bag instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag ? $bag->getEnvPlaceholders() : $this->envPlaceholders;
-        $completed = \false;
+        $envPlaceholders = $bag instanceof EnvPlaceholderParameterBag ? $bag->getEnvPlaceholders() : $this->envPlaceholders;
+
+        $completed = false;
         foreach ($envPlaceholders as $env => $placeholders) {
             foreach ($placeholders as $placeholder) {
-                if (\false !== \stripos($value, $placeholder)) {
-                    if (\true === $format) {
+                if (false !== stripos($value, $placeholder)) {
+                    if (true === $format) {
                         $resolved = $bag->escapeValue($this->getEnv($env));
                     } else {
-                        $resolved = \sprintf($format, $env);
+                        $resolved = sprintf($format, $env);
                     }
                     if ($placeholder === $value) {
                         $value = $resolved;
-                        $completed = \true;
+                        $completed = true;
                     } else {
-                        if (!\is_string($resolved) && !\is_numeric($resolved)) {
-                            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException(\sprintf('A string value must be composed of strings and/or numbers, but found parameter "env(%s)" of type "%s" inside string value "%s".', $env, \gettype($resolved), $this->resolveEnvPlaceholders($value)));
+                        if (!\is_string($resolved) && !is_numeric($resolved)) {
+                            throw new RuntimeException(sprintf('A string value must be composed of strings and/or numbers, but found parameter "env(%s)" of type "%s" inside string value "%s".', $env, \gettype($resolved), $this->resolveEnvPlaceholders($value)));
                         }
-                        $value = \str_ireplace($placeholder, $resolved, $value);
+                        $value = str_ireplace($placeholder, $resolved, $value);
                     }
                     $usedEnvs[$env] = $env;
                     $this->envCounters[$env] = isset($this->envCounters[$env]) ? 1 + $this->envCounters[$env] : 1;
+
                     if ($completed) {
                         break 2;
                     }
                 }
             }
         }
+
         return $value;
     }
+
     /**
      * Get statistics about env usage.
      *
@@ -1252,34 +1464,41 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public function getEnvCounters()
     {
         $bag = $this->getParameterBag();
-        $envPlaceholders = $bag instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag ? $bag->getEnvPlaceholders() : $this->envPlaceholders;
+        $envPlaceholders = $bag instanceof EnvPlaceholderParameterBag ? $bag->getEnvPlaceholders() : $this->envPlaceholders;
+
         foreach ($envPlaceholders as $env => $placeholders) {
             if (!isset($this->envCounters[$env])) {
                 $this->envCounters[$env] = 0;
             }
         }
+
         return $this->envCounters;
     }
+
     /**
      * @internal
      */
     public function getNormalizedIds()
     {
         $normalizedIds = [];
+
         foreach ($this->normalizedIds as $k => $v) {
             if ($v !== (string) $k) {
                 $normalizedIds[$k] = $v;
             }
         }
+
         return $normalizedIds;
     }
+
     /**
      * @final
      */
-    public function log(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface $pass, $message)
+    public function log(CompilerPassInterface $pass, $message)
     {
         $this->getCompiler()->log($pass, $this->resolveEnvPlaceholders($message));
     }
+
     /**
      * {@inheritdoc}
      */
@@ -1288,8 +1507,10 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if (!\is_string($id)) {
             $id = (string) $id;
         }
+
         return isset($this->definitions[$id]) || isset($this->aliasDefinitions[$id]) || isset($this->removedIds[$id]) ? $id : parent::normalizeId($id);
     }
+
     /**
      * Gets removed binding ids.
      *
@@ -1301,6 +1522,7 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         return $this->removedBindingIds;
     }
+
     /**
      * Removes bindings for a service.
      *
@@ -1313,10 +1535,11 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
         if ($this->hasDefinition($id)) {
             foreach ($this->getDefinition($id)->getBindings() as $key => $binding) {
                 list(, $bindingId) = $binding->getValues();
-                $this->removedBindingIds[(int) $bindingId] = \true;
+                $this->removedBindingIds[(int) $bindingId] = true;
             }
         }
     }
+
     /**
      * Returns the Service Conditionals.
      *
@@ -1329,15 +1552,18 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public static function getServiceConditionals($value)
     {
         $services = [];
+
         if (\is_array($value)) {
             foreach ($value as $v) {
-                $services = \array_unique(\array_merge($services, self::getServiceConditionals($v)));
+                $services = array_unique(array_merge($services, self::getServiceConditionals($v)));
             }
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference && \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_INVALID_REFERENCE === $value->getInvalidBehavior()) {
+        } elseif ($value instanceof Reference && ContainerInterface::IGNORE_ON_INVALID_REFERENCE === $value->getInvalidBehavior()) {
             $services[] = (string) $value;
         }
+
         return $services;
     }
+
     /**
      * Returns the initialized conditionals.
      *
@@ -1350,15 +1576,18 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     public static function getInitializedConditionals($value)
     {
         $services = [];
+
         if (\is_array($value)) {
             foreach ($value as $v) {
-                $services = \array_unique(\array_merge($services, self::getInitializedConditionals($v)));
+                $services = array_unique(array_merge($services, self::getInitializedConditionals($v)));
             }
-        } elseif ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference && \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior()) {
+        } elseif ($value instanceof Reference && ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior()) {
             $services[] = (string) $value;
         }
+
         return $services;
     }
+
     /**
      * Computes a reasonably unique hash of a value.
      *
@@ -1368,9 +1597,11 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
      */
     public static function hash($value)
     {
-        $hash = \substr(\base64_encode(\hash('sha256', \serialize($value), \true)), 0, 7);
-        return \str_replace(['/', '+'], ['.', '_'], \strtolower($hash));
+        $hash = substr(base64_encode(hash('sha256', serialize($value), true)), 0, 7);
+
+        return str_replace(['/', '+'], ['.', '_'], strtolower($hash));
     }
+
     /**
      * {@inheritdoc}
      */
@@ -1378,22 +1609,27 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
     {
         $value = parent::getEnv($name);
         $bag = $this->getParameterBag();
-        if (!\is_string($value) || !$bag instanceof \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag) {
+
+        if (!\is_string($value) || !$bag instanceof EnvPlaceholderParameterBag) {
             return $value;
         }
+
         foreach ($bag->getEnvPlaceholders() as $env => $placeholders) {
             if (isset($placeholders[$value])) {
-                $bag = new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($bag->all());
-                return $bag->unescapeValue($bag->get("env({$name})"));
+                $bag = new ParameterBag($bag->all());
+
+                return $bag->unescapeValue($bag->get("env($name)"));
             }
         }
-        $this->resolving["env({$name})"] = \true;
+
+        $this->resolving["env($name)"] = true;
         try {
-            return $bag->unescapeValue($this->resolveEnvPlaceholders($bag->escapeValue($value), \true));
+            return $bag->unescapeValue($this->resolveEnvPlaceholders($bag->escapeValue($value), true));
         } finally {
-            unset($this->resolving["env({$name})"]);
+            unset($this->resolving["env($name)"]);
         }
     }
+
     private function callMethod($service, $call, array &$inlineServices)
     {
         foreach (self::getServiceConditionals($call[1]) as $s) {
@@ -1402,49 +1638,57 @@ class ContainerBuilder extends \MolliePrefix\Symfony\Component\DependencyInjecti
             }
         }
         foreach (self::getInitializedConditionals($call[1]) as $s) {
-            if (!$this->doGet($s, \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE, $inlineServices)) {
+            if (!$this->doGet($s, ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE, $inlineServices)) {
                 return;
             }
         }
+
         \call_user_func_array([$service, $call[0]], $this->doResolveServices($this->getParameterBag()->unescapeValue($this->getParameterBag()->resolveValue($call[1])), $inlineServices));
     }
+
     /**
      * Shares a given service in the container.
      *
      * @param mixed       $service
      * @param string|null $id
      */
-    private function shareService(\MolliePrefix\Symfony\Component\DependencyInjection\Definition $definition, $service, $id, array &$inlineServices)
+    private function shareService(Definition $definition, $service, $id, array &$inlineServices)
     {
-        $inlineServices[null !== $id ? $id : \spl_object_hash($definition)] = $service;
+        $inlineServices[null !== $id ? $id : spl_object_hash($definition)] = $service;
+
         if (null !== $id && $definition->isShared()) {
             $this->services[$id] = $service;
             unset($this->loading[$id]);
         }
     }
+
     private function getExpressionLanguage()
     {
         if (null === $this->expressionLanguage) {
-            if (!\class_exists('MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\ExpressionLanguage')) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
+            if (!class_exists('Symfony\Component\ExpressionLanguage\ExpressionLanguage')) {
+                throw new RuntimeException('Unable to use expressions as the Symfony ExpressionLanguage component is not installed.');
             }
-            $this->expressionLanguage = new \MolliePrefix\Symfony\Component\DependencyInjection\ExpressionLanguage(null, $this->expressionLanguageProviders);
+            $this->expressionLanguage = new ExpressionLanguage(null, $this->expressionLanguageProviders);
         }
+
         return $this->expressionLanguage;
     }
+
     private function inVendors($path)
     {
         if (null === $this->vendors) {
-            $resource = new \MolliePrefix\Symfony\Component\Config\Resource\ComposerResource();
+            $resource = new ComposerResource();
             $this->vendors = $resource->getVendors();
             $this->addResource($resource);
         }
-        $path = \realpath($path) ?: $path;
+        $path = realpath($path) ?: $path;
+
         foreach ($this->vendors as $vendor) {
-            if (0 === \strpos($path, $vendor) && \false !== \strpbrk(\substr($path, \strlen($vendor), 1), '/' . \DIRECTORY_SEPARATOR)) {
-                return \true;
+            if (0 === strpos($path, $vendor) && false !== strpbrk(substr($path, \strlen($vendor), 1), '/'.\DIRECTORY_SEPARATOR)) {
+                return true;
             }
         }
-        return \false;
+
+        return false;
     }
 }

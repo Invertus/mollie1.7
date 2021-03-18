@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of sebastian/diff.
  *
@@ -8,7 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\PhpCsFixer\Diff\v3_0;
+
+namespace PhpCsFixer\Diff\v3_0;
 
 interface LongestCommonSubsequenceCalculator
 {

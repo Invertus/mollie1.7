@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Resource;
 
-use MolliePrefix\Symfony\Component\Config\ResourceCheckerInterface;
+namespace Symfony\Component\Config\Resource;
+
+use Symfony\Component\Config\ResourceCheckerInterface;
+
 /**
  * Resource checker for instances of SelfCheckingResourceInterface.
  *
@@ -19,13 +21,14 @@ use MolliePrefix\Symfony\Component\Config\ResourceCheckerInterface;
  *
  * @author Matthias Pigulla <mp@webfactory.de>
  */
-class SelfCheckingResourceChecker implements \MolliePrefix\Symfony\Component\Config\ResourceCheckerInterface
+class SelfCheckingResourceChecker implements ResourceCheckerInterface
 {
-    public function supports(\MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface $metadata)
+    public function supports(ResourceInterface $metadata)
     {
-        return $metadata instanceof \MolliePrefix\Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
+        return $metadata instanceof SelfCheckingResourceInterface;
     }
-    public function isFresh(\MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface $resource, $timestamp)
+
+    public function isFresh(ResourceInterface $resource, $timestamp)
     {
         /* @var SelfCheckingResourceInterface $resource */
         return $resource->isFresh($timestamp);

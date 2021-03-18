@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\EventDispatcher;
+
+namespace Symfony\Component\EventDispatcher;
 
 /**
  * The EventDispatcherInterface is the central point of Symfony's event listener system.
@@ -25,23 +26,27 @@ namespace MolliePrefix\Symfony\Component\EventDispatcher;
  * @author Jordan Alliot <jordan.alliot@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher\EventDispatcherInterface
+class EventDispatcher implements EventDispatcherInterface
 {
     private $listeners = [];
     private $sorted = [];
+
     /**
      * {@inheritdoc}
      */
-    public function dispatch($eventName, \MolliePrefix\Symfony\Component\EventDispatcher\Event $event = null)
+    public function dispatch($eventName, Event $event = null)
     {
         if (null === $event) {
-            $event = new \MolliePrefix\Symfony\Component\EventDispatcher\Event();
+            $event = new Event();
         }
+
         if ($listeners = $this->getListeners($eventName)) {
             $this->doDispatch($listeners, $eventName, $event);
         }
+
         return $event;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -51,18 +56,23 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
             if (empty($this->listeners[$eventName])) {
                 return [];
             }
+
             if (!isset($this->sorted[$eventName])) {
                 $this->sortListeners($eventName);
             }
+
             return $this->sorted[$eventName];
         }
+
         foreach ($this->listeners as $eventName => $eventListeners) {
             if (!isset($this->sorted[$eventName])) {
                 $this->sortListeners($eventName);
             }
         }
-        return \array_filter($this->sorted);
+
+        return array_filter($this->sorted);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -71,9 +81,11 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
         if (empty($this->listeners[$eventName])) {
             return null;
         }
+
         if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure) {
             $listener[0] = $listener[0]();
         }
+
         foreach ($this->listeners[$eventName] as $priority => $listeners) {
             foreach ($listeners as $k => $v) {
                 if ($v !== $listener && \is_array($v) && isset($v[0]) && $v[0] instanceof \Closure) {
@@ -85,8 +97,10 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
                 }
             }
         }
+
         return null;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -95,13 +109,16 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
         if (null !== $eventName) {
             return !empty($this->listeners[$eventName]);
         }
+
         foreach ($this->listeners as $eventListeners) {
             if ($eventListeners) {
-                return \true;
+                return true;
             }
         }
-        return \false;
+
+        return false;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -110,6 +127,7 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
         $this->listeners[$eventName][$priority][] = $listener;
         unset($this->sorted[$eventName]);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -118,9 +136,11 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
         if (empty($this->listeners[$eventName])) {
             return;
         }
+
         if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure) {
             $listener[0] = $listener[0]();
         }
+
         foreach ($this->listeners[$eventName] as $priority => $listeners) {
             foreach ($listeners as $k => $v) {
                 if ($v !== $listener && \is_array($v) && isset($v[0]) && $v[0] instanceof \Closure) {
@@ -132,6 +152,7 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
                     $listeners[$k] = $v;
                 }
             }
+
             if ($listeners) {
                 $this->listeners[$eventName][$priority] = $listeners;
             } else {
@@ -139,10 +160,11 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
-    public function addSubscriber(\MolliePrefix\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber)
+    public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         foreach ($subscriber->getSubscribedEvents() as $eventName => $params) {
             if (\is_string($params)) {
@@ -156,10 +178,11 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
-    public function removeSubscriber(\MolliePrefix\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber)
+    public function removeSubscriber(EventSubscriberInterface $subscriber)
     {
         foreach ($subscriber->getSubscribedEvents() as $eventName => $params) {
             if (\is_array($params) && \is_array($params[0])) {
@@ -171,6 +194,7 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
             }
         }
     }
+
     /**
      * Triggers the listeners of an event.
      *
@@ -181,7 +205,7 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
      * @param string     $eventName The name of the event to dispatch
      * @param Event      $event     The event object to pass to the event handlers/listeners
      */
-    protected function doDispatch($listeners, $eventName, \MolliePrefix\Symfony\Component\EventDispatcher\Event $event)
+    protected function doDispatch($listeners, $eventName, Event $event)
     {
         foreach ($listeners as $listener) {
             if ($event->isPropagationStopped()) {
@@ -190,6 +214,7 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
             \call_user_func($listener, $event, $eventName, $this);
         }
     }
+
     /**
      * Sorts the internal list of listeners for the given event by priority.
      *
@@ -197,8 +222,9 @@ class EventDispatcher implements \MolliePrefix\Symfony\Component\EventDispatcher
      */
     private function sortListeners($eventName)
     {
-        \krsort($this->listeners[$eventName]);
+        krsort($this->listeners[$eventName]);
         $this->sorted[$eventName] = [];
+
         foreach ($this->listeners[$eventName] as $priority => $listeners) {
             foreach ($listeners as $k => $listener) {
                 if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure) {

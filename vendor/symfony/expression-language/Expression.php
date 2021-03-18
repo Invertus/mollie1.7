@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage;
+
+namespace Symfony\Component\ExpressionLanguage;
 
 /**
  * Represents an expression.
@@ -18,6 +19,7 @@ namespace MolliePrefix\Symfony\Component\ExpressionLanguage;
 class Expression
 {
     protected $expression;
+
     /**
      * @param string $expression An expression
      */
@@ -25,6 +27,7 @@ class Expression
     {
         $this->expression = (string) $expression;
     }
+
     /**
      * Gets the expression.
      *

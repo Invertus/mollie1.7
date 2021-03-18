@@ -1,49 +1,65 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Container;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 /**
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
  * @final since Symfony 3.3
  */
-class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Component\DependencyInjection\Container
+class Symfony_DI_PhpDumper_Test_Rot13Parameters extends Container
 {
     private $parameters = [];
     private $targetDirs = [];
+
     public function __construct()
     {
         $this->parameters = $this->getDefaultParameters();
+
         $this->services = [];
-        $this->normalizedIds = ['MolliePrefix\\symfony\\component\\dependencyinjection\\tests\\dumper\\rot13envvarprocessor' => 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'];
-        $this->methodMap = ['MolliePrefix\\Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor' => 'getRot13EnvVarProcessorService', 'container.env_var_processors_locator' => 'getContainer_EnvVarProcessorsLocatorService'];
+        $this->normalizedIds = [
+            'symfony\\component\\dependencyinjection\\tests\\dumper\\rot13envvarprocessor' => 'Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor',
+        ];
+        $this->methodMap = [
+            'Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor' => 'getRot13EnvVarProcessorService',
+            'container.env_var_processors_locator' => 'getContainer_EnvVarProcessorsLocatorService',
+        ];
+
         $this->aliases = [];
     }
+
     public function getRemovedIds()
     {
-        return ['MolliePrefix\\Psr\\Container\\ContainerInterface' => \true, 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\ContainerInterface' => \true];
+        return [
+            'Psr\\Container\\ContainerInterface' => true,
+            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
+        ];
     }
+
     public function compile()
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('You cannot compile a dumped container that was already compiled.');
+        throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
+
     public function isCompiled()
     {
-        return \true;
+        return true;
     }
+
     public function isFrozen()
     {
-        @\trigger_error(\sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), \E_USER_DEPRECATED);
-        return \true;
+        @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return true;
     }
+
     /**
      * Gets the public 'Symfony\Component\DependencyInjection\Tests\Dumper\Rot13EnvVarProcessor' shared service.
      *
@@ -51,8 +67,9 @@ class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Co
      */
     protected function getRot13EnvVarProcessorService()
     {
-        return $this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] = new \MolliePrefix\Symfony\Component\DependencyInjection\Tests\Dumper\Rot13EnvVarProcessor();
+        return $this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] = new \Symfony\Component\DependencyInjection\Tests\Dumper\Rot13EnvVarProcessor();
     }
+
     /**
      * Gets the public 'container.env_var_processors_locator' shared service.
      *
@@ -60,34 +77,41 @@ class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Co
      */
     protected function getContainer_EnvVarProcessorsLocatorService()
     {
-        return $this->services['container.env_var_processors_locator'] = new \MolliePrefix\Symfony\Component\DependencyInjection\ServiceLocator(['rot13' => function () {
-            return ${($_ = isset($this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor']) ? $this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] : ($this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] = new \MolliePrefix\Symfony\Component\DependencyInjection\Tests\Dumper\Rot13EnvVarProcessor())) && \false ?: '_'};
+        return $this->services['container.env_var_processors_locator'] = new \Symfony\Component\DependencyInjection\ServiceLocator(['rot13' => function () {
+            return ${($_ = isset($this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor']) ? $this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] : ($this->services['Symfony\\Component\\DependencyInjection\\Tests\\Dumper\\Rot13EnvVarProcessor'] = new \Symfony\Component\DependencyInjection\Tests\Dumper\Rot13EnvVarProcessor())) && false ?: '_'};
         }]);
     }
+
     public function getParameter($name)
     {
         $name = (string) $name;
-        if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters))) {
+        if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters))) {
             $name = $this->normalizeParameterName($name);
-            if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters))) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The parameter "%s" must be defined.', $name));
+
+            if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters))) {
+                throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
             }
         }
         if (isset($this->loadedDynamicParameters[$name])) {
             return $this->loadedDynamicParameters[$name] ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
         }
+
         return $this->parameters[$name];
     }
+
     public function hasParameter($name)
     {
         $name = (string) $name;
         $name = $this->normalizeParameterName($name);
-        return isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters);
+
+        return isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters);
     }
+
     public function setParameter($name, $value)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call set() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call set() on a frozen ParameterBag.');
     }
+
     public function getParameterBag()
     {
         if (null === $this->parameterBag) {
@@ -95,12 +119,17 @@ class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Co
             foreach ($this->loadedDynamicParameters as $name => $loaded) {
                 $parameters[$name] = $loaded ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
             }
-            $this->parameterBag = new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag($parameters);
+            $this->parameterBag = new FrozenParameterBag($parameters);
         }
+
         return $this->parameterBag;
     }
-    private $loadedDynamicParameters = ['hello' => \false];
+
+    private $loadedDynamicParameters = [
+        'hello' => false,
+    ];
     private $dynamicParameters = [];
+
     /**
      * Computes a dynamic parameter.
      *
@@ -113,28 +142,30 @@ class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Co
     private function getDynamicParameter($name)
     {
         switch ($name) {
-            case 'hello':
-                $value = $this->getEnv('rot13:foo');
-                break;
-            default:
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The dynamic parameter "%s" must be defined.', $name));
+            case 'hello': $value = $this->getEnv('rot13:foo'); break;
+            default: throw new InvalidArgumentException(sprintf('The dynamic parameter "%s" must be defined.', $name));
         }
-        $this->loadedDynamicParameters[$name] = \true;
+        $this->loadedDynamicParameters[$name] = true;
+
         return $this->dynamicParameters[$name] = $value;
     }
+
     private $normalizedParameterNames = [];
+
     private function normalizeParameterName($name)
     {
-        if (isset($this->normalizedParameterNames[$normalizedName = \strtolower($name)]) || isset($this->parameters[$normalizedName]) || \array_key_exists($normalizedName, $this->parameters)) {
+        if (isset($this->normalizedParameterNames[$normalizedName = strtolower($name)]) || isset($this->parameters[$normalizedName]) || array_key_exists($normalizedName, $this->parameters)) {
             $normalizedName = isset($this->normalizedParameterNames[$normalizedName]) ? $this->normalizedParameterNames[$normalizedName] : $normalizedName;
             if ((string) $name !== $normalizedName) {
-                @\trigger_error(\sprintf('Parameter names will be made case sensitive in Symfony 4.0. Using "%s" instead of "%s" is deprecated since Symfony 3.4.', $name, $normalizedName), \E_USER_DEPRECATED);
+                @trigger_error(sprintf('Parameter names will be made case sensitive in Symfony 4.0. Using "%s" instead of "%s" is deprecated since Symfony 3.4.', $name, $normalizedName), E_USER_DEPRECATED);
             }
         } else {
             $normalizedName = $this->normalizedParameterNames[$normalizedName] = (string) $name;
         }
+
         return $normalizedName;
     }
+
     /**
      * Gets the default parameters.
      *
@@ -142,13 +173,8 @@ class Symfony_DI_PhpDumper_Test_Rot13Parameters extends \MolliePrefix\Symfony\Co
      */
     protected function getDefaultParameters()
     {
-        return ['env(foo)' => 'jbeyq'];
+        return [
+            'env(foo)' => 'jbeyq',
+        ];
     }
 }
-/**
- * This class has been auto-generated
- * by the Symfony Dependency Injection Component.
- *
- * @final since Symfony 3.3
- */
-\class_alias('MolliePrefix\\Symfony_DI_PhpDumper_Test_Rot13Parameters', 'Symfony_DI_PhpDumper_Test_Rot13Parameters', \false);

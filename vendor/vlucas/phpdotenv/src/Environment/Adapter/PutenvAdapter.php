@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment\Adapter;
+namespace Dotenv\Environment\Adapter;
 
-use MolliePrefix\PhpOption\Option;
-class PutenvAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface
+use PhpOption\Option;
+
+class PutenvAdapter implements AdapterInterface
 {
     /**
      * Determines if the adapter is supported.
@@ -12,8 +13,9 @@ class PutenvAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function isSupported()
     {
-        return \function_exists('putenv');
+        return function_exists('putenv');
     }
+
     /**
      * Get an environment variable, if it exists.
      *
@@ -23,8 +25,9 @@ class PutenvAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function get($name)
     {
-        return \MolliePrefix\PhpOption\Option::fromValue(\getenv($name), \false);
+        return Option::fromValue(getenv($name), false);
     }
+
     /**
      * Set an environment variable.
      *
@@ -35,8 +38,9 @@ class PutenvAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function set($name, $value = null)
     {
-        \putenv("{$name}={$value}");
+        putenv("$name=$value");
     }
+
     /**
      * Clear an environment variable.
      *
@@ -46,6 +50,6 @@ class PutenvAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function clear($name)
     {
-        \putenv($name);
+        putenv($name);
     }
 }

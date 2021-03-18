@@ -9,13 +9,15 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Whitespace;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Whitespace;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * A file must always end with a line endings character.
  *
@@ -24,15 +26,22 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class SingleBlankLineAtEofFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
+final class SingleBlankLineAtEofFixer extends AbstractFixer implements WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('A PHP file without end tag must always end with a single empty line feed.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\n\$a = 1;"), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\n\$a = 1;\n\n")]);
+        return new FixerDefinition(
+            'A PHP file without end tag must always end with a single empty line feed.',
+            [
+                new CodeSample("<?php\n\$a = 1;"),
+                new CodeSample("<?php\n\$a = 1;\n\n"),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      */
@@ -41,20 +50,23 @@ final class SingleBlankLineAtEofFixer extends \MolliePrefix\PhpCsFixer\AbstractF
         // must run last to be sure the file is properly formatted before it runs
         return -50;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         $count = $tokens->count();
-        if ($count && !$tokens[$count - 1]->isGivenKind([\T_INLINE_HTML, \T_CLOSE_TAG, \T_OPEN_TAG])) {
+
+        if ($count && !$tokens[$count - 1]->isGivenKind([T_INLINE_HTML, T_CLOSE_TAG, T_OPEN_TAG])) {
             $tokens->ensureWhitespaceAtIndex($count - 1, 1, $this->whitespacesConfig->getLineEnding());
         }
     }

@@ -1,7 +1,5 @@
 <?php
 
-namespace MolliePrefix;
-
 /**
  * Base class for data processing.
  *
@@ -13,19 +11,22 @@ abstract class Raven_Processor
      * This constant defines the mask string used to strip sensitive information.
      */
     const STRING_MASK = '********';
+
     /**
      * @var Raven_Client The Raven client
      */
     protected $client;
+
     /**
      * Class constructor.
      *
      * @param Raven_Client $client The Raven client
      */
-    public function __construct(\MolliePrefix\Raven_Client $client)
+    public function __construct(Raven_Client $client)
     {
         $this->client = $client;
     }
+
     /**
      * Override the default processor options
      *
@@ -34,16 +35,11 @@ abstract class Raven_Processor
     public function setProcessorOptions(array $options)
     {
     }
+
     /**
      * Process and sanitize data, modifying the existing value if necessary.
      *
      * @param array $data Array of log data
      */
-    public abstract function process(&$data);
+    abstract public function process(&$data);
 }
-/**
- * Base class for data processing.
- *
- * @package raven
- */
-\class_alias('MolliePrefix\\Raven_Processor', 'Raven_Processor', \false);

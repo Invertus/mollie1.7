@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
+namespace Symfony\Component\DependencyInjection\ParameterBag;
+
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+
 /**
  * Holds read-only parameters.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class FrozenParameterBag extends \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag
+class FrozenParameterBag extends ParameterBag
 {
     /**
      * For performance reasons, the constructor assumes that
@@ -29,34 +31,38 @@ class FrozenParameterBag extends \MolliePrefix\Symfony\Component\DependencyInjec
     public function __construct(array $parameters = [])
     {
         $this->parameters = $parameters;
-        $this->resolved = \true;
+        $this->resolved = true;
     }
+
     /**
      * {@inheritdoc}
      */
     public function clear()
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call clear() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call clear() on a frozen ParameterBag.');
     }
+
     /**
      * {@inheritdoc}
      */
     public function add(array $parameters)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call add() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call add() on a frozen ParameterBag.');
     }
+
     /**
      * {@inheritdoc}
      */
     public function set($name, $value)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call set() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call set() on a frozen ParameterBag.');
     }
+
     /**
      * {@inheritdoc}
      */
     public function remove($name)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call remove() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call remove() on a frozen ParameterBag.');
     }
 }

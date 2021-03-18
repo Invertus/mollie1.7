@@ -8,10 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Traits;
 
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
+namespace Symfony\Component\Cache\Traits;
+
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\ResettableInterface;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  *
@@ -20,19 +22,21 @@ use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
 trait ProxyTrait
 {
     private $pool;
+
     /**
      * {@inheritdoc}
      */
     public function prune()
     {
-        return $this->pool instanceof \MolliePrefix\Symfony\Component\Cache\PruneableInterface && $this->pool->prune();
+        return $this->pool instanceof PruneableInterface && $this->pool->prune();
     }
+
     /**
      * {@inheritdoc}
      */
     public function reset()
     {
-        if ($this->pool instanceof \MolliePrefix\Symfony\Component\Cache\ResettableInterface) {
+        if ($this->pool instanceof ResettableInterface) {
             $this->pool->reset();
         }
     }

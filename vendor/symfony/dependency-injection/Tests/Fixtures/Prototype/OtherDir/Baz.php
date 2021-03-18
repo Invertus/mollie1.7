@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures\Prototype\OtherDir;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures\Prototype\OtherDir;
 
 class Baz
 {

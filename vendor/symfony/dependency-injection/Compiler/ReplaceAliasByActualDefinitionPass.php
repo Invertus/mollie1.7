@@ -8,26 +8,29 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
+namespace Symfony\Component\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Reference;
+
 /**
  * Replaces aliases with actual service definitions, effectively removing these
  * aliases.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class ReplaceAliasByActualDefinitionPass extends \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AbstractRecursivePass
+class ReplaceAliasByActualDefinitionPass extends AbstractRecursivePass
 {
     private $replacements;
+
     /**
      * Process the Container to replace aliases with service definitions.
      *
      * @throws InvalidArgumentException if the service definition does not exist
      */
-    public function process(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
         // First collect all alias targets that need to be replaced
         $seenAliasTargets = [];
@@ -47,11 +50,11 @@ class ReplaceAliasByActualDefinitionPass extends \MolliePrefix\Symfony\Component
                 continue;
             }
             // Process new target
-            $seenAliasTargets[$targetId] = \true;
+            $seenAliasTargets[$targetId] = true;
             try {
                 $definition = $container->getDefinition($targetId);
-            } catch (\MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException $e) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('Unable to replace alias "%s" with actual definition "%s".', $definitionId, $targetId), null, $e);
+            } catch (InvalidArgumentException $e) {
+                throw new InvalidArgumentException(sprintf('Unable to replace alias "%s" with actual definition "%s".', $definitionId, $targetId), null, $e);
             }
             if ($definition->isPublic() || $definition->isPrivate()) {
                 continue;
@@ -64,20 +67,23 @@ class ReplaceAliasByActualDefinitionPass extends \MolliePrefix\Symfony\Component
             $replacements[$targetId] = $definitionId;
         }
         $this->replacements = $replacements;
+
         parent::process($container);
         $this->replacements = [];
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function processValue($value, $isRoot = \false)
+    protected function processValue($value, $isRoot = false)
     {
-        if ($value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference && isset($this->replacements[$referenceId = $this->container->normalizeId($value)])) {
+        if ($value instanceof Reference && isset($this->replacements[$referenceId = $this->container->normalizeId($value)])) {
             // Perform the replacement
             $newId = $this->replacements[$referenceId];
-            $value = new \MolliePrefix\Symfony\Component\DependencyInjection\Reference($newId, $value->getInvalidBehavior());
-            $this->container->log($this, \sprintf('Changed reference of service "%s" previously pointing to "%s" to "%s".', $this->currentId, $referenceId, $newId));
+            $value = new Reference($newId, $value->getInvalidBehavior());
+            $this->container->log($this, sprintf('Changed reference of service "%s" previously pointing to "%s" to "%s".', $this->currentId, $referenceId, $newId));
         }
+
         return parent::processValue($value, $isRoot);
     }
 }

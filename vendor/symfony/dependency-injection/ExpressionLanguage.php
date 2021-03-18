@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
 
-use MolliePrefix\Symfony\Component\ExpressionLanguage\ExpressionLanguage as BaseExpressionLanguage;
+namespace Symfony\Component\DependencyInjection;
+
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage as BaseExpressionLanguage;
+
 /**
  * Adds some function to the default ExpressionLanguage.
  *
@@ -18,7 +20,7 @@ use MolliePrefix\Symfony\Component\ExpressionLanguage\ExpressionLanguage as Base
  *
  * @see ExpressionLanguageProvider
  */
-class ExpressionLanguage extends \MolliePrefix\Symfony\Component\ExpressionLanguage\ExpressionLanguage
+class ExpressionLanguage extends BaseExpressionLanguage
 {
     /**
      * {@inheritdoc}
@@ -26,7 +28,8 @@ class ExpressionLanguage extends \MolliePrefix\Symfony\Component\ExpressionLangu
     public function __construct($cache = null, array $providers = [], callable $serviceCompiler = null)
     {
         // prepend the default provider to let users override it easily
-        \array_unshift($providers, new \MolliePrefix\Symfony\Component\DependencyInjection\ExpressionLanguageProvider($serviceCompiler));
+        array_unshift($providers, new ExpressionLanguageProvider($serviceCompiler));
+
         parent::__construct($cache, $providers);
     }
 }

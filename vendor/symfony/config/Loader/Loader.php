@@ -8,17 +8,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Loader;
 
-use MolliePrefix\Symfony\Component\Config\Exception\FileLoaderLoadException;
+namespace Symfony\Component\Config\Loader;
+
+use Symfony\Component\Config\Exception\FileLoaderLoadException;
+
 /**
  * Loader is the abstract class used by all built-in loaders.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class Loader implements \MolliePrefix\Symfony\Component\Config\Loader\LoaderInterface
+abstract class Loader implements LoaderInterface
 {
     protected $resolver;
+
     /**
      * {@inheritdoc}
      */
@@ -26,13 +29,15 @@ abstract class Loader implements \MolliePrefix\Symfony\Component\Config\Loader\L
     {
         return $this->resolver;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function setResolver(\MolliePrefix\Symfony\Component\Config\Loader\LoaderResolverInterface $resolver)
+    public function setResolver(LoaderResolverInterface $resolver)
     {
         $this->resolver = $resolver;
     }
+
     /**
      * Imports a resource.
      *
@@ -45,6 +50,7 @@ abstract class Loader implements \MolliePrefix\Symfony\Component\Config\Loader\L
     {
         return $this->resolve($resource, $type)->load($resource, $type);
     }
+
     /**
      * Finds a loader able to load an imported resource.
      *
@@ -60,10 +66,13 @@ abstract class Loader implements \MolliePrefix\Symfony\Component\Config\Loader\L
         if ($this->supports($resource, $type)) {
             return $this;
         }
-        $loader = null === $this->resolver ? \false : $this->resolver->resolve($resource, $type);
-        if (\false === $loader) {
-            throw new \MolliePrefix\Symfony\Component\Config\Exception\FileLoaderLoadException($resource, null, null, null, $type);
+
+        $loader = null === $this->resolver ? false : $this->resolver->resolve($resource, $type);
+
+        if (false === $loader) {
+            throw new FileLoaderLoadException($resource, null, null, null, $type);
         }
+
         return $loader;
     }
 }

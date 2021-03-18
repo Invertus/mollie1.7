@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Dotenv;
+namespace Dotenv;
 
 class Lines
 {
@@ -16,16 +16,20 @@ class Lines
     public static function process(array $lines)
     {
         $output = [];
-        $multiline = \false;
+        $multiline = false;
         $multilineBuffer = [];
+
         foreach ($lines as $line) {
             list($multiline, $line, $multilineBuffer) = self::multilineProcess($multiline, $line, $multilineBuffer);
+
             if (!$multiline && !self::isComment($line) && self::isSetter($line)) {
                 $output[] = $line;
             }
         }
+
         return $output;
     }
+
     /**
      * Used to make all multiline variable process.
      *
@@ -39,18 +43,22 @@ class Lines
     {
         // check if $line can be multiline variable
         if ($started = self::looksLikeMultilineStart($line)) {
-            $multiline = \true;
+            $multiline = true;
         }
+
         if ($multiline) {
-            \array_push($buffer, $line);
+            array_push($buffer, $line);
+
             if (self::looksLikeMultilineStop($line, $started)) {
-                $multiline = \false;
-                $line = \implode("\n", $buffer);
+                $multiline = false;
+                $line = implode("\n", $buffer);
                 $buffer = [];
             }
         }
+
         return [$multiline, $line, $buffer];
     }
+
     /**
      * Determine if the given line can be the start of a multiline variable.
      *
@@ -60,11 +68,13 @@ class Lines
      */
     private static function looksLikeMultilineStart($line)
     {
-        if (\strpos($line, '="') === \false) {
-            return \false;
+        if (strpos($line, '="') === false) {
+            return false;
         }
-        return self::looksLikeMultilineStop($line, \true) === \false;
+
+        return self::looksLikeMultilineStop($line, true) === false;
     }
+
     /**
      * Determine if the given line can be the start of a multiline variable.
      *
@@ -76,16 +86,20 @@ class Lines
     private static function looksLikeMultilineStop($line, $started)
     {
         if ($line === '"') {
-            return \true;
+            return true;
         }
+
         $seen = $started ? 0 : 1;
-        foreach (self::getCharPairs(\str_replace('\\\\', '', $line)) as $pair) {
+
+        foreach (self::getCharPairs(str_replace('\\\\', '', $line)) as $pair) {
             if ($pair[0] !== '\\' && $pair[1] === '"') {
                 $seen++;
             }
         }
+
         return $seen > 1;
     }
+
     /**
      * Get all pairs of adjacent characters within the line.
      *
@@ -95,9 +109,11 @@ class Lines
      */
     private static function getCharPairs($line)
     {
-        $chars = \str_split($line);
-        return \array_map(null, $chars, \array_slice($chars, 1));
+        $chars = str_split($line);
+
+        return array_map(null, $chars, array_slice($chars, 1));
     }
+
     /**
      * Determine if the line in the file is a comment, e.g. begins with a #.
      *
@@ -107,9 +123,11 @@ class Lines
      */
     private static function isComment($line)
     {
-        $line = \ltrim($line);
+        $line = ltrim($line);
+
         return isset($line[0]) && $line[0] === '#';
     }
+
     /**
      * Determine if the given line looks like it's setting a variable.
      *
@@ -119,6 +137,6 @@ class Lines
      */
     private static function isSetter($line)
     {
-        return \strpos($line, '=') !== \false;
+        return strpos($line, '=') !== false;
     }
 }

@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Random_* Compatibility Library
  * for using the new PHP 7 random_* API in PHP 5 projects
@@ -28,7 +25,8 @@ namespace MolliePrefix;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-if (!\is_callable('random_bytes')) {
+
+if (!is_callable('random_bytes')) {
     /**
      * If the libsodium PHP extension is loaded, we'll use it above any other
      * solution.
@@ -46,37 +44,50 @@ if (!\is_callable('random_bytes')) {
     {
         try {
             /** @var int $bytes */
-            $bytes = \MolliePrefix\RandomCompat_intval($bytes);
-        } catch (\TypeError $ex) {
-            throw new \TypeError('random_bytes(): $bytes must be an integer');
+            $bytes = RandomCompat_intval($bytes);
+        } catch (TypeError $ex) {
+            throw new TypeError(
+                'random_bytes(): $bytes must be an integer'
+            );
         }
+
         if ($bytes < 1) {
-            throw new \Error('Length must be greater than 0');
+            throw new Error(
+                'Length must be greater than 0'
+            );
         }
+
         /**
          * @var string
          */
         $buf = '';
+
         /**
          * \Sodium\randombytes_buf() doesn't allow more than 2147483647 bytes to be
          * generated in one invocation.
          */
         if ($bytes > 2147483647) {
             for ($i = 0; $i < $bytes; $i += 1073741824) {
-                $n = $bytes - $i > 1073741824 ? 1073741824 : $bytes - $i;
-                $buf .= \MolliePrefix\Sodium::randombytes_buf((int) $n);
+                $n = ($bytes - $i) > 1073741824
+                    ? 1073741824
+                    : $bytes - $i;
+                $buf .= Sodium::randombytes_buf((int) $n);
             }
         } else {
-            $buf .= \MolliePrefix\Sodium::randombytes_buf((int) $bytes);
+            $buf .= Sodium::randombytes_buf((int) $bytes);
         }
-        if (\is_string($buf)) {
-            if (\MolliePrefix\RandomCompat_strlen($buf) === $bytes) {
+
+        if (is_string($buf)) {
+            if (RandomCompat_strlen($buf) === $bytes) {
                 return $buf;
             }
         }
+
         /**
          * If we reach here, PHP has failed us.
          */
-        throw new \Exception('Could not gather sufficient random data');
+        throw new Exception(
+            'Could not gather sufficient random data'
+        );
     }
 }

@@ -8,13 +8,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\Traits\FilesystemTrait;
-class FilesystemAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\AbstractAdapter implements \MolliePrefix\Symfony\Component\Cache\PruneableInterface
+namespace Symfony\Component\Cache\Adapter;
+
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\Traits\FilesystemTrait;
+
+class FilesystemAdapter extends AbstractAdapter implements PruneableInterface
 {
     use FilesystemTrait;
+
     /**
      * @param string      $namespace
      * @param int         $defaultLifetime

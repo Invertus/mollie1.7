@@ -1,11 +1,11 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment;
+namespace Dotenv\Environment;
 
 /**
  * The default implementation of the environment variables interface.
  */
-class DotenvVariables extends \MolliePrefix\Dotenv\Environment\AbstractVariables
+class DotenvVariables extends AbstractVariables
 {
     /**
      * The set of adapters to use.
@@ -13,6 +13,7 @@ class DotenvVariables extends \MolliePrefix\Dotenv\Environment\AbstractVariables
      * @var \Dotenv\Environment\Adapter\AdapterInterface[]
      */
     protected $adapters;
+
     /**
      * Create a new dotenv environment variables instance.
      *
@@ -26,6 +27,7 @@ class DotenvVariables extends \MolliePrefix\Dotenv\Environment\AbstractVariables
         $this->adapters = $adapters;
         parent::__construct($immutable);
     }
+
     /**
      * Get an environment variable.
      *
@@ -44,6 +46,7 @@ class DotenvVariables extends \MolliePrefix\Dotenv\Environment\AbstractVariables
             }
         }
     }
+
     /**
      * Set an environment variable.
      *
@@ -58,6 +61,7 @@ class DotenvVariables extends \MolliePrefix\Dotenv\Environment\AbstractVariables
             $adapter->set($name, $value);
         }
     }
+
     /**
      * Clear an environment variable.
      *

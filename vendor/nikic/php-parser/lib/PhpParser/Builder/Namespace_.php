@@ -1,23 +1,25 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Builder;
+namespace PhpParser\Builder;
 
-use MolliePrefix\PhpParser;
-use MolliePrefix\PhpParser\Node;
-use MolliePrefix\PhpParser\Node\Stmt;
-class Namespace_ extends \MolliePrefix\PhpParser\Builder\Declaration
+use PhpParser;
+use PhpParser\Node;
+use PhpParser\Node\Stmt;
+
+class Namespace_ extends Declaration
 {
     private $name;
     private $stmts = array();
+
     /**
      * Creates a namespace builder.
      *
      * @param Node\Name|string|null $name Name of the namespace
      */
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->name = null !== $name ? $this->normalizeName($name) : null;
     }
+
     /**
      * Adds a statement.
      *
@@ -25,18 +27,18 @@ class Namespace_ extends \MolliePrefix\PhpParser\Builder\Declaration
      *
      * @return $this The builder instance (for fluid interface)
      */
-    public function addStmt($stmt)
-    {
+    public function addStmt($stmt) {
         $this->stmts[] = $this->normalizeNode($stmt);
+
         return $this;
     }
+
     /**
      * Returns the built node.
      *
      * @return Node The built node
      */
-    public function getNode()
-    {
-        return new \MolliePrefix\PhpParser\Node\Stmt\Namespace_($this->name, $this->stmts, $this->attributes);
+    public function getNode() {
+        return new Stmt\Namespace_($this->name, $this->stmts, $this->attributes);
     }
 }

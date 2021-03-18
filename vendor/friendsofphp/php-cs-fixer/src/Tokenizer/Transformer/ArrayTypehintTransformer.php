@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transform `array` typehint from T_ARRAY into CT::T_ARRAY_TYPEHINT.
  *
@@ -22,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ArrayTypehintTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class ArrayTypehintTransformer extends AbstractTransformer
 {
     /**
      * {@inheritdoc}
@@ -31,25 +33,29 @@ final class ArrayTypehintTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\
     {
         return 50000;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
-        if (!$token->isGivenKind(\T_ARRAY)) {
+        if (!$token->isGivenKind(T_ARRAY)) {
             return;
         }
+
         $nextIndex = $tokens->getNextMeaningfulToken($index);
         $nextToken = $tokens[$nextIndex];
+
         if (!$nextToken->equals('(')) {
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT, $token->getContent()]);
+            $tokens[$index] = new Token([CT::T_ARRAY_TYPEHINT, $token->getContent()]);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function getDeprecatedCustomTokens()
     {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_TYPEHINT];
+        return [CT::T_ARRAY_TYPEHINT];
     }
 }

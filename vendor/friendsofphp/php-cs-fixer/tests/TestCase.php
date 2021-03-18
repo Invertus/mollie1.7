@@ -9,25 +9,27 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tests;
 
-use MolliePrefix\LegacyPHPUnit\TestCase as BaseTestCase;
-use MolliePrefix\PHPUnitGoodPractices\Polyfill\PolyfillTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ExpectationViaCodeOverAnnotationTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ExpectOverSetExceptionTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\IdentityOverEqualityTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ProphecyOverMockObjectTrait;
-use MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait;
-use MolliePrefix\Prophecy\PhpUnit\ProphecyTrait;
+namespace PhpCsFixer\Tests;
+
+use LegacyPHPUnit\TestCase as BaseTestCase;
+use PHPUnitGoodPractices\Polyfill\PolyfillTrait;
+use PHPUnitGoodPractices\Traits\ExpectationViaCodeOverAnnotationTrait;
+use PHPUnitGoodPractices\Traits\ExpectOverSetExceptionTrait;
+use PHPUnitGoodPractices\Traits\IdentityOverEqualityTrait;
+use PHPUnitGoodPractices\Traits\ProphecyOverMockObjectTrait;
+use PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait;
+use Prophecy\PhpUnit\ProphecyTrait;
+
 // we check single, example DEV dependency - if it's there, we have the dev dependencies, if not, we are using PHP-CS-Fixer as library and trying to use internal TestCase...
-if (\trait_exists(\MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterfaceTrait::class)) {
-    if (\trait_exists(\MolliePrefix\Prophecy\PhpUnit\ProphecyTrait::class)) {
+if (trait_exists(ProphesizeOnlyInterfaceTrait::class)) {
+    if (trait_exists(ProphecyTrait::class)) {
         /**
          * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
          *
          * @internal
          */
-        abstract class InterimTestCase extends \MolliePrefix\LegacyPHPUnit\TestCase
+        abstract class InterimTestCase extends BaseTestCase
         {
             use ProphecyTrait;
         }
@@ -37,16 +39,17 @@ if (\trait_exists(\MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterf
          *
          * @internal
          */
-        abstract class InterimTestCase extends \MolliePrefix\LegacyPHPUnit\TestCase
+        abstract class InterimTestCase extends BaseTestCase
         {
         }
     }
+
     /**
      * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
      *
      * @internal
      */
-    abstract class TestCase extends \MolliePrefix\PhpCsFixer\Tests\InterimTestCase
+    abstract class TestCase extends InterimTestCase
     {
         use ExpectationViaCodeOverAnnotationTrait;
         use ExpectOverSetExceptionTrait;
@@ -65,7 +68,7 @@ if (\trait_exists(\MolliePrefix\PHPUnitGoodPractices\Traits\ProphesizeOnlyInterf
      *
      * @todo 3.0 To be removed when we clean up composer prod-autoloader from dev-packages.
      */
-    abstract class TestCase extends \MolliePrefix\LegacyPHPUnit\TestCase
+    abstract class TestCase extends BaseTestCase
     {
     }
 }

@@ -8,31 +8,41 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage\ParserCache;
 
-use MolliePrefix\Psr\Cache\CacheItemInterface;
-use MolliePrefix\Psr\Cache\CacheItemPoolInterface;
-use MolliePrefix\Symfony\Component\Cache\CacheItem;
+namespace Symfony\Component\ExpressionLanguage\ParserCache;
+
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\Cache\CacheItem;
+
 /**
  * @author Alexandre GESLIN <alexandre@gesl.in>
  *
  * @internal and will be removed in Symfony 4.0.
  */
-class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterface
+class ParserCacheAdapter implements CacheItemPoolInterface
 {
     private $pool;
     private $createCacheItem;
-    public function __construct(\MolliePrefix\Symfony\Component\ExpressionLanguage\ParserCache\ParserCacheInterface $pool)
+
+    public function __construct(ParserCacheInterface $pool)
     {
         $this->pool = $pool;
-        $this->createCacheItem = \Closure::bind(static function ($key, $value, $isHit) {
-            $item = new \MolliePrefix\Symfony\Component\Cache\CacheItem();
-            $item->key = $key;
-            $item->value = $value;
-            $item->isHit = $isHit;
-            return $item;
-        }, null, \MolliePrefix\Symfony\Component\Cache\CacheItem::class);
+
+        $this->createCacheItem = \Closure::bind(
+            static function ($key, $value, $isHit) {
+                $item = new CacheItem();
+                $item->key = $key;
+                $item->value = $value;
+                $item->isHit = $isHit;
+
+                return $item;
+            },
+            null,
+            CacheItem::class
+        );
     }
+
     /**
      * {@inheritdoc}
      */
@@ -40,15 +50,18 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         $value = $this->pool->fetch($key);
         $f = $this->createCacheItem;
+
         return $f($key, $value, null !== $value);
     }
+
     /**
      * {@inheritdoc}
      */
-    public function save(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function save(CacheItemInterface $item)
     {
         $this->pool->save($item->getKey(), $item->get());
     }
+
     /**
      * {@inheritdoc}
      */
@@ -56,6 +69,7 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +77,7 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -70,6 +85,7 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -77,6 +93,7 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */
@@ -84,13 +101,15 @@ class ParserCacheAdapter implements \MolliePrefix\Psr\Cache\CacheItemPoolInterfa
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */
-    public function saveDeferred(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item)
     {
         throw new \BadMethodCallException('Not implemented.');
     }
+
     /**
      * {@inheritdoc}
      */

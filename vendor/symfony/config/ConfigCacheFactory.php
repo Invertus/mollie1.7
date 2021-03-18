@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config;
+
+namespace Symfony\Component\Config;
 
 /**
  * Basic implementation of ConfigCacheFactoryInterface that
@@ -19,9 +20,10 @@ namespace MolliePrefix\Symfony\Component\Config;
  *
  * @author Matthias Pigulla <mp@webfactory.de>
  */
-class ConfigCacheFactory implements \MolliePrefix\Symfony\Component\Config\ConfigCacheFactoryInterface
+class ConfigCacheFactory implements ConfigCacheFactoryInterface
 {
     private $debug;
+
     /**
      * @param bool $debug The debug flag to pass to ConfigCache
      */
@@ -29,18 +31,21 @@ class ConfigCacheFactory implements \MolliePrefix\Symfony\Component\Config\Confi
     {
         $this->debug = $debug;
     }
+
     /**
      * {@inheritdoc}
      */
     public function cache($file, $callback)
     {
         if (!\is_callable($callback)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid type for callback argument. Expected callable, but got "%s".', \gettype($callback)));
+            throw new \InvalidArgumentException(sprintf('Invalid type for callback argument. Expected callable, but got "%s".', \gettype($callback)));
         }
-        $cache = new \MolliePrefix\Symfony\Component\Config\ConfigCache($file, $this->debug);
+
+        $cache = new ConfigCache($file, $this->debug);
         if (!$cache->isFresh()) {
             \call_user_func($callback, $cache);
         }
+
         return $cache;
     }
 }

@@ -1,16 +1,12 @@
 {
-    "name": "psr\/cache",
+    "name": "psr/cache",
     "description": "Common interface for caching libraries",
-    "keywords": [
-        "psr",
-        "psr-6",
-        "cache"
-    ],
+    "keywords": ["psr", "psr-6", "cache"],
     "license": "MIT",
     "authors": [
         {
             "name": "PHP-FIG",
-            "homepage": "http:\/\/www.php-fig.org\/"
+            "homepage": "http://www.php-fig.org/"
         }
     ],
     "require": {
@@ -18,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MolliePrefix\\Psr\\Cache\\": "src\/"
+            "Psr\\Cache\\": "src/"
         }
     },
     "extra": {

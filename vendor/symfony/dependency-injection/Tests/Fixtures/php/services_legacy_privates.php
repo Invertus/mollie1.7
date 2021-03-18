@@ -1,24 +1,24 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Container;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 /**
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
  * @final since Symfony 3.3
  */
-class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Component\DependencyInjection\Container
+class Symfony_DI_PhpDumper_Test_Legacy_Privates extends Container
 {
     private $parameters = [];
     private $targetDirs = [];
+
     public function __construct()
     {
         $dir = __DIR__;
@@ -26,27 +26,71 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
             $this->targetDirs[$i] = $dir = \dirname($dir);
         }
         $this->services = [];
-        $this->methodMap = ['bar' => 'getBarService', 'private' => 'getPrivateService', 'private_alias' => 'getPrivateAliasService', 'private_alias_decorator' => 'getPrivateAliasDecoratorService', 'private_child' => 'getPrivateChildService', 'private_decorator' => 'getPrivateDecoratorService', 'private_not_inlined' => 'getPrivateNotInlinedService', 'private_not_removed' => 'getPrivateNotRemovedService', 'private_parent' => 'getPrivateParentService', 'public_child' => 'getPublicChildService'];
-        $this->privates = ['decorated_private' => \true, 'decorated_private_alias' => \true, 'private' => \true, 'private_alias' => \true, 'private_child' => \true, 'private_not_inlined' => \true, 'private_not_removed' => \true, 'private_parent' => \true];
-        $this->aliases = ['alias_to_private' => 'private', 'decorated_private' => 'private_decorator', 'decorated_private_alias' => 'private_alias_decorator'];
+        $this->methodMap = [
+            'bar' => 'getBarService',
+            'private' => 'getPrivateService',
+            'private_alias' => 'getPrivateAliasService',
+            'private_alias_decorator' => 'getPrivateAliasDecoratorService',
+            'private_child' => 'getPrivateChildService',
+            'private_decorator' => 'getPrivateDecoratorService',
+            'private_not_inlined' => 'getPrivateNotInlinedService',
+            'private_not_removed' => 'getPrivateNotRemovedService',
+            'private_parent' => 'getPrivateParentService',
+            'public_child' => 'getPublicChildService',
+        ];
+        $this->privates = [
+            'decorated_private' => true,
+            'decorated_private_alias' => true,
+            'private' => true,
+            'private_alias' => true,
+            'private_child' => true,
+            'private_not_inlined' => true,
+            'private_not_removed' => true,
+            'private_parent' => true,
+        ];
+        $this->aliases = [
+            'alias_to_private' => 'private',
+            'decorated_private' => 'private_decorator',
+            'decorated_private_alias' => 'private_alias_decorator',
+        ];
     }
+
     public function getRemovedIds()
     {
-        return ['MolliePrefix\\Psr\\Container\\ContainerInterface' => \true, 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\ContainerInterface' => \true, 'decorated_private' => \true, 'decorated_private_alias' => \true, 'foo' => \true, 'private' => \true, 'private_alias' => \true, 'private_alias_decorator.inner' => \true, 'private_child' => \true, 'private_decorator.inner' => \true, 'private_not_inlined' => \true, 'private_not_removed' => \true, 'private_parent' => \true];
+        return [
+            'Psr\\Container\\ContainerInterface' => true,
+            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
+            'decorated_private' => true,
+            'decorated_private_alias' => true,
+            'foo' => true,
+            'private' => true,
+            'private_alias' => true,
+            'private_alias_decorator.inner' => true,
+            'private_child' => true,
+            'private_decorator.inner' => true,
+            'private_not_inlined' => true,
+            'private_not_removed' => true,
+            'private_parent' => true,
+        ];
     }
+
     public function compile()
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('You cannot compile a dumped container that was already compiled.');
+        throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
+
     public function isCompiled()
     {
-        return \true;
+        return true;
     }
+
     public function isFrozen()
     {
-        @\trigger_error(\sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), \E_USER_DEPRECATED);
-        return \true;
+        @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return true;
     }
+
     /**
      * Gets the public 'bar' shared service.
      *
@@ -54,8 +98,9 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
      */
     protected function getBarService()
     {
-        return $this->services['bar'] = new \stdClass(${($_ = isset($this->services['private_not_inlined']) ? $this->services['private_not_inlined'] : ($this->services['private_not_inlined'] = new \stdClass())) && \false ?: '_'});
+        return $this->services['bar'] = new \stdClass(${($_ = isset($this->services['private_not_inlined']) ? $this->services['private_not_inlined'] : ($this->services['private_not_inlined'] = new \stdClass())) && false ?: '_'});
     }
+
     /**
      * Gets the public 'private_alias_decorator' shared service.
      *
@@ -65,6 +110,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_alias_decorator'] = new \stdClass();
     }
+
     /**
      * Gets the public 'private_decorator' shared service.
      *
@@ -74,6 +120,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_decorator'] = new \stdClass();
     }
+
     /**
      * Gets the public 'public_child' shared service.
      *
@@ -83,6 +130,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['public_child'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private' shared service.
      *
@@ -92,6 +140,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private_alias' shared service.
      *
@@ -101,6 +150,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_alias'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private_child' shared service.
      *
@@ -110,6 +160,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_child'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private_not_inlined' shared service.
      *
@@ -119,6 +170,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_not_inlined'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private_not_removed' shared service.
      *
@@ -128,6 +180,7 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
     {
         return $this->services['private_not_removed'] = new \stdClass();
     }
+
     /**
      * Gets the private 'private_parent' shared service.
      *
@@ -138,10 +191,3 @@ class Symfony_DI_PhpDumper_Test_Legacy_Privates extends \MolliePrefix\Symfony\Co
         return $this->services['private_parent'] = new \stdClass();
     }
 }
-/**
- * This class has been auto-generated
- * by the Symfony Dependency Injection Component.
- *
- * @final since Symfony 3.3
- */
-\class_alias('MolliePrefix\\Symfony_DI_PhpDumper_Test_Legacy_Privates', 'Symfony_DI_PhpDumper_Test_Legacy_Privates', \false);

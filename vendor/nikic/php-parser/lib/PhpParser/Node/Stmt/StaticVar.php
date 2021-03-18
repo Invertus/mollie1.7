@@ -1,14 +1,16 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Stmt;
+namespace PhpParser\Node\Stmt;
 
-use MolliePrefix\PhpParser\Node;
-class StaticVar extends \MolliePrefix\PhpParser\Node\Stmt
+use PhpParser\Node;
+
+class StaticVar extends Node\Stmt
 {
     /** @var string Name */
     public $name;
     /** @var null|Node\Expr Default value */
     public $default;
+
     /**
      * Constructs a static variable node.
      *
@@ -16,14 +18,13 @@ class StaticVar extends \MolliePrefix\PhpParser\Node\Stmt
      * @param null|Node\Expr $default    Default value
      * @param array          $attributes Additional attributes
      */
-    public function __construct($name, \MolliePrefix\PhpParser\Node\Expr $default = null, array $attributes = array())
-    {
+    public function __construct($name, Node\Expr $default = null, array $attributes = array()) {
         parent::__construct($attributes);
         $this->name = $name;
         $this->default = $default;
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('name', 'default');
     }
 }

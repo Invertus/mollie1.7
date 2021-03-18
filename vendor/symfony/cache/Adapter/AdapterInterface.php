@@ -8,16 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Psr\Cache\CacheItemPoolInterface;
-use MolliePrefix\Symfony\Component\Cache\CacheItem;
+namespace Symfony\Component\Cache\Adapter;
+
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\Cache\CacheItem;
+
 /**
  * Interface for adapters managing instances of Symfony's CacheItem.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-interface AdapterInterface extends \MolliePrefix\Psr\Cache\CacheItemPoolInterface
+interface AdapterInterface extends CacheItemPoolInterface
 {
     /**
      * {@inheritdoc}
@@ -25,6 +27,7 @@ interface AdapterInterface extends \MolliePrefix\Psr\Cache\CacheItemPoolInterfac
      * @return CacheItem
      */
     public function getItem($key);
+
     /**
      * {@inheritdoc}
      *

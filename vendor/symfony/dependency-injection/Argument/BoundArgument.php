@@ -8,22 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Argument;
+
+namespace Symfony\Component\DependencyInjection\Argument;
 
 /**
  * @author Guilhem Niot <guilhem.niot@gmail.com>
  */
-final class BoundArgument implements \MolliePrefix\Symfony\Component\DependencyInjection\Argument\ArgumentInterface
+final class BoundArgument implements ArgumentInterface
 {
     private static $sequence = 0;
+
     private $value;
     private $identifier;
     private $used;
+
     public function __construct($value)
     {
         $this->value = $value;
         $this->identifier = ++self::$sequence;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -31,6 +35,7 @@ final class BoundArgument implements \MolliePrefix\Symfony\Component\DependencyI
     {
         return [$this->value, $this->identifier, $this->used];
     }
+
     /**
      * {@inheritdoc}
      */

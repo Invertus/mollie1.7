@@ -8,63 +8,71 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
+namespace Symfony\Component\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+
 /**
  * @author Guilhem N. <egetick@gmail.com>
  *
  * @deprecated since version 3.3, to be removed in 4.0.
  */
-class FactoryReturnTypePass implements \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface
+class FactoryReturnTypePass implements CompilerPassInterface
 {
     private $resolveClassPass;
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ResolveClassPass $resolveClassPass = null)
+
+    public function __construct(ResolveClassPass $resolveClassPass = null)
     {
         if (null === $resolveClassPass) {
-            @\trigger_error('The ' . __CLASS__ . ' class is deprecated since Symfony 3.3 and will be removed in 4.0.', \E_USER_DEPRECATED);
+            @trigger_error('The '.__CLASS__.' class is deprecated since Symfony 3.3 and will be removed in 4.0.', \E_USER_DEPRECATED);
         }
         $this->resolveClassPass = $resolveClassPass;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
         // works only since php 7.0 and hhvm 3.11
-        if (!\method_exists(\ReflectionMethod::class, 'getReturnType')) {
+        if (!method_exists(\ReflectionMethod::class, 'getReturnType')) {
             return;
         }
         $resolveClassPassChanges = null !== $this->resolveClassPass ? $this->resolveClassPass->getChanges() : [];
+
         foreach ($container->getDefinitions() as $id => $definition) {
             $this->updateDefinition($container, $id, $definition, $resolveClassPassChanges);
         }
     }
-    private function updateDefinition(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder $container, $id, \MolliePrefix\Symfony\Component\DependencyInjection\Definition $definition, array $resolveClassPassChanges, array $previous = [])
+
+    private function updateDefinition(ContainerBuilder $container, $id, Definition $definition, array $resolveClassPassChanges, array $previous = [])
     {
         // circular reference
         if (isset($previous[$id])) {
             return;
         }
+
         $factory = $definition->getFactory();
-        if (null === $factory || !isset($resolveClassPassChanges[$id]) && null !== $definition->getClass()) {
+        if (null === $factory || (!isset($resolveClassPassChanges[$id]) && null !== $definition->getClass())) {
             return;
         }
+
         $class = null;
         if (\is_string($factory)) {
             try {
                 $m = new \ReflectionFunction($factory);
-                if (\false !== $m->getFileName() && \file_exists($m->getFileName())) {
+                if (false !== $m->getFileName() && file_exists($m->getFileName())) {
                     $container->fileExists($m->getFileName());
                 }
             } catch (\ReflectionException $e) {
                 return;
             }
         } else {
-            if ($factory[0] instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference) {
-                $previous[$id] = \true;
+            if ($factory[0] instanceof Reference) {
+                $previous[$id] = true;
                 $factoryId = $container->normalizeId($factory[0]);
                 $factoryDefinition = $container->findDefinition($factoryId);
                 $this->updateDefinition($container, $factoryId, $factoryDefinition, $resolveClassPassChanges, $previous);
@@ -72,7 +80,8 @@ class FactoryReturnTypePass implements \MolliePrefix\Symfony\Component\Dependenc
             } else {
                 $class = $factory[0];
             }
-            if (!($m = $container->getReflectionClass($class, \false))) {
+
+            if (!$m = $container->getReflectionClass($class, false)) {
                 return;
             }
             try {
@@ -81,19 +90,21 @@ class FactoryReturnTypePass implements \MolliePrefix\Symfony\Component\Dependenc
                 return;
             }
         }
+
         $returnType = $m->getReturnType();
         if (null !== $returnType && !$returnType->isBuiltin()) {
             $returnType = $returnType instanceof \ReflectionNamedType ? $returnType->getName() : (string) $returnType;
             if (null !== $class) {
                 $declaringClass = $m->getDeclaringClass()->getName();
-                if ('self' === \strtolower($returnType)) {
+                if ('self' === strtolower($returnType)) {
                     $returnType = $declaringClass;
-                } elseif ('parent' === \strtolower($returnType)) {
-                    $returnType = \get_parent_class($declaringClass) ?: null;
+                } elseif ('parent' === strtolower($returnType)) {
+                    $returnType = get_parent_class($declaringClass) ?: null;
                 }
             }
+
             if (null !== $returnType && (!isset($resolveClassPassChanges[$id]) || $returnType !== $resolveClassPassChanges[$id])) {
-                @\trigger_error(\sprintf('Relying on its factory\'s return-type to define the class of service "%s" is deprecated since Symfony 3.3 and won\'t work in 4.0. Set the "class" attribute to "%s" on the service definition instead.', $id, $returnType), \E_USER_DEPRECATED);
+                @trigger_error(sprintf('Relying on its factory\'s return-type to define the class of service "%s" is deprecated since Symfony 3.3 and won\'t work in 4.0. Set the "class" attribute to "%s" on the service definition instead.', $id, $returnType), \E_USER_DEPRECATED);
             }
             $definition->setClass($returnType);
         }

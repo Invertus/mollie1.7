@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Psr\Log;
+namespace Psr\Log;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {

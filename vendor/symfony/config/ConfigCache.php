@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config;
 
-use MolliePrefix\Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
+namespace Symfony\Component\Config;
+
+use Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
+
 /**
  * ConfigCache caches arbitrary content in files on disk.
  *
@@ -21,9 +23,10 @@ use MolliePrefix\Symfony\Component\Config\Resource\SelfCheckingResourceChecker;
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Matthias Pigulla <mp@webfactory.de>
  */
-class ConfigCache extends \MolliePrefix\Symfony\Component\Config\ResourceCheckerConfigCache
+class ConfigCache extends ResourceCheckerConfigCache
 {
     private $debug;
+
     /**
      * @param string $file  The absolute cache path
      * @param bool   $debug Whether debugging is enabled or not
@@ -31,12 +34,15 @@ class ConfigCache extends \MolliePrefix\Symfony\Component\Config\ResourceChecker
     public function __construct($file, $debug)
     {
         $this->debug = (bool) $debug;
+
         $checkers = [];
-        if (\true === $this->debug) {
-            $checkers = [new \MolliePrefix\Symfony\Component\Config\Resource\SelfCheckingResourceChecker()];
+        if (true === $this->debug) {
+            $checkers = [new SelfCheckingResourceChecker()];
         }
+
         parent::__construct($file, $checkers);
     }
+
     /**
      * Checks if the cache is still fresh.
      *
@@ -47,9 +53,10 @@ class ConfigCache extends \MolliePrefix\Symfony\Component\Config\ResourceChecker
      */
     public function isFresh()
     {
-        if (!$this->debug && \is_file($this->getPath())) {
-            return \true;
+        if (!$this->debug && is_file($this->getPath())) {
+            return true;
         }
+
         return parent::isFresh();
     }
 }

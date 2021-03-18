@@ -9,32 +9,36 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
 
-use MolliePrefix\PhpCsFixer\Fixer\FixerInterface;
+namespace PhpCsFixer;
+
+use PhpCsFixer\Fixer\FixerInterface;
+
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Katsuhiro Ogawa <ko.fivestar@gmail.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
+class Config implements ConfigInterface
 {
     private $cacheFile = '.php_cs.cache';
     private $customFixers = [];
     private $finder;
     private $format = 'txt';
-    private $hideProgress = \false;
+    private $hideProgress = false;
     private $indent = '    ';
-    private $isRiskyAllowed = \false;
+    private $isRiskyAllowed = false;
     private $lineEnding = "\n";
     private $name;
     private $phpExecutable;
-    private $rules = ['@PSR2' => \true];
-    private $usingCache = \true;
+    private $rules = ['@PSR2' => true];
+    private $usingCache = true;
+
     public function __construct($name = 'default')
     {
         $this->name = $name;
     }
+
     /**
      * @return static
      *
@@ -42,9 +46,11 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
      */
     public static function create()
     {
-        @\trigger_error(__METHOD__ . ' is deprecated since 2.17 and will be removed in 3.0.', \E_USER_DEPRECATED);
+        @trigger_error(__METHOD__.' is deprecated since 2.17 and will be removed in 3.0.', E_USER_DEPRECATED);
+
         return new static();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -52,6 +58,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->cacheFile;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -59,16 +66,19 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->customFixers;
     }
+
     /**
      * @return Finder
      */
     public function getFinder()
     {
         if (null === $this->finder) {
-            $this->finder = new \MolliePrefix\PhpCsFixer\Finder();
+            $this->finder = new Finder();
         }
+
         return $this->finder;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -76,6 +86,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->format;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -83,6 +94,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->hideProgress;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -90,6 +102,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->indent;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -97,6 +110,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->lineEnding;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -104,6 +118,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->name;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -111,6 +126,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->phpExecutable;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -118,6 +134,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->isRiskyAllowed;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -125,6 +142,7 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->rules;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -132,103 +150,134 @@ class Config implements \MolliePrefix\PhpCsFixer\ConfigInterface
     {
         return $this->usingCache;
     }
+
     /**
      * {@inheritdoc}
      */
     public function registerCustomFixers($fixers)
     {
-        if (\false === \is_array($fixers) && \false === $fixers instanceof \Traversable) {
-            throw new \InvalidArgumentException(\sprintf('Argument must be an array or a Traversable, got "%s".', \is_object($fixers) ? \get_class($fixers) : \gettype($fixers)));
+        if (false === \is_array($fixers) && false === $fixers instanceof \Traversable) {
+            throw new \InvalidArgumentException(sprintf(
+                'Argument must be an array or a Traversable, got "%s".',
+                \is_object($fixers) ? \get_class($fixers) : \gettype($fixers)
+            ));
         }
+
         foreach ($fixers as $fixer) {
             $this->addCustomFixer($fixer);
         }
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setCacheFile($cacheFile)
     {
         $this->cacheFile = $cacheFile;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setFinder($finder)
     {
-        if (\false === \is_array($finder) && \false === $finder instanceof \Traversable) {
-            throw new \InvalidArgumentException(\sprintf('Argument must be an array or a Traversable, got "%s".', \is_object($finder) ? \get_class($finder) : \gettype($finder)));
+        if (false === \is_array($finder) && false === $finder instanceof \Traversable) {
+            throw new \InvalidArgumentException(sprintf(
+                'Argument must be an array or a Traversable, got "%s".',
+                \is_object($finder) ? \get_class($finder) : \gettype($finder)
+            ));
         }
+
         $this->finder = $finder;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setFormat($format)
     {
         $this->format = $format;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setHideProgress($hideProgress)
     {
         $this->hideProgress = $hideProgress;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setIndent($indent)
     {
         $this->indent = $indent;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setLineEnding($lineEnding)
     {
         $this->lineEnding = $lineEnding;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setPhpExecutable($phpExecutable)
     {
         $this->phpExecutable = $phpExecutable;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setRiskyAllowed($isRiskyAllowed)
     {
         $this->isRiskyAllowed = $isRiskyAllowed;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setRules(array $rules)
     {
         $this->rules = $rules;
+
         return $this;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setUsingCache($usingCache)
     {
         $this->usingCache = $usingCache;
+
         return $this;
     }
-    private function addCustomFixer(\MolliePrefix\PhpCsFixer\Fixer\FixerInterface $fixer)
+
+    private function addCustomFixer(FixerInterface $fixer)
     {
         $this->customFixers[] = $fixer;
     }

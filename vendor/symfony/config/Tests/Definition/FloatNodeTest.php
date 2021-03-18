@@ -8,20 +8,23 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Tests\Definition;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Config\Definition\FloatNode;
-class FloatNodeTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Config\Tests\Definition;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\FloatNode;
+
+class FloatNodeTest extends TestCase
 {
     /**
      * @dataProvider getValidValues
      */
     public function testNormalize($value)
     {
-        $node = new \MolliePrefix\Symfony\Component\Config\Definition\FloatNode('test');
+        $node = new FloatNode('test');
         $this->assertSame($value, $node->normalize($value));
     }
+
     /**
      * @dataProvider getValidValues
      *
@@ -29,16 +32,18 @@ class FloatNodeTest extends \MolliePrefix\PHPUnit\Framework\TestCase
      */
     public function testValidNonEmptyValues($value)
     {
-        $node = new \MolliePrefix\Symfony\Component\Config\Definition\FloatNode('test');
-        $node->setAllowEmptyValue(\false);
+        $node = new FloatNode('test');
+        $node->setAllowEmptyValue(false);
+
         $this->assertSame($value, $node->finalize($value));
     }
+
     public function getValidValues()
     {
         return [
             [1798.0],
             [-678.987],
-            [1.256E+46],
+            [12.56E45],
             [0.0],
             // Integer are accepted too, they will be cast
             [17],
@@ -46,17 +51,28 @@ class FloatNodeTest extends \MolliePrefix\PHPUnit\Framework\TestCase
             [0],
         ];
     }
+
     /**
      * @dataProvider getInvalidValues
      */
     public function testNormalizeThrowsExceptionOnInvalidValues($value)
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\Config\\Definition\\Exception\\InvalidTypeException');
-        $node = new \MolliePrefix\Symfony\Component\Config\Definition\FloatNode('test');
+        $this->expectException('Symfony\Component\Config\Definition\Exception\InvalidTypeException');
+        $node = new FloatNode('test');
         $node->normalize($value);
     }
+
     public function getInvalidValues()
     {
-        return [[null], [''], ['foo'], [\true], [\false], [[]], [['foo' => 'bar']], [new \stdClass()]];
+        return [
+            [null],
+            [''],
+            ['foo'],
+            [true],
+            [false],
+            [[]],
+            [['foo' => 'bar']],
+            [new \stdClass()],
+        ];
     }
 }

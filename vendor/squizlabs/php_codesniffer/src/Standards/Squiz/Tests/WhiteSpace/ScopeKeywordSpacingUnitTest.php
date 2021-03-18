@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Unit test class for the ScopeKeywordSpacing sniff.
  *
@@ -7,11 +6,15 @@
  * @copyright 2006-2015 Squiz Pty Ltd (ABN 77 084 670 600)
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Squiz\Tests\WhiteSpace;
 
-use MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-class ScopeKeywordSpacingUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest
+namespace PHP_CodeSniffer\Standards\Squiz\Tests\WhiteSpace;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+
+class ScopeKeywordSpacingUnitTest extends AbstractSniffUnitTest
 {
+
+
     /**
      * Returns the lines where errors should occur.
      *
@@ -22,9 +25,24 @@ class ScopeKeywordSpacingUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\St
      */
     public function getErrorList()
     {
-        return [7 => 2, 8 => 1, 13 => 1, 14 => 1, 15 => 1, 17 => 2, 26 => 1, 28 => 1, 29 => 1, 64 => 1, 67 => 1, 71 => 1];
-    }
-    //end getErrorList()
+        return [
+            7  => 2,
+            8  => 1,
+            13 => 1,
+            14 => 1,
+            15 => 1,
+            17 => 2,
+            26 => 1,
+            28 => 1,
+            29 => 1,
+            64 => 1,
+            67 => 1,
+            71 => 1,
+        ];
+
+    }//end getErrorList()
+
+
     /**
      * Returns the lines where warnings should occur.
      *
@@ -36,7 +54,8 @@ class ScopeKeywordSpacingUnitTest extends \MolliePrefix\PHP_CodeSniffer\Tests\St
     public function getWarningList()
     {
         return [];
-    }
-    //end getWarningList()
-}
-//end class
+
+    }//end getWarningList()
+
+
+}//end class

@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transform `&` operator into CT::T_RETURN_REF in `function & foo() {}`.
  *
@@ -22,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ReturnRefTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class ReturnRefTransformer extends AbstractTransformer
 {
     /**
      * {@inheritdoc}
@@ -31,24 +33,30 @@ final class ReturnRefTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\Abst
     {
         return 50000;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
-        $prevKinds = [\T_FUNCTION];
+        $prevKinds = [T_FUNCTION];
         if (\PHP_VERSION_ID >= 70400) {
             $prevKinds[] = T_FN;
         }
-        if ($token->equals('&') && $tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind($prevKinds)) {
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF, '&']);
+
+        if (
+            $token->equals('&')
+            && $tokens[$tokens->getPrevMeaningfulToken($index)]->isGivenKind($prevKinds)
+        ) {
+            $tokens[$index] = new Token([CT::T_RETURN_REF, '&']);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function getDeprecatedCustomTokens()
     {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_RETURN_REF];
+        return [CT::T_RETURN_REF];
     }
 }

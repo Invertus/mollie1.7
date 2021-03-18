@@ -8,21 +8,29 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage\Tests\Node;
 
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ArgumentsNode;
-class ArgumentsNodeTest extends \MolliePrefix\Symfony\Component\ExpressionLanguage\Tests\Node\ArrayNodeTest
+namespace Symfony\Component\ExpressionLanguage\Tests\Node;
+
+use Symfony\Component\ExpressionLanguage\Node\ArgumentsNode;
+
+class ArgumentsNodeTest extends ArrayNodeTest
 {
     public function getCompileData()
     {
-        return [['"a", "b"', $this->getArrayNode()]];
+        return [
+            ['"a", "b"', $this->getArrayNode()],
+        ];
     }
+
     public function getDumpData()
     {
-        return [['"a", "b"', $this->getArrayNode()]];
+        return [
+            ['"a", "b"', $this->getArrayNode()],
+        ];
     }
+
     protected function createArrayNode()
     {
-        return new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ArgumentsNode();
+        return new ArgumentsNode();
     }
 }

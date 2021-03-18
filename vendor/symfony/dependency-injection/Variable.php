@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
+
+namespace Symfony\Component\DependencyInjection;
 
 /**
  * Represents a variable.
@@ -26,6 +27,7 @@ namespace MolliePrefix\Symfony\Component\DependencyInjection;
 class Variable
 {
     private $name;
+
     /**
      * @param string $name
      */
@@ -33,6 +35,7 @@ class Variable
     {
         $this->name = $name;
     }
+
     public function __toString()
     {
         return $this->name;

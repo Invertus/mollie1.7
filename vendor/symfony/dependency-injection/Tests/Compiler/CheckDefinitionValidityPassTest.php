@@ -8,82 +8,103 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckDefinitionValidityPass;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-class CheckDefinitionValidityPassTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\DependencyInjection\Tests\Compiler;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\CheckDefinitionValidityPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+class CheckDefinitionValidityPassTest extends TestCase
 {
     public function testProcessDetectsSyntheticNonPublicDefinitions()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\RuntimeException');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-        $container->register('a')->setSynthetic(\true)->setPublic(\false);
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\RuntimeException');
+        $container = new ContainerBuilder();
+        $container->register('a')->setSynthetic(true)->setPublic(false);
+
         $this->process($container);
     }
+
     public function testProcessDetectsNonSyntheticNonAbstractDefinitionWithoutClass()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\RuntimeException');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-        $container->register('a')->setSynthetic(\false)->setAbstract(\false);
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\RuntimeException');
+        $container = new ContainerBuilder();
+        $container->register('a')->setSynthetic(false)->setAbstract(false);
+
         $this->process($container);
     }
+
     public function testProcess()
     {
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $container = new ContainerBuilder();
         $container->register('a', 'class');
-        $container->register('b', 'class')->setSynthetic(\true)->setPublic(\true);
-        $container->register('c', 'class')->setAbstract(\true);
-        $container->register('d', 'class')->setSynthetic(\true);
+        $container->register('b', 'class')->setSynthetic(true)->setPublic(true);
+        $container->register('c', 'class')->setAbstract(true);
+        $container->register('d', 'class')->setSynthetic(true);
+
         $this->process($container);
+
         $this->addToAssertionCount(1);
     }
+
     public function testValidTags()
     {
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $container = new ContainerBuilder();
         $container->register('a', 'class')->addTag('foo', ['bar' => 'baz']);
         $container->register('b', 'class')->addTag('foo', ['bar' => null]);
         $container->register('c', 'class')->addTag('foo', ['bar' => 1]);
         $container->register('d', 'class')->addTag('foo', ['bar' => 1.1]);
+
         $this->process($container);
+
         $this->addToAssertionCount(1);
     }
+
     public function testInvalidTags()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\RuntimeException');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\RuntimeException');
+        $container = new ContainerBuilder();
         $container->register('a', 'class')->addTag('foo', ['bar' => ['baz' => 'baz']]);
+
         $this->process($container);
     }
+
     public function testDynamicPublicServiceName()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\EnvParameterException');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\EnvParameterException');
+        $container = new ContainerBuilder();
         $env = $container->getParameterBag()->get('env(BAR)');
-        $container->register("foo.{$env}", 'class')->setPublic(\true);
+        $container->register("foo.$env", 'class')->setPublic(true);
+
         $this->process($container);
     }
+
     public function testDynamicPublicAliasName()
     {
-        $this->expectException('MolliePrefix\\Symfony\\Component\\DependencyInjection\\Exception\\EnvParameterException');
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $this->expectException('Symfony\Component\DependencyInjection\Exception\EnvParameterException');
+        $container = new ContainerBuilder();
         $env = $container->getParameterBag()->get('env(BAR)');
-        $container->setAlias("foo.{$env}", 'class')->setPublic(\true);
+        $container->setAlias("foo.$env", 'class')->setPublic(true);
+
         $this->process($container);
     }
+
     public function testDynamicPrivateName()
     {
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
+        $container = new ContainerBuilder();
         $env = $container->getParameterBag()->get('env(BAR)');
-        $container->register("foo.{$env}", 'class');
-        $container->setAlias("bar.{$env}", 'class');
+        $container->register("foo.$env", 'class');
+        $container->setAlias("bar.$env", 'class');
+
         $this->process($container);
+
         $this->addToAssertionCount(1);
     }
-    protected function process(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder $container)
+
+    protected function process(ContainerBuilder $container)
     {
-        $pass = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\CheckDefinitionValidityPass();
+        $pass = new CheckDefinitionValidityPass();
         $pass->process($container);
     }
 }

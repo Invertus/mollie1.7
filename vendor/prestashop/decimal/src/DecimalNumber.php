@@ -1,15 +1,16 @@
 <?php
-
 /**
  * This file is part of the PrestaShop\Decimal package
  *
  * @author    PrestaShop SA <contact@prestashop.com>
  * @license   https://opensource.org/licenses/MIT MIT License
  */
-namespace MolliePrefix\PrestaShop\Decimal;
+
+namespace PrestaShop\Decimal;
 
 use InvalidArgumentException;
-use MolliePrefix\PrestaShop\Decimal\Operation\Rounding;
+use PrestaShop\Decimal\Operation\Rounding;
+
 /**
  * Decimal number.
  *
@@ -17,21 +18,25 @@ use MolliePrefix\PrestaShop\Decimal\Operation\Rounding;
  */
 class DecimalNumber
 {
+
     /**
      * Indicates if the number is negative
      * @var bool
      */
-    private $isNegative = \false;
+    private $isNegative = false;
+
     /**
      * Integer representation of this number
      * @var string
      */
     private $coefficient = '';
+
     /**
      * Scientific notation exponent. For practical reasons, it's always stored as a positive value.
      * @var int
      */
     private $exponent = 0;
+
     /**
      * Number constructor.
      *
@@ -58,20 +63,26 @@ class DecimalNumber
      */
     public function __construct($number, $exponent = null)
     {
-        if (!\is_string($number)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid type - expected string, but got (%s) "%s"', \gettype($number), \print_r($number, \true)));
+        if (!is_string($number)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid type - expected string, but got (%s) "%s"', gettype($number), print_r($number, true))
+            );
         }
+
         if (null === $exponent) {
-            $decimalNumber = \MolliePrefix\PrestaShop\Decimal\Builder::parseNumber($number);
+            $decimalNumber = Builder::parseNumber($number);
             $number = $decimalNumber->getSign() . $decimalNumber->getCoefficient();
             $exponent = $decimalNumber->getExponent();
         }
+
         $this->initFromScientificNotation($number, $exponent);
+
         if ('0' === $this->coefficient) {
             // make sure the sign is always positive for zero
-            $this->isNegative = \false;
+            $this->isNegative = false;
         }
     }
+
     /**
      * Returns the integer part of the number.
      * Note that this does NOT include the sign.
@@ -83,14 +94,18 @@ class DecimalNumber
         if ('0' === $this->coefficient) {
             return $this->coefficient;
         }
+
         if (0 === $this->exponent) {
             return $this->coefficient;
         }
-        if ($this->exponent >= \strlen($this->coefficient)) {
+
+        if ($this->exponent >= strlen($this->coefficient)) {
             return '0';
         }
-        return \substr($this->coefficient, 0, -$this->exponent);
+
+        return substr($this->coefficient, 0, -$this->exponent);
     }
+
     /**
      * Returns the fractional part of the number.
      * Note that this does NOT include the sign.
@@ -102,11 +117,14 @@ class DecimalNumber
         if (0 === $this->exponent || '0' === $this->coefficient) {
             return '0';
         }
-        if ($this->exponent > \strlen($this->coefficient)) {
-            return \str_pad($this->coefficient, $this->exponent, '0', \STR_PAD_LEFT);
+
+        if ($this->exponent > strlen($this->coefficient)) {
+            return str_pad($this->coefficient, $this->exponent, '0', STR_PAD_LEFT);
         }
-        return \substr($this->coefficient, -$this->exponent);
+
+        return substr($this->coefficient, -$this->exponent);
     }
+
     /**
      * Returns the number of digits in the fractional part.
      *
@@ -118,6 +136,7 @@ class DecimalNumber
     {
         return $this->getExponent();
     }
+
     /**
      * Returns the number's sign.
      * Note that this method will return an empty string if the number is positive!
@@ -128,6 +147,7 @@ class DecimalNumber
     {
         return $this->isNegative ? '-' : '';
     }
+
     /**
      * Returns the exponent of this number. For practical reasons, this exponent is always >= 0.
      *
@@ -139,6 +159,7 @@ class DecimalNumber
     {
         return $this->exponent;
     }
+
     /**
      * Returns the raw number as stored internally. This coefficient is always an integer.
      *
@@ -153,6 +174,7 @@ class DecimalNumber
     {
         return $this->coefficient;
     }
+
     /**
      * Returns a string representation of this object
      *
@@ -161,12 +183,16 @@ class DecimalNumber
     public function __toString()
     {
         $output = $this->getSign() . $this->getIntegerPart();
+
         $fractionalPart = $this->getFractionalPart();
+
         if ('0' !== $fractionalPart) {
             $output .= '.' . $fractionalPart;
         }
+
         return $output;
     }
+
     /**
      * Returns the number as a string, with exactly $precision decimals
      *
@@ -185,21 +211,32 @@ class DecimalNumber
      *
      * @return string
      */
-    public function toPrecision($precision, $roundingMode = \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
+    public function toPrecision($precision, $roundingMode = Rounding::ROUND_TRUNCATE)
     {
         $currentPrecision = $this->getPrecision();
+
         if ($precision === $currentPrecision) {
             return (string) $this;
         }
+
         $return = $this;
+
         if ($precision < $currentPrecision) {
-            $return = (new \MolliePrefix\PrestaShop\Decimal\Operation\Rounding())->compute($this, $precision, $roundingMode);
+            $return = (new Operation\Rounding())->compute($this, $precision, $roundingMode);
         }
+
         if ($precision > $return->getPrecision()) {
-            return $return->getSign() . $return->getIntegerPart() . '.' . \str_pad($return->getFractionalPart(), $precision, '0');
+            return (
+                $return->getSign()
+                .$return->getIntegerPart()
+                .'.'
+                .str_pad($return->getFractionalPart(), $precision, '0')
+            );
         }
+
         return (string) $return;
     }
+
     /**
      * Returns the number as a string, with up to $maxDecimals significant digits.
      *
@@ -218,14 +255,17 @@ class DecimalNumber
      *
      * @return string
      */
-    public function round($maxDecimals, $roundingMode = \MolliePrefix\PrestaShop\Decimal\Operation\Rounding::ROUND_TRUNCATE)
+    public function round($maxDecimals, $roundingMode = Rounding::ROUND_TRUNCATE)
     {
         $currentPrecision = $this->getPrecision();
+
         if ($maxDecimals < $currentPrecision) {
-            return (string) (new \MolliePrefix\PrestaShop\Decimal\Operation\Rounding())->compute($this, $maxDecimals, $roundingMode);
+            return (string) (new Operation\Rounding())->compute($this, $maxDecimals, $roundingMode);
         }
+
         return (string) $this;
     }
+
     /**
      * Returns this number as a positive number
      *
@@ -236,8 +276,10 @@ class DecimalNumber
         if (!$this->isNegative) {
             return $this;
         }
+
         return $this->invert();
     }
+
     /**
      * Returns this number as a negative number
      *
@@ -248,8 +290,10 @@ class DecimalNumber
         if ($this->isNegative) {
             return $this;
         }
+
         return $this->invert();
     }
+
     /**
      * Returns the computed result of adding another number to this one
      *
@@ -259,8 +303,9 @@ class DecimalNumber
      */
     public function plus(self $addend)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Addition())->compute($this, $addend);
+        return (new Operation\Addition())->compute($this, $addend);
     }
+
     /**
      * Returns the computed result of subtracting another number to this one
      *
@@ -270,8 +315,9 @@ class DecimalNumber
      */
     public function minus(self $subtrahend)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Subtraction())->compute($this, $subtrahend);
+        return (new Operation\Subtraction())->compute($this, $subtrahend);
     }
+
     /**
      * Returns the computed result of multiplying this number with another one
      *
@@ -281,8 +327,9 @@ class DecimalNumber
      */
     public function times(self $factor)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Multiplication())->compute($this, $factor);
+        return (new Operation\Multiplication())->compute($this, $factor);
     }
+
     /**
      * Returns the computed result of dividing this number by another one, with up to $precision number of decimals.
      *
@@ -299,10 +346,11 @@ class DecimalNumber
      *
      * @throws Exception\DivisionByZeroException
      */
-    public function dividedBy(self $divisor, $precision = \MolliePrefix\PrestaShop\Decimal\Operation\Division::DEFAULT_PRECISION)
+    public function dividedBy(self $divisor, $precision = Operation\Division::DEFAULT_PRECISION)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\Division())->compute($this, $divisor, $precision);
+        return (new Operation\Division())->compute($this, $divisor, $precision);
     }
+
     /**
      * Indicates if this number equals zero
      *
@@ -312,6 +360,7 @@ class DecimalNumber
     {
         return '0' == $this->getCoefficient();
     }
+
     /**
      * Indicates if this number is greater than the provided one
      *
@@ -321,8 +370,9 @@ class DecimalNumber
      */
     public function isGreaterThan(self $number)
     {
-        return 1 === (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return (1 === (new Operation\Comparison())->compare($this, $number));
     }
+
     /**
      * Indicates if this number is greater than zero
      *
@@ -332,6 +382,7 @@ class DecimalNumber
     {
         return $this->isPositive() && !$this->equalsZero();
     }
+
     /**
      * Indicates if this number is greater or equal than zero
      *
@@ -341,6 +392,7 @@ class DecimalNumber
     {
         return $this->isPositive();
     }
+
     /**
      * Indicates if this number is greater or equal compared to the provided one
      *
@@ -350,8 +402,9 @@ class DecimalNumber
      */
     public function isGreaterOrEqualThan(self $number)
     {
-        return 0 <= (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return (0 <= (new Operation\Comparison())->compare($this, $number));
     }
+
     /**
      * Indicates if this number is lower than zero
      *
@@ -361,6 +414,7 @@ class DecimalNumber
     {
         return $this->isNegative() && !$this->equalsZero();
     }
+
     /**
      * Indicates if this number is lower or equal than zero
      *
@@ -370,6 +424,7 @@ class DecimalNumber
     {
         return $this->isNegative() || $this->equalsZero();
     }
+
     /**
      * Indicates if this number is greater than the provided one
      *
@@ -379,8 +434,9 @@ class DecimalNumber
      */
     public function isLowerThan(self $number)
     {
-        return -1 === (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return (-1 === (new Operation\Comparison())->compare($this, $number));
     }
+
     /**
      * Indicates if this number is lower or equal compared to the provided one
      *
@@ -390,8 +446,9 @@ class DecimalNumber
      */
     public function isLowerOrEqualThan(self $number)
     {
-        return 0 >= (new \MolliePrefix\PrestaShop\Decimal\Operation\Comparison())->compare($this, $number);
+        return (0 >= (new Operation\Comparison())->compare($this, $number));
     }
+
     /**
      * Indicates if this number is positive
      *
@@ -401,6 +458,7 @@ class DecimalNumber
     {
         return !$this->isNegative;
     }
+
     /**
      * Indicates if this number is negative
      *
@@ -410,6 +468,7 @@ class DecimalNumber
     {
         return $this->isNegative;
     }
+
     /**
      * Indicates if this number equals another one
      *
@@ -419,8 +478,13 @@ class DecimalNumber
      */
     public function equals(self $number)
     {
-        return $this->isNegative === $number->isNegative && $this->coefficient === $number->getCoefficient() && $this->exponent === $number->getExponent();
+        return (
+            $this->isNegative === $number->isNegative
+            && $this->coefficient === $number->getCoefficient()
+            && $this->exponent === $number->getExponent()
+        );
     }
+
     /**
      * Returns the additive inverse of this number (that is, N * -1).
      *
@@ -430,8 +494,10 @@ class DecimalNumber
     {
         // invert sign
         $sign = $this->isNegative ? '' : '-';
+
         return new static($sign . $this->getCoefficient(), $this->getExponent());
     }
+
     /**
      * Creates a new copy of this number multiplied by 10^$exponent
      *
@@ -441,8 +507,9 @@ class DecimalNumber
      */
     public function toMagnitude($exponent)
     {
-        return (new \MolliePrefix\PrestaShop\Decimal\Operation\MagnitudeChange())->compute($this, $exponent);
+        return (new Operation\MagnitudeChange())->compute($this, $exponent);
     }
+
     /**
      * Initializes the number using a coefficient and exponent
      *
@@ -452,23 +519,32 @@ class DecimalNumber
     private function initFromScientificNotation($coefficient, $exponent)
     {
         if ($exponent < 0) {
-            throw new \InvalidArgumentException(\sprintf('Invalid value for exponent. Expected a positive integer or 0, but got "%s"', $coefficient));
+            throw new InvalidArgumentException(
+                sprintf('Invalid value for exponent. Expected a positive integer or 0, but got "%s"', $coefficient)
+            );
         }
-        if (!\preg_match("/^(?<sign>[-+])?(?<integerPart>\\d+)\$/", $coefficient, $parts)) {
-            throw new \InvalidArgumentException(\sprintf('"%s" cannot be interpreted as a number', $coefficient));
+
+        if (!preg_match("/^(?<sign>[-+])?(?<integerPart>\d+)$/", $coefficient, $parts)) {
+            throw new InvalidArgumentException(
+                sprintf('"%s" cannot be interpreted as a number', $coefficient)
+            );
         }
-        $this->isNegative = '-' === $parts['sign'];
+
+        $this->isNegative = ('-' === $parts['sign']);
         $this->exponent = (int) $exponent;
         // trim leading zeroes
-        $this->coefficient = \ltrim($parts['integerPart'], '0');
+        $this->coefficient = ltrim($parts['integerPart'], '0');
+
         // when coefficient is '0' or a sequence of '0'
         if ('' === $this->coefficient) {
             $this->exponent = 0;
             $this->coefficient = '0';
             return;
         }
+
         $this->removeTrailingZeroesIfNeeded();
     }
+
     /**
      * Removes trailing zeroes from the fractional part and adjusts the exponent accordingly
      */
@@ -476,9 +552,10 @@ class DecimalNumber
     {
         $exponent = $this->getExponent();
         $coefficient = $this->getCoefficient();
+
         // trim trailing zeroes from the fractional part
         // for example 1000e-1 => 100.0
-        if (0 < $exponent && '0' === \substr($coefficient, -1)) {
+        if (0 < $exponent && '0' === substr($coefficient, -1)) {
             $fractionalPart = $this->getFractionalPart();
             $trailingZeroesToRemove = 0;
             for ($i = $exponent - 1; $i >= 0; $i--) {
@@ -487,8 +564,9 @@ class DecimalNumber
                 }
                 $trailingZeroesToRemove++;
             }
+
             if ($trailingZeroesToRemove > 0) {
-                $this->coefficient = \substr($coefficient, 0, -$trailingZeroesToRemove);
+                $this->coefficient = substr($coefficient, 0, -$trailingZeroesToRemove);
                 $this->exponent = $exponent - $trailingZeroesToRemove;
             }
         }

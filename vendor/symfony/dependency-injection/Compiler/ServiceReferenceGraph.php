@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+namespace Symfony\Component\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 /**
  * This is a directed graph of your services.
  *
@@ -27,6 +29,7 @@ class ServiceReferenceGraph
      * @var ServiceReferenceGraphNode[]
      */
     private $nodes = [];
+
     /**
      * Checks if the graph has a specific node.
      *
@@ -38,6 +41,7 @@ class ServiceReferenceGraph
     {
         return isset($this->nodes[$id]);
     }
+
     /**
      * Gets a node by identifier.
      *
@@ -50,10 +54,12 @@ class ServiceReferenceGraph
     public function getNode($id)
     {
         if (!isset($this->nodes[$id])) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('There is no node with id "%s".', $id));
+            throw new InvalidArgumentException(sprintf('There is no node with id "%s".', $id));
         }
+
         return $this->nodes[$id];
     }
+
     /**
      * Returns all nodes.
      *
@@ -63,6 +69,7 @@ class ServiceReferenceGraph
     {
         return $this->nodes;
     }
+
     /**
      * Clears all nodes.
      */
@@ -73,6 +80,7 @@ class ServiceReferenceGraph
         }
         $this->nodes = [];
     }
+
     /**
      * Connects 2 nodes together in the Graph.
      *
@@ -82,20 +90,24 @@ class ServiceReferenceGraph
      * @param mixed  $destValue
      * @param string $reference
      */
-    public function connect($sourceId, $sourceValue, $destId, $destValue = null, $reference = null)
+    public function connect($sourceId, $sourceValue, $destId, $destValue = null, $reference = null/*, bool $lazy = false, bool $weak = false, bool $byConstructor = false*/)
     {
-        $lazy = \func_num_args() >= 6 ? \func_get_arg(5) : \false;
-        $weak = \func_num_args() >= 7 ? \func_get_arg(6) : \false;
-        $byConstructor = \func_num_args() >= 8 ? \func_get_arg(7) : \false;
+        $lazy = \func_num_args() >= 6 ? func_get_arg(5) : false;
+        $weak = \func_num_args() >= 7 ? func_get_arg(6) : false;
+        $byConstructor = \func_num_args() >= 8 ? func_get_arg(7) : false;
+
         if (null === $sourceId || null === $destId) {
             return;
         }
+
         $sourceNode = $this->createNode($sourceId, $sourceValue);
         $destNode = $this->createNode($destId, $destValue);
-        $edge = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ServiceReferenceGraphEdge($sourceNode, $destNode, $reference, $lazy, $weak, $byConstructor);
+        $edge = new ServiceReferenceGraphEdge($sourceNode, $destNode, $reference, $lazy, $weak, $byConstructor);
+
         $sourceNode->addOutEdge($edge);
         $destNode->addInEdge($edge);
     }
+
     /**
      * Creates a graph node.
      *
@@ -109,6 +121,7 @@ class ServiceReferenceGraph
         if (isset($this->nodes[$id]) && $this->nodes[$id]->getValue() === $value) {
             return $this->nodes[$id];
         }
-        return $this->nodes[$id] = new \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\ServiceReferenceGraphNode($id, $value);
+
+        return $this->nodes[$id] = new ServiceReferenceGraphNode($id, $value);
     }
 }

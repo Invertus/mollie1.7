@@ -8,42 +8,47 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Definition;
 
-use MolliePrefix\Symfony\Component\Config\Definition\Exception\Exception;
-use MolliePrefix\Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
-use MolliePrefix\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use MolliePrefix\Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+namespace Symfony\Component\Config\Definition;
+
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+
 /**
  * The base node class.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Definition\NodeInterface
+abstract class BaseNode implements NodeInterface
 {
     protected $name;
     protected $parent;
     protected $normalizationClosures = [];
     protected $finalValidationClosures = [];
-    protected $allowOverwrite = \true;
-    protected $required = \false;
+    protected $allowOverwrite = true;
+    protected $required = false;
     protected $deprecationMessage = null;
     protected $equivalentValues = [];
     protected $attributes = [];
+
     /**
      * @param string|null        $name   The name of the node
      * @param NodeInterface|null $parent The parent of this node
      *
      * @throws \InvalidArgumentException if the name contains a period
      */
-    public function __construct($name, \MolliePrefix\Symfony\Component\Config\Definition\NodeInterface $parent = null)
+    public function __construct($name, NodeInterface $parent = null)
     {
-        if (\false !== \strpos($name = (string) $name, '.')) {
+        if (false !== strpos($name = (string) $name, '.')) {
             throw new \InvalidArgumentException('The name must not contain ".".');
         }
+
         $this->name = $name;
         $this->parent = $parent;
     }
+
     /**
      * @param string $key
      */
@@ -51,6 +56,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->attributes[$key] = $value;
     }
+
     /**
      * @param string $key
      *
@@ -60,6 +66,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
     }
+
     /**
      * @param string $key
      *
@@ -69,6 +76,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return isset($this->attributes[$key]);
     }
+
     /**
      * @return array
      */
@@ -76,10 +84,12 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->attributes;
     }
+
     public function setAttributes(array $attributes)
     {
         $this->attributes = $attributes;
     }
+
     /**
      * @param string $key
      */
@@ -87,6 +97,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         unset($this->attributes[$key]);
     }
+
     /**
      * Sets an info message.
      *
@@ -96,6 +107,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->setAttribute('info', $info);
     }
+
     /**
      * Returns info message.
      *
@@ -105,6 +117,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->getAttribute('info');
     }
+
     /**
      * Sets the example configuration for this node.
      *
@@ -114,6 +127,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->setAttribute('example', $example);
     }
+
     /**
      * Retrieves the example configuration for this node.
      *
@@ -123,6 +137,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->getAttribute('example');
     }
+
     /**
      * Adds an equivalent value.
      *
@@ -133,6 +148,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->equivalentValues[] = [$originalValue, $equivalentValue];
     }
+
     /**
      * Set this node as required.
      *
@@ -142,6 +158,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->required = (bool) $boolean;
     }
+
     /**
      * Sets this node as deprecated.
      *
@@ -154,6 +171,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->deprecationMessage = $message;
     }
+
     /**
      * Sets if this node can be overridden.
      *
@@ -163,6 +181,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->allowOverwrite = (bool) $allow;
     }
+
     /**
      * Sets the closures used for normalization.
      *
@@ -172,6 +191,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->normalizationClosures = $closures;
     }
+
     /**
      * Sets the closures used for final validation.
      *
@@ -181,6 +201,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         $this->finalValidationClosures = $closures;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -188,6 +209,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->required;
     }
+
     /**
      * Checks if this node is deprecated.
      *
@@ -197,6 +219,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return null !== $this->deprecationMessage;
     }
+
     /**
      * Returns the deprecated message.
      *
@@ -207,8 +230,9 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
      */
     public function getDeprecationMessage($node, $path)
     {
-        return \strtr($this->deprecationMessage, ['%node%' => $node, '%path%' => $path]);
+        return strtr($this->deprecationMessage, ['%node%' => $node, '%path%' => $path]);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -216,50 +240,62 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->name;
     }
+
     /**
      * {@inheritdoc}
      */
     public function getPath()
     {
         $path = $this->name;
+
         if (null !== $this->parent) {
-            $path = $this->parent->getPath() . '.' . $path;
+            $path = $this->parent->getPath().'.'.$path;
         }
+
         return $path;
     }
+
     /**
      * {@inheritdoc}
      */
-    public final function merge($leftSide, $rightSide)
+    final public function merge($leftSide, $rightSide)
     {
         if (!$this->allowOverwrite) {
-            throw new \MolliePrefix\Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException(\sprintf('Configuration path "%s" cannot be overwritten. You have to define all options for this path, and any of its sub-paths in one configuration section.', $this->getPath()));
+            throw new ForbiddenOverwriteException(sprintf('Configuration path "%s" cannot be overwritten. You have to define all options for this path, and any of its sub-paths in one configuration section.', $this->getPath()));
         }
+
         $this->validateType($leftSide);
         $this->validateType($rightSide);
+
         return $this->mergeValues($leftSide, $rightSide);
     }
+
     /**
      * {@inheritdoc}
      */
-    public final function normalize($value)
+    final public function normalize($value)
     {
         $value = $this->preNormalize($value);
+
         // run custom normalization closures
         foreach ($this->normalizationClosures as $closure) {
             $value = $closure($value);
         }
+
         // replace value with their equivalent
         foreach ($this->equivalentValues as $data) {
             if ($data[0] === $value) {
                 $value = $data[1];
             }
         }
+
         // validate type
         $this->validateType($value);
+
         // normalize value
         return $this->normalizeValue($value);
     }
+
     /**
      * Normalizes the value before any other normalization is applied.
      *
@@ -271,6 +307,7 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $value;
     }
+
     /**
      * Returns parent node for this node.
      *
@@ -280,26 +317,31 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
     {
         return $this->parent;
     }
+
     /**
      * {@inheritdoc}
      */
-    public final function finalize($value)
+    final public function finalize($value)
     {
         $this->validateType($value);
+
         $value = $this->finalizeValue($value);
+
         // Perform validation on the final value if a closure has been set.
         // The closure is also allowed to return another value.
         foreach ($this->finalValidationClosures as $closure) {
             try {
                 $value = $closure($value);
-            } catch (\MolliePrefix\Symfony\Component\Config\Definition\Exception\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             } catch (\Exception $e) {
-                throw new \MolliePrefix\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException(\sprintf('Invalid configuration for path "%s": ', $this->getPath()) . $e->getMessage(), $e->getCode(), $e);
+                throw new InvalidConfigurationException(sprintf('Invalid configuration for path "%s": ', $this->getPath()).$e->getMessage(), $e->getCode(), $e);
             }
         }
+
         return $value;
     }
+
     /**
      * Validates the type of a Node.
      *
@@ -307,7 +349,8 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
      *
      * @throws InvalidTypeException when the value is invalid
      */
-    protected abstract function validateType($value);
+    abstract protected function validateType($value);
+
     /**
      * Normalizes the value.
      *
@@ -315,7 +358,8 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
      *
      * @return mixed The normalized value
      */
-    protected abstract function normalizeValue($value);
+    abstract protected function normalizeValue($value);
+
     /**
      * Merges two values together.
      *
@@ -324,7 +368,8 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
      *
      * @return mixed The merged value
      */
-    protected abstract function mergeValues($leftSide, $rightSide);
+    abstract protected function mergeValues($leftSide, $rightSide);
+
     /**
      * Finalizes a value.
      *
@@ -332,5 +377,5 @@ abstract class BaseNode implements \MolliePrefix\Symfony\Component\Config\Defini
      *
      * @return mixed The finalized value
      */
-    protected abstract function finalizeValue($value);
+    abstract protected function finalizeValue($value);
 }

@@ -9,18 +9,25 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\RuleSet\Sets;
 
-use MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+namespace PhpCsFixer\RuleSet\Sets;
+
+use PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+
 /**
  * @internal
  */
-final class PHP80MigrationSet extends \MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription
+final class PHP80MigrationSet extends AbstractRuleSetDescription
 {
     public function getRules()
     {
-        return ['@PHP73Migration' => \true, 'clean_namespace' => \true, 'no_unset_cast' => \true, 'normalize_index_brace' => \true];
+        return [
+            '@PHP74Migration' => true,
+            'clean_namespace' => true,
+            'no_unset_cast' => true,
+        ];
     }
+
     public function getDescription()
     {
         return 'Rules to improve code for PHP 8.0 compatibility.';

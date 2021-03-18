@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Analyzer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Analyzer;
+
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @internal
  */
@@ -22,16 +24,20 @@ final class GotoLabelAnalyzer
      *
      * @return bool
      */
-    public function belongsToGoToLabel(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    public function belongsToGoToLabel(Tokens $tokens, $index)
     {
         if (!$tokens[$index]->equals(':')) {
-            return \false;
+            return false;
         }
+
         $prevMeaningfulTokenIndex = $tokens->getPrevMeaningfulToken($index);
-        if (!$tokens[$prevMeaningfulTokenIndex]->isGivenKind(\T_STRING)) {
-            return \false;
+
+        if (!$tokens[$prevMeaningfulTokenIndex]->isGivenKind(T_STRING)) {
+            return false;
         }
+
         $prevMeaningfulTokenIndex = $tokens->getPrevMeaningfulToken($prevMeaningfulTokenIndex);
-        return $tokens[$prevMeaningfulTokenIndex]->equalsAny([';', '{', '}', [\T_OPEN_TAG]]);
+
+        return $tokens[$prevMeaningfulTokenIndex]->equalsAny([';', '{', '}', [T_OPEN_TAG]]);
     }
 }

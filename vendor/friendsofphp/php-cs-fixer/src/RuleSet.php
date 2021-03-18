@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
+
+namespace PhpCsFixer;
 
 /**
  * Set of rules to be used by fixer.
@@ -21,6 +22,6 @@ namespace MolliePrefix\PhpCsFixer;
  *
  * @deprecated will be removed in 3.0, use \PhpCsFixer\RuleSet\RuleSet
  */
-final class RuleSet extends \MolliePrefix\PhpCsFixer\RuleSet\RuleSet
+final class RuleSet extends RuleSet\RuleSet
 {
 }

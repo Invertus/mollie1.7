@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 trait DecorateTrait
 {
     /**
@@ -24,9 +26,10 @@ trait DecorateTrait
      *
      * @throws InvalidArgumentException in case the decorated service id and the new decorated service id are equals
      */
-    public final function decorate($id, $renamedId = null, $priority = 0)
+    final public function decorate($id, $renamedId = null, $priority = 0)
     {
         $this->definition->setDecoratedService($id, $renamedId, $priority);
+
         return $this;
     }
 }

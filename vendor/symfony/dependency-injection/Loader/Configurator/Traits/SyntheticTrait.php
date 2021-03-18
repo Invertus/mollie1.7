@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
 
 trait SyntheticTrait
 {
@@ -20,9 +21,10 @@ trait SyntheticTrait
      *
      * @return $this
      */
-    public final function synthetic($synthetic = \true)
+    final public function synthetic($synthetic = true)
     {
         $this->definition->setSynthetic($synthetic);
+
         return $this;
     }
 }

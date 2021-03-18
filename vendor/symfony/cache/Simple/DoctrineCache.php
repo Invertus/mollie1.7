@@ -8,18 +8,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Simple;
 
-use MolliePrefix\Doctrine\Common\Cache\CacheProvider;
-use MolliePrefix\Symfony\Component\Cache\Traits\DoctrineTrait;
-class DoctrineCache extends \MolliePrefix\Symfony\Component\Cache\Simple\AbstractCache
+namespace Symfony\Component\Cache\Simple;
+
+use Doctrine\Common\Cache\CacheProvider;
+use Symfony\Component\Cache\Traits\DoctrineTrait;
+
+class DoctrineCache extends AbstractCache
 {
     use DoctrineTrait;
+
     /**
      * @param string $namespace
      * @param int    $defaultLifetime
      */
-    public function __construct(\MolliePrefix\Doctrine\Common\Cache\CacheProvider $provider, $namespace = '', $defaultLifetime = 0)
+    public function __construct(CacheProvider $provider, $namespace = '', $defaultLifetime = 0)
     {
         parent::__construct('', $defaultLifetime);
         $this->provider = $provider;

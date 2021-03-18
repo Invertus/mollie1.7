@@ -8,23 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Tests\Simple;
 
-use MolliePrefix\Psr\SimpleCache\CacheInterface;
-use MolliePrefix\Symfony\Component\Cache\Simple\FilesystemCache;
+namespace Symfony\Component\Cache\Tests\Simple;
+
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Simple\FilesystemCache;
+
 /**
  * @group time-sensitive
  */
-class FilesystemCacheTest extends \MolliePrefix\Symfony\Component\Cache\Tests\Simple\CacheTestCase
+class FilesystemCacheTest extends CacheTestCase
 {
     public function createSimpleCache($defaultLifetime = 0)
     {
-        return new \MolliePrefix\Symfony\Component\Cache\Simple\FilesystemCache('', $defaultLifetime);
+        return new FilesystemCache('', $defaultLifetime);
     }
-    protected function isPruned(\MolliePrefix\Psr\SimpleCache\CacheInterface $cache, $name)
+
+    protected function isPruned(CacheInterface $cache, $name)
     {
         $getFileMethod = (new \ReflectionObject($cache))->getMethod('getFile');
-        $getFileMethod->setAccessible(\true);
-        return !\file_exists($getFileMethod->invoke($cache, $name));
+        $getFileMethod->setAccessible(true);
+
+        return !file_exists($getFileMethod->invoke($cache, $name));
     }
 }

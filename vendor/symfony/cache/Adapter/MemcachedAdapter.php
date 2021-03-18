@@ -8,13 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Symfony\Component\Cache\Traits\MemcachedTrait;
-class MemcachedAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\AbstractAdapter
+namespace Symfony\Component\Cache\Adapter;
+
+use Symfony\Component\Cache\Traits\MemcachedTrait;
+
+class MemcachedAdapter extends AbstractAdapter
 {
     use MemcachedTrait;
+
     protected $maxIdLength = 250;
+
     /**
      * Using a MemcachedAdapter with a TagAwareAdapter for storing tags is discouraged.
      * Using a RedisAdapter is recommended instead. If you cannot do otherwise, be aware that:
@@ -25,7 +29,7 @@ class MemcachedAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\Abs
      *
      * Using a MemcachedAdapter as a pure items store is fine.
      */
-    public function __construct(\MolliePrefix\Memcached $client, $namespace = '', $defaultLifetime = 0)
+    public function __construct(\Memcached $client, $namespace = '', $defaultLifetime = 0)
     {
         $this->init($client, $namespace, $defaultLifetime);
     }

@@ -1,12 +1,13 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Exception;
+namespace Dotenv\Exception;
 
 use RuntimeException;
+
 /**
  * This is the validation exception class.
  */
-class ValidationException extends \RuntimeException implements \MolliePrefix\Dotenv\Exception\ExceptionInterface
+class ValidationException extends RuntimeException implements ExceptionInterface
 {
     //
 }

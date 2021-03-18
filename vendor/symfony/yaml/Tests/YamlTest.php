@@ -8,29 +8,33 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Yaml\Tests;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Yaml\Yaml;
-class YamlTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Yaml\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Yaml;
+
+class YamlTest extends TestCase
 {
     public function testParseAndDump()
     {
         $data = ['lorem' => 'ipsum', 'dolor' => 'sit'];
-        $yml = \MolliePrefix\Symfony\Component\Yaml\Yaml::dump($data);
-        $parsed = \MolliePrefix\Symfony\Component\Yaml\Yaml::parse($yml);
+        $yml = Yaml::dump($data);
+        $parsed = Yaml::parse($yml);
         $this->assertEquals($data, $parsed);
     }
+
     public function testZeroIndentationThrowsException()
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('The indentation must be greater than zero');
-        \MolliePrefix\Symfony\Component\Yaml\Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, 0);
+        Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, 0);
     }
+
     public function testNegativeIndentationThrowsException()
     {
         $this->expectException('InvalidArgumentException');
         $this->expectExceptionMessage('The indentation must be greater than zero');
-        \MolliePrefix\Symfony\Component\Yaml\Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, -4);
+        Yaml::dump(['lorem' => 'ipsum', 'dolor' => 'sit'], 2, -4);
     }
 }

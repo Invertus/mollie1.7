@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Filesystem\Tests\Fixtures\MockStream;
+
+namespace Symfony\Component\Filesystem\Tests\Fixtures\MockStream;
 
 /**
  * Mock stream class to be used with stream_wrapper_register.
@@ -29,8 +30,9 @@ class MockStream
      */
     public function stream_open($path, $mode, $options, &$opened_path)
     {
-        return \true;
+        return true;
     }
+
     /**
      * @param string $path  The file path or URL to stat
      * @param array  $flags Holds additional flags set by the streams API

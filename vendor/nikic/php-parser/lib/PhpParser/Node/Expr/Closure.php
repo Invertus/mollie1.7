@@ -1,11 +1,12 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Expr;
+namespace PhpParser\Node\Expr;
 
-use MolliePrefix\PhpParser\Node;
-use MolliePrefix\PhpParser\Node\Expr;
-use MolliePrefix\PhpParser\Node\FunctionLike;
-class Closure extends \MolliePrefix\PhpParser\Node\Expr implements \MolliePrefix\PhpParser\Node\FunctionLike
+use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\FunctionLike;
+
+class Closure extends Expr implements FunctionLike
 {
     /** @var bool Whether the closure is static */
     public $static;
@@ -19,6 +20,7 @@ class Closure extends \MolliePrefix\PhpParser\Node\Expr implements \MolliePrefix
     public $returnType;
     /** @var Node[] Statements */
     public $stmts;
+
     /**
      * Constructs a lambda function node.
      *
@@ -31,34 +33,33 @@ class Closure extends \MolliePrefix\PhpParser\Node\Expr implements \MolliePrefix
      *                          'stmts'      => array(): Statements
      * @param array $attributes Additional attributes
      */
-    public function __construct(array $subNodes = array(), array $attributes = array())
-    {
+    public function __construct(array $subNodes = array(), array $attributes = array()) {
         parent::__construct($attributes);
-        $this->static = isset($subNodes['static']) ? $subNodes['static'] : \false;
-        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : \false;
+        $this->static = isset($subNodes['static']) ? $subNodes['static'] : false;
+        $this->byRef = isset($subNodes['byRef']) ? $subNodes['byRef'] : false;
         $this->params = isset($subNodes['params']) ? $subNodes['params'] : array();
         $this->uses = isset($subNodes['uses']) ? $subNodes['uses'] : array();
         $this->returnType = isset($subNodes['returnType']) ? $subNodes['returnType'] : null;
         $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
-    public function getSubNodeNames()
-    {
+
+    public function getSubNodeNames() {
         return array('static', 'byRef', 'params', 'uses', 'returnType', 'stmts');
     }
-    public function returnsByRef()
-    {
+
+    public function returnsByRef() {
         return $this->byRef;
     }
-    public function getParams()
-    {
+
+    public function getParams() {
         return $this->params;
     }
-    public function getReturnType()
-    {
+
+    public function getReturnType() {
         return $this->returnType;
     }
-    public function getStmts()
-    {
+
+    public function getStmts() {
         return $this->stmts;
     }
 }

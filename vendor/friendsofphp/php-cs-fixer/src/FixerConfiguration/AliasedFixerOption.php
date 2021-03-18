@@ -9,30 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
+
+namespace PhpCsFixer\FixerConfiguration;
 
 /**
  * @author ntzm
  *
  * @internal
- *
- * @todo 3.0 Drop this class
  */
-final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface
+final class AliasedFixerOption implements FixerOptionInterface
 {
     /**
      * @var FixerOptionInterface
      */
     private $fixerOption;
+
     /**
      * @var string
      */
     private $alias;
-    public function __construct(\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface $fixerOption, $alias)
+
+    public function __construct(FixerOptionInterface $fixerOption, $alias)
     {
         $this->fixerOption = $fixerOption;
         $this->alias = $alias;
     }
+
     /**
      * @return string
      */
@@ -40,6 +42,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->alias;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +50,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->getName();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -54,6 +58,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->getDescription();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -61,6 +66,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->hasDefault();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -68,6 +74,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->getDefault();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -75,6 +82,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->getAllowedTypes();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -82,6 +90,7 @@ final class AliasedFixerOption implements \MolliePrefix\PhpCsFixer\FixerConfigur
     {
         return $this->fixerOption->getAllowedValues();
     }
+
     /**
      * {@inheritdoc}
      */

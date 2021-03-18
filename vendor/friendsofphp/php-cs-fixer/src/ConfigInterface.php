@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer;
 
-use MolliePrefix\PhpCsFixer\Fixer\FixerInterface;
+namespace PhpCsFixer;
+
+use PhpCsFixer\Fixer\FixerInterface;
+
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
@@ -24,36 +26,43 @@ interface ConfigInterface
      * @return null|string Returns null if not using cache
      */
     public function getCacheFile();
+
     /**
      * Returns the custom fixers to use.
      *
      * @return FixerInterface[]
      */
     public function getCustomFixers();
+
     /**
      * Returns files to scan.
      *
      * @return iterable|\Traversable
      */
     public function getFinder();
+
     /**
      * @return string
      */
     public function getFormat();
+
     /**
      * Returns true if progress should be hidden.
      *
      * @return bool
      */
     public function getHideProgress();
+
     /**
      * @return string
      */
     public function getIndent();
+
     /**
      * @return string
      */
     public function getLineEnding();
+
     /**
      * Returns the name of the configuration.
      *
@@ -62,18 +71,21 @@ interface ConfigInterface
      * @return string The name of the configuration
      */
     public function getName();
+
     /**
      * Get configured PHP executable, if any.
      *
      * @return null|string
      */
     public function getPhpExecutable();
+
     /**
      * Check if it is allowed to run risky fixers.
      *
      * @return bool
      */
     public function getRiskyAllowed();
+
     /**
      * Get rules.
      *
@@ -82,12 +94,14 @@ interface ConfigInterface
      * @return array
      */
     public function getRules();
+
     /**
      * Returns true if caching should be enabled.
      *
      * @return bool
      */
     public function getUsingCache();
+
     /**
      * Adds a suite of custom fixers.
      *
@@ -98,6 +112,7 @@ interface ConfigInterface
      * @return self
      */
     public function registerCustomFixers($fixers);
+
     /**
      * Sets the path to the cache file.
      *
@@ -106,36 +121,42 @@ interface ConfigInterface
      * @return self
      */
     public function setCacheFile($cacheFile);
+
     /**
      * @param iterable|string[]|\Traversable $finder
      *
      * @return self
      */
     public function setFinder($finder);
+
     /**
      * @param string $format
      *
      * @return self
      */
     public function setFormat($format);
+
     /**
      * @param bool $hideProgress
      *
      * @return self
      */
     public function setHideProgress($hideProgress);
+
     /**
      * @param string $indent
      *
      * @return self
      */
     public function setIndent($indent);
+
     /**
      * @param string $lineEnding
      *
      * @return self
      */
     public function setLineEnding($lineEnding);
+
     /**
      * Set PHP executable.
      *
@@ -144,6 +165,7 @@ interface ConfigInterface
      * @return self
      */
     public function setPhpExecutable($phpExecutable);
+
     /**
      * Set if it is allowed to run risky fixers.
      *
@@ -152,6 +174,7 @@ interface ConfigInterface
      * @return self
      */
     public function setRiskyAllowed($isRiskyAllowed);
+
     /**
      * Set rules.
      *
@@ -163,6 +186,7 @@ interface ConfigInterface
      * @return self
      */
     public function setRules(array $rules);
+
     /**
      * @param bool $usingCache
      *

@@ -8,28 +8,34 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Tests\Definition\Dumper;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Config\Definition\Dumper\XmlReferenceDumper;
-use MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration;
-class XmlReferenceDumperTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Config\Tests\Definition\Dumper;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Dumper\XmlReferenceDumper;
+use Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration;
+
+class XmlReferenceDumperTest extends TestCase
 {
     public function testDumper()
     {
-        $configuration = new \MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration();
-        $dumper = new \MolliePrefix\Symfony\Component\Config\Definition\Dumper\XmlReferenceDumper();
+        $configuration = new ExampleConfiguration();
+
+        $dumper = new XmlReferenceDumper();
         $this->assertEquals($this->getConfigurationAsString(), $dumper->dump($configuration));
     }
+
     public function testNamespaceDumper()
     {
-        $configuration = new \MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration();
-        $dumper = new \MolliePrefix\Symfony\Component\Config\Definition\Dumper\XmlReferenceDumper();
-        $this->assertEquals(\str_replace('http://example.org/schema/dic/acme_root', 'http://symfony.com/schema/dic/symfony', $this->getConfigurationAsString()), $dumper->dump($configuration, 'http://symfony.com/schema/dic/symfony'));
+        $configuration = new ExampleConfiguration();
+
+        $dumper = new XmlReferenceDumper();
+        $this->assertEquals(str_replace('http://example.org/schema/dic/acme_root', 'http://symfony.com/schema/dic/symfony', $this->getConfigurationAsString()), $dumper->dump($configuration, 'http://symfony.com/schema/dic/symfony'));
     }
+
     private function getConfigurationAsString()
     {
-        return \str_replace("\n", \PHP_EOL, <<<'EOL'
+        return str_replace("\n", \PHP_EOL, <<<'EOL'
 <!-- Namespace: http://example.org/schema/dic/acme_root -->
 <!-- scalar-required: Required -->
 <!-- scalar-deprecated: Deprecated (The child node "scalar_deprecated" at path "acme_root" is deprecated.) -->
@@ -103,6 +109,6 @@ class XmlReferenceDumperTest extends \MolliePrefix\PHPUnit\Framework\TestCase
 </config>
 
 EOL
-);
+        );
     }
 }

@@ -8,16 +8,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Doctrine\DBAL\Connection;
-use MolliePrefix\Symfony\Component\Cache\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\Traits\PdoTrait;
-class PdoAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\AbstractAdapter implements \MolliePrefix\Symfony\Component\Cache\PruneableInterface
+namespace Symfony\Component\Cache\Adapter;
+
+use Doctrine\DBAL\Connection;
+use Symfony\Component\Cache\Exception\InvalidArgumentException;
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\Traits\PdoTrait;
+
+class PdoAdapter extends AbstractAdapter implements PruneableInterface
 {
     use PdoTrait;
+
     protected $maxIdLength = 255;
+
     /**
      * You can either pass an existing database connection as PDO instance or
      * a Doctrine DBAL Connection or a DSN string that will be used to

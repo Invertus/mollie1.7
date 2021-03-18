@@ -1,5 +1,4 @@
 <?php
-
 /*
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -17,7 +16,8 @@
  * and is licensed under the MIT license. For more information, see
  * <http://www.doctrine-project.org>.
  */
-namespace MolliePrefix\Doctrine\Common\Annotations;
+
+namespace Doctrine\Common\Annotations;
 
 /**
  * AnnotationRegistry.
@@ -34,21 +34,24 @@ final class AnnotationRegistry
      *
      * @var array
      */
-    private static $autoloadNamespaces = array();
+    static private $autoloadNamespaces = array();
+
     /**
      * A map of autoloader callables.
      *
      * @var array
      */
-    private static $loaders = array();
+    static private $loaders = array();
+
     /**
      * @return void
      */
-    public static function reset()
+    static public function reset()
     {
         self::$autoloadNamespaces = array();
         self::$loaders = array();
     }
+
     /**
      * Registers file.
      *
@@ -56,10 +59,11 @@ final class AnnotationRegistry
      *
      * @return void
      */
-    public static function registerFile($file)
+    static public function registerFile($file)
     {
         require_once $file;
     }
+
     /**
      * Adds a namespace with one or many directories to look for files or null for the include path.
      *
@@ -70,10 +74,11 @@ final class AnnotationRegistry
      *
      * @return void
      */
-    public static function registerAutoloadNamespace($namespace, $dirs = null)
+    static public function registerAutoloadNamespace($namespace, $dirs = null)
     {
         self::$autoloadNamespaces[$namespace] = $dirs;
     }
+
     /**
      * Registers multiple namespaces.
      *
@@ -83,10 +88,11 @@ final class AnnotationRegistry
      *
      * @return void
      */
-    public static function registerAutoloadNamespaces(array $namespaces)
+    static public function registerAutoloadNamespaces(array $namespaces)
     {
-        self::$autoloadNamespaces = \array_merge(self::$autoloadNamespaces, $namespaces);
+        self::$autoloadNamespaces = array_merge(self::$autoloadNamespaces, $namespaces);
     }
+
     /**
      * Registers an autoloading callable for annotations, much like spl_autoload_register().
      *
@@ -99,13 +105,14 @@ final class AnnotationRegistry
      *
      * @throws \InvalidArgumentException
      */
-    public static function registerLoader($callable)
+    static public function registerLoader($callable)
     {
-        if (!\is_callable($callable)) {
+        if (!is_callable($callable)) {
             throw new \InvalidArgumentException("A callable is expected in AnnotationRegistry::registerLoader().");
         }
         self::$loaders[] = $callable;
     }
+
     /**
      * Autoloads an annotation class silently.
      *
@@ -113,31 +120,32 @@ final class AnnotationRegistry
      *
      * @return boolean
      */
-    public static function loadAnnotationClass($class)
+    static public function loadAnnotationClass($class)
     {
-        foreach (self::$autoloadNamespaces as $namespace => $dirs) {
-            if (\strpos($class, $namespace) === 0) {
-                $file = \str_replace("\\", \DIRECTORY_SEPARATOR, $class) . ".php";
+        foreach (self::$autoloadNamespaces AS $namespace => $dirs) {
+            if (strpos($class, $namespace) === 0) {
+                $file = str_replace("\\", DIRECTORY_SEPARATOR, $class) . ".php";
                 if ($dirs === null) {
-                    if ($path = \stream_resolve_include_path($file)) {
+                    if ($path = stream_resolve_include_path($file)) {
                         require $path;
-                        return \true;
+                        return true;
                     }
                 } else {
-                    foreach ((array) $dirs as $dir) {
-                        if (\is_file($dir . \DIRECTORY_SEPARATOR . $file)) {
-                            require $dir . \DIRECTORY_SEPARATOR . $file;
-                            return \true;
+                    foreach((array)$dirs AS $dir) {
+                        if (is_file($dir . DIRECTORY_SEPARATOR . $file)) {
+                            require $dir . DIRECTORY_SEPARATOR . $file;
+                            return true;
                         }
                     }
                 }
             }
         }
-        foreach (self::$loaders as $loader) {
-            if (\call_user_func($loader, $class) === \true) {
-                return \true;
+
+        foreach (self::$loaders AS $loader) {
+            if (call_user_func($loader, $class) === true) {
+                return true;
             }
         }
-        return \false;
+        return false;
     }
 }

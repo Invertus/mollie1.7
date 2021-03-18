@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Ensures there is no space after cast tokens.
  *
@@ -10,13 +9,17 @@
  * @deprecated 3.4.0 Use the Generic.Formatting.SpaceAfterCast sniff with
  *                   the $spacing property set to 0 instead.
  */
-namespace MolliePrefix\PHP_CodeSniffer\Standards\Generic\Sniffs\Formatting;
 
-use MolliePrefix\PHP_CodeSniffer\Files\File;
-use MolliePrefix\PHP_CodeSniffer\Sniffs\Sniff;
-use MolliePrefix\PHP_CodeSniffer\Util\Tokens;
-class NoSpaceAfterCastSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\Sniff
+namespace PHP_CodeSniffer\Standards\Generic\Sniffs\Formatting;
+
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
+use PHP_CodeSniffer\Util\Tokens;
+
+class NoSpaceAfterCastSniff implements Sniff
 {
+
+
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -24,9 +27,11 @@ class NoSpaceAfterCastSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\Snif
      */
     public function register()
     {
-        return \MolliePrefix\PHP_CodeSniffer\Util\Tokens::$castTokens;
-    }
-    //end register()
+        return Tokens::$castTokens;
+
+    }//end register()
+
+
     /**
      * Processes this test, when one of its tokens is encountered.
      *
@@ -36,18 +41,21 @@ class NoSpaceAfterCastSniff implements \MolliePrefix\PHP_CodeSniffer\Sniffs\Snif
      *
      * @return void
      */
-    public function process(\MolliePrefix\PHP_CodeSniffer\Files\File $phpcsFile, $stackPtr)
+    public function process(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
-        if ($tokens[$stackPtr + 1]['code'] !== \T_WHITESPACE) {
+
+        if ($tokens[($stackPtr + 1)]['code'] !== T_WHITESPACE) {
             return;
         }
+
         $error = 'A cast statement must not be followed by a space';
-        $fix = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceFound');
-        if ($fix === \true) {
-            $phpcsFile->fixer->replaceToken($stackPtr + 1, '');
+        $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'SpaceFound');
+        if ($fix === true) {
+            $phpcsFile->fixer->replaceToken(($stackPtr + 1), '');
         }
-    }
-    //end process()
-}
-//end class
+
+    }//end process()
+
+
+}//end class

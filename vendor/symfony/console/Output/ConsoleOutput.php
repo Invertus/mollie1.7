@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Console\Output;
 
-use MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterInterface;
+namespace Symfony\Component\Console\Output;
+
+use Symfony\Component\Console\Formatter\OutputFormatterInterface;
+
 /**
  * ConsoleOutput is the default class for all CLI output. It uses STDOUT and STDERR.
  *
@@ -25,23 +27,27 @@ use MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterInterface;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\StreamOutput implements \MolliePrefix\Symfony\Component\Console\Output\ConsoleOutputInterface
+class ConsoleOutput extends StreamOutput implements ConsoleOutputInterface
 {
     private $stderr;
+
     /**
      * @param int                           $verbosity The verbosity level (one of the VERBOSITY constants in OutputInterface)
      * @param bool|null                     $decorated Whether to decorate messages (null for auto-guessing)
      * @param OutputFormatterInterface|null $formatter Output formatter instance (null to use default OutputFormatter)
      */
-    public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null, \MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter = null)
+    public function __construct($verbosity = self::VERBOSITY_NORMAL, $decorated = null, OutputFormatterInterface $formatter = null)
     {
         parent::__construct($this->openOutputStream(), $verbosity, $decorated, $formatter);
+
         $actualDecorated = $this->isDecorated();
-        $this->stderr = new \MolliePrefix\Symfony\Component\Console\Output\StreamOutput($this->openErrorStream(), $verbosity, $decorated, $this->getFormatter());
+        $this->stderr = new StreamOutput($this->openErrorStream(), $verbosity, $decorated, $this->getFormatter());
+
         if (null === $decorated) {
             $this->setDecorated($actualDecorated && $this->stderr->isDecorated());
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -50,14 +56,16 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
         parent::setDecorated($decorated);
         $this->stderr->setDecorated($decorated);
     }
+
     /**
      * {@inheritdoc}
      */
-    public function setFormatter(\MolliePrefix\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter)
+    public function setFormatter(OutputFormatterInterface $formatter)
     {
         parent::setFormatter($formatter);
         $this->stderr->setFormatter($formatter);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -66,6 +74,7 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
         parent::setVerbosity($level);
         $this->stderr->setVerbosity($level);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -73,13 +82,15 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
     {
         return $this->stderr;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function setErrorOutput(\MolliePrefix\Symfony\Component\Console\Output\OutputInterface $error)
+    public function setErrorOutput(OutputInterface $error)
     {
         $this->stderr = $error;
     }
+
     /**
      * Returns true if current environment supports writing console output to
      * STDOUT.
@@ -88,8 +99,9 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
      */
     protected function hasStdoutSupport()
     {
-        return \false === $this->isRunningOS400();
+        return false === $this->isRunningOS400();
     }
+
     /**
      * Returns true if current environment supports writing console output to
      * STDERR.
@@ -98,8 +110,9 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
      */
     protected function hasStderrSupport()
     {
-        return \false === $this->isRunningOS400();
+        return false === $this->isRunningOS400();
     }
+
     /**
      * Checks if current executing environment is IBM iSeries (OS400), which
      * doesn't properly convert character-encodings between ASCII to EBCDIC.
@@ -108,24 +121,32 @@ class ConsoleOutput extends \MolliePrefix\Symfony\Component\Console\Output\Strea
      */
     private function isRunningOS400()
     {
-        $checks = [\function_exists('php_uname') ? \php_uname('s') : '', \getenv('OSTYPE'), \PHP_OS];
-        return \false !== \stripos(\implode(';', $checks), 'OS400');
+        $checks = [
+            \function_exists('php_uname') ? php_uname('s') : '',
+            getenv('OSTYPE'),
+            \PHP_OS,
+        ];
+
+        return false !== stripos(implode(';', $checks), 'OS400');
     }
+
     /**
      * @return resource
      */
     private function openOutputStream()
     {
         if (!$this->hasStdoutSupport()) {
-            return \fopen('php://output', 'w');
+            return fopen('php://output', 'w');
         }
-        return @\fopen('php://stdout', 'w') ?: \fopen('php://output', 'w');
+
+        return @fopen('php://stdout', 'w') ?: fopen('php://output', 'w');
     }
+
     /**
      * @return resource
      */
     private function openErrorStream()
     {
-        return \fopen($this->hasStderrSupport() ? 'php://stderr' : 'php://output', 'w');
+        return fopen($this->hasStderrSupport() ? 'php://stderr' : 'php://output', 'w');
     }
 }

@@ -8,18 +8,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Tests\Adapter;
 
-use MolliePrefix\Symfony\Component\Cache\Adapter\DoctrineAdapter;
-use MolliePrefix\Symfony\Component\Cache\Tests\Fixtures\ArrayCache;
+namespace Symfony\Component\Cache\Tests\Adapter;
+
+use Symfony\Component\Cache\Adapter\DoctrineAdapter;
+use Symfony\Component\Cache\Tests\Fixtures\ArrayCache;
+
 /**
  * @group time-sensitive
  */
-class DoctrineAdapterTest extends \MolliePrefix\Symfony\Component\Cache\Tests\Adapter\AdapterTestCase
+class DoctrineAdapterTest extends AdapterTestCase
 {
-    protected $skippedTests = ['testDeferredSaveWithoutCommit' => 'Assumes a shared cache which ArrayCache is not.', 'testSaveWithoutExpire' => 'Assumes a shared cache which ArrayCache is not.', 'testNotUnserializable' => 'ArrayCache does not use serialize/unserialize'];
+    protected $skippedTests = [
+        'testDeferredSaveWithoutCommit' => 'Assumes a shared cache which ArrayCache is not.',
+        'testSaveWithoutExpire' => 'Assumes a shared cache which ArrayCache is not.',
+        'testNotUnserializable' => 'ArrayCache does not use serialize/unserialize',
+    ];
+
     public function createCachePool($defaultLifetime = 0)
     {
-        return new \MolliePrefix\Symfony\Component\Cache\Adapter\DoctrineAdapter(new \MolliePrefix\Symfony\Component\Cache\Tests\Fixtures\ArrayCache($defaultLifetime), '', $defaultLifetime);
+        return new DoctrineAdapter(new ArrayCache($defaultLifetime), '', $defaultLifetime);
     }
 }

@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
 
 trait FileTrait
 {
@@ -19,9 +20,10 @@ trait FileTrait
      *
      * @return $this
      */
-    public final function file($file)
+    final public function file($file)
     {
         $this->definition->setFile($file);
+
         return $this;
     }
 }

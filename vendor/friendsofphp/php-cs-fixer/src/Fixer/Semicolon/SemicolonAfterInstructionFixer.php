@@ -9,25 +9,31 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Semicolon;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Semicolon;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author SpacePossum
  */
-final class SemicolonAfterInstructionFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class SemicolonAfterInstructionFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Instructions must be terminated with a semicolon.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php echo 1 ?>\n")]);
+        return new FixerDefinition(
+            'Instructions must be terminated with a semicolon.',
+            [new CodeSample("<?php echo 1 ?>\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -37,27 +43,31 @@ final class SemicolonAfterInstructionFixer extends \MolliePrefix\PhpCsFixer\Abst
     {
         return 2;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_CLOSE_TAG);
+        return $tokens->isTokenKindFound(T_CLOSE_TAG);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         for ($index = \count($tokens) - 1; $index > 1; --$index) {
-            if (!$tokens[$index]->isGivenKind(\T_CLOSE_TAG)) {
+            if (!$tokens[$index]->isGivenKind(T_CLOSE_TAG)) {
                 continue;
             }
+
             $prev = $tokens->getPrevMeaningfulToken($index);
-            if ($tokens[$prev]->equalsAny([';', '{', '}', ':', [\T_OPEN_TAG]])) {
+            if ($tokens[$prev]->equalsAny([';', '{', '}', ':', [T_OPEN_TAG]])) {
                 continue;
             }
-            $tokens->insertAt($prev + 1, new \MolliePrefix\PhpCsFixer\Tokenizer\Token(';'));
+
+            $tokens->insertAt($prev + 1, new Token(';'));
         }
     }
 }

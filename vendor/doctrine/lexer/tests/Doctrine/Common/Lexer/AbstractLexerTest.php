@@ -1,43 +1,108 @@
 <?php
 
-namespace MolliePrefix\Doctrine\Tests\Common\Lexer;
+namespace Doctrine\Tests\Common\Lexer;
 
-class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
+class AbstractLexerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ConcreteLexer
      */
     private $concreteLexer;
+
     public function setUp()
     {
-        $this->concreteLexer = new \MolliePrefix\Doctrine\Tests\Common\Lexer\ConcreteLexer();
+        $this->concreteLexer = new ConcreteLexer();
     }
+
     public function dataProvider()
     {
-        return array(array('price=10', array(array('value' => 'price', 'type' => 'string', 'position' => 0), array('value' => '=', 'type' => 'operator', 'position' => 5), array('value' => 10, 'type' => 'int', 'position' => 6))));
+        return array(
+            array(
+                'price=10',
+                array(
+                    array(
+                        'value' => 'price',
+                        'type' => 'string',
+                        'position' => 0,
+                    ),
+                    array(
+                        'value' => '=',
+                        'type' => 'operator',
+                        'position' => 5,
+                    ),
+                    array(
+                        'value' => 10,
+                        'type' => 'int',
+                        'position' => 6,
+                    ),
+                ),
+            ),
+        );
     }
+
     public function testResetPeek()
     {
-        $expectedTokens = array(array('value' => 'price', 'type' => 'string', 'position' => 0), array('value' => '=', 'type' => 'operator', 'position' => 5), array('value' => 10, 'type' => 'int', 'position' => 6));
+        $expectedTokens = array(
+            array(
+                'value' => 'price',
+                'type' => 'string',
+                'position' => 0,
+            ),
+            array(
+                'value' => '=',
+                'type' => 'operator',
+                'position' => 5,
+            ),
+            array(
+                'value' => 10,
+                'type' => 'int',
+                'position' => 6,
+            ),
+        );
+
         $this->concreteLexer->setInput('price=10');
+
         $this->assertEquals($expectedTokens[0], $this->concreteLexer->peek());
         $this->assertEquals($expectedTokens[1], $this->concreteLexer->peek());
         $this->concreteLexer->resetPeek();
         $this->assertEquals($expectedTokens[0], $this->concreteLexer->peek());
     }
+
     public function testResetPosition()
     {
-        $expectedTokens = array(array('value' => 'price', 'type' => 'string', 'position' => 0), array('value' => '=', 'type' => 'operator', 'position' => 5), array('value' => 10, 'type' => 'int', 'position' => 6));
+        $expectedTokens = array(
+            array(
+                'value' => 'price',
+                'type' => 'string',
+                'position' => 0,
+            ),
+            array(
+                'value' => '=',
+                'type' => 'operator',
+                'position' => 5,
+            ),
+            array(
+                'value' => 10,
+                'type' => 'int',
+                'position' => 6,
+            ),
+        );
+
         $this->concreteLexer->setInput('price=10');
         $this->assertNull($this->concreteLexer->lookahead);
+
         $this->assertTrue($this->concreteLexer->moveNext());
         $this->assertEquals($expectedTokens[0], $this->concreteLexer->lookahead);
+
         $this->assertTrue($this->concreteLexer->moveNext());
         $this->assertEquals($expectedTokens[1], $this->concreteLexer->lookahead);
+
         $this->concreteLexer->resetPosition(0);
+
         $this->assertTrue($this->concreteLexer->moveNext());
         $this->assertEquals($expectedTokens[0], $this->concreteLexer->lookahead);
     }
+
     /**
      * @dataProvider dataProvider
      *
@@ -48,26 +113,49 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     {
         $this->concreteLexer->setInput($input);
         $this->assertNull($this->concreteLexer->lookahead);
-        for ($i = 0; $i < \count($expectedTokens); $i++) {
+
+        for ($i = 0; $i < count($expectedTokens); $i++) {
             $this->assertTrue($this->concreteLexer->moveNext());
             $this->assertEquals($expectedTokens[$i], $this->concreteLexer->lookahead);
         }
+
         $this->assertFalse($this->concreteLexer->moveNext());
         $this->assertNull($this->concreteLexer->lookahead);
     }
+
     public function testSkipUntil()
     {
         $this->concreteLexer->setInput('price=10');
+
         $this->assertTrue($this->concreteLexer->moveNext());
         $this->concreteLexer->skipUntil('operator');
-        $this->assertEquals(array('value' => '=', 'type' => 'operator', 'position' => 5), $this->concreteLexer->lookahead);
+
+        $this->assertEquals(
+            array(
+                'value' => '=',
+                'type' => 'operator',
+                'position' => 5,
+            ),
+            $this->concreteLexer->lookahead
+        );
     }
+
     public function testUtf8Mismatch()
     {
-        $this->concreteLexer->setInput("é=10");
+        $this->concreteLexer->setInput("\xE9=10");
+
         $this->assertTrue($this->concreteLexer->moveNext());
-        $this->assertEquals(array('value' => "é=10", 'type' => 'string', 'position' => 0), $this->concreteLexer->lookahead);
+
+        $this->assertEquals(
+            array(
+                'value' => "\xE9=10",
+                'type' => 'string',
+                'position' => 0,
+            ),
+            $this->concreteLexer->lookahead
+        );
     }
+
     /**
      * @dataProvider dataProvider
      *
@@ -80,8 +168,10 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
         foreach ($expectedTokens as $expectedToken) {
             $this->assertEquals($expectedToken, $this->concreteLexer->peek());
         }
+
         $this->assertNull($this->concreteLexer->peek());
     }
+
     /**
      * @dataProvider dataProvider
      *
@@ -91,16 +181,22 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function testGlimpse($input, $expectedTokens)
     {
         $this->concreteLexer->setInput($input);
+
         foreach ($expectedTokens as $expectedToken) {
             $this->assertEquals($expectedToken, $this->concreteLexer->glimpse());
             $this->concreteLexer->moveNext();
         }
+
         $this->assertNull($this->concreteLexer->peek());
     }
+
     public function inputUntilPositionDataProvider()
     {
-        return array(array('price=10', 5, 'price'));
+        return array(
+            array('price=10', 5, 'price'),
+        );
     }
+
     /**
      * @dataProvider inputUntilPositionDataProvider
      *
@@ -111,8 +207,10 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function testGetInputUntilPosition($input, $position, $expectedInput)
     {
         $this->concreteLexer->setInput($input);
+
         $this->assertSame($expectedInput, $this->concreteLexer->getInputUntilPosition($position));
     }
+
     /**
      * @dataProvider dataProvider
      *
@@ -122,12 +220,14 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
     public function testIsNextToken($input, $expectedTokens)
     {
         $this->concreteLexer->setInput($input);
+
         $this->concreteLexer->moveNext();
-        for ($i = 0; $i < \count($expectedTokens); $i++) {
+        for ($i = 0; $i < count($expectedTokens); $i++) {
             $this->assertTrue($this->concreteLexer->isNextToken($expectedTokens[$i]['type']));
             $this->concreteLexer->moveNext();
         }
     }
+
     /**
      * @dataProvider dataProvider
      *
@@ -136,22 +236,26 @@ class AbstractLexerTest extends \MolliePrefix\PHPUnit_Framework_TestCase
      */
     public function testIsNextTokenAny($input, $expectedTokens)
     {
-        $allTokenTypes = \array_map(function ($token) {
+        $allTokenTypes = array_map(function ($token) {
             return $token['type'];
         }, $expectedTokens);
+
         $this->concreteLexer->setInput($input);
+
         $this->concreteLexer->moveNext();
-        for ($i = 0; $i < \count($expectedTokens); $i++) {
+        for ($i = 0; $i < count($expectedTokens); $i++) {
             $this->assertTrue($this->concreteLexer->isNextTokenAny(array($expectedTokens[$i]['type'])));
             $this->assertTrue($this->concreteLexer->isNextTokenAny($allTokenTypes));
             $this->concreteLexer->moveNext();
         }
     }
+
     public function testGetLiteral()
     {
-        $this->assertSame('Doctrine\\Tests\\Common\\Lexer\\ConcreteLexer::INT', $this->concreteLexer->getLiteral('int'));
+        $this->assertSame('Doctrine\Tests\Common\Lexer\ConcreteLexer::INT', $this->concreteLexer->getLiteral('int'));
         $this->assertSame('fake_token', $this->concreteLexer->getLiteral('fake_token'));
     }
+
     public function testIsA()
     {
         $this->assertTrue($this->concreteLexer->isA(11, 'int'));

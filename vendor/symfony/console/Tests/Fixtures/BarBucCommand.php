@@ -1,13 +1,11 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\Console\Command\Command;
 
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-class BarBucCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
+class BarBucCommand extends Command
 {
     protected function configure()
     {
         $this->setName('bar:buc');
     }
 }
-\class_alias('MolliePrefix\\BarBucCommand', 'BarBucCommand', \false);

@@ -1,33 +1,78 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Container;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 /**
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
  * @final since Symfony 3.3
  */
-class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\DependencyInjection\Container
+class ProjectServiceContainer extends Container
 {
     private $parameters = [];
     private $targetDirs = [];
+
     public function __construct()
     {
-        parent::__construct(new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($this->getDefaultParameters()));
-        $this->normalizedIds = ['MolliePrefix\\psr\\container\\containerinterface' => 'MolliePrefix\\Psr\\Container\\ContainerInterface', 'MolliePrefix\\symfony\\component\\dependencyinjection\\containerinterface' => 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\ContainerInterface'];
-        $this->syntheticIds = ['request' => \true];
-        $this->methodMap = ['bar' => 'getBarService', 'baz' => 'getBazService', 'configurator_service' => 'getConfiguratorServiceService', 'configurator_service_simple' => 'getConfiguratorServiceSimpleService', 'configured_service' => 'getConfiguredServiceService', 'configured_service_simple' => 'getConfiguredServiceSimpleService', 'decorated' => 'getDecoratedService', 'decorator_service' => 'getDecoratorServiceService', 'decorator_service_with_name' => 'getDecoratorServiceWithNameService', 'deprecated_service' => 'getDeprecatedServiceService', 'factory_service' => 'getFactoryServiceService', 'factory_service_simple' => 'getFactoryServiceSimpleService', 'factory_simple' => 'getFactorySimpleService', 'foo' => 'getFooService', 'foo.baz' => 'getFoo_BazService', 'foo_bar' => 'getFooBarService', 'foo_with_inline' => 'getFooWithInlineService', 'inlined' => 'getInlinedService', 'lazy_context' => 'getLazyContextService', 'lazy_context_ignore_invalid_ref' => 'getLazyContextIgnoreInvalidRefService', 'method_call1' => 'getMethodCall1Service', 'new_factory' => 'getNewFactoryService', 'new_factory_service' => 'getNewFactoryServiceService', 'service_from_static_method' => 'getServiceFromStaticMethodService', 'tagged_iterator' => 'getTaggedIteratorService', 'tagged_iterator_foo' => 'getTaggedIteratorFooService'];
-        $this->privates = ['configurator_service' => \true, 'configurator_service_simple' => \true, 'factory_simple' => \true, 'inlined' => \true, 'new_factory' => \true, 'tagged_iterator_foo' => \true];
-        $this->aliases = ['MolliePrefix\\Psr\\Container\\ContainerInterface' => 'service_container', 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\ContainerInterface' => 'service_container', 'alias_for_alias' => 'foo', 'alias_for_foo' => 'foo'];
+        parent::__construct(new ParameterBag($this->getDefaultParameters()));
+        $this->normalizedIds = [
+            'psr\\container\\containerinterface' => 'Psr\\Container\\ContainerInterface',
+            'symfony\\component\\dependencyinjection\\containerinterface' => 'Symfony\\Component\\DependencyInjection\\ContainerInterface',
+        ];
+        $this->syntheticIds = [
+            'request' => true,
+        ];
+        $this->methodMap = [
+            'bar' => 'getBarService',
+            'baz' => 'getBazService',
+            'configurator_service' => 'getConfiguratorServiceService',
+            'configurator_service_simple' => 'getConfiguratorServiceSimpleService',
+            'configured_service' => 'getConfiguredServiceService',
+            'configured_service_simple' => 'getConfiguredServiceSimpleService',
+            'decorated' => 'getDecoratedService',
+            'decorator_service' => 'getDecoratorServiceService',
+            'decorator_service_with_name' => 'getDecoratorServiceWithNameService',
+            'deprecated_service' => 'getDeprecatedServiceService',
+            'factory_service' => 'getFactoryServiceService',
+            'factory_service_simple' => 'getFactoryServiceSimpleService',
+            'factory_simple' => 'getFactorySimpleService',
+            'foo' => 'getFooService',
+            'foo.baz' => 'getFoo_BazService',
+            'foo_bar' => 'getFooBarService',
+            'foo_with_inline' => 'getFooWithInlineService',
+            'inlined' => 'getInlinedService',
+            'lazy_context' => 'getLazyContextService',
+            'lazy_context_ignore_invalid_ref' => 'getLazyContextIgnoreInvalidRefService',
+            'method_call1' => 'getMethodCall1Service',
+            'new_factory' => 'getNewFactoryService',
+            'new_factory_service' => 'getNewFactoryServiceService',
+            'service_from_static_method' => 'getServiceFromStaticMethodService',
+            'tagged_iterator' => 'getTaggedIteratorService',
+            'tagged_iterator_foo' => 'getTaggedIteratorFooService',
+        ];
+        $this->privates = [
+            'configurator_service' => true,
+            'configurator_service_simple' => true,
+            'factory_simple' => true,
+            'inlined' => true,
+            'new_factory' => true,
+            'tagged_iterator_foo' => true,
+        ];
+        $this->aliases = [
+            'Psr\\Container\\ContainerInterface' => 'service_container',
+            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => 'service_container',
+            'alias_for_alias' => 'foo',
+            'alias_for_foo' => 'foo',
+        ];
     }
+
     /**
      * Gets the public 'bar' shared service.
      *
@@ -35,11 +80,15 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getBarService()
     {
-        $a = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && \false ?: '_'};
-        $this->services['bar'] = $instance = new \MolliePrefix\Bar\FooClass('foo', $a, $this->getParameter('foo_bar'));
+        $a = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && false ?: '_'};
+
+        $this->services['bar'] = $instance = new \Bar\FooClass('foo', $a, $this->getParameter('foo_bar'));
+
         $a->configure($instance);
+
         return $instance;
     }
+
     /**
      * Gets the public 'baz' shared service.
      *
@@ -47,10 +96,13 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getBazService()
     {
-        $this->services['baz'] = $instance = new \MolliePrefix\Baz();
-        $instance->setFoo(${($_ = isset($this->services['foo_with_inline']) ? $this->services['foo_with_inline'] : $this->getFooWithInlineService()) && \false ?: '_'});
+        $this->services['baz'] = $instance = new \Baz();
+
+        $instance->setFoo(${($_ = isset($this->services['foo_with_inline']) ? $this->services['foo_with_inline'] : $this->getFooWithInlineService()) && false ?: '_'});
+
         return $instance;
     }
+
     /**
      * Gets the public 'configured_service' shared service.
      *
@@ -59,9 +111,12 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     protected function getConfiguredServiceService()
     {
         $this->services['configured_service'] = $instance = new \stdClass();
-        ${($_ = isset($this->services['configurator_service']) ? $this->services['configurator_service'] : $this->getConfiguratorServiceService()) && \false ?: '_'}->configureStdClass($instance);
+
+        ${($_ = isset($this->services['configurator_service']) ? $this->services['configurator_service'] : $this->getConfiguratorServiceService()) && false ?: '_'}->configureStdClass($instance);
+
         return $instance;
     }
+
     /**
      * Gets the public 'configured_service_simple' shared service.
      *
@@ -70,9 +125,12 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     protected function getConfiguredServiceSimpleService()
     {
         $this->services['configured_service_simple'] = $instance = new \stdClass();
-        ${($_ = isset($this->services['configurator_service_simple']) ? $this->services['configurator_service_simple'] : ($this->services['configurator_service_simple'] = new \MolliePrefix\ConfClass('bar'))) && \false ?: '_'}->configureStdClass($instance);
+
+        ${($_ = isset($this->services['configurator_service_simple']) ? $this->services['configurator_service_simple'] : ($this->services['configurator_service_simple'] = new \ConfClass('bar'))) && false ?: '_'}->configureStdClass($instance);
+
         return $instance;
     }
+
     /**
      * Gets the public 'decorated' shared service.
      *
@@ -82,6 +140,7 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     {
         return $this->services['decorated'] = new \stdClass();
     }
+
     /**
      * Gets the public 'decorator_service' shared service.
      *
@@ -91,6 +150,7 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     {
         return $this->services['decorator_service'] = new \stdClass();
     }
+
     /**
      * Gets the public 'decorator_service_with_name' shared service.
      *
@@ -100,6 +160,7 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     {
         return $this->services['decorator_service_with_name'] = new \stdClass();
     }
+
     /**
      * Gets the public 'deprecated_service' shared service.
      *
@@ -109,9 +170,11 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getDeprecatedServiceService()
     {
-        @\trigger_error('The "deprecated_service" service is deprecated. You should stop using it, as it will soon be removed.', \E_USER_DEPRECATED);
+        @trigger_error('The "deprecated_service" service is deprecated. You should stop using it, as it will soon be removed.', E_USER_DEPRECATED);
+
         return $this->services['deprecated_service'] = new \stdClass();
     }
+
     /**
      * Gets the public 'factory_service' shared service.
      *
@@ -119,8 +182,9 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getFactoryServiceService()
     {
-        return $this->services['factory_service'] = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && \false ?: '_'}->getInstance();
+        return $this->services['factory_service'] = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && false ?: '_'}->getInstance();
     }
+
     /**
      * Gets the public 'factory_service_simple' shared service.
      *
@@ -128,8 +192,9 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getFactoryServiceSimpleService()
     {
-        return $this->services['factory_service_simple'] = ${($_ = isset($this->services['factory_simple']) ? $this->services['factory_simple'] : $this->getFactorySimpleService()) && \false ?: '_'}->getInstance();
+        return $this->services['factory_service_simple'] = ${($_ = isset($this->services['factory_simple']) ? $this->services['factory_simple'] : $this->getFactorySimpleService()) && false ?: '_'}->getInstance();
     }
+
     /**
      * Gets the public 'foo' shared service.
      *
@@ -137,16 +202,20 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getFooService()
     {
-        $a = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && \false ?: '_'};
-        $this->services['foo'] = $instance = \MolliePrefix\Bar\FooClass::getInstance('foo', $a, [$this->getParameter('foo') => 'foo is ' . $this->getParameter('foo') . '', 'foobar' => $this->getParameter('foo')], \true, $this);
+        $a = ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && false ?: '_'};
+
+        $this->services['foo'] = $instance = \Bar\FooClass::getInstance('foo', $a, [$this->getParameter('foo') => 'foo is '.$this->getParameter('foo').'', 'foobar' => $this->getParameter('foo')], true, $this);
+
         $instance->foo = 'bar';
         $instance->moo = $a;
-        $instance->qux = [$this->getParameter('foo') => 'foo is ' . $this->getParameter('foo') . '', 'foobar' => $this->getParameter('foo')];
-        $instance->setBar(${($_ = isset($this->services['bar']) ? $this->services['bar'] : $this->getBarService()) && \false ?: '_'});
+        $instance->qux = [$this->getParameter('foo') => 'foo is '.$this->getParameter('foo').'', 'foobar' => $this->getParameter('foo')];
+        $instance->setBar(${($_ = isset($this->services['bar']) ? $this->services['bar'] : $this->getBarService()) && false ?: '_'});
         $instance->initialize();
-        \MolliePrefix\sc_configure($instance);
+        sc_configure($instance);
+
         return $instance;
     }
+
     /**
      * Gets the public 'foo.baz' shared service.
      *
@@ -155,9 +224,12 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     protected function getFoo_BazService()
     {
         $this->services['foo.baz'] = $instance = \call_user_func([$this->getParameter('baz_class'), 'getInstance']);
+
         \call_user_func([$this->getParameter('baz_class'), 'configureStatic1'], $instance);
+
         return $instance;
     }
+
     /**
      * Gets the public 'foo_bar' service.
      *
@@ -166,8 +238,10 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     protected function getFooBarService()
     {
         $class = $this->getParameter('foo_class');
-        return new $class(${($_ = isset($this->services['deprecated_service']) ? $this->services['deprecated_service'] : $this->getDeprecatedServiceService()) && \false ?: '_'});
+
+        return new $class(${($_ = isset($this->services['deprecated_service']) ? $this->services['deprecated_service'] : $this->getDeprecatedServiceService()) && false ?: '_'});
     }
+
     /**
      * Gets the public 'foo_with_inline' shared service.
      *
@@ -175,10 +249,13 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getFooWithInlineService()
     {
-        $this->services['foo_with_inline'] = $instance = new \MolliePrefix\Foo();
-        $instance->setBar(${($_ = isset($this->services['inlined']) ? $this->services['inlined'] : $this->getInlinedService()) && \false ?: '_'});
+        $this->services['foo_with_inline'] = $instance = new \Foo();
+
+        $instance->setBar(${($_ = isset($this->services['inlined']) ? $this->services['inlined'] : $this->getInlinedService()) && false ?: '_'});
+
         return $instance;
     }
+
     /**
      * Gets the public 'lazy_context' shared service.
      *
@@ -186,13 +263,14 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getLazyContextService()
     {
-        return $this->services['lazy_context'] = new \MolliePrefix\LazyContext(new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () {
-            (yield 'k1' => ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && \false ?: '_'});
-            (yield 'k2' => $this);
-        }, 2), new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () {
+        return $this->services['lazy_context'] = new \LazyContext(new RewindableGenerator(function () {
+            yield 'k1' => ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && false ?: '_'};
+            yield 'k2' => $this;
+        }, 2), new RewindableGenerator(function () {
             return new \EmptyIterator();
         }, 0));
     }
+
     /**
      * Gets the public 'lazy_context_ignore_invalid_ref' shared service.
      *
@@ -200,21 +278,18 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getLazyContextIgnoreInvalidRefService()
     {
-        return $this->services['lazy_context_ignore_invalid_ref'] = new \MolliePrefix\LazyContext(new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () {
-            (yield 0 => ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && \false ?: '_'});
+        return $this->services['lazy_context_ignore_invalid_ref'] = new \LazyContext(new RewindableGenerator(function () {
+            yield 0 => ${($_ = isset($this->services['foo.baz']) ? $this->services['foo.baz'] : $this->getFoo_BazService()) && false ?: '_'};
             if ($this->has('invalid')) {
-                (yield 1 => ${($_ = isset($this->services['invalid']) ? $this->services['invalid'] : $this->get(
-                    'invalid',
-                    /* ContainerInterface::NULL_ON_INVALID_REFERENCE */
-                    2
-                )) && \false ?: '_'});
+                yield 1 => ${($_ = isset($this->services['invalid']) ? $this->services['invalid'] : $this->get('invalid', /* ContainerInterface::NULL_ON_INVALID_REFERENCE */ 2)) && false ?: '_'};
             }
         }, function () {
-            return 1 + (int) $this->has('invalid');
-        }), new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () {
+            return 1 + (int) ($this->has('invalid'));
+        }), new RewindableGenerator(function () {
             return new \EmptyIterator();
         }, 0));
     }
+
     /**
      * Gets the public 'method_call1' shared service.
      *
@@ -223,30 +298,22 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
     protected function getMethodCall1Service()
     {
         include_once '%path%foo.php';
-        $this->services['method_call1'] = $instance = new \MolliePrefix\Bar\FooClass();
-        $instance->setBar(${($_ = isset($this->services['foo']) ? $this->services['foo'] : $this->getFooService()) && \false ?: '_'});
-        $instance->setBar(${($_ = isset($this->services['foo2']) ? $this->services['foo2'] : $this->get(
-            'foo2',
-            /* ContainerInterface::NULL_ON_INVALID_REFERENCE */
-            2
-        )) && \false ?: '_'});
+
+        $this->services['method_call1'] = $instance = new \Bar\FooClass();
+
+        $instance->setBar(${($_ = isset($this->services['foo']) ? $this->services['foo'] : $this->getFooService()) && false ?: '_'});
+        $instance->setBar(${($_ = isset($this->services['foo2']) ? $this->services['foo2'] : $this->get('foo2', /* ContainerInterface::NULL_ON_INVALID_REFERENCE */ 2)) && false ?: '_'});
         if ($this->has('foo3')) {
-            $instance->setBar(${($_ = isset($this->services['foo3']) ? $this->services['foo3'] : $this->get(
-                'foo3',
-                /* ContainerInterface::NULL_ON_INVALID_REFERENCE */
-                2
-            )) && \false ?: '_'});
+            $instance->setBar(${($_ = isset($this->services['foo3']) ? $this->services['foo3'] : $this->get('foo3', /* ContainerInterface::NULL_ON_INVALID_REFERENCE */ 2)) && false ?: '_'});
         }
         if ($this->has('foobaz')) {
-            $instance->setBar(${($_ = isset($this->services['foobaz']) ? $this->services['foobaz'] : $this->get(
-                'foobaz',
-                /* ContainerInterface::NULL_ON_INVALID_REFERENCE */
-                2
-            )) && \false ?: '_'});
+            $instance->setBar(${($_ = isset($this->services['foobaz']) ? $this->services['foobaz'] : $this->get('foobaz', /* ContainerInterface::NULL_ON_INVALID_REFERENCE */ 2)) && false ?: '_'});
         }
-        $instance->setBar(${($_ = isset($this->services['foo']) ? $this->services['foo'] : $this->getFooService()) && \false ?: '_'}->foo() . ($this->hasParameter("foo") ? $this->getParameter("foo") : "default"));
+        $instance->setBar((${($_ = isset($this->services['foo']) ? $this->services['foo'] : $this->getFooService()) && false ?: '_'}->foo() . (($this->hasParameter("foo")) ? ($this->getParameter("foo")) : ("default"))));
+
         return $instance;
     }
+
     /**
      * Gets the public 'new_factory_service' shared service.
      *
@@ -254,10 +321,13 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getNewFactoryServiceService()
     {
-        $this->services['new_factory_service'] = $instance = ${($_ = isset($this->services['new_factory']) ? $this->services['new_factory'] : $this->getNewFactoryService()) && \false ?: '_'}->getInstance();
+        $this->services['new_factory_service'] = $instance = ${($_ = isset($this->services['new_factory']) ? $this->services['new_factory'] : $this->getNewFactoryService()) && false ?: '_'}->getInstance();
+
         $instance->foo = 'bar';
+
         return $instance;
     }
+
     /**
      * Gets the public 'service_from_static_method' shared service.
      *
@@ -265,8 +335,9 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getServiceFromStaticMethodService()
     {
-        return $this->services['service_from_static_method'] = \MolliePrefix\Bar\FooClass::getInstance();
+        return $this->services['service_from_static_method'] = \Bar\FooClass::getInstance();
     }
+
     /**
      * Gets the public 'tagged_iterator' shared service.
      *
@@ -274,10 +345,11 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getTaggedIteratorService()
     {
-        return $this->services['tagged_iterator'] = new \MolliePrefix\Bar(new \MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator(function () {
+        return $this->services['tagged_iterator'] = new \Bar(new RewindableGenerator(function () {
             return new \EmptyIterator();
         }, 0));
     }
+
     /**
      * Gets the private 'configurator_service' shared service.
      *
@@ -285,10 +357,13 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getConfiguratorServiceService()
     {
-        $this->services['configurator_service'] = $instance = new \MolliePrefix\ConfClass();
-        $instance->setFoo(${($_ = isset($this->services['baz']) ? $this->services['baz'] : $this->getBazService()) && \false ?: '_'});
+        $this->services['configurator_service'] = $instance = new \ConfClass();
+
+        $instance->setFoo(${($_ = isset($this->services['baz']) ? $this->services['baz'] : $this->getBazService()) && false ?: '_'});
+
         return $instance;
     }
+
     /**
      * Gets the private 'configurator_service_simple' shared service.
      *
@@ -296,8 +371,9 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getConfiguratorServiceSimpleService()
     {
-        return $this->services['configurator_service_simple'] = new \MolliePrefix\ConfClass('bar');
+        return $this->services['configurator_service_simple'] = new \ConfClass('bar');
     }
+
     /**
      * Gets the private 'factory_simple' shared service.
      *
@@ -307,9 +383,11 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getFactorySimpleService()
     {
-        @\trigger_error('The "factory_simple" service is deprecated. You should stop using it, as it will soon be removed.', \E_USER_DEPRECATED);
-        return $this->services['factory_simple'] = new \MolliePrefix\SimpleFactoryClass('foo');
+        @trigger_error('The "factory_simple" service is deprecated. You should stop using it, as it will soon be removed.', E_USER_DEPRECATED);
+
+        return $this->services['factory_simple'] = new \SimpleFactoryClass('foo');
     }
+
     /**
      * Gets the private 'inlined' shared service.
      *
@@ -317,11 +395,14 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getInlinedService()
     {
-        $this->services['inlined'] = $instance = new \MolliePrefix\Bar();
+        $this->services['inlined'] = $instance = new \Bar();
+
         $instance->pub = 'pub';
-        $instance->setBaz(${($_ = isset($this->services['baz']) ? $this->services['baz'] : $this->getBazService()) && \false ?: '_'});
+        $instance->setBaz(${($_ = isset($this->services['baz']) ? $this->services['baz'] : $this->getBazService()) && false ?: '_'});
+
         return $instance;
     }
+
     /**
      * Gets the private 'new_factory' shared service.
      *
@@ -329,10 +410,13 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getNewFactoryService()
     {
-        $this->services['new_factory'] = $instance = new \MolliePrefix\FactoryClass();
+        $this->services['new_factory'] = $instance = new \FactoryClass();
+
         $instance->foo = 'bar';
+
         return $instance;
     }
+
     /**
      * Gets the private 'tagged_iterator_foo' shared service.
      *
@@ -340,8 +424,9 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getTaggedIteratorFooService()
     {
-        return $this->services['tagged_iterator_foo'] = new \MolliePrefix\Bar();
+        return $this->services['tagged_iterator_foo'] = new \Bar();
     }
+
     /**
      * Gets the default parameters.
      *
@@ -349,13 +434,10 @@ class ProjectServiceContainer extends \MolliePrefix\Symfony\Component\Dependency
      */
     protected function getDefaultParameters()
     {
-        return ['baz_class' => 'BazClass', 'foo_class' => 'MolliePrefix\\Bar\\FooClass', 'foo' => 'bar'];
+        return [
+            'baz_class' => 'BazClass',
+            'foo_class' => 'Bar\\FooClass',
+            'foo' => 'bar',
+        ];
     }
 }
-/**
- * This class has been auto-generated
- * by the Symfony Dependency Injection Component.
- *
- * @final since Symfony 3.3
- */
-\class_alias('MolliePrefix\\ProjectServiceContainer', 'ProjectServiceContainer', \false);

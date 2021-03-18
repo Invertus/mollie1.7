@@ -8,14 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Loader;
+
+namespace Symfony\Component\Config\Loader;
 
 /**
  * GlobFileLoader loads files from a glob pattern.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class GlobFileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\FileLoader
+class GlobFileLoader extends FileLoader
 {
     /**
      * {@inheritdoc}
@@ -24,6 +25,7 @@ class GlobFileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\FileL
     {
         return $this->import($resource);
     }
+
     /**
      * {@inheritdoc}
      */

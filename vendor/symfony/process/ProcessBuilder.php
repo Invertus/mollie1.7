@@ -8,11 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Process;
 
-@\trigger_error(\sprintf('The %s class is deprecated since Symfony 3.4 and will be removed in 4.0. Use the Process class instead.', \MolliePrefix\Symfony\Component\Process\ProcessBuilder::class), \E_USER_DEPRECATED);
-use MolliePrefix\Symfony\Component\Process\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\Process\Exception\LogicException;
+namespace Symfony\Component\Process;
+
+@trigger_error(sprintf('The %s class is deprecated since Symfony 3.4 and will be removed in 4.0. Use the Process class instead.', ProcessBuilder::class), \E_USER_DEPRECATED);
+
+use Symfony\Component\Process\Exception\InvalidArgumentException;
+use Symfony\Component\Process\Exception\LogicException;
+
 /**
  * @author Kris Wallsmith <kris@symfony.com>
  *
@@ -26,9 +29,10 @@ class ProcessBuilder
     private $input;
     private $timeout = 60;
     private $options;
-    private $inheritEnv = \true;
+    private $inheritEnv = true;
     private $prefix = [];
-    private $outputDisabled = \false;
+    private $outputDisabled = false;
+
     /**
      * @param string[] $arguments An array of arguments
      */
@@ -36,6 +40,7 @@ class ProcessBuilder
     {
         $this->arguments = $arguments;
     }
+
     /**
      * Creates a process builder instance.
      *
@@ -47,6 +52,7 @@ class ProcessBuilder
     {
         return new static($arguments);
     }
+
     /**
      * Adds an unescaped argument to the command string.
      *
@@ -57,8 +63,10 @@ class ProcessBuilder
     public function add($argument)
     {
         $this->arguments[] = $argument;
+
         return $this;
     }
+
     /**
      * Adds a prefix to the command string.
      *
@@ -71,8 +79,10 @@ class ProcessBuilder
     public function setPrefix($prefix)
     {
         $this->prefix = \is_array($prefix) ? $prefix : [$prefix];
+
         return $this;
     }
+
     /**
      * Sets the arguments of the process.
      *
@@ -86,8 +96,10 @@ class ProcessBuilder
     public function setArguments(array $arguments)
     {
         $this->arguments = $arguments;
+
         return $this;
     }
+
     /**
      * Sets the working directory.
      *
@@ -98,8 +110,10 @@ class ProcessBuilder
     public function setWorkingDirectory($cwd)
     {
         $this->cwd = $cwd;
+
         return $this;
     }
+
     /**
      * Sets whether environment variables will be inherited or not.
      *
@@ -107,11 +121,13 @@ class ProcessBuilder
      *
      * @return $this
      */
-    public function inheritEnvironmentVariables($inheritEnv = \true)
+    public function inheritEnvironmentVariables($inheritEnv = true)
     {
         $this->inheritEnv = $inheritEnv;
+
         return $this;
     }
+
     /**
      * Sets an environment variable.
      *
@@ -126,8 +142,10 @@ class ProcessBuilder
     public function setEnv($name, $value)
     {
         $this->env[$name] = $value;
+
         return $this;
     }
+
     /**
      * Adds a set of environment variables.
      *
@@ -141,9 +159,11 @@ class ProcessBuilder
      */
     public function addEnvironmentVariables(array $variables)
     {
-        $this->env = \array_replace($this->env, $variables);
+        $this->env = array_replace($this->env, $variables);
+
         return $this;
     }
+
     /**
      * Sets the input of the process.
      *
@@ -155,9 +175,11 @@ class ProcessBuilder
      */
     public function setInput($input)
     {
-        $this->input = \MolliePrefix\Symfony\Component\Process\ProcessUtils::validateInput(__METHOD__, $input);
+        $this->input = ProcessUtils::validateInput(__METHOD__, $input);
+
         return $this;
     }
+
     /**
      * Sets the process timeout.
      *
@@ -173,15 +195,21 @@ class ProcessBuilder
     {
         if (null === $timeout) {
             $this->timeout = null;
+
             return $this;
         }
+
         $timeout = (float) $timeout;
+
         if ($timeout < 0) {
-            throw new \MolliePrefix\Symfony\Component\Process\Exception\InvalidArgumentException('The timeout value must be a valid positive integer or float number.');
+            throw new InvalidArgumentException('The timeout value must be a valid positive integer or float number.');
         }
+
         $this->timeout = $timeout;
+
         return $this;
     }
+
     /**
      * Adds a proc_open option.
      *
@@ -193,8 +221,10 @@ class ProcessBuilder
     public function setOption($name, $value)
     {
         $this->options[$name] = $value;
+
         return $this;
     }
+
     /**
      * Disables fetching output and error output from the underlying process.
      *
@@ -202,9 +232,11 @@ class ProcessBuilder
      */
     public function disableOutput()
     {
-        $this->outputDisabled = \true;
+        $this->outputDisabled = true;
+
         return $this;
     }
+
     /**
      * Enables fetching output and error output from the underlying process.
      *
@@ -212,9 +244,11 @@ class ProcessBuilder
      */
     public function enableOutput()
     {
-        $this->outputDisabled = \false;
+        $this->outputDisabled = false;
+
         return $this;
     }
+
     /**
      * Creates a Process instance and returns it.
      *
@@ -225,19 +259,22 @@ class ProcessBuilder
     public function getProcess()
     {
         if (0 === \count($this->prefix) && 0 === \count($this->arguments)) {
-            throw new \MolliePrefix\Symfony\Component\Process\Exception\LogicException('You must add() command arguments before calling getProcess().');
+            throw new LogicException('You must add() command arguments before calling getProcess().');
         }
-        $arguments = \array_merge($this->prefix, $this->arguments);
-        $process = new \MolliePrefix\Symfony\Component\Process\Process($arguments, $this->cwd, $this->env, $this->input, $this->timeout, $this->options);
+
+        $arguments = array_merge($this->prefix, $this->arguments);
+        $process = new Process($arguments, $this->cwd, $this->env, $this->input, $this->timeout, $this->options);
         // to preserve the BC with symfony <3.3, we convert the array structure
         // to a string structure to avoid the prefixing with the exec command
         $process->setCommandLine($process->getCommandLine());
+
         if ($this->inheritEnv) {
             $process->inheritEnvironmentVariables();
         }
         if ($this->outputDisabled) {
             $process->disableOutput();
         }
+
         return $process;
     }
 }

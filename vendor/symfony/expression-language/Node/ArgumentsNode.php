@@ -8,28 +8,33 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage\Node;
 
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Compiler;
+namespace Symfony\Component\ExpressionLanguage\Node;
+
+use Symfony\Component\ExpressionLanguage\Compiler;
+
 /**
  * @author Fabien Potencier <fabien@symfony.com>
  *
  * @internal
  */
-class ArgumentsNode extends \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ArrayNode
+class ArgumentsNode extends ArrayNode
 {
-    public function compile(\MolliePrefix\Symfony\Component\ExpressionLanguage\Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
-        $this->compileArguments($compiler, \false);
+        $this->compileArguments($compiler, false);
     }
+
     public function toArray()
     {
         $array = [];
+
         foreach ($this->getKeyValuePairs() as $pair) {
             $array[] = $pair['value'];
             $array[] = ', ';
         }
-        \array_pop($array);
+        array_pop($array);
+
         return $array;
     }
 }

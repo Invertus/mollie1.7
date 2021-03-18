@@ -8,23 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
+
+namespace Symfony\Component\DependencyInjection;
 
 class Alias
 {
     private $id;
     private $public;
     private $private;
+
     /**
      * @param string $id     Alias identifier
      * @param bool   $public If this alias is public
      */
-    public function __construct($id, $public = \true)
+    public function __construct($id, $public = true)
     {
         $this->id = (string) $id;
         $this->public = $public;
         $this->private = 2 > \func_num_args();
     }
+
     /**
      * Checks if this DI Alias should be public or not.
      *
@@ -34,6 +37,7 @@ class Alias
     {
         return $this->public;
     }
+
     /**
      * Sets if this Alias is public.
      *
@@ -44,9 +48,11 @@ class Alias
     public function setPublic($boolean)
     {
         $this->public = (bool) $boolean;
-        $this->private = \false;
+        $this->private = false;
+
         return $this;
     }
+
     /**
      * Sets if this Alias is private.
      *
@@ -62,8 +68,10 @@ class Alias
     public function setPrivate($boolean)
     {
         $this->private = (bool) $boolean;
+
         return $this;
     }
+
     /**
      * Whether this alias is private.
      *
@@ -73,6 +81,7 @@ class Alias
     {
         return $this->private;
     }
+
     /**
      * Returns the Id of this alias.
      *

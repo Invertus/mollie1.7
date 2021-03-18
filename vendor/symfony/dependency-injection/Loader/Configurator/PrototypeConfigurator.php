@@ -8,16 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-use MolliePrefix\Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class PrototypeConfigurator extends \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractServiceConfigurator
+class PrototypeConfigurator extends AbstractServiceConfigurator
 {
     const FACTORY = 'load';
+
     use Traits\AbstractTrait;
     use Traits\ArgumentTrait;
     use Traits\AutoconfigureTrait;
@@ -33,34 +36,41 @@ class PrototypeConfigurator extends \MolliePrefix\Symfony\Component\DependencyIn
     use Traits\PublicTrait;
     use Traits\ShareTrait;
     use Traits\TagTrait;
+
     private $loader;
     private $resource;
     private $exclude;
     private $allowParent;
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator $parent, \MolliePrefix\Symfony\Component\DependencyInjection\Loader\PhpFileLoader $loader, \MolliePrefix\Symfony\Component\DependencyInjection\Definition $defaults, $namespace, $resource, $allowParent)
+
+    public function __construct(ServicesConfigurator $parent, PhpFileLoader $loader, Definition $defaults, $namespace, $resource, $allowParent)
     {
-        $definition = new \MolliePrefix\Symfony\Component\DependencyInjection\Definition();
+        $definition = new Definition();
         if (!$defaults->isPublic() || !$defaults->isPrivate()) {
             $definition->setPublic($defaults->isPublic());
         }
         $definition->setAutowired($defaults->isAutowired());
         $definition->setAutoconfigured($defaults->isAutoconfigured());
         // deep clone, to avoid multiple process of the same instance in the passes
-        $definition->setBindings(\unserialize(\serialize($defaults->getBindings())));
+        $definition->setBindings(unserialize(serialize($defaults->getBindings())));
         $definition->setChanges([]);
+
         $this->loader = $loader;
         $this->resource = $resource;
         $this->allowParent = $allowParent;
+
         parent::__construct($parent, $definition, $namespace, $defaults->getTags());
     }
+
     public function __destruct()
     {
         parent::__destruct();
+
         if ($this->loader) {
             $this->loader->registerClasses($this->definition, $this->id, $this->resource, $this->exclude);
         }
         $this->loader = null;
     }
+
     /**
      * Excludes files from registration using a glob pattern.
      *
@@ -68,9 +78,10 @@ class PrototypeConfigurator extends \MolliePrefix\Symfony\Component\DependencyIn
      *
      * @return $this
      */
-    public final function exclude($exclude)
+    final public function exclude($exclude)
     {
         $this->exclude = $exclude;
+
         return $this;
     }
 }

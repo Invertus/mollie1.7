@@ -1,9 +1,10 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment\Adapter;
+namespace Dotenv\Environment\Adapter;
 
-use MolliePrefix\PhpOption\None;
-class ApacheAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface
+use PhpOption\None;
+
+class ApacheAdapter implements AdapterInterface
 {
     /**
      * Determines if the adapter is supported.
@@ -14,8 +15,9 @@ class ApacheAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function isSupported()
     {
-        return \function_exists('MolliePrefix\\apache_getenv') && \function_exists('MolliePrefix\\apache_setenv');
+        return function_exists('apache_getenv') && function_exists('apache_setenv');
     }
+
     /**
      * Get an environment variable, if it exists.
      *
@@ -28,8 +30,9 @@ class ApacheAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function get($name)
     {
-        return \MolliePrefix\PhpOption\None::create();
+        return None::create();
     }
+
     /**
      * Set an environment variable.
      *
@@ -42,10 +45,11 @@ class ApacheAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterI
      */
     public function set($name, $value = null)
     {
-        if (apache_getenv($name) !== \false) {
+        if (apache_getenv($name) !== false) {
             apache_setenv($name, (string) $value);
         }
     }
+
     /**
      * Clear an environment variable.
      *

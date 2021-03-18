@@ -1,9 +1,11 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use MolliePrefix\App\BarService;
-return function (\MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator $c) {
+use App\BarService;
+
+return function (ContainerConfigurator $c) {
     $s = $c->services();
-    $s->set(\MolliePrefix\App\BarService::class)->args([inline('FooClass')]);
+    $s->set(BarService::class)
+        ->args([inline('FooClass')]);
 };

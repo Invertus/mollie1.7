@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\PhpParser;
+namespace PhpParser;
 
 interface Node
 {
@@ -10,18 +10,21 @@ interface Node
      * @return string Type of the node
      */
     public function getType();
+
     /**
      * Gets the names of the sub nodes.
      *
      * @return array Names of sub nodes
      */
     public function getSubNodeNames();
+
     /**
      * Gets line the node started in.
      *
      * @return int Line
      */
     public function getLine();
+
     /**
      * Sets line the node started in.
      *
@@ -30,6 +33,7 @@ interface Node
      * @deprecated
      */
     public function setLine($line);
+
     /**
      * Gets the doc comment of the node.
      *
@@ -38,6 +42,7 @@ interface Node
      * @return null|Comment\Doc Doc comment object or null
      */
     public function getDocComment();
+
     /**
      * Sets the doc comment of the node.
      *
@@ -45,7 +50,8 @@ interface Node
      *
      * @param Comment\Doc $docComment Doc comment to set
      */
-    public function setDocComment(\MolliePrefix\PhpParser\Comment\Doc $docComment);
+    public function setDocComment(Comment\Doc $docComment);
+
     /**
      * Sets an attribute on a node.
      *
@@ -53,6 +59,7 @@ interface Node
      * @param mixed  $value
      */
     public function setAttribute($key, $value);
+
     /**
      * Returns whether an attribute exists.
      *
@@ -61,6 +68,7 @@ interface Node
      * @return bool
      */
     public function hasAttribute($key);
+
     /**
      * Returns the value of an attribute.
      *
@@ -70,6 +78,7 @@ interface Node
      * @return mixed
      */
     public function &getAttribute($key, $default = null);
+
     /**
      * Returns all attributes for the given node.
      *

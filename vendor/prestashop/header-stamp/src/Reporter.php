@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2020 PrestaShop and Contributors
  *
@@ -24,26 +23,35 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-namespace MolliePrefix\PrestaShop\HeaderStamp;
+
+namespace PrestaShop\HeaderStamp;
 
 /**
  * Reporter in charge of reporting what HeaderStamp has done
  */
 class Reporter
 {
-    private $report = ['fixed' => [], 'ignored' => [], 'failed' => []];
+    private $report = [
+        'fixed' => [],
+        'ignored' => [],
+        'failed' => [],
+    ];
+
     public function reportLicenseHasBeenFixed($fixedFilename)
     {
         $this->report['fixed'][] = $fixedFilename;
     }
+
     public function reportLicenseWasFine($fixedFilename)
     {
         $this->report['nothing to fix'][] = $fixedFilename;
     }
+
     public function reportLicenseCouldNotBeFixed($fixedFilename)
     {
         $this->report['failed'][] = $fixedFilename;
     }
+
     /**
      * @return array[]
      */

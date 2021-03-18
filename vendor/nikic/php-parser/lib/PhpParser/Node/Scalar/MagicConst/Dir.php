@@ -1,12 +1,12 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Node\Scalar\MagicConst;
+namespace PhpParser\Node\Scalar\MagicConst;
 
-use MolliePrefix\PhpParser\Node\Scalar\MagicConst;
-class Dir extends \MolliePrefix\PhpParser\Node\Scalar\MagicConst
+use PhpParser\Node\Scalar\MagicConst;
+
+class Dir extends MagicConst
 {
-    public function getName()
-    {
+    public function getName() {
         return '__DIR__';
     }
 }

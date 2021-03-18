@@ -9,29 +9,36 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerDefinition;
+
+namespace PhpCsFixer\FixerDefinition;
 
 /**
  * @author Andreas Möller <am@localheinz.com>
  */
-final class VersionSpecificCodeSample implements \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificCodeSampleInterface
+final class VersionSpecificCodeSample implements VersionSpecificCodeSampleInterface
 {
     /**
      * @var CodeSampleInterface
      */
     private $codeSample;
+
     /**
      * @var VersionSpecificationInterface
      */
     private $versionSpecification;
+
     /**
      * @param string $code
      */
-    public function __construct($code, \MolliePrefix\PhpCsFixer\FixerDefinition\VersionSpecificationInterface $versionSpecification, array $configuration = null)
-    {
-        $this->codeSample = new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample($code, $configuration);
+    public function __construct(
+        $code,
+        VersionSpecificationInterface $versionSpecification,
+        array $configuration = null
+    ) {
+        $this->codeSample = new CodeSample($code, $configuration);
         $this->versionSpecification = $versionSpecification;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -39,6 +46,7 @@ final class VersionSpecificCodeSample implements \MolliePrefix\PhpCsFixer\FixerD
     {
         return $this->codeSample->getCode();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -46,6 +54,7 @@ final class VersionSpecificCodeSample implements \MolliePrefix\PhpCsFixer\FixerD
     {
         return $this->codeSample->getConfiguration();
     }
+
     /**
      * {@inheritdoc}
      */

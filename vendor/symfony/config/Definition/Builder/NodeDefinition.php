@@ -8,50 +8,56 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Definition\Builder;
 
-use MolliePrefix\Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
-use MolliePrefix\Symfony\Component\Config\Definition\NodeInterface;
+namespace Symfony\Component\Config\Definition\Builder;
+
+use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
+use Symfony\Component\Config\Definition\NodeInterface;
+
 /**
  * This class provides a fluent interface for defining a node.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeParentInterface
+abstract class NodeDefinition implements NodeParentInterface
 {
     protected $name;
     protected $normalization;
     protected $validation;
     protected $defaultValue;
-    protected $default = \false;
-    protected $required = \false;
+    protected $default = false;
+    protected $required = false;
     protected $deprecationMessage = null;
     protected $merge;
-    protected $allowEmptyValue = \true;
+    protected $allowEmptyValue = true;
     protected $nullEquivalent;
-    protected $trueEquivalent = \true;
-    protected $falseEquivalent = \false;
+    protected $trueEquivalent = true;
+    protected $falseEquivalent = false;
     protected $parent;
     protected $attributes = [];
+
     /**
      * @param string|null              $name   The name of the node
      * @param NodeParentInterface|null $parent The parent
      */
-    public function __construct($name, \MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeParentInterface $parent = null)
+    public function __construct($name, NodeParentInterface $parent = null)
     {
         $this->parent = $parent;
         $this->name = $name;
     }
+
     /**
      * Sets the parent node.
      *
      * @return $this
      */
-    public function setParent(\MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeParentInterface $parent)
+    public function setParent(NodeParentInterface $parent)
     {
         $this->parent = $parent;
+
         return $this;
     }
+
     /**
      * Sets info message.
      *
@@ -63,6 +69,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->attribute('info', $info);
     }
+
     /**
      * Sets example configuration.
      *
@@ -74,6 +81,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->attribute('example', $example);
     }
+
     /**
      * Sets an attribute on the node.
      *
@@ -85,8 +93,10 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     public function attribute($key, $value)
     {
         $this->attributes[$key] = $value;
+
         return $this;
     }
+
     /**
      * Returns the parent node.
      *
@@ -96,6 +106,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->parent;
     }
+
     /**
      * Creates the node.
      *
@@ -103,21 +114,26 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      *
      * @return NodeInterface
      */
-    public function getNode($forceRootNode = \false)
+    public function getNode($forceRootNode = false)
     {
         if ($forceRootNode) {
             $this->parent = null;
         }
+
         if (null !== $this->normalization) {
-            $this->normalization->before = \MolliePrefix\Symfony\Component\Config\Definition\Builder\ExprBuilder::buildExpressions($this->normalization->before);
+            $this->normalization->before = ExprBuilder::buildExpressions($this->normalization->before);
         }
+
         if (null !== $this->validation) {
-            $this->validation->rules = \MolliePrefix\Symfony\Component\Config\Definition\Builder\ExprBuilder::buildExpressions($this->validation->rules);
+            $this->validation->rules = ExprBuilder::buildExpressions($this->validation->rules);
         }
+
         $node = $this->createNode();
         $node->setAttributes($this->attributes);
+
         return $node;
     }
+
     /**
      * Sets the default value.
      *
@@ -127,10 +143,12 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      */
     public function defaultValue($value)
     {
-        $this->default = \true;
+        $this->default = true;
         $this->defaultValue = $value;
+
         return $this;
     }
+
     /**
      * Sets the node as required.
      *
@@ -138,9 +156,11 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      */
     public function isRequired()
     {
-        $this->required = \true;
+        $this->required = true;
+
         return $this;
     }
+
     /**
      * Sets the node as deprecated.
      *
@@ -154,8 +174,10 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     public function setDeprecated($message = 'The child node "%node%" at path "%path%" is deprecated.')
     {
         $this->deprecationMessage = $message;
+
         return $this;
     }
+
     /**
      * Sets the equivalent value used when the node contains null.
      *
@@ -166,8 +188,10 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     public function treatNullLike($value)
     {
         $this->nullEquivalent = $value;
+
         return $this;
     }
+
     /**
      * Sets the equivalent value used when the node contains true.
      *
@@ -178,8 +202,10 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     public function treatTrueLike($value)
     {
         $this->trueEquivalent = $value;
+
         return $this;
     }
+
     /**
      * Sets the equivalent value used when the node contains false.
      *
@@ -190,8 +216,10 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     public function treatFalseLike($value)
     {
         $this->falseEquivalent = $value;
+
         return $this;
     }
+
     /**
      * Sets null as the default value.
      *
@@ -201,6 +229,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->defaultValue(null);
     }
+
     /**
      * Sets true as the default value.
      *
@@ -208,8 +237,9 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      */
     public function defaultTrue()
     {
-        return $this->defaultValue(\true);
+        return $this->defaultValue(true);
     }
+
     /**
      * Sets false as the default value.
      *
@@ -217,8 +247,9 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      */
     public function defaultFalse()
     {
-        return $this->defaultValue(\false);
+        return $this->defaultValue(false);
     }
+
     /**
      * Sets an expression to run before the normalization.
      *
@@ -228,6 +259,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->normalization()->before();
     }
+
     /**
      * Denies the node value being empty.
      *
@@ -235,9 +267,11 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      */
     public function cannotBeEmpty()
     {
-        $this->allowEmptyValue = \false;
+        $this->allowEmptyValue = false;
+
         return $this;
     }
+
     /**
      * Sets an expression to run for the validation.
      *
@@ -251,6 +285,7 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     {
         return $this->validation()->rule();
     }
+
     /**
      * Sets whether the node can be overwritten.
      *
@@ -258,11 +293,13 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      *
      * @return $this
      */
-    public function cannotBeOverwritten($deny = \true)
+    public function cannotBeOverwritten($deny = true)
     {
         $this->merge()->denyOverwrite($deny);
+
         return $this;
     }
+
     /**
      * Gets the builder for validation rules.
      *
@@ -271,10 +308,12 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     protected function validation()
     {
         if (null === $this->validation) {
-            $this->validation = new \MolliePrefix\Symfony\Component\Config\Definition\Builder\ValidationBuilder($this);
+            $this->validation = new ValidationBuilder($this);
         }
+
         return $this->validation;
     }
+
     /**
      * Gets the builder for merging rules.
      *
@@ -283,10 +322,12 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     protected function merge()
     {
         if (null === $this->merge) {
-            $this->merge = new \MolliePrefix\Symfony\Component\Config\Definition\Builder\MergeBuilder($this);
+            $this->merge = new MergeBuilder($this);
         }
+
         return $this->merge;
     }
+
     /**
      * Gets the builder for normalization rules.
      *
@@ -295,10 +336,12 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
     protected function normalization()
     {
         if (null === $this->normalization) {
-            $this->normalization = new \MolliePrefix\Symfony\Component\Config\Definition\Builder\NormalizationBuilder($this);
+            $this->normalization = new NormalizationBuilder($this);
         }
+
         return $this->normalization;
     }
+
     /**
      * Instantiate and configure the node according to this definition.
      *
@@ -306,5 +349,5 @@ abstract class NodeDefinition implements \MolliePrefix\Symfony\Component\Config\
      *
      * @throws InvalidDefinitionException When the definition is invalid
      */
-    protected abstract function createNode();
+    abstract protected function createNode();
 }

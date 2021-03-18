@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config;
+
+namespace Symfony\Component\Config;
 
 /**
  * A ConfigCacheFactory implementation that validates the
@@ -16,9 +17,10 @@ namespace MolliePrefix\Symfony\Component\Config;
  *
  * @author Matthias Pigulla <mp@webfactory.de>
  */
-class ResourceCheckerConfigCacheFactory implements \MolliePrefix\Symfony\Component\Config\ConfigCacheFactoryInterface
+class ResourceCheckerConfigCacheFactory implements ConfigCacheFactoryInterface
 {
     private $resourceCheckers = [];
+
     /**
      * @param iterable|ResourceCheckerInterface[] $resourceCheckers
      */
@@ -26,18 +28,21 @@ class ResourceCheckerConfigCacheFactory implements \MolliePrefix\Symfony\Compone
     {
         $this->resourceCheckers = $resourceCheckers;
     }
+
     /**
      * {@inheritdoc}
      */
     public function cache($file, $callback)
     {
         if (!\is_callable($callback)) {
-            throw new \InvalidArgumentException(\sprintf('Invalid type for callback argument. Expected callable, but got "%s".', \gettype($callback)));
+            throw new \InvalidArgumentException(sprintf('Invalid type for callback argument. Expected callable, but got "%s".', \gettype($callback)));
         }
-        $cache = new \MolliePrefix\Symfony\Component\Config\ResourceCheckerConfigCache($file, $this->resourceCheckers);
+
+        $cache = new ResourceCheckerConfigCache($file, $this->resourceCheckers);
         if (!$cache->isFresh()) {
             \call_user_func($callback, $cache);
         }
+
         return $cache;
     }
 }

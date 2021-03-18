@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Definition\Builder;
 
-use MolliePrefix\Symfony\Component\Config\Definition\IntegerNode;
+namespace Symfony\Component\Config\Definition\Builder;
+
+use Symfony\Component\Config\Definition\IntegerNode;
+
 /**
  * This class provides a fluent interface for defining an integer node.
  *
  * @author Jeanmonod David <david.jeanmonod@gmail.com>
  */
-class IntegerNodeDefinition extends \MolliePrefix\Symfony\Component\Config\Definition\Builder\NumericNodeDefinition
+class IntegerNodeDefinition extends NumericNodeDefinition
 {
     /**
      * Instantiates a Node.
@@ -25,6 +27,6 @@ class IntegerNodeDefinition extends \MolliePrefix\Symfony\Component\Config\Defin
      */
     protected function instantiateNode()
     {
-        return new \MolliePrefix\Symfony\Component\Config\Definition\IntegerNode($this->name, $this->parent, $this->min, $this->max);
+        return new IntegerNode($this->name, $this->parent, $this->min, $this->max);
     }
 }

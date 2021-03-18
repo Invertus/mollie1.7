@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
 
 trait AutowireTrait
 {
@@ -19,9 +20,10 @@ trait AutowireTrait
      *
      * @return $this
      */
-    public final function autowire($autowired = \true)
+    final public function autowire($autowired = true)
     {
         $this->definition->setAutowired($autowired);
+
         return $this;
     }
 }

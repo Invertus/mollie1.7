@@ -1,8 +1,13 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', 'Foo')->setAutowired(\true)->setPublic(\true);
+$container = new ContainerBuilder();
+
+$container
+    ->register('foo', 'Foo')
+    ->setAutowired(true)
+    ->setPublic(true)
+;
+
 return $container;

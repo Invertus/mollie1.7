@@ -1,8 +1,9 @@
 <?php
 
-namespace MolliePrefix\Dotenv;
+namespace Dotenv;
 
-use MolliePrefix\Dotenv\Exception\InvalidFileException;
+use Dotenv\Exception\InvalidFileException;
+
 class Parser
 {
     const INITIAL_STATE = 0;
@@ -11,6 +12,7 @@ class Parser
     const ESCAPE_STATE = 3;
     const WHITESPACE_STATE = 4;
     const COMMENT_STATE = 5;
+
     /**
      * Parse the given environment variable entry into a name and value.
      *
@@ -23,8 +25,10 @@ class Parser
     public static function parse($entry)
     {
         list($name, $value) = self::splitStringIntoParts($entry);
+
         return [self::parseName($name), self::parseValue($value)];
     }
+
     /**
      * Split the compound string into parts.
      *
@@ -38,14 +42,20 @@ class Parser
     {
         $name = $line;
         $value = null;
-        if (\strpos($line, '=') !== \false) {
-            list($name, $value) = \array_map('trim', \explode('=', $line, 2));
+
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = array_map('trim', explode('=', $line, 2));
         }
+
         if ($name === '') {
-            throw new \MolliePrefix\Dotenv\Exception\InvalidFileException(self::getErrorMessage('an unexpected equals', $line));
+            throw new InvalidFileException(
+                self::getErrorMessage('an unexpected equals', $line)
+            );
         }
+
         return [$name, $value];
     }
+
     /**
      * Strips quotes and the optional leading "export " from the variable name.
      *
@@ -57,12 +67,17 @@ class Parser
      */
     private static function parseName($name)
     {
-        $name = \trim(\str_replace(['export ', '\'', '"'], '', $name));
+        $name = trim(str_replace(['export ', '\'', '"'], '', $name));
+
         if (!self::isValidName($name)) {
-            throw new \MolliePrefix\Dotenv\Exception\InvalidFileException(self::getErrorMessage('an invalid name', $name));
+            throw new InvalidFileException(
+                self::getErrorMessage('an invalid name', $name)
+            );
         }
+
         return $name;
     }
+
     /**
      * Is the given variable name valid?
      *
@@ -72,8 +87,9 @@ class Parser
      */
     private static function isValidName($name)
     {
-        return \preg_match('~\\A[a-zA-Z0-9_.]+\\z~', $name) === 1;
+        return preg_match('~\A[a-zA-Z0-9_.]+\z~', $name) === 1;
     }
+
     /**
      * Strips quotes and comments from the environment variable value.
      *
@@ -85,10 +101,11 @@ class Parser
      */
     private static function parseValue($value)
     {
-        if ($value === null || \trim($value) === '') {
+        if ($value === null || trim($value) === '') {
             return $value;
         }
-        return \array_reduce(\str_split($value), function ($data, $char) use($value) {
+
+        return array_reduce(str_split($value), function ($data, $char) use ($value) {
             switch ($data[1]) {
                 case self::INITIAL_STATE:
                     if ($char === '"' || $char === '\'') {
@@ -96,15 +113,15 @@ class Parser
                     } elseif ($char === '#') {
                         return [$data[0], self::COMMENT_STATE];
                     } else {
-                        return [$data[0] . $char, self::UNQUOTED_STATE];
+                        return [$data[0].$char, self::UNQUOTED_STATE];
                     }
                 case self::UNQUOTED_STATE:
                     if ($char === '#') {
                         return [$data[0], self::COMMENT_STATE];
-                    } elseif (\ctype_space($char)) {
+                    } elseif (ctype_space($char)) {
                         return [$data[0], self::WHITESPACE_STATE];
                     } else {
-                        return [$data[0] . $char, self::UNQUOTED_STATE];
+                        return [$data[0].$char, self::UNQUOTED_STATE];
                     }
                 case self::QUOTED_STATE:
                     if ($char === $value[0]) {
@@ -112,19 +129,23 @@ class Parser
                     } elseif ($char === '\\') {
                         return [$data[0], self::ESCAPE_STATE];
                     } else {
-                        return [$data[0] . $char, self::QUOTED_STATE];
+                        return [$data[0].$char, self::QUOTED_STATE];
                     }
                 case self::ESCAPE_STATE:
                     if ($char === $value[0] || $char === '\\') {
-                        return [$data[0] . $char, self::QUOTED_STATE];
+                        return [$data[0].$char, self::QUOTED_STATE];
                     } else {
-                        throw new \MolliePrefix\Dotenv\Exception\InvalidFileException(self::getErrorMessage('an unexpected escape sequence', $value));
+                        throw new InvalidFileException(
+                            self::getErrorMessage('an unexpected escape sequence', $value)
+                        );
                     }
                 case self::WHITESPACE_STATE:
                     if ($char === '#') {
                         return [$data[0], self::COMMENT_STATE];
-                    } elseif (!\ctype_space($char)) {
-                        throw new \MolliePrefix\Dotenv\Exception\InvalidFileException(self::getErrorMessage('unexpected whitespace', $value));
+                    } elseif (!ctype_space($char)) {
+                        throw new InvalidFileException(
+                            self::getErrorMessage('unexpected whitespace', $value)
+                        );
                     } else {
                         return [$data[0], self::WHITESPACE_STATE];
                     }
@@ -133,6 +154,7 @@ class Parser
             }
         }, ['', self::INITIAL_STATE])[0];
     }
+
     /**
      * Generate a friendly error message.
      *
@@ -143,6 +165,10 @@ class Parser
      */
     private static function getErrorMessage($cause, $subject)
     {
-        return \sprintf('Failed to parse dotenv file due to %s. Failed at [%s].', $cause, \strtok($subject, "\n"));
+        return sprintf(
+            'Failed to parse dotenv file due to %s. Failed at [%s].',
+            $cause,
+            strtok($subject, "\n")
+        );
     }
 }

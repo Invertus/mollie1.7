@@ -8,115 +8,156 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Debug\Tests;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Debug\Exception\OutOfMemoryException;
-use MolliePrefix\Symfony\Component\Debug\ExceptionHandler;
-use MolliePrefix\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use MolliePrefix\Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-require_once __DIR__ . '/HeaderMock.php';
-class ExceptionHandlerTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Debug\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Debug\Exception\OutOfMemoryException;
+use Symfony\Component\Debug\ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+require_once __DIR__.'/HeaderMock.php';
+
+class ExceptionHandlerTest extends TestCase
 {
     protected function setUp()
     {
         testHeader();
     }
+
     protected function tearDown()
     {
         testHeader();
     }
+
     public function testDebug()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\false);
-        \ob_start();
+        $handler = new ExceptionHandler(false);
+
+        ob_start();
         $handler->sendPhpResponse(new \RuntimeException('Foo'));
-        $response = \ob_get_clean();
+        $response = ob_get_clean();
+
         $this->assertStringContainsString('Whoops, looks like something went wrong.', $response);
         $this->assertStringNotContainsString('<div class="trace trace-as-html">', $response);
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        \ob_start();
+
+        $handler = new ExceptionHandler(true);
+
+        ob_start();
         $handler->sendPhpResponse(new \RuntimeException('Foo'));
-        $response = \ob_get_clean();
+        $response = ob_get_clean();
+
         $this->assertStringContainsString('Whoops, looks like something went wrong.', $response);
         $this->assertStringContainsString('<div class="trace trace-as-html">', $response);
     }
+
     public function testStatusCode()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\false, 'iso8859-1');
-        \ob_start();
-        $handler->sendPhpResponse(new \MolliePrefix\Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Foo'));
-        $response = \ob_get_clean();
+        $handler = new ExceptionHandler(false, 'iso8859-1');
+
+        ob_start();
+        $handler->sendPhpResponse(new NotFoundHttpException('Foo'));
+        $response = ob_get_clean();
+
         $this->assertStringContainsString('Sorry, the page you are looking for could not be found.', $response);
-        $expectedHeaders = [['HTTP/1.0 404', \true, null], ['Content-Type: text/html; charset=iso8859-1', \true, null]];
+
+        $expectedHeaders = [
+            ['HTTP/1.0 404', true, null],
+            ['Content-Type: text/html; charset=iso8859-1', true, null],
+        ];
+
         $this->assertSame($expectedHeaders, testHeader());
     }
+
     public function testHeaders()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\false, 'iso8859-1');
-        \ob_start();
-        $handler->sendPhpResponse(new \MolliePrefix\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException(['POST']));
-        \ob_get_clean();
-        $expectedHeaders = [['HTTP/1.0 405', \true, null], ['Allow: POST', \false, null], ['Content-Type: text/html; charset=iso8859-1', \true, null]];
+        $handler = new ExceptionHandler(false, 'iso8859-1');
+
+        ob_start();
+        $handler->sendPhpResponse(new MethodNotAllowedHttpException(['POST']));
+        ob_get_clean();
+
+        $expectedHeaders = [
+            ['HTTP/1.0 405', true, null],
+            ['Allow: POST', false, null],
+            ['Content-Type: text/html; charset=iso8859-1', true, null],
+        ];
+
         $this->assertSame($expectedHeaders, testHeader());
     }
+
     public function testNestedExceptions()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        \ob_start();
+        $handler = new ExceptionHandler(true);
+        ob_start();
         $handler->sendPhpResponse(new \RuntimeException('Foo', 0, new \RuntimeException('Bar')));
-        $response = \ob_get_clean();
+        $response = ob_get_clean();
+
         $this->assertStringMatchesFormat('%A<p class="break-long-words trace-message">Foo</p>%A<p class="break-long-words trace-message">Bar</p>%A', $response);
     }
+
     public function testHandle()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        \ob_start();
+        $handler = new ExceptionHandler(true);
+        ob_start();
+
         $handler->handle(new \Exception('foo'));
-        $this->assertThatTheExceptionWasOutput(\ob_get_clean(), \Exception::class, 'Exception', 'foo');
+
+        $this->assertThatTheExceptionWasOutput(ob_get_clean(), \Exception::class, 'Exception', 'foo');
     }
+
     public function testHandleWithACustomHandlerThatOutputsSomething()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        \ob_start();
+        $handler = new ExceptionHandler(true);
+        ob_start();
         $handler->setHandler(function () {
             echo 'ccc';
         });
+
         $handler->handle(new \Exception());
-        \ob_end_flush();
-        // Necessary because of this PHP bug : https://bugs.php.net/76563
-        $this->assertSame('ccc', \ob_get_clean());
+        ob_end_flush(); // Necessary because of this PHP bug : https://bugs.php.net/76563
+        $this->assertSame('ccc', ob_get_clean());
     }
+
     public function testHandleWithACustomHandlerThatOutputsNothing()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        $handler->setHandler(function () {
-        });
+        $handler = new ExceptionHandler(true);
+        $handler->setHandler(function () {});
+
         $handler->handle(new \Exception('ccc'));
-        $this->assertThatTheExceptionWasOutput(\ob_get_clean(), \Exception::class, 'Exception', 'ccc');
+
+        $this->assertThatTheExceptionWasOutput(ob_get_clean(), \Exception::class, 'Exception', 'ccc');
     }
+
     public function testHandleWithACustomHandlerThatFails()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
+        $handler = new ExceptionHandler(true);
         $handler->setHandler(function () {
             throw new \RuntimeException();
         });
+
         $handler->handle(new \Exception('ccc'));
-        $this->assertThatTheExceptionWasOutput(\ob_get_clean(), \Exception::class, 'Exception', 'ccc');
+
+        $this->assertThatTheExceptionWasOutput(ob_get_clean(), \Exception::class, 'Exception', 'ccc');
     }
+
     public function testHandleOutOfMemoryException()
     {
-        $handler = new \MolliePrefix\Symfony\Component\Debug\ExceptionHandler(\true);
-        \ob_start();
+        $handler = new ExceptionHandler(true);
+        ob_start();
         $handler->setHandler(function () {
             $this->fail('OutOfMemoryException should bypass the handler');
         });
-        $handler->handle(new \MolliePrefix\Symfony\Component\Debug\Exception\OutOfMemoryException('foo', 0, \E_ERROR, __FILE__, __LINE__));
-        $this->assertThatTheExceptionWasOutput(\ob_get_clean(), \MolliePrefix\Symfony\Component\Debug\Exception\OutOfMemoryException::class, 'OutOfMemoryException', 'foo');
+
+        $handler->handle(new OutOfMemoryException('foo', 0, \E_ERROR, __FILE__, __LINE__));
+
+        $this->assertThatTheExceptionWasOutput(ob_get_clean(), OutOfMemoryException::class, 'OutOfMemoryException', 'foo');
     }
+
     private function assertThatTheExceptionWasOutput($content, $expectedClass, $expectedTitle, $expectedMessage)
     {
-        $this->assertStringContainsString(\sprintf('<span class="exception_title"><abbr title="%s">%s</abbr></span>', $expectedClass, $expectedTitle), $content);
-        $this->assertStringContainsString(\sprintf('<p class="break-long-words trace-message">%s</p>', $expectedMessage), $content);
+        $this->assertStringContainsString(sprintf('<span class="exception_title"><abbr title="%s">%s</abbr></span>', $expectedClass, $expectedTitle), $content);
+        $this->assertStringContainsString(sprintf('<p class="break-long-words trace-message">%s</p>', $expectedMessage), $content);
     }
 }

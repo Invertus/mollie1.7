@@ -1,12 +1,14 @@
 <?php
 
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures\includes;
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures\includes;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\A;
-use MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\Lille;
+use Symfony\Component\DependencyInjection\Tests\Compiler\A;
+use Symfony\Component\DependencyInjection\Tests\Compiler\Lille;
+
 class MultipleArgumentsOptionalScalarNotReallyOptional
 {
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\A $a, $foo = 'default_val', \MolliePrefix\Symfony\Component\DependencyInjection\Tests\Compiler\Lille $lille)
+    public function __construct(A $a, $foo = 'default_val', Lille $lille)
     {
     }
 }
+

@@ -8,26 +8,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Compiler;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+namespace Symfony\Component\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+
 /**
  * Resolves all TaggedIteratorArgument arguments.
  *
  * @author Roland Franssen <franssen.roland@gmail.com>
  */
-class ResolveTaggedIteratorArgumentPass extends \MolliePrefix\Symfony\Component\DependencyInjection\Compiler\AbstractRecursivePass
+class ResolveTaggedIteratorArgumentPass extends AbstractRecursivePass
 {
     use PriorityTaggedServiceTrait;
+
     /**
      * {@inheritdoc}
      */
-    protected function processValue($value, $isRoot = \false)
+    protected function processValue($value, $isRoot = false)
     {
-        if (!$value instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument) {
+        if (!$value instanceof TaggedIteratorArgument) {
             return parent::processValue($value, $isRoot);
         }
+
         $value->setValues($this->findAndSortTaggedServices($value->getTag(), $this->container));
+
         return $value;
     }
 }

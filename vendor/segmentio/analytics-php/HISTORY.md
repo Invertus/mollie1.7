@@ -1,3 +1,44 @@
+1.7.0 / 2021-03-10
+=======================
+  
+  * Retry Network errors (#136)
+  * Update Tests [Improvement] (#132)
+  * Updtate Readme Status Badging (#139)
+  * Bump e2e tests to latest version [Improvement] (#142)
+  * Add Limits to message, batch and memeory usage [Feature] (#137)
+  * Add Configurable flush parameters [Feature] (#135)
+  * Add ability to use custom consumer [Feature] (#61)
+  * Add ability to set file permmissions [Feature] (#122)
+  * Fix curl error handler [Improvement] (#97)
+  * Fix timestamp implementation for microseconds (#94)
+  * Modify max queue size setting to match requirements (#153, #146)
+  * Add ability to set userid as zero (#157)
+
+
+1.6.1-beta / 2018-05-01
+=======================
+
+  * Fix tslint error in version.php
+
+1.6.0-beta / 2018-04-30
+=======================
+
+  * Add License file
+  * Coding style fixers (#112)
+  * rename type to method to match new harness contract (#110)
+  * Increase Code coverage (#108)
+  * Add Linter to CI (#109)
+  * When the message size is larger than 32KB, return FALSE instead of throw exception
+  * Make writeKey required as a flag in the CLI instead of as an environment variable.
+  * Verify message size is below than 32KB
+  * Run E2E test when RUN_E2E_TESTS is defined
+  * Add Rfc 7231 compliant user agent into request header
+  * Add backoff for socket communication
+  * Implement response error handling for POST request and add backoff (in LibCurl)
+  * Change environment to precise as default
+  * CI: Make PHP 5.3 test to be run in precise environment
+  * Make host to be configurable
+  * Add anonymousId in group payload
 
 1.5.2 / 2017-08-18
 ==================

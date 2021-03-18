@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Psr\Log;
+namespace Psr\Log;
 
 /**
  * Describes a logger-aware instance.
@@ -14,5 +14,5 @@ interface LoggerAwareInterface
      *
      * @return void
      */
-    public function setLogger(\MolliePrefix\Psr\Log\LoggerInterface $logger);
+    public function setLogger(LoggerInterface $logger);
 }

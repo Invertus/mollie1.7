@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transform `namespace` operator from T_NAMESPACE into CT::T_NAMESPACE_OPERATOR.
  *
@@ -22,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class NamespaceOperatorTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class NamespaceOperatorTransformer extends AbstractTransformer
 {
     /**
      * {@inheritdoc}
@@ -31,24 +33,28 @@ final class NamespaceOperatorTransformer extends \MolliePrefix\PhpCsFixer\Tokeni
     {
         return 50300;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
-        if (!$token->isGivenKind(\T_NAMESPACE)) {
+        if (!$token->isGivenKind(T_NAMESPACE)) {
             return;
         }
+
         $nextIndex = $tokens->getNextMeaningfulToken($index);
-        if ($tokens[$nextIndex]->isGivenKind(\T_NS_SEPARATOR)) {
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NAMESPACE_OPERATOR, $token->getContent()]);
+
+        if ($tokens[$nextIndex]->isGivenKind(T_NS_SEPARATOR)) {
+            $tokens[$index] = new Token([CT::T_NAMESPACE_OPERATOR, $token->getContent()]);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function getDeprecatedCustomTokens()
     {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_NAMESPACE_OPERATOR];
+        return [CT::T_NAMESPACE_OPERATOR];
     }
 }

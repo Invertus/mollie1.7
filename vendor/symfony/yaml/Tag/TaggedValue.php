@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Yaml\Tag;
+
+namespace Symfony\Component\Yaml\Tag;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
@@ -18,6 +19,7 @@ final class TaggedValue
 {
     private $tag;
     private $value;
+
     /**
      * @param string $tag
      * @param mixed  $value
@@ -27,6 +29,7 @@ final class TaggedValue
         $this->tag = $tag;
         $this->value = $value;
     }
+
     /**
      * @return string
      */
@@ -34,6 +37,7 @@ final class TaggedValue
     {
         return $this->tag;
     }
+
     /**
      * @return mixed
      */

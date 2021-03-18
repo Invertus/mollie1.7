@@ -1,15 +1,17 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Regex;
+namespace Dotenv\Regex;
 
-use MolliePrefix\PhpOption\None;
-use MolliePrefix\PhpOption\Some;
-class Success extends \MolliePrefix\Dotenv\Regex\Result
+use PhpOption\None;
+use PhpOption\Some;
+
+class Success extends Result
 {
     /**
      * @var string
      */
     private $value;
+
     /**
      * Internal constructor for a success value.
      *
@@ -21,6 +23,7 @@ class Success extends \MolliePrefix\Dotenv\Regex\Result
     {
         $this->value = $value;
     }
+
     /**
      * Create a new success value.
      *
@@ -32,6 +35,7 @@ class Success extends \MolliePrefix\Dotenv\Regex\Result
     {
         return new self($value);
     }
+
     /**
      * Get the success option value.
      *
@@ -39,8 +43,9 @@ class Success extends \MolliePrefix\Dotenv\Regex\Result
      */
     public function success()
     {
-        return \MolliePrefix\PhpOption\Some::create($this->value);
+        return Some::create($this->value);
     }
+
     /**
      * Map over the success value.
      *
@@ -52,6 +57,7 @@ class Success extends \MolliePrefix\Dotenv\Regex\Result
     {
         return self::create($f($this->value));
     }
+
     /**
      * Get the error option value.
      *
@@ -59,8 +65,9 @@ class Success extends \MolliePrefix\Dotenv\Regex\Result
      */
     public function error()
     {
-        return \MolliePrefix\PhpOption\None::create();
+        return None::create();
     }
+
     /**
      * Map over the error value.
      *

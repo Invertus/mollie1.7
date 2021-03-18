@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Cache;
+
+namespace PhpCsFixer\Cache;
 
 /**
  * @author Andreas Möller <am@localheinz.com>
@@ -22,9 +23,11 @@ interface FileHandlerInterface
      * @return string
      */
     public function getFile();
+
     /**
      * @return null|CacheInterface
      */
     public function read();
-    public function write(\MolliePrefix\PhpCsFixer\Cache\CacheInterface $cache);
+
+    public function write(CacheInterface $cache);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Psr\SimpleCache;
+namespace Psr\SimpleCache;
 
 interface CacheInterface
 {
@@ -16,6 +16,7 @@ interface CacheInterface
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function get($key, $default = null);
+
     /**
      * Persists data in the cache, uniquely referenced by a key with an optional expiration TTL time.
      *
@@ -31,6 +32,7 @@ interface CacheInterface
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function set($key, $value, $ttl = null);
+
     /**
      * Delete an item from the cache by its unique key.
      *
@@ -42,12 +44,14 @@ interface CacheInterface
      *   MUST be thrown if the $key string is not a legal value.
      */
     public function delete($key);
+
     /**
      * Wipes clean the entire cache's keys.
      *
      * @return bool True on success and false on failure.
      */
     public function clear();
+
     /**
      * Obtains multiple cache items by their unique keys.
      *
@@ -61,6 +65,7 @@ interface CacheInterface
      *   or if any of the $keys are not a legal value.
      */
     public function getMultiple($keys, $default = null);
+
     /**
      * Persists a set of key => value pairs in the cache, with an optional TTL.
      *
@@ -76,6 +81,7 @@ interface CacheInterface
      *   or if any of the $values are not a legal value.
      */
     public function setMultiple($values, $ttl = null);
+
     /**
      * Deletes multiple cache items in a single operation.
      *
@@ -88,6 +94,7 @@ interface CacheInterface
      *   or if any of the $keys are not a legal value.
      */
     public function deleteMultiple($keys);
+
     /**
      * Determines whether an item is present in the cache.
      *

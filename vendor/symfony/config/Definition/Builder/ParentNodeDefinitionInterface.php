@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Definition\Builder;
+
+namespace Symfony\Component\Config\Definition\Builder;
 
 /**
  * An interface that must be implemented by nodes which can have children.
@@ -23,6 +24,7 @@ interface ParentNodeDefinitionInterface
      * @return NodeBuilder
      */
     public function children();
+
     /**
      * Appends a node definition.
      *
@@ -38,9 +40,10 @@ interface ParentNodeDefinitionInterface
      *
      * @return $this
      */
-    public function append(\MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeDefinition $node);
+    public function append(NodeDefinition $node);
+
     /**
      * Sets a custom children builder.
      */
-    public function setBuilder(\MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeBuilder $builder);
+    public function setBuilder(NodeBuilder $builder);
 }

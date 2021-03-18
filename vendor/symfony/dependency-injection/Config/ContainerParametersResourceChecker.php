@@ -8,39 +8,45 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Config;
 
-use MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface;
-use MolliePrefix\Symfony\Component\Config\ResourceCheckerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
+namespace Symfony\Component\DependencyInjection\Config;
+
+use Symfony\Component\Config\Resource\ResourceInterface;
+use Symfony\Component\Config\ResourceCheckerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * @author Maxime Steinhausser <maxime.steinhausser@gmail.com>
  */
-class ContainerParametersResourceChecker implements \MolliePrefix\Symfony\Component\Config\ResourceCheckerInterface
+class ContainerParametersResourceChecker implements ResourceCheckerInterface
 {
     /** @var ContainerInterface */
     private $container;
-    public function __construct(\MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface $container)
+
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function supports(\MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface $metadata)
+    public function supports(ResourceInterface $metadata)
     {
-        return $metadata instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Config\ContainerParametersResource;
+        return $metadata instanceof ContainerParametersResource;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isFresh(\MolliePrefix\Symfony\Component\Config\Resource\ResourceInterface $resource, $timestamp)
+    public function isFresh(ResourceInterface $resource, $timestamp)
     {
         foreach ($resource->getParameters() as $key => $value) {
             if (!$this->container->hasParameter($key) || $this->container->getParameter($key) !== $value) {
-                return \false;
+                return false;
             }
         }
-        return \true;
+
+        return true;
     }
 }

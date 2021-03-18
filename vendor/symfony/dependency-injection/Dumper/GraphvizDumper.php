@@ -8,15 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Dumper;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\ArgumentInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Parameter;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
+namespace Symfony\Component\DependencyInjection\Dumper;
+
+use Symfony\Component\DependencyInjection\Argument\ArgumentInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\DependencyInjection\Parameter;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\Reference;
+
 /**
  * GraphvizDumper dumps a service container as a graphviz file.
  *
@@ -26,12 +28,20 @@ use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection\Dumper\Dumper
+class GraphvizDumper extends Dumper
 {
     private $nodes;
     private $edges;
     // All values should be strings
-    private $options = ['graph' => ['ratio' => 'compress'], 'node' => ['fontsize' => '11', 'fontname' => 'Arial', 'shape' => 'record'], 'edge' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => 'grey', 'arrowhead' => 'open', 'arrowsize' => '0.5'], 'node.instance' => ['fillcolor' => '#9999ff', 'style' => 'filled'], 'node.definition' => ['fillcolor' => '#eeeeee'], 'node.missing' => ['fillcolor' => '#ff9999', 'style' => 'filled']];
+    private $options = [
+            'graph' => ['ratio' => 'compress'],
+            'node' => ['fontsize' => '11', 'fontname' => 'Arial', 'shape' => 'record'],
+            'edge' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => 'grey', 'arrowhead' => 'open', 'arrowsize' => '0.5'],
+            'node.instance' => ['fillcolor' => '#9999ff', 'style' => 'filled'],
+            'node.definition' => ['fillcolor' => '#eeeeee'],
+            'node.missing' => ['fillcolor' => '#ff9999', 'style' => 'filled'],
+        ];
+
     /**
      * Dumps the service container as a graphviz graph.
      *
@@ -50,19 +60,30 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
     {
         foreach (['graph', 'node', 'edge', 'node.instance', 'node.definition', 'node.missing'] as $key) {
             if (isset($options[$key])) {
-                $this->options[$key] = \array_merge($this->options[$key], $options[$key]);
+                $this->options[$key] = array_merge($this->options[$key], $options[$key]);
             }
         }
+
         $this->nodes = $this->findNodes();
+
         $this->edges = [];
         foreach ($this->container->getDefinitions() as $id => $definition) {
-            $this->edges[$id] = \array_merge($this->findEdges($id, $definition->getArguments(), \true, ''), $this->findEdges($id, $definition->getProperties(), \false, ''));
+            $this->edges[$id] = array_merge(
+                $this->findEdges($id, $definition->getArguments(), true, ''),
+                $this->findEdges($id, $definition->getProperties(), false, '')
+            );
+
             foreach ($definition->getMethodCalls() as $call) {
-                $this->edges[$id] = \array_merge($this->edges[$id], $this->findEdges($id, $call[1], \false, $call[0] . '()'));
+                $this->edges[$id] = array_merge(
+                    $this->edges[$id],
+                    $this->findEdges($id, $call[1], false, $call[0].'()')
+                );
             }
         }
-        return $this->container->resolveEnvPlaceholders($this->startDot() . $this->addNodes() . $this->addEdges() . $this->endDot(), '__ENV_%s__');
+
+        return $this->container->resolveEnvPlaceholders($this->startDot().$this->addNodes().$this->addEdges().$this->endDot(), '__ENV_%s__');
     }
+
     /**
      * Returns all nodes.
      *
@@ -73,10 +94,13 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
         $code = '';
         foreach ($this->nodes as $id => $node) {
             $aliases = $this->getAliases($id);
-            $code .= \sprintf("  node_%s [label=\"%s\\n%s\\n\", shape=%s%s];\n", $this->dotize($id), $id . ($aliases ? ' (' . \implode(', ', $aliases) . ')' : ''), $node['class'], $this->options['node']['shape'], $this->addAttributes($node['attributes']));
+
+            $code .= sprintf("  node_%s [label=\"%s\\n%s\\n\", shape=%s%s];\n", $this->dotize($id), $id.($aliases ? ' ('.implode(', ', $aliases).')' : ''), $node['class'], $this->options['node']['shape'], $this->addAttributes($node['attributes']));
         }
+
         return $code;
     }
+
     /**
      * Returns all edges.
      *
@@ -87,11 +111,13 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
         $code = '';
         foreach ($this->edges as $id => $edges) {
             foreach ($edges as $edge) {
-                $code .= \sprintf("  node_%s -> node_%s [label=\"%s\" style=\"%s\"%s];\n", $this->dotize($id), $this->dotize($edge['to']), $edge['name'], $edge['required'] ? 'filled' : 'dashed', $edge['lazy'] ? ' color="#9999ff"' : '');
+                $code .= sprintf("  node_%s -> node_%s [label=\"%s\" style=\"%s\"%s];\n", $this->dotize($id), $this->dotize($edge['to']), $edge['name'], $edge['required'] ? 'filled' : 'dashed', $edge['lazy'] ? ' color="#9999ff"' : '');
             }
         }
+
         return $code;
     }
+
     /**
      * Finds all edges belonging to a specific service id.
      *
@@ -102,36 +128,44 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
      *
      * @return array An array of edges
      */
-    private function findEdges($id, array $arguments, $required, $name, $lazy = \false)
+    private function findEdges($id, array $arguments, $required, $name, $lazy = false)
     {
         $edges = [];
         foreach ($arguments as $argument) {
-            if ($argument instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Parameter) {
+            if ($argument instanceof Parameter) {
                 $argument = $this->container->hasParameter($argument) ? $this->container->getParameter($argument) : null;
-            } elseif (\is_string($argument) && \preg_match('/^%([^%]+)%$/', $argument, $match)) {
+            } elseif (\is_string($argument) && preg_match('/^%([^%]+)%$/', $argument, $match)) {
                 $argument = $this->container->hasParameter($match[1]) ? $this->container->getParameter($match[1]) : null;
             }
-            if ($argument instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference) {
+
+            if ($argument instanceof Reference) {
                 $lazyEdge = $lazy;
+
                 if (!$this->container->has((string) $argument)) {
                     $this->nodes[(string) $argument] = ['name' => $name, 'required' => $required, 'class' => '', 'attributes' => $this->options['node.missing']];
                 } elseif ('service_container' !== (string) $argument) {
                     $lazyEdge = $lazy || $this->container->getDefinition((string) $argument)->isLazy();
                 }
+
                 $edges[] = ['name' => $name, 'required' => $required, 'to' => $argument, 'lazy' => $lazyEdge];
-            } elseif ($argument instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Argument\ArgumentInterface) {
-                $edges = \array_merge($edges, $this->findEdges($id, $argument->getValues(), $required, $name, \true));
-            } elseif ($argument instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Definition) {
-                $edges = \array_merge($edges, $this->findEdges($id, $argument->getArguments(), $required, ''), $this->findEdges($id, $argument->getProperties(), \false, ''));
+            } elseif ($argument instanceof ArgumentInterface) {
+                $edges = array_merge($edges, $this->findEdges($id, $argument->getValues(), $required, $name, true));
+            } elseif ($argument instanceof Definition) {
+                $edges = array_merge($edges,
+                    $this->findEdges($id, $argument->getArguments(), $required, ''),
+                    $this->findEdges($id, $argument->getProperties(), false, '')
+                );
                 foreach ($argument->getMethodCalls() as $call) {
-                    $edges = \array_merge($edges, $this->findEdges($id, $call[1], \false, $call[0] . '()'));
+                    $edges = array_merge($edges, $this->findEdges($id, $call[1], false, $call[0].'()'));
                 }
             } elseif (\is_array($argument)) {
-                $edges = \array_merge($edges, $this->findEdges($id, $argument, $required, $name, $lazy));
+                $edges = array_merge($edges, $this->findEdges($id, $argument, $required, $name, $lazy));
             }
         }
+
         return $edges;
     }
+
     /**
      * Finds all nodes.
      *
@@ -140,41 +174,53 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
     private function findNodes()
     {
         $nodes = [];
+
         $container = $this->cloneContainer();
+
         foreach ($container->getDefinitions() as $id => $definition) {
             $class = $definition->getClass();
-            if ('\\' === \substr($class, 0, 1)) {
-                $class = \substr($class, 1);
+
+            if ('\\' === substr($class, 0, 1)) {
+                $class = substr($class, 1);
             }
+
             try {
                 $class = $this->container->getParameterBag()->resolveValue($class);
-            } catch (\MolliePrefix\Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException $e) {
+            } catch (ParameterNotFoundException $e) {
             }
-            $nodes[$id] = ['class' => \str_replace('\\', '\\\\', $class), 'attributes' => \array_merge($this->options['node.definition'], ['style' => $definition->isShared() ? 'filled' : 'dotted'])];
-            $container->setDefinition($id, new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('stdClass'));
+
+            $nodes[$id] = ['class' => str_replace('\\', '\\\\', $class), 'attributes' => array_merge($this->options['node.definition'], ['style' => $definition->isShared() ? 'filled' : 'dotted'])];
+            $container->setDefinition($id, new Definition('stdClass'));
         }
+
         foreach ($container->getServiceIds() as $id) {
             if (\array_key_exists($id, $container->getAliases())) {
                 continue;
             }
+
             if (!$container->hasDefinition($id)) {
-                $nodes[$id] = ['class' => \str_replace('\\', '\\\\', \get_class($container->get($id))), 'attributes' => $this->options['node.instance']];
+                $nodes[$id] = ['class' => str_replace('\\', '\\\\', \get_class($container->get($id))), 'attributes' => $this->options['node.instance']];
             }
         }
+
         return $nodes;
     }
+
     private function cloneContainer()
     {
-        $parameterBag = new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag($this->container->getParameterBag()->all());
-        $container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder($parameterBag);
+        $parameterBag = new ParameterBag($this->container->getParameterBag()->all());
+
+        $container = new ContainerBuilder($parameterBag);
         $container->setDefinitions($this->container->getDefinitions());
         $container->setAliases($this->container->getAliases());
         $container->setResources($this->container->getResources());
         foreach ($this->container->getExtensions() as $extension) {
             $container->registerExtension($extension);
         }
+
         return $container;
     }
+
     /**
      * Returns the start dot.
      *
@@ -182,8 +228,13 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
      */
     private function startDot()
     {
-        return \sprintf("digraph sc {\n  %s\n  node [%s];\n  edge [%s];\n\n", $this->addOptions($this->options['graph']), $this->addOptions($this->options['node']), $this->addOptions($this->options['edge']));
+        return sprintf("digraph sc {\n  %s\n  node [%s];\n  edge [%s];\n\n",
+            $this->addOptions($this->options['graph']),
+            $this->addOptions($this->options['node']),
+            $this->addOptions($this->options['edge'])
+        );
     }
+
     /**
      * Returns the end dot.
      *
@@ -193,6 +244,7 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
     {
         return "}\n";
     }
+
     /**
      * Adds attributes.
      *
@@ -204,10 +256,12 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
     {
         $code = [];
         foreach ($attributes as $k => $v) {
-            $code[] = \sprintf('%s="%s"', $k, $v);
+            $code[] = sprintf('%s="%s"', $k, $v);
         }
-        return $code ? ', ' . \implode(', ', $code) : '';
+
+        return $code ? ', '.implode(', ', $code) : '';
     }
+
     /**
      * Adds options.
      *
@@ -219,10 +273,12 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
     {
         $code = [];
         foreach ($options as $k => $v) {
-            $code[] = \sprintf('%s="%s"', $k, $v);
+            $code[] = sprintf('%s="%s"', $k, $v);
         }
-        return \implode(' ', $code);
+
+        return implode(' ', $code);
     }
+
     /**
      * Dotizes an identifier.
      *
@@ -232,8 +288,9 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
      */
     private function dotize($id)
     {
-        return \strtolower(\preg_replace('/\\W/i', '_', $id));
+        return strtolower(preg_replace('/\W/i', '_', $id));
     }
+
     /**
      * Compiles an array of aliases for a specified service id.
      *
@@ -249,6 +306,7 @@ class GraphvizDumper extends \MolliePrefix\Symfony\Component\DependencyInjection
                 $aliases[] = $alias;
             }
         }
+
         return $aliases;
     }
 }

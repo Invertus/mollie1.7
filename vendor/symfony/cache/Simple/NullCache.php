@@ -8,13 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Simple;
 
-use MolliePrefix\Psr\SimpleCache\CacheInterface;
+namespace Symfony\Component\Cache\Simple;
+
+use Psr\SimpleCache\CacheInterface;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class NullCache implements \MolliePrefix\Psr\SimpleCache\CacheInterface
+class NullCache implements CacheInterface
 {
     /**
      * {@inheritdoc}
@@ -23,55 +25,62 @@ class NullCache implements \MolliePrefix\Psr\SimpleCache\CacheInterface
     {
         return $default;
     }
+
     /**
      * {@inheritdoc}
      */
     public function getMultiple($keys, $default = null)
     {
         foreach ($keys as $key) {
-            (yield $key => $default);
+            yield $key => $default;
         }
     }
+
     /**
      * {@inheritdoc}
      */
     public function has($key)
     {
-        return \false;
+        return false;
     }
+
     /**
      * {@inheritdoc}
      */
     public function clear()
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
     public function delete($key)
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
     public function deleteMultiple($keys)
     {
-        return \true;
+        return true;
     }
+
     /**
      * {@inheritdoc}
      */
     public function set($key, $value, $ttl = null)
     {
-        return \false;
+        return false;
     }
+
     /**
      * {@inheritdoc}
      */
     public function setMultiple($values, $ttl = null)
     {
-        return \false;
+        return false;
     }
 }

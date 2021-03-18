@@ -8,14 +8,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Psr\Cache\CacheItemInterface;
-use MolliePrefix\Psr\Cache\CacheItemPoolInterface;
-use MolliePrefix\Symfony\Component\Cache\CacheItem;
-use MolliePrefix\Symfony\Component\Cache\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
+namespace Symfony\Component\Cache\Adapter;
+
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Exception\InvalidArgumentException;
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\ResettableInterface;
+
 /**
  * Chains several adapters together.
  *
@@ -24,11 +26,12 @@ use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ChainAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\AdapterInterface, \MolliePrefix\Symfony\Component\Cache\PruneableInterface, \MolliePrefix\Symfony\Component\Cache\ResettableInterface
+class ChainAdapter implements AdapterInterface, PruneableInterface, ResettableInterface
 {
     private $adapters = [];
     private $adapterCount;
     private $syncItem;
+
     /**
      * @param CacheItemPoolInterface[] $adapters        The ordered list of adapters used to fetch cached items
      * @param int                      $defaultLifetime The default lifetime of items propagated from lower adapters to upper ones
@@ -36,32 +39,41 @@ class ChainAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\Adap
     public function __construct(array $adapters, $defaultLifetime = 0)
     {
         if (!$adapters) {
-            throw new \MolliePrefix\Symfony\Component\Cache\Exception\InvalidArgumentException('At least one adapter must be specified.');
+            throw new InvalidArgumentException('At least one adapter must be specified.');
         }
+
         foreach ($adapters as $adapter) {
-            if (!$adapter instanceof \MolliePrefix\Psr\Cache\CacheItemPoolInterface) {
-                throw new \MolliePrefix\Symfony\Component\Cache\Exception\InvalidArgumentException(\sprintf('The class "%s" does not implement the "%s" interface.', \get_class($adapter), \MolliePrefix\Psr\Cache\CacheItemPoolInterface::class));
+            if (!$adapter instanceof CacheItemPoolInterface) {
+                throw new InvalidArgumentException(sprintf('The class "%s" does not implement the "%s" interface.', \get_class($adapter), CacheItemPoolInterface::class));
             }
-            if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], \true) && $adapter instanceof \MolliePrefix\Symfony\Component\Cache\Adapter\ApcuAdapter && !\filter_var(\ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
-                continue;
-                // skip putting APCu in the chain when the backend is disabled
+            if (\in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && $adapter instanceof ApcuAdapter && !filter_var(ini_get('apc.enable_cli'), \FILTER_VALIDATE_BOOLEAN)) {
+                continue; // skip putting APCu in the chain when the backend is disabled
             }
-            if ($adapter instanceof \MolliePrefix\Symfony\Component\Cache\Adapter\AdapterInterface) {
+
+            if ($adapter instanceof AdapterInterface) {
                 $this->adapters[] = $adapter;
             } else {
-                $this->adapters[] = new \MolliePrefix\Symfony\Component\Cache\Adapter\ProxyAdapter($adapter);
+                $this->adapters[] = new ProxyAdapter($adapter);
             }
         }
         $this->adapterCount = \count($this->adapters);
-        $this->syncItem = \Closure::bind(static function ($sourceItem, $item) use($defaultLifetime) {
-            $item->value = $sourceItem->value;
-            $item->isHit = $sourceItem->isHit;
-            if (0 < $defaultLifetime) {
-                $item->expiresAfter($defaultLifetime);
-            }
-            return $item;
-        }, null, \MolliePrefix\Symfony\Component\Cache\CacheItem::class);
+
+        $this->syncItem = \Closure::bind(
+            static function ($sourceItem, $item) use ($defaultLifetime) {
+                $item->value = $sourceItem->value;
+                $item->isHit = $sourceItem->isHit;
+
+                if (0 < $defaultLifetime) {
+                    $item->expiresAfter($defaultLifetime);
+                }
+
+                return $item;
+            },
+            null,
+            CacheItem::class
+        );
     }
+
     /**
      * {@inheritdoc}
      */
@@ -69,18 +81,24 @@ class ChainAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\Adap
     {
         $syncItem = $this->syncItem;
         $misses = [];
+
         foreach ($this->adapters as $i => $adapter) {
             $item = $adapter->getItem($key);
+
             if ($item->isHit()) {
                 while (0 <= --$i) {
                     $this->adapters[$i]->save($syncItem($item, $misses[$i]));
                 }
+
                 return $item;
             }
+
             $misses[$i] = $item;
         }
+
         return $item;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -88,32 +106,38 @@ class ChainAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\Adap
     {
         return $this->generateItems($this->adapters[0]->getItems($keys), 0);
     }
+
     private function generateItems($items, $adapterIndex)
     {
         $missing = [];
         $misses = [];
         $nextAdapterIndex = $adapterIndex + 1;
         $nextAdapter = isset($this->adapters[$nextAdapterIndex]) ? $this->adapters[$nextAdapterIndex] : null;
+
         foreach ($items as $k => $item) {
             if (!$nextAdapter || $item->isHit()) {
-                (yield $k => $item);
+                yield $k => $item;
             } else {
                 $missing[] = $k;
                 $misses[$k] = $item;
             }
         }
+
         if ($missing) {
             $syncItem = $this->syncItem;
             $adapter = $this->adapters[$adapterIndex];
             $items = $this->generateItems($nextAdapter->getItems($missing), $nextAdapterIndex);
+
             foreach ($items as $k => $item) {
                 if ($item->isHit()) {
                     $adapter->save($syncItem($item, $misses[$k]));
                 }
-                (yield $k => $item);
+
+                yield $k => $item;
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -121,103 +145,126 @@ class ChainAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\Adap
     {
         foreach ($this->adapters as $adapter) {
             if ($adapter->hasItem($key)) {
-                return \true;
+                return true;
             }
         }
-        return \false;
+
+        return false;
     }
+
     /**
      * {@inheritdoc}
      */
     public function clear()
     {
-        $cleared = \true;
+        $cleared = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $cleared = $this->adapters[$i]->clear() && $cleared;
         }
+
         return $cleared;
     }
+
     /**
      * {@inheritdoc}
      */
     public function deleteItem($key)
     {
-        $deleted = \true;
+        $deleted = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $deleted = $this->adapters[$i]->deleteItem($key) && $deleted;
         }
+
         return $deleted;
     }
+
     /**
      * {@inheritdoc}
      */
     public function deleteItems(array $keys)
     {
-        $deleted = \true;
+        $deleted = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $deleted = $this->adapters[$i]->deleteItems($keys) && $deleted;
         }
+
         return $deleted;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function save(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function save(CacheItemInterface $item)
     {
-        $saved = \true;
+        $saved = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $saved = $this->adapters[$i]->save($item) && $saved;
         }
+
         return $saved;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function saveDeferred(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item)
     {
-        $saved = \true;
+        $saved = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $saved = $this->adapters[$i]->saveDeferred($item) && $saved;
         }
+
         return $saved;
     }
+
     /**
      * {@inheritdoc}
      */
     public function commit()
     {
-        $committed = \true;
+        $committed = true;
         $i = $this->adapterCount;
+
         while ($i--) {
             $committed = $this->adapters[$i]->commit() && $committed;
         }
+
         return $committed;
     }
+
     /**
      * {@inheritdoc}
      */
     public function prune()
     {
-        $pruned = \true;
+        $pruned = true;
+
         foreach ($this->adapters as $adapter) {
-            if ($adapter instanceof \MolliePrefix\Symfony\Component\Cache\PruneableInterface) {
+            if ($adapter instanceof PruneableInterface) {
                 $pruned = $adapter->prune() && $pruned;
             }
         }
+
         return $pruned;
     }
+
     /**
      * {@inheritdoc}
      */
     public function reset()
     {
         foreach ($this->adapters as $adapter) {
-            if ($adapter instanceof \MolliePrefix\Symfony\Component\Cache\ResettableInterface) {
+            if ($adapter instanceof ResettableInterface) {
                 $adapter->reset();
             }
         }

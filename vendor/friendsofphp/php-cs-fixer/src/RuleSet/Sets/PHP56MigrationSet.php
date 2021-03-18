@@ -9,18 +9,23 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\RuleSet\Sets;
 
-use MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+namespace PhpCsFixer\RuleSet\Sets;
+
+use PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+
 /**
  * @internal
  */
-final class PHP56MigrationSet extends \MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription
+final class PHP56MigrationSet extends AbstractRuleSetDescription
 {
     public function getRules()
     {
-        return [];
+        return [
+            '@PHP54Migration' => true,
+        ];
     }
+
     public function getDescription()
     {
         return 'Rules to improve code for PHP 5.6 compatibility.';

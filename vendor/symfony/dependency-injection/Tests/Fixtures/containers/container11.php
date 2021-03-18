@@ -1,9 +1,13 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', 'FooClass')->addArgument(new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('BarClass', [new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('BazClass')]))->setPublic(\true);
+$container = new ContainerBuilder();
+$container->
+    register('foo', 'FooClass')->
+    addArgument(new Definition('BarClass', [new Definition('BazClass')]))
+    ->setPublic(true)
+;
+
 return $container;

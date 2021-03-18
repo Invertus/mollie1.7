@@ -8,11 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Psr\Cache\CacheItemInterface;
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
+namespace Symfony\Component\Cache\Adapter;
+
+use Psr\Cache\CacheItemInterface;
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\ResettableInterface;
+
 /**
  * An adapter that collects data about all cache calls.
  *
@@ -20,14 +22,16 @@ use MolliePrefix\Symfony\Component\Cache\ResettableInterface;
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\AdapterInterface, \MolliePrefix\Symfony\Component\Cache\PruneableInterface, \MolliePrefix\Symfony\Component\Cache\ResettableInterface
+class TraceableAdapter implements AdapterInterface, PruneableInterface, ResettableInterface
 {
     protected $pool;
     private $calls = [];
-    public function __construct(\MolliePrefix\Symfony\Component\Cache\Adapter\AdapterInterface $pool)
+
+    public function __construct(AdapterInterface $pool)
     {
         $this->pool = $pool;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -37,15 +41,17 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             $item = $this->pool->getItem($key);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
         if ($event->result[$key] = $item->isHit()) {
             ++$event->hits;
         } else {
             ++$event->misses;
         }
+
         return $item;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -55,9 +61,10 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             return $event->result[$key] = $this->pool->hasItem($key);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -67,33 +74,36 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             return $event->result[$key] = $this->pool->deleteItem($key);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
-    public function save(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function save(CacheItemInterface $item)
     {
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$item->getKey()] = $this->pool->save($item);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
-    public function saveDeferred(\MolliePrefix\Psr\Cache\CacheItemInterface $item)
+    public function saveDeferred(CacheItemInterface $item)
     {
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result[$item->getKey()] = $this->pool->saveDeferred($item);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -103,9 +113,9 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             $result = $this->pool->getItems($keys);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
-        $f = function () use($result, $event) {
+        $f = function () use ($result, $event) {
             $event->result = [];
             foreach ($result as $key => $item) {
                 if ($event->result[$key] = $item->isHit()) {
@@ -113,11 +123,13 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
                 } else {
                     ++$event->misses;
                 }
-                (yield $key => $item);
+                yield $key => $item;
             }
         };
+
         return $f();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -127,9 +139,10 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             return $event->result = $this->pool->clear();
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -140,9 +153,10 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             return $event->result['result'] = $this->pool->deleteItems($keys);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -152,50 +166,58 @@ class TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\
         try {
             return $event->result = $this->pool->commit();
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     public function prune()
     {
-        if (!$this->pool instanceof \MolliePrefix\Symfony\Component\Cache\PruneableInterface) {
-            return \false;
+        if (!$this->pool instanceof PruneableInterface) {
+            return false;
         }
         $event = $this->start(__FUNCTION__);
         try {
             return $event->result = $this->pool->prune();
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     public function reset()
     {
-        if ($this->pool instanceof \MolliePrefix\Symfony\Component\Cache\ResettableInterface) {
+        if ($this->pool instanceof ResettableInterface) {
             $this->pool->reset();
         }
+
         $this->clearCalls();
     }
+
     public function getCalls()
     {
         return $this->calls;
     }
+
     public function clearCalls()
     {
         $this->calls = [];
     }
+
     protected function start($name)
     {
-        $this->calls[] = $event = new \MolliePrefix\Symfony\Component\Cache\Adapter\TraceableAdapterEvent();
+        $this->calls[] = $event = new TraceableAdapterEvent();
         $event->name = $name;
-        $event->start = \microtime(\true);
+        $event->start = microtime(true);
+
         return $event;
     }
 }
+
 class TraceableAdapterEvent
 {
     public $name;

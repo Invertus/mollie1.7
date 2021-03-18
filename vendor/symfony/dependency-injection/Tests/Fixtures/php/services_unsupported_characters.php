@@ -1,48 +1,63 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface;
-use MolliePrefix\Symfony\Component\DependencyInjection\Container;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 /**
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
  * @final since Symfony 3.3
  */
-class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Symfony\Component\DependencyInjection\Container
+class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends Container
 {
     private $parameters = [];
     private $targetDirs = [];
+
     public function __construct()
     {
         $this->parameters = $this->getDefaultParameters();
+
         $this->services = [];
-        $this->methodMap = ['bar$' => 'getBarService', 'bar$!' => 'getBar2Service', 'foo*/oh-no' => 'getFooohnoService'];
+        $this->methodMap = [
+            'bar$' => 'getBarService',
+            'bar$!' => 'getBar2Service',
+            'foo*/oh-no' => 'getFooohnoService',
+        ];
+
         $this->aliases = [];
     }
+
     public function getRemovedIds()
     {
-        return ['MolliePrefix\\Psr\\Container\\ContainerInterface' => \true, 'MolliePrefix\\Symfony\\Component\\DependencyInjection\\ContainerInterface' => \true];
+        return [
+            'Psr\\Container\\ContainerInterface' => true,
+            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
+        ];
     }
+
     public function compile()
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('You cannot compile a dumped container that was already compiled.');
+        throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
+
     public function isCompiled()
     {
-        return \true;
+        return true;
     }
+
     public function isFrozen()
     {
-        @\trigger_error(\sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), \E_USER_DEPRECATED);
-        return \true;
+        @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return true;
     }
+
     /**
      * Gets the public 'bar$' shared service.
      *
@@ -50,8 +65,9 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
      */
     protected function getBarService()
     {
-        return $this->services['bar$'] = new \MolliePrefix\FooClass();
+        return $this->services['bar$'] = new \FooClass();
     }
+
     /**
      * Gets the public 'bar$!' shared service.
      *
@@ -59,8 +75,9 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
      */
     protected function getBar2Service()
     {
-        return $this->services['bar$!'] = new \MolliePrefix\FooClass();
+        return $this->services['bar$!'] = new \FooClass();
     }
+
     /**
      * Gets the public 'foo oh-no' shared service.
      *
@@ -68,32 +85,39 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
      */
     protected function getFooohnoService()
     {
-        return $this->services['foo*/oh-no'] = new \MolliePrefix\FooClass();
+        return $this->services['foo*/oh-no'] = new \FooClass();
     }
+
     public function getParameter($name)
     {
         $name = (string) $name;
-        if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters))) {
+        if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters))) {
             $name = $this->normalizeParameterName($name);
-            if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters))) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The parameter "%s" must be defined.', $name));
+
+            if (!(isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters))) {
+                throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
             }
         }
         if (isset($this->loadedDynamicParameters[$name])) {
             return $this->loadedDynamicParameters[$name] ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
         }
+
         return $this->parameters[$name];
     }
+
     public function hasParameter($name)
     {
         $name = (string) $name;
         $name = $this->normalizeParameterName($name);
-        return isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || \array_key_exists($name, $this->parameters);
+
+        return isset($this->parameters[$name]) || isset($this->loadedDynamicParameters[$name]) || array_key_exists($name, $this->parameters);
     }
+
     public function setParameter($name, $value)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\LogicException('Impossible to call set() on a frozen ParameterBag.');
+        throw new LogicException('Impossible to call set() on a frozen ParameterBag.');
     }
+
     public function getParameterBag()
     {
         if (null === $this->parameterBag) {
@@ -101,12 +125,15 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
             foreach ($this->loadedDynamicParameters as $name => $loaded) {
                 $parameters[$name] = $loaded ? $this->dynamicParameters[$name] : $this->getDynamicParameter($name);
             }
-            $this->parameterBag = new \MolliePrefix\Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag($parameters);
+            $this->parameterBag = new FrozenParameterBag($parameters);
         }
+
         return $this->parameterBag;
     }
+
     private $loadedDynamicParameters = [];
     private $dynamicParameters = [];
+
     /**
      * Computes a dynamic parameter.
      *
@@ -118,21 +145,25 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
      */
     private function getDynamicParameter($name)
     {
-        throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('The dynamic parameter "%s" must be defined.', $name));
+        throw new InvalidArgumentException(sprintf('The dynamic parameter "%s" must be defined.', $name));
     }
+
     private $normalizedParameterNames = [];
+
     private function normalizeParameterName($name)
     {
-        if (isset($this->normalizedParameterNames[$normalizedName = \strtolower($name)]) || isset($this->parameters[$normalizedName]) || \array_key_exists($normalizedName, $this->parameters)) {
+        if (isset($this->normalizedParameterNames[$normalizedName = strtolower($name)]) || isset($this->parameters[$normalizedName]) || array_key_exists($normalizedName, $this->parameters)) {
             $normalizedName = isset($this->normalizedParameterNames[$normalizedName]) ? $this->normalizedParameterNames[$normalizedName] : $normalizedName;
             if ((string) $name !== $normalizedName) {
-                @\trigger_error(\sprintf('Parameter names will be made case sensitive in Symfony 4.0. Using "%s" instead of "%s" is deprecated since Symfony 3.4.', $name, $normalizedName), \E_USER_DEPRECATED);
+                @trigger_error(sprintf('Parameter names will be made case sensitive in Symfony 4.0. Using "%s" instead of "%s" is deprecated since Symfony 3.4.', $name, $normalizedName), E_USER_DEPRECATED);
             }
         } else {
             $normalizedName = $this->normalizedParameterNames[$normalizedName] = (string) $name;
         }
+
         return $normalizedName;
     }
+
     /**
      * Gets the default parameters.
      *
@@ -140,13 +171,8 @@ class Symfony_DI_PhpDumper_Test_Unsupported_Characters extends \MolliePrefix\Sym
      */
     protected function getDefaultParameters()
     {
-        return ['\'' => 'oh-no'];
+        return [
+            '\'' => 'oh-no',
+        ];
     }
 }
-/**
- * This class has been auto-generated
- * by the Symfony Dependency Injection Component.
- *
- * @final since Symfony 3.3
- */
-\class_alias('MolliePrefix\\Symfony_DI_PhpDumper_Test_Unsupported_Characters', 'Symfony_DI_PhpDumper_Test_Unsupported_Characters', \false);

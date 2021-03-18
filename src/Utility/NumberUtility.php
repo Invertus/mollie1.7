@@ -13,8 +13,8 @@
 
 namespace Mollie\Utility;
 
-use MolliePrefix\PrestaShop\Decimal\DecimalNumber;
-use MolliePrefix\PrestaShop\Decimal\Number;
+use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\Decimal\Number;
 
 class NumberUtility
 {
@@ -27,7 +27,7 @@ class NumberUtility
 	 *
 	 * @return float
 	 *
-	 * @throws \MolliePrefix\PrestaShop\Decimal\Exception\DivisionByZeroException
+	 * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
 	 */
 	public static function decreaseByPercentage($number, $percentage)
 	{
@@ -96,7 +96,7 @@ class NumberUtility
 	 *
 	 * @return float
 	 *
-	 * @throws \MolliePrefix\PrestaShop\Decimal\Exception\DivisionByZeroException
+	 * @throws \PrestaShop\Decimal\Exception\DivisionByZeroException
 	 */
 	public static function divide($a, $b, $precision = 20)
 	{

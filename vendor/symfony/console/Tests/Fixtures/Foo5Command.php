@@ -1,12 +1,10 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\Console\Command\Command;
 
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-class Foo5Command extends \MolliePrefix\Symfony\Component\Console\Command\Command
+class Foo5Command extends Command
 {
     public function __construct()
     {
     }
 }
-\class_alias('MolliePrefix\\Foo5Command', 'Foo5Command', \false);

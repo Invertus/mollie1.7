@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transforms for Constructor Property Promotion.
  *
@@ -22,7 +24,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class ConstructorPromotionTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class ConstructorPromotionTransformer extends AbstractTransformer
 {
     /**
      * {@inheritdoc}
@@ -31,37 +33,46 @@ final class ConstructorPromotionTransformer extends \MolliePrefix\PhpCsFixer\Tok
     {
         return 80000;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
-        if (!$tokens[$index]->isGivenKind(\T_FUNCTION)) {
+        if (!$tokens[$index]->isGivenKind(T_FUNCTION)) {
             return;
         }
+
         $index = $tokens->getNextMeaningfulToken($index);
-        if (!$tokens[$index]->isGivenKind(\T_STRING) || '__construct' !== \strtolower($tokens[$index]->getContent())) {
+
+        if (!$tokens[$index]->isGivenKind(T_STRING) || '__construct' !== strtolower($tokens[$index]->getContent())) {
             return;
         }
+
         /** @var int $openIndex */
-        $openIndex = $tokens->getNextMeaningfulToken($index);
-        // we are @ '(' now
-        $closeIndex = $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openIndex);
+        $openIndex = $tokens->getNextMeaningfulToken($index); // we are @ '(' now
+        $closeIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $openIndex);
+
         for ($index = $openIndex; $index < $closeIndex; ++$index) {
-            if ($tokens[$index]->isGivenKind(\T_PUBLIC)) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PUBLIC, $tokens[$index]->getContent()]);
-            } elseif ($tokens[$index]->isGivenKind(\T_PROTECTED)) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PROTECTED, $tokens[$index]->getContent()]);
-            } elseif ($tokens[$index]->isGivenKind(\T_PRIVATE)) {
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PRIVATE, $tokens[$index]->getContent()]);
+            if ($tokens[$index]->isGivenKind(T_PUBLIC)) {
+                $tokens[$index] = new Token([CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PUBLIC, $tokens[$index]->getContent()]);
+            } elseif ($tokens[$index]->isGivenKind(T_PROTECTED)) {
+                $tokens[$index] = new Token([CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PROTECTED, $tokens[$index]->getContent()]);
+            } elseif ($tokens[$index]->isGivenKind(T_PRIVATE)) {
+                $tokens[$index] = new Token([CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PRIVATE, $tokens[$index]->getContent()]);
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function getDeprecatedCustomTokens()
     {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PUBLIC, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PROTECTED, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PRIVATE];
+        return [
+            CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PUBLIC,
+            CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PROTECTED,
+            CT::T_CONSTRUCTOR_PROPERTY_PROMOTION_PRIVATE,
+        ];
     }
 }

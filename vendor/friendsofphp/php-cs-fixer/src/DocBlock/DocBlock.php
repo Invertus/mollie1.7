@@ -9,9 +9,11 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\DocBlock;
 
-use MolliePrefix\PhpCsFixer\Preg;
+namespace PhpCsFixer\DocBlock;
+
+use PhpCsFixer\Preg;
+
 /**
  * This class represents a docblock.
  *
@@ -29,12 +31,14 @@ class DocBlock
      * @var Line[]
      */
     private $lines = [];
+
     /**
      * The array of annotations.
      *
      * @var null|Annotation[]
      */
     private $annotations;
+
     /**
      * Create a new docblock instance.
      *
@@ -42,10 +46,11 @@ class DocBlock
      */
     public function __construct($content)
     {
-        foreach (\MolliePrefix\PhpCsFixer\Preg::split('/([^\\n\\r]+\\R*)/', $content, -1, \PREG_SPLIT_NO_EMPTY | \PREG_SPLIT_DELIM_CAPTURE) as $line) {
-            $this->lines[] = new \MolliePrefix\PhpCsFixer\DocBlock\Line($line);
+        foreach (Preg::split('/([^\n\r]+\R*)/', $content, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE) as $line) {
+            $this->lines[] = new Line($line);
         }
     }
+
     /**
      * Get the string representation of object.
      *
@@ -55,6 +60,7 @@ class DocBlock
     {
         return $this->getContent();
     }
+
     /**
      * Get this docblock's lines.
      *
@@ -64,6 +70,7 @@ class DocBlock
     {
         return $this->lines;
     }
+
     /**
      * Get a single line.
      *
@@ -75,6 +82,7 @@ class DocBlock
     {
         return isset($this->lines[$pos]) ? $this->lines[$pos] : null;
     }
+
     /**
      * Get this docblock's annotations.
      *
@@ -85,13 +93,15 @@ class DocBlock
         if (null !== $this->annotations) {
             return $this->annotations;
         }
+
         $this->annotations = [];
         $total = \count($this->lines);
+
         for ($index = 0; $index < $total; ++$index) {
             if ($this->lines[$index]->containsATag()) {
                 // get all the lines that make up the annotation
-                $lines = \array_slice($this->lines, $index, $this->findAnnotationLength($index), \true);
-                $annotation = new \MolliePrefix\PhpCsFixer\DocBlock\Annotation($lines);
+                $lines = \array_slice($this->lines, $index, $this->findAnnotationLength($index), true);
+                $annotation = new Annotation($lines);
                 // move the index to the end of the annotation to avoid
                 // checking it again because we know the lines inside the
                 // current annotation cannot be part of another annotation
@@ -100,12 +110,15 @@ class DocBlock
                 $this->annotations[] = $annotation;
             }
         }
+
         return $this->annotations;
     }
+
     public function isMultiLine()
     {
         return 1 !== \count($this->lines);
     }
+
     /**
      * Take a one line doc block, and turn it into a multi line doc block.
      *
@@ -117,30 +130,51 @@ class DocBlock
         if ($this->isMultiLine()) {
             return;
         }
+
         $lineContent = $this->getSingleLineDocBlockEntry($this->lines[0]);
+
         if ('' === $lineContent) {
-            $this->lines = [new \MolliePrefix\PhpCsFixer\DocBlock\Line('/**' . $lineEnd), new \MolliePrefix\PhpCsFixer\DocBlock\Line($indent . ' *' . $lineEnd), new \MolliePrefix\PhpCsFixer\DocBlock\Line($indent . ' */')];
+            $this->lines = [
+                new Line('/**'.$lineEnd),
+                new Line($indent.' *'.$lineEnd),
+                new Line($indent.' */'),
+            ];
+
             return;
         }
-        $this->lines = [new \MolliePrefix\PhpCsFixer\DocBlock\Line('/**' . $lineEnd), new \MolliePrefix\PhpCsFixer\DocBlock\Line($indent . ' * ' . $lineContent . $lineEnd), new \MolliePrefix\PhpCsFixer\DocBlock\Line($indent . ' */')];
+
+        $this->lines = [
+            new Line('/**'.$lineEnd),
+            new Line($indent.' * '.$lineContent.$lineEnd),
+            new Line($indent.' */'),
+        ];
     }
+
     public function makeSingleLine()
     {
         if (!$this->isMultiLine()) {
             return;
         }
-        $usefulLines = \array_filter($this->lines, static function (\MolliePrefix\PhpCsFixer\DocBlock\Line $line) {
-            return $line->containsUsefulContent();
-        });
+
+        $usefulLines = array_filter(
+            $this->lines,
+            static function (Line $line) {
+                return $line->containsUsefulContent();
+            }
+        );
+
         if (1 < \count($usefulLines)) {
             return;
         }
+
         $lineContent = '';
         if (\count($usefulLines)) {
-            $lineContent = $this->getSingleLineDocBlockEntry(\array_shift($usefulLines));
+            $lineContent = $this->getSingleLineDocBlockEntry(array_shift($usefulLines));
         }
-        $this->lines = [new \MolliePrefix\PhpCsFixer\DocBlock\Line('/** ' . $lineContent . ' */')];
+
+        $this->lines = [new Line('/** '.$lineContent.' */')];
     }
+
     /**
      * @param int $pos
      *
@@ -149,8 +183,10 @@ class DocBlock
     public function getAnnotation($pos)
     {
         $annotations = $this->getAnnotations();
+
         return isset($annotations[$pos]) ? $annotations[$pos] : null;
     }
+
     /**
      * Get specific types of annotations only.
      *
@@ -164,6 +200,7 @@ class DocBlock
     {
         $annotations = [];
         $types = (array) $types;
+
         foreach ($this->getAnnotations() as $annotation) {
             $tag = $annotation->getTag()->getName();
             foreach ($types as $type) {
@@ -172,8 +209,10 @@ class DocBlock
                 }
             }
         }
+
         return $annotations;
     }
+
     /**
      * Get the actual content of this docblock.
      *
@@ -181,16 +220,19 @@ class DocBlock
      */
     public function getContent()
     {
-        return \implode('', $this->lines);
+        return implode('', $this->lines);
     }
+
     private function findAnnotationLength($start)
     {
         $index = $start;
+
         while ($line = $this->getLine(++$index)) {
             if ($line->containsATag()) {
                 // we've 100% reached the end of the description if we get here
                 break;
             }
+
             if (!$line->containsUsefulContent()) {
                 // if next line is also non-useful, or contains a tag, then we're done here
                 $next = $this->getLine($index + 1);
@@ -200,24 +242,30 @@ class DocBlock
                 // otherwise, continue, the annotation must have contained a blank line in its description
             }
         }
+
         return $index - $start;
     }
+
     /**
      * @return string
      */
-    private function getSingleLineDocBlockEntry(\MolliePrefix\PhpCsFixer\DocBlock\Line $line)
+    private function getSingleLineDocBlockEntry(Line $line)
     {
         $lineString = $line->getContent();
+
         if (0 === \strlen($lineString)) {
             return $lineString;
         }
-        $lineString = \str_replace('*/', '', $lineString);
-        $lineString = \trim($lineString);
-        if ('/**' === \substr($lineString, 0, 3)) {
-            $lineString = \substr($lineString, 3);
-        } elseif ('*' === \substr($lineString, 0, 1)) {
-            $lineString = \substr($lineString, 1);
+
+        $lineString = str_replace('*/', '', $lineString);
+        $lineString = trim($lineString);
+
+        if ('/**' === substr($lineString, 0, 3)) {
+            $lineString = substr($lineString, 3);
+        } elseif ('*' === substr($lineString, 0, 1)) {
+            $lineString = substr($lineString, 1);
         }
-        return \trim($lineString);
+
+        return trim($lineString);
     }
 }

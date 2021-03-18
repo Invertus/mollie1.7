@@ -1,13 +1,21 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Definition;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$bar = new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('Bar');
-$bar->setConfigurator([new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('Baz'), 'configureBar']);
-$fooFactory = new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('FooFactory');
-$fooFactory->setFactory([new \MolliePrefix\Symfony\Component\DependencyInjection\Definition('Foobar'), 'createFooFactory']);
-$container->register('foo', 'Foo')->setFactory([$fooFactory, 'createFoo'])->setConfigurator([$bar, 'configureFoo'])->setPublic(\true);
+$container = new ContainerBuilder();
+
+$bar = new Definition('Bar');
+$bar->setConfigurator([new Definition('Baz'), 'configureBar']);
+
+$fooFactory = new Definition('FooFactory');
+$fooFactory->setFactory([new Definition('Foobar'), 'createFooFactory']);
+
+$container
+    ->register('foo', 'Foo')
+    ->setFactory([$fooFactory, 'createFoo'])
+    ->setConfigurator([$bar, 'configureFoo'])
+    ->setPublic(true)
+;
+
 return $container;

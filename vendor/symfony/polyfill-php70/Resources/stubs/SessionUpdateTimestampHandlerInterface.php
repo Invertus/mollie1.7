@@ -1,7 +1,5 @@
 <?php
 
-namespace MolliePrefix;
-
 interface SessionUpdateTimestampHandlerInterface
 {
     /**
@@ -12,6 +10,7 @@ interface SessionUpdateTimestampHandlerInterface
      * @return bool
      */
     public function validateId($key);
+
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
@@ -22,4 +21,3 @@ interface SessionUpdateTimestampHandlerInterface
      */
     public function updateTimestamp($key, $val);
 }
-\class_alias('MolliePrefix\\SessionUpdateTimestampHandlerInterface', 'SessionUpdateTimestampHandlerInterface', \false);

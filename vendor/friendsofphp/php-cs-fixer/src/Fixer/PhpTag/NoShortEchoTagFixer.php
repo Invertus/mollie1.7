@@ -9,26 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\PhpTag;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+namespace PhpCsFixer\Fixer\PhpTag;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+
 /**
  * @author Vincent Klaiber <hello@vinkla.com>
  *
  * @deprecated proxy to EchoTagSyntaxFixer
  */
-final class NoShortEchoTagFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface
+final class NoShortEchoTagFixer extends AbstractProxyFixer implements DeprecatedFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Replaces short-echo `<?=` with long format `<?php echo` syntax.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?= \"foo\";\n")]);
+        return new FixerDefinition(
+            'Replaces short-echo `<?=` with long format `<?php echo` syntax.',
+            [new CodeSample("<?= \"foo\";\n")]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -38,18 +44,20 @@ final class NoShortEchoTagFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFi
     {
         return 0;
     }
+
     /**
      * {@inheritdoc}
      */
     public function getSuccessorsNames()
     {
-        return \array_keys($this->proxyFixers);
+        return array_keys($this->proxyFixers);
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        return [new \MolliePrefix\PhpCsFixer\Fixer\PhpTag\EchoTagSyntaxFixer()];
+        return [new EchoTagSyntaxFixer()];
     }
 }

@@ -9,9 +9,10 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
 
-interface DeprecatedFixerOptionInterface extends \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionInterface
+namespace PhpCsFixer\FixerConfiguration;
+
+interface DeprecatedFixerOptionInterface extends FixerOptionInterface
 {
     /**
      * @return string

@@ -8,18 +8,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Argument;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
+namespace Symfony\Component\DependencyInjection\Argument;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\Reference;
+
 /**
  * Represents a collection of values to lazily iterate over.
  *
  * @author Titouan Galopin <galopintitouan@gmail.com>
  */
-class IteratorArgument implements \MolliePrefix\Symfony\Component\DependencyInjection\Argument\ArgumentInterface
+class IteratorArgument implements ArgumentInterface
 {
     private $values;
+
     /**
      * @param Reference[] $values
      */
@@ -27,6 +30,7 @@ class IteratorArgument implements \MolliePrefix\Symfony\Component\DependencyInje
     {
         $this->setValues($values);
     }
+
     /**
      * @return array The values to lazily iterate over
      */
@@ -34,16 +38,18 @@ class IteratorArgument implements \MolliePrefix\Symfony\Component\DependencyInje
     {
         return $this->values;
     }
+
     /**
      * @param Reference[] $values The service references to lazily iterate over
      */
     public function setValues(array $values)
     {
         foreach ($values as $k => $v) {
-            if (null !== $v && !$v instanceof \MolliePrefix\Symfony\Component\DependencyInjection\Reference) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('An IteratorArgument must hold only Reference instances, "%s" given.', \is_object($v) ? \get_class($v) : \gettype($v)));
+            if (null !== $v && !$v instanceof Reference) {
+                throw new InvalidArgumentException(sprintf('An IteratorArgument must hold only Reference instances, "%s" given.', \is_object($v) ? \get_class($v) : \gettype($v)));
             }
         }
+
         $this->values = $values;
     }
 }

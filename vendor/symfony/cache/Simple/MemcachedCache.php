@@ -8,18 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Simple;
 
-use MolliePrefix\Symfony\Component\Cache\Traits\MemcachedTrait;
-class MemcachedCache extends \MolliePrefix\Symfony\Component\Cache\Simple\AbstractCache
+namespace Symfony\Component\Cache\Simple;
+
+use Symfony\Component\Cache\Traits\MemcachedTrait;
+
+class MemcachedCache extends AbstractCache
 {
     use MemcachedTrait;
+
     protected $maxIdLength = 250;
+
     /**
      * @param string $namespace
      * @param int    $defaultLifetime
      */
-    public function __construct(\MolliePrefix\Memcached $client, $namespace = '', $defaultLifetime = 0)
+    public function __construct(\Memcached $client, $namespace = '', $defaultLifetime = 0)
     {
         $this->init($client, $namespace, $defaultLifetime);
     }

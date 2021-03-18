@@ -8,12 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Symfony\Component\Cache\Traits\RedisTrait;
-class RedisAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\AbstractAdapter
+namespace Symfony\Component\Cache\Adapter;
+
+use Symfony\Component\Cache\Traits\RedisTrait;
+
+class RedisAdapter extends AbstractAdapter
 {
     use RedisTrait;
+
     /**
      * @param \Redis|\RedisArray|\RedisCluster|\Predis\Client $redisClient     The redis client
      * @param string                                          $namespace       The default namespace

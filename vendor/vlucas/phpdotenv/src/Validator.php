@@ -1,8 +1,9 @@
 <?php
 
-namespace MolliePrefix\Dotenv;
+namespace Dotenv;
 
-use MolliePrefix\Dotenv\Exception\ValidationException;
+use Dotenv\Exception\ValidationException;
+
 /**
  * This is the validator class.
  *
@@ -16,12 +17,14 @@ class Validator
      * @var string[]
      */
     protected $variables;
+
     /**
      * The loader instance.
      *
      * @var \Dotenv\Loader
      */
     protected $loader;
+
     /**
      * Create a new validator instance.
      *
@@ -32,14 +35,19 @@ class Validator
      *
      * @return void
      */
-    public function __construct(array $variables, \MolliePrefix\Dotenv\Loader $loader)
+    public function __construct(array $variables, Loader $loader)
     {
         $this->variables = $variables;
         $this->loader = $loader;
-        $this->assertCallback(function ($value) {
-            return $value !== null;
-        }, 'is missing');
+
+        $this->assertCallback(
+            function ($value) {
+                return $value !== null;
+            },
+            'is missing'
+        );
     }
+
     /**
      * Assert that each variable is not empty.
      *
@@ -49,10 +57,14 @@ class Validator
      */
     public function notEmpty()
     {
-        return $this->assertCallback(function ($value) {
-            return \strlen(\trim($value)) > 0;
-        }, 'is empty');
+        return $this->assertCallback(
+            function ($value) {
+                return strlen(trim($value)) > 0;
+            },
+            'is empty'
+        );
     }
+
     /**
      * Assert that each specified variable is an integer.
      *
@@ -62,10 +74,14 @@ class Validator
      */
     public function isInteger()
     {
-        return $this->assertCallback(function ($value) {
-            return \ctype_digit($value);
-        }, 'is not an integer');
+        return $this->assertCallback(
+            function ($value) {
+                return ctype_digit($value);
+            },
+            'is not an integer'
+        );
     }
+
     /**
      * Assert that each specified variable is a boolean.
      *
@@ -75,13 +91,18 @@ class Validator
      */
     public function isBoolean()
     {
-        return $this->assertCallback(function ($value) {
-            if ($value === '') {
-                return \false;
-            }
-            return \filter_var($value, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE) !== null;
-        }, 'is not a boolean');
+        return $this->assertCallback(
+            function ($value) {
+                if ($value === '') {
+                    return false;
+                }
+
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;
+            },
+            'is not a boolean'
+        );
     }
+
     /**
      * Assert that each variable is amongst the given choices.
      *
@@ -93,10 +114,14 @@ class Validator
      */
     public function allowedValues(array $choices)
     {
-        return $this->assertCallback(function ($value) use($choices) {
-            return \in_array($value, $choices, \true);
-        }, \sprintf('is not one of [%s]', \implode(', ', $choices)));
+        return $this->assertCallback(
+            function ($value) use ($choices) {
+                return in_array($value, $choices, true);
+            },
+            sprintf('is not one of [%s]', implode(', ', $choices))
+        );
     }
+
     /**
      * Assert that the callback returns true for each variable.
      *
@@ -110,14 +135,20 @@ class Validator
     protected function assertCallback(callable $callback, $message = 'failed callback assertion')
     {
         $failing = [];
+
         foreach ($this->variables as $variable) {
-            if ($callback($this->loader->getEnvironmentVariable($variable)) === \false) {
-                $failing[] = \sprintf('%s %s', $variable, $message);
+            if ($callback($this->loader->getEnvironmentVariable($variable)) === false) {
+                $failing[] = sprintf('%s %s', $variable, $message);
             }
         }
-        if (\count($failing) > 0) {
-            throw new \MolliePrefix\Dotenv\Exception\ValidationException(\sprintf('One or more environment variables failed assertions: %s.', \implode(', ', $failing)));
+
+        if (count($failing) > 0) {
+            throw new ValidationException(sprintf(
+                'One or more environment variables failed assertions: %s.',
+                implode(', ', $failing)
+            ));
         }
+
         return $this;
     }
 }

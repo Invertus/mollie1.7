@@ -9,60 +9,109 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractPhpdocTypesFixer;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractPhpdocTypesFixer;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\FixerConfiguration\AllowedValueSubset;
+use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
+use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+
 /**
  * @author Graham Campbell <graham@alt-three.com>
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class PhpdocTypesFixer extends \MolliePrefix\PhpCsFixer\AbstractPhpdocTypesFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpdocTypesFixer extends AbstractPhpdocTypesFixer implements ConfigurationDefinitionFixerInterface
 {
     /**
      * Available types, grouped.
      *
      * @var array<string,string[]>
      */
-    private static $possibleTypes = ['simple' => ['array', 'bool', 'callable', 'float', 'int', 'iterable', 'null', 'object', 'string'], 'alias' => ['boolean', 'callback', 'double', 'integer', 'real'], 'meta' => ['$this', 'false', 'mixed', 'parent', 'resource', 'scalar', 'self', 'static', 'true', 'void']];
+    private static $possibleTypes = [
+        'simple' => [
+            'array',
+            'bool',
+            'callable',
+            'float',
+            'int',
+            'iterable',
+            'null',
+            'object',
+            'string',
+        ],
+        'alias' => [
+            'boolean',
+            'callback',
+            'double',
+            'integer',
+            'real',
+        ],
+        'meta' => [
+            '$this',
+            'false',
+            'mixed',
+            'parent',
+            'resource',
+            'scalar',
+            'self',
+            'static',
+            'true',
+            'void',
+        ],
+    ];
+
     /**
      * @var array string[]
      */
     private $typesToFix = [];
+
     /**
      * {@inheritdoc}
      */
     public function configure(array $configuration = null)
     {
         parent::configure($configuration);
-        $this->typesToFix = \array_merge(...\array_map(static function ($group) {
+
+        $this->typesToFix = array_merge(...array_map(static function ($group) {
             return self::$possibleTypes[$group];
         }, $this->configuration['groups']));
     }
+
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('The correct case must be used for standard PHP types in PHPDoc.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'The correct case must be used for standard PHP types in PHPDoc.',
+            [
+                new CodeSample(
+                    '<?php
 /**
  * @param STRING|String[] $bar
  *
  * @return inT[]
  */
-'), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+'
+                ),
+                new CodeSample(
+                    '<?php
 /**
  * @param BOOL $foo
  *
  * @return MIXED
  */
-', ['groups' => ['simple', 'alias']])]);
+',
+                    ['groups' => ['simple', 'alias']]
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -81,20 +130,30 @@ final class PhpdocTypesFixer extends \MolliePrefix\PhpCsFixer\AbstractPhpdocType
          */
         return 16;
     }
+
     /**
      * {@inheritdoc}
      */
     protected function normalize($type)
     {
-        $lower = \strtolower($type);
-        return \in_array($lower, $this->typesToFix, \true) ? $lower : $type;
+        $lower = strtolower($type);
+
+        return \in_array($lower, $this->typesToFix, true) ? $lower : $type;
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        $possibleGroups = \array_keys(self::$possibleTypes);
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('groups', 'Type groups to fix.'))->setAllowedTypes(['array'])->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset($possibleGroups)])->setDefault($possibleGroups)->getOption()]);
+        $possibleGroups = array_keys(self::$possibleTypes);
+
+        return new FixerConfigurationResolver([
+            (new FixerOptionBuilder('groups', 'Type groups to fix.'))
+                ->setAllowedTypes(['array'])
+                ->setAllowedValues([new AllowedValueSubset($possibleGroups)])
+                ->setDefault($possibleGroups)
+                ->getOption(),
+        ]);
     }
 }

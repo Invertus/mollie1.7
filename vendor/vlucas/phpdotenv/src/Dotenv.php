@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\Dotenv;
+namespace Dotenv;
 
-use MolliePrefix\Dotenv\Environment\DotenvFactory;
-use MolliePrefix\Dotenv\Environment\FactoryInterface;
-use MolliePrefix\Dotenv\Exception\InvalidPathException;
+use Dotenv\Environment\DotenvFactory;
+use Dotenv\Environment\FactoryInterface;
+use Dotenv\Exception\InvalidPathException;
+
 /**
  * This is the dotenv class.
  *
@@ -19,6 +20,7 @@ class Dotenv
      * @var \Dotenv\Loader
      */
     protected $loader;
+
     /**
      * Create a new dotenv instance.
      *
@@ -26,10 +28,11 @@ class Dotenv
      *
      * @return void
      */
-    public function __construct(\MolliePrefix\Dotenv\Loader $loader)
+    public function __construct(Loader $loader)
     {
         $this->loader = $loader;
     }
+
     /**
      * Create a new dotenv instance.
      *
@@ -39,11 +42,17 @@ class Dotenv
      *
      * @return \Dotenv\Dotenv
      */
-    public static function create($paths, $file = null, \MolliePrefix\Dotenv\Environment\FactoryInterface $envFactory = null)
+    public static function create($paths, $file = null, FactoryInterface $envFactory = null)
     {
-        $loader = new \MolliePrefix\Dotenv\Loader(self::getFilePaths((array) $paths, $file ?: '.env'), $envFactory ?: new \MolliePrefix\Dotenv\Environment\DotenvFactory(), \true);
+        $loader = new Loader(
+            self::getFilePaths((array) $paths, $file ?: '.env'),
+            $envFactory ?: new DotenvFactory(),
+            true
+        );
+
         return new self($loader);
     }
+
     /**
      * Returns the full paths to the files.
      *
@@ -54,10 +63,11 @@ class Dotenv
      */
     private static function getFilePaths(array $paths, $file)
     {
-        return \array_map(function ($path) use($file) {
-            return \rtrim($path, \DIRECTORY_SEPARATOR) . \DIRECTORY_SEPARATOR . $file;
+        return array_map(function ($path) use ($file) {
+            return rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$file;
         }, $paths);
     }
+
     /**
      * Load environment file in given directory.
      *
@@ -69,6 +79,7 @@ class Dotenv
     {
         return $this->loadData();
     }
+
     /**
      * Load environment file in given directory, silently failing if it doesn't exist.
      *
@@ -80,11 +91,12 @@ class Dotenv
     {
         try {
             return $this->loadData();
-        } catch (\MolliePrefix\Dotenv\Exception\InvalidPathException $e) {
+        } catch (InvalidPathException $e) {
             // suppressing exception
             return [];
         }
     }
+
     /**
      * Load environment file in given directory.
      *
@@ -94,8 +106,9 @@ class Dotenv
      */
     public function overload()
     {
-        return $this->loadData(\true);
+        return $this->loadData(true);
     }
+
     /**
      * Actually load the data.
      *
@@ -105,10 +118,11 @@ class Dotenv
      *
      * @return array<string|null>
      */
-    protected function loadData($overload = \false)
+    protected function loadData($overload = false)
     {
         return $this->loader->setImmutable(!$overload)->load();
     }
+
     /**
      * Required ensures that the specified variables exist, and returns a new validator object.
      *
@@ -118,8 +132,9 @@ class Dotenv
      */
     public function required($variables)
     {
-        return new \MolliePrefix\Dotenv\Validator((array) $variables, $this->loader);
+        return new Validator((array) $variables, $this->loader);
     }
+
     /**
      * Get the list of environment variables declared inside the 'env' file.
      *

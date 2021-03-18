@@ -1,81 +1,84 @@
 <?php
 
-namespace MolliePrefix\PhpParser;
+namespace PhpParser;
 
-use MolliePrefix\PhpParser\Node\Expr;
-use MolliePrefix\PhpParser\Node\Stmt;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt;
+
 abstract class PrettyPrinterAbstract
 {
     protected $precedenceMap = array(
         // [precedence, associativity] where for the latter -1 is %left, 0 is %nonassoc and 1 is %right
-        'Expr_BinaryOp_Pow' => array(0, 1),
-        'Expr_BitwiseNot' => array(10, 1),
-        'Expr_PreInc' => array(10, 1),
-        'Expr_PreDec' => array(10, 1),
-        'Expr_PostInc' => array(10, -1),
-        'Expr_PostDec' => array(10, -1),
-        'Expr_UnaryPlus' => array(10, 1),
-        'Expr_UnaryMinus' => array(10, 1),
-        'Expr_Cast_Int' => array(10, 1),
-        'Expr_Cast_Double' => array(10, 1),
-        'Expr_Cast_String' => array(10, 1),
-        'Expr_Cast_Array' => array(10, 1),
-        'Expr_Cast_Object' => array(10, 1),
-        'Expr_Cast_Bool' => array(10, 1),
-        'Expr_Cast_Unset' => array(10, 1),
-        'Expr_ErrorSuppress' => array(10, 1),
-        'Expr_Instanceof' => array(20, 0),
-        'Expr_BooleanNot' => array(30, 1),
-        'Expr_BinaryOp_Mul' => array(40, -1),
-        'Expr_BinaryOp_Div' => array(40, -1),
-        'Expr_BinaryOp_Mod' => array(40, -1),
-        'Expr_BinaryOp_Plus' => array(50, -1),
-        'Expr_BinaryOp_Minus' => array(50, -1),
-        'Expr_BinaryOp_Concat' => array(50, -1),
-        'Expr_BinaryOp_ShiftLeft' => array(60, -1),
-        'Expr_BinaryOp_ShiftRight' => array(60, -1),
-        'Expr_BinaryOp_Smaller' => array(70, 0),
-        'Expr_BinaryOp_SmallerOrEqual' => array(70, 0),
-        'Expr_BinaryOp_Greater' => array(70, 0),
-        'Expr_BinaryOp_GreaterOrEqual' => array(70, 0),
-        'Expr_BinaryOp_Equal' => array(80, 0),
-        'Expr_BinaryOp_NotEqual' => array(80, 0),
-        'Expr_BinaryOp_Identical' => array(80, 0),
-        'Expr_BinaryOp_NotIdentical' => array(80, 0),
-        'Expr_BinaryOp_Spaceship' => array(80, 0),
-        'Expr_BinaryOp_BitwiseAnd' => array(90, -1),
-        'Expr_BinaryOp_BitwiseXor' => array(100, -1),
-        'Expr_BinaryOp_BitwiseOr' => array(110, -1),
-        'Expr_BinaryOp_BooleanAnd' => array(120, -1),
-        'Expr_BinaryOp_BooleanOr' => array(130, -1),
-        'Expr_BinaryOp_Coalesce' => array(140, 1),
-        'Expr_Ternary' => array(150, -1),
+        'Expr_BinaryOp_Pow'            => array(  0,  1),
+        'Expr_BitwiseNot'              => array( 10,  1),
+        'Expr_PreInc'                  => array( 10,  1),
+        'Expr_PreDec'                  => array( 10,  1),
+        'Expr_PostInc'                 => array( 10, -1),
+        'Expr_PostDec'                 => array( 10, -1),
+        'Expr_UnaryPlus'               => array( 10,  1),
+        'Expr_UnaryMinus'              => array( 10,  1),
+        'Expr_Cast_Int'                => array( 10,  1),
+        'Expr_Cast_Double'             => array( 10,  1),
+        'Expr_Cast_String'             => array( 10,  1),
+        'Expr_Cast_Array'              => array( 10,  1),
+        'Expr_Cast_Object'             => array( 10,  1),
+        'Expr_Cast_Bool'               => array( 10,  1),
+        'Expr_Cast_Unset'              => array( 10,  1),
+        'Expr_ErrorSuppress'           => array( 10,  1),
+        'Expr_Instanceof'              => array( 20,  0),
+        'Expr_BooleanNot'              => array( 30,  1),
+        'Expr_BinaryOp_Mul'            => array( 40, -1),
+        'Expr_BinaryOp_Div'            => array( 40, -1),
+        'Expr_BinaryOp_Mod'            => array( 40, -1),
+        'Expr_BinaryOp_Plus'           => array( 50, -1),
+        'Expr_BinaryOp_Minus'          => array( 50, -1),
+        'Expr_BinaryOp_Concat'         => array( 50, -1),
+        'Expr_BinaryOp_ShiftLeft'      => array( 60, -1),
+        'Expr_BinaryOp_ShiftRight'     => array( 60, -1),
+        'Expr_BinaryOp_Smaller'        => array( 70,  0),
+        'Expr_BinaryOp_SmallerOrEqual' => array( 70,  0),
+        'Expr_BinaryOp_Greater'        => array( 70,  0),
+        'Expr_BinaryOp_GreaterOrEqual' => array( 70,  0),
+        'Expr_BinaryOp_Equal'          => array( 80,  0),
+        'Expr_BinaryOp_NotEqual'       => array( 80,  0),
+        'Expr_BinaryOp_Identical'      => array( 80,  0),
+        'Expr_BinaryOp_NotIdentical'   => array( 80,  0),
+        'Expr_BinaryOp_Spaceship'      => array( 80,  0),
+        'Expr_BinaryOp_BitwiseAnd'     => array( 90, -1),
+        'Expr_BinaryOp_BitwiseXor'     => array(100, -1),
+        'Expr_BinaryOp_BitwiseOr'      => array(110, -1),
+        'Expr_BinaryOp_BooleanAnd'     => array(120, -1),
+        'Expr_BinaryOp_BooleanOr'      => array(130, -1),
+        'Expr_BinaryOp_Coalesce'       => array(140,  1),
+        'Expr_Ternary'                 => array(150, -1),
         // parser uses %left for assignments, but they really behave as %right
-        'Expr_Assign' => array(160, 1),
-        'Expr_AssignRef' => array(160, 1),
-        'Expr_AssignOp_Plus' => array(160, 1),
-        'Expr_AssignOp_Minus' => array(160, 1),
-        'Expr_AssignOp_Mul' => array(160, 1),
-        'Expr_AssignOp_Div' => array(160, 1),
-        'Expr_AssignOp_Concat' => array(160, 1),
-        'Expr_AssignOp_Mod' => array(160, 1),
-        'Expr_AssignOp_BitwiseAnd' => array(160, 1),
-        'Expr_AssignOp_BitwiseOr' => array(160, 1),
-        'Expr_AssignOp_BitwiseXor' => array(160, 1),
-        'Expr_AssignOp_ShiftLeft' => array(160, 1),
-        'Expr_AssignOp_ShiftRight' => array(160, 1),
-        'Expr_AssignOp_Pow' => array(160, 1),
-        'Expr_YieldFrom' => array(165, 1),
-        'Expr_Print' => array(168, 1),
-        'Expr_BinaryOp_LogicalAnd' => array(170, -1),
-        'Expr_BinaryOp_LogicalXor' => array(180, -1),
-        'Expr_BinaryOp_LogicalOr' => array(190, -1),
-        'Expr_Include' => array(200, -1),
+        'Expr_Assign'                  => array(160,  1),
+        'Expr_AssignRef'               => array(160,  1),
+        'Expr_AssignOp_Plus'           => array(160,  1),
+        'Expr_AssignOp_Minus'          => array(160,  1),
+        'Expr_AssignOp_Mul'            => array(160,  1),
+        'Expr_AssignOp_Div'            => array(160,  1),
+        'Expr_AssignOp_Concat'         => array(160,  1),
+        'Expr_AssignOp_Mod'            => array(160,  1),
+        'Expr_AssignOp_BitwiseAnd'     => array(160,  1),
+        'Expr_AssignOp_BitwiseOr'      => array(160,  1),
+        'Expr_AssignOp_BitwiseXor'     => array(160,  1),
+        'Expr_AssignOp_ShiftLeft'      => array(160,  1),
+        'Expr_AssignOp_ShiftRight'     => array(160,  1),
+        'Expr_AssignOp_Pow'            => array(160,  1),
+        'Expr_YieldFrom'               => array(165,  1),
+        'Expr_Print'                   => array(168,  1),
+        'Expr_BinaryOp_LogicalAnd'     => array(170, -1),
+        'Expr_BinaryOp_LogicalXor'     => array(180, -1),
+        'Expr_BinaryOp_LogicalOr'      => array(190, -1),
+        'Expr_Include'                 => array(200, -1),
     );
+
     protected $noIndentToken;
     protected $docStringEndToken;
     protected $canUseSemicolonNamespaces;
     protected $options;
+
     /**
      * Creates a pretty printer instance using the given options.
      *
@@ -85,13 +88,14 @@ abstract class PrettyPrinterAbstract
      *
      * @param array $options Dictionary of formatting options
      */
-    public function __construct(array $options = [])
-    {
-        $this->noIndentToken = '_NO_INDENT_' . \mt_rand();
-        $this->docStringEndToken = '_DOC_STRING_END_' . \mt_rand();
-        $defaultOptions = ['shortArraySyntax' => \false];
+    public function __construct(array $options = []) {
+        $this->noIndentToken = '_NO_INDENT_' . mt_rand();
+        $this->docStringEndToken = '_DOC_STRING_END_' . mt_rand();
+
+        $defaultOptions = ['shortArraySyntax' => false];
         $this->options = $options + $defaultOptions;
     }
+
     /**
      * Pretty prints an array of statements.
      *
@@ -99,11 +103,12 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed statements
      */
-    public function prettyPrint(array $stmts)
-    {
+    public function prettyPrint(array $stmts) {
         $this->preprocessNodes($stmts);
-        return \ltrim($this->handleMagicTokens($this->pStmts($stmts, \false)));
+
+        return ltrim($this->handleMagicTokens($this->pStmts($stmts, false)));
     }
+
     /**
      * Pretty prints an expression.
      *
@@ -111,10 +116,10 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed node
      */
-    public function prettyPrintExpr(\MolliePrefix\PhpParser\Node\Expr $node)
-    {
+    public function prettyPrintExpr(Expr $node) {
         return $this->handleMagicTokens($this->p($node));
     }
+
     /**
      * Pretty prints a file of statements (includes the opening <?php tag if it is required).
      *
@@ -122,44 +127,49 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed statements
      */
-    public function prettyPrintFile(array $stmts)
-    {
+    public function prettyPrintFile(array $stmts) {
         if (!$stmts) {
             return "<?php\n\n";
         }
+
         $p = "<?php\n\n" . $this->prettyPrint($stmts);
-        if ($stmts[0] instanceof \MolliePrefix\PhpParser\Node\Stmt\InlineHTML) {
-            $p = \preg_replace('/^<\\?php\\s+\\?>\\n?/', '', $p);
+
+        if ($stmts[0] instanceof Stmt\InlineHTML) {
+            $p = preg_replace('/^<\?php\s+\?>\n?/', '', $p);
         }
-        if ($stmts[\count($stmts) - 1] instanceof \MolliePrefix\PhpParser\Node\Stmt\InlineHTML) {
-            $p = \preg_replace('/<\\?php$/', '', \rtrim($p));
+        if ($stmts[count($stmts) - 1] instanceof Stmt\InlineHTML) {
+            $p = preg_replace('/<\?php$/', '', rtrim($p));
         }
+
         return $p;
     }
+
     /**
      * Preprocesses the top-level nodes to initialize pretty printer state.
      *
      * @param Node[] $nodes Array of nodes
      */
-    protected function preprocessNodes(array $nodes)
-    {
+    protected function preprocessNodes(array $nodes) {
         /* We can use semicolon-namespaces unless there is a global namespace declaration */
-        $this->canUseSemicolonNamespaces = \true;
+        $this->canUseSemicolonNamespaces = true;
         foreach ($nodes as $node) {
-            if ($node instanceof \MolliePrefix\PhpParser\Node\Stmt\Namespace_ && null === $node->name) {
-                $this->canUseSemicolonNamespaces = \false;
+            if ($node instanceof Stmt\Namespace_ && null === $node->name) {
+                $this->canUseSemicolonNamespaces = false;
             }
         }
     }
-    protected function handleMagicTokens($str)
-    {
+
+    protected function handleMagicTokens($str) {
         // Drop no-indent tokens
-        $str = \str_replace($this->noIndentToken, '', $str);
+        $str = str_replace($this->noIndentToken, '', $str);
+
         // Replace doc-string-end tokens with nothing or a newline
-        $str = \str_replace($this->docStringEndToken . ";\n", ";\n", $str);
-        $str = \str_replace($this->docStringEndToken, "\n", $str);
+        $str = str_replace($this->docStringEndToken . ";\n", ";\n", $str);
+        $str = str_replace($this->docStringEndToken, "\n", $str);
+
         return $str;
     }
+
     /**
      * Pretty prints an array of nodes (statements) and indents them optionally.
      *
@@ -168,25 +178,27 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed statements
      */
-    protected function pStmts(array $nodes, $indent = \true)
-    {
+    protected function pStmts(array $nodes, $indent = true) {
         $result = '';
         foreach ($nodes as $node) {
             $comments = $node->getAttribute('comments', array());
             if ($comments) {
                 $result .= "\n" . $this->pComments($comments);
-                if ($node instanceof \MolliePrefix\PhpParser\Node\Stmt\Nop) {
+                if ($node instanceof Stmt\Nop) {
                     continue;
                 }
             }
-            $result .= "\n" . $this->p($node) . ($node instanceof \MolliePrefix\PhpParser\Node\Expr ? ';' : '');
+
+            $result .= "\n" . $this->p($node) . ($node instanceof Expr ? ';' : '');
         }
+
         if ($indent) {
-            return \preg_replace('~\\n(?!$|' . $this->noIndentToken . ')~', "\n    ", $result);
+            return preg_replace('~\n(?!$|' . $this->noIndentToken . ')~', "\n    ", $result);
         } else {
             return $result;
         }
     }
+
     /**
      * Pretty prints a node.
      *
@@ -194,25 +206,28 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Pretty printed node
      */
-    protected function p(\MolliePrefix\PhpParser\Node $node)
-    {
+    protected function p(Node $node) {
         return $this->{'p' . $node->getType()}($node);
     }
-    protected function pInfixOp($type, \MolliePrefix\PhpParser\Node $leftNode, $operatorString, \MolliePrefix\PhpParser\Node $rightNode)
-    {
+
+    protected function pInfixOp($type, Node $leftNode, $operatorString, Node $rightNode) {
         list($precedence, $associativity) = $this->precedenceMap[$type];
-        return $this->pPrec($leftNode, $precedence, $associativity, -1) . $operatorString . $this->pPrec($rightNode, $precedence, $associativity, 1);
+
+        return $this->pPrec($leftNode, $precedence, $associativity, -1)
+             . $operatorString
+             . $this->pPrec($rightNode, $precedence, $associativity, 1);
     }
-    protected function pPrefixOp($type, $operatorString, \MolliePrefix\PhpParser\Node $node)
-    {
+
+    protected function pPrefixOp($type, $operatorString, Node $node) {
         list($precedence, $associativity) = $this->precedenceMap[$type];
         return $operatorString . $this->pPrec($node, $precedence, $associativity, 1);
     }
-    protected function pPostfixOp($type, \MolliePrefix\PhpParser\Node $node, $operatorString)
-    {
+
+    protected function pPostfixOp($type, Node $node, $operatorString) {
         list($precedence, $associativity) = $this->precedenceMap[$type];
         return $this->pPrec($node, $precedence, $associativity, -1) . $operatorString;
     }
+
     /**
      * Prints an expression node with the least amount of parentheses necessary to preserve the meaning.
      *
@@ -225,17 +240,20 @@ abstract class PrettyPrinterAbstract
      *
      * @return string The pretty printed node
      */
-    protected function pPrec(\MolliePrefix\PhpParser\Node $node, $parentPrecedence, $parentAssociativity, $childPosition)
-    {
+    protected function pPrec(Node $node, $parentPrecedence, $parentAssociativity, $childPosition) {
         $type = $node->getType();
         if (isset($this->precedenceMap[$type])) {
             $childPrecedence = $this->precedenceMap[$type][0];
-            if ($childPrecedence > $parentPrecedence || $parentPrecedence == $childPrecedence && $parentAssociativity != $childPosition) {
+            if ($childPrecedence > $parentPrecedence
+                || ($parentPrecedence == $childPrecedence && $parentAssociativity != $childPosition)
+            ) {
                 return '(' . $this->p($node) . ')';
             }
         }
+
         return $this->p($node);
     }
+
     /**
      * Pretty prints an array of nodes and implodes the printed values.
      *
@@ -244,8 +262,7 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Imploded pretty printed nodes
      */
-    protected function pImplode(array $nodes, $glue = '')
-    {
+    protected function pImplode(array $nodes, $glue = '') {
         $pNodes = array();
         foreach ($nodes as $node) {
             if (null === $node) {
@@ -254,8 +271,10 @@ abstract class PrettyPrinterAbstract
                 $pNodes[] = $this->p($node);
             }
         }
-        return \implode($glue, $pNodes);
+
+        return implode($glue, $pNodes);
     }
+
     /**
      * Pretty prints an array of nodes and implodes the printed values with commas.
      *
@@ -263,10 +282,10 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Comma separated pretty printed nodes
      */
-    protected function pCommaSeparated(array $nodes)
-    {
+    protected function pCommaSeparated(array $nodes) {
         return $this->pImplode($nodes, ', ');
     }
+
     /**
      * Pretty prints a comma-separated list of nodes in multiline style, including comments.
      *
@@ -277,16 +296,16 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Comma separated pretty printed nodes in multiline style
      */
-    protected function pCommaSeparatedMultiline(array $nodes, $trailingComma)
-    {
+    protected function pCommaSeparatedMultiline(array $nodes, $trailingComma) {
         $result = '';
-        $lastIdx = \count($nodes) - 1;
+        $lastIdx = count($nodes) - 1;
         foreach ($nodes as $idx => $node) {
             if ($node !== null) {
                 $comments = $node->getAttribute('comments', array());
                 if ($comments) {
                     $result .= "\n" . $this->pComments($comments);
                 }
+
                 $result .= "\n" . $this->p($node);
             } else {
                 $result .= "\n";
@@ -295,8 +314,10 @@ abstract class PrettyPrinterAbstract
                 $result .= ',';
             }
         }
-        return \preg_replace('~\\n(?!$|' . $this->noIndentToken . ')~', "\n    ", $result);
+
+        return preg_replace('~\n(?!$|' . $this->noIndentToken . ')~', "\n    ", $result);
     }
+
     /**
      * Signals the pretty printer that a string shall not be indented.
      *
@@ -304,10 +325,10 @@ abstract class PrettyPrinterAbstract
      *
      * @return string String marked with $this->noIndentToken's.
      */
-    protected function pNoIndent($string)
-    {
-        return \str_replace("\n", "\n" . $this->noIndentToken, $string);
+    protected function pNoIndent($string) {
+        return str_replace("\n", "\n" . $this->noIndentToken, $string);
     }
+
     /**
      * Prints reformatted text of the passed comments.
      *
@@ -315,12 +336,13 @@ abstract class PrettyPrinterAbstract
      *
      * @return string Reformatted text of comments
      */
-    protected function pComments(array $comments)
-    {
+    protected function pComments(array $comments) {
         $formattedComments = [];
+
         foreach ($comments as $comment) {
             $formattedComments[] = $comment->getReformattedText();
         }
-        return \implode("\n", $formattedComments);
+
+        return implode("\n", $formattedComments);
     }
 }

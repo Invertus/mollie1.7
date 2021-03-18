@@ -1,27 +1,28 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-use MolliePrefix\Symfony\Component\Console\Command\LockableTrait;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
-class FooLock2Command extends \MolliePrefix\Symfony\Component\Console\Command\Command
+class FooLock2Command extends Command
 {
     use LockableTrait;
+
     protected function configure()
     {
         $this->setName('foo:lock2');
     }
-    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
             $this->lock();
             $this->lock();
-        } catch (\LogicException $e) {
+        } catch (LogicException $e) {
             return 1;
         }
+
         return 2;
     }
 }
-\class_alias('MolliePrefix\\FooLock2Command', 'FooLock2Command', \false);

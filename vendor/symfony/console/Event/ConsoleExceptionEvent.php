@@ -8,12 +8,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Console\Event;
 
-@\trigger_error(\sprintf('The "%s" class is deprecated since Symfony 3.3 and will be removed in 4.0. Use the ConsoleErrorEvent instead.', \MolliePrefix\Symfony\Component\Console\Event\ConsoleExceptionEvent::class), \E_USER_DEPRECATED);
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
+namespace Symfony\Component\Console\Event;
+
+@trigger_error(sprintf('The "%s" class is deprecated since Symfony 3.3 and will be removed in 4.0. Use the ConsoleErrorEvent instead.', ConsoleExceptionEvent::class), \E_USER_DEPRECATED);
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * Allows to handle exception thrown in a command.
  *
@@ -21,16 +24,19 @@ use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
  *
  * @deprecated since version 3.3, to be removed in 4.0. Use ConsoleErrorEvent instead.
  */
-class ConsoleExceptionEvent extends \MolliePrefix\Symfony\Component\Console\Event\ConsoleEvent
+class ConsoleExceptionEvent extends ConsoleEvent
 {
     private $exception;
     private $exitCode;
-    public function __construct(\MolliePrefix\Symfony\Component\Console\Command\Command $command, \MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output, \Exception $exception, $exitCode)
+
+    public function __construct(Command $command, InputInterface $input, OutputInterface $output, \Exception $exception, $exitCode)
     {
         parent::__construct($command, $input, $output);
+
         $this->setException($exception);
         $this->exitCode = (int) $exitCode;
     }
+
     /**
      * Returns the thrown exception.
      *
@@ -40,6 +46,7 @@ class ConsoleExceptionEvent extends \MolliePrefix\Symfony\Component\Console\Even
     {
         return $this->exception;
     }
+
     /**
      * Replaces the thrown exception.
      *
@@ -51,6 +58,7 @@ class ConsoleExceptionEvent extends \MolliePrefix\Symfony\Component\Console\Even
     {
         $this->exception = $exception;
     }
+
     /**
      * Gets the exit code.
      *

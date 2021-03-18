@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment\Adapter;
+namespace Dotenv\Environment\Adapter;
 
-use MolliePrefix\PhpOption\None;
-use MolliePrefix\PhpOption\Some;
-class EnvConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface
+use PhpOption\None;
+use PhpOption\Some;
+
+class EnvConstAdapter implements AdapterInterface
 {
     /**
      * Determines if the adapter is supported.
@@ -13,8 +14,9 @@ class EnvConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Adapte
      */
     public function isSupported()
     {
-        return \true;
+        return true;
     }
+
     /**
      * Get an environment variable, if it exists.
      *
@@ -24,11 +26,13 @@ class EnvConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Adapte
      */
     public function get($name)
     {
-        if (\array_key_exists($name, $_ENV)) {
-            return \MolliePrefix\PhpOption\Some::create($_ENV[$name]);
+        if (array_key_exists($name, $_ENV)) {
+            return Some::create($_ENV[$name]);
         }
-        return \MolliePrefix\PhpOption\None::create();
+
+        return None::create();
     }
+
     /**
      * Set an environment variable.
      *
@@ -41,6 +45,7 @@ class EnvConstAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\Adapte
     {
         $_ENV[$name] = $value;
     }
+
     /**
      * Clear an environment variable.
      *

@@ -1,8 +1,6 @@
 <?php
 
-namespace MolliePrefix;
-
-if (!\is_callable('random_int')) {
+if (!is_callable('random_int')) {
     /**
      * Random_* Compatibility Library
      * for using the new PHP 7 random_* API in PHP 5 projects
@@ -29,6 +27,7 @@ if (!\is_callable('random_int')) {
      * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
      * SOFTWARE.
      */
+
     /**
      * Fetch a random integer between $min and $max inclusive
      *
@@ -50,29 +49,40 @@ if (!\is_callable('random_int')) {
          * lose precision, so the <= and => operators might accidentally let a float
          * through.
          */
+
         try {
             /** @var int $min */
-            $min = \MolliePrefix\RandomCompat_intval($min);
-        } catch (\TypeError $ex) {
-            throw new \TypeError('random_int(): $min must be an integer');
+            $min = RandomCompat_intval($min);
+        } catch (TypeError $ex) {
+            throw new TypeError(
+                'random_int(): $min must be an integer'
+            );
         }
+
         try {
             /** @var int $max */
-            $max = \MolliePrefix\RandomCompat_intval($max);
-        } catch (\TypeError $ex) {
-            throw new \TypeError('random_int(): $max must be an integer');
+            $max = RandomCompat_intval($max);
+        } catch (TypeError $ex) {
+            throw new TypeError(
+                'random_int(): $max must be an integer'
+            );
         }
+
         /**
          * Now that we've verified our weak typing system has given us an integer,
          * let's validate the logic then we can move forward with generating random
          * integers along a given range.
          */
         if ($min > $max) {
-            throw new \Error('Minimum value must be less than or equal to the maximum value');
+            throw new Error(
+                'Minimum value must be less than or equal to the maximum value'
+            );
         }
+
         if ($max === $min) {
             return (int) $min;
         }
+
         /**
          * Initialize variables to 0
          *
@@ -87,6 +97,7 @@ if (!\is_callable('random_int')) {
         /** @var int $bytes */
         /** @var int $mask */
         /** @var int $valueShift */
+
         /**
          * At this point, $range is a positive number greater than 0. It might
          * overflow, however, if $max - $min > PHP_INT_MAX. PHP will cast it to
@@ -95,10 +106,12 @@ if (!\is_callable('random_int')) {
          * @var int|float $range
          */
         $range = $max - $min;
+
         /**
          * Test for integer overflow:
          */
-        if (!\is_int($range)) {
+        if (!is_int($range)) {
+
             /**
              * Still safely calculate wider ranges.
              * Provided by @CodesInChaos, @oittaa
@@ -110,10 +123,12 @@ if (!\is_callable('random_int')) {
              * @ref https://eval.in/400356 (32-bit)
              * @ref http://3v4l.org/XX9r5  (64-bit)
              */
-            $bytes = \PHP_INT_SIZE;
+            $bytes = PHP_INT_SIZE;
             /** @var int $mask */
             $mask = ~0;
+
         } else {
+
             /**
              * $bits is effectively ceil(log($range, 2)) without dealing with
              * type juggling
@@ -129,6 +144,7 @@ if (!\is_callable('random_int')) {
             }
             $valueShift = $min;
         }
+
         /** @var int $val */
         $val = 0;
         /**
@@ -142,12 +158,16 @@ if (!\is_callable('random_int')) {
              * to a failure probability of 2^-128 for a working RNG
              */
             if ($attempts > 128) {
-                throw new \Exception('random_int: RNG is broken - too many rejections');
+                throw new Exception(
+                    'random_int: RNG is broken - too many rejections'
+                );
             }
+
             /**
              * Let's grab the necessary number of random bytes
              */
-            $randomByteString = \random_bytes($bytes);
+            $randomByteString = random_bytes($bytes);
+
             /**
              * Let's turn $randomByteString into an integer
              *
@@ -160,14 +180,16 @@ if (!\is_callable('random_int')) {
              */
             $val &= 0;
             for ($i = 0; $i < $bytes; ++$i) {
-                $val |= \ord($randomByteString[$i]) << $i * 8;
+                $val |= ord($randomByteString[$i]) << ($i * 8);
             }
             /** @var int $val */
+
             /**
              * Apply mask
              */
             $val &= $mask;
             $val += $valueShift;
+
             ++$attempts;
             /**
              * If $val overflows to a floating point number,
@@ -175,7 +197,8 @@ if (!\is_callable('random_int')) {
              * ... or smaller than $min,
              * then try again.
              */
-        } while (!\is_int($val) || $val > $max || $val < $min);
+        } while (!is_int($val) || $val > $max || $val < $min);
+
         return (int) $val;
     }
 }

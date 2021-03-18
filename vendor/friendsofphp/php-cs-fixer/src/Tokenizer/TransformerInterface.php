@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer;
+
+namespace PhpCsFixer\Tokenizer;
 
 /**
  * Interface for Transformer class.
@@ -33,6 +34,7 @@ interface TransformerInterface
      * @deprecated will be removed in 3.0
      */
     public function getCustomTokens();
+
     /**
      * Return the name of the transformer.
      *
@@ -41,6 +43,7 @@ interface TransformerInterface
      * @return string The name of the fixer
      */
     public function getName();
+
     /**
      * Returns the priority of the transformer.
      *
@@ -49,6 +52,7 @@ interface TransformerInterface
      * @return int
      */
     public function getPriority();
+
     /**
      * Return minimal required PHP version id to transform the code.
      *
@@ -60,10 +64,11 @@ interface TransformerInterface
      * @return int
      */
     public function getRequiredPhpVersionId();
+
     /**
      * Process Token to transform it into custom token when needed.
      *
      * @param int $index
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index);
+    public function process(Tokens $tokens, Token $token, $index);
 }

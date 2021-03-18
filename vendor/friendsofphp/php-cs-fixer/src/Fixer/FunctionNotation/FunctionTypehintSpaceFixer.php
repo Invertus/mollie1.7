@@ -9,53 +9,73 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\FunctionNotation;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis;
-use MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\FunctionNotation;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis;
+use PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  */
-final class FunctionTypehintSpaceFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+final class FunctionTypehintSpaceFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Ensure single space between function\'s argument and its typehint.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nfunction sample(array\$a)\n{}\n"), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php\nfunction sample(array  \$a)\n{}\n")]);
+        return new FixerDefinition(
+            'Ensure single space between function\'s argument and its typehint.',
+            [
+                new CodeSample("<?php\nfunction sample(array\$a)\n{}\n"),
+                new CodeSample("<?php\nfunction sample(array  \$a)\n{}\n"),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
         if (\PHP_VERSION_ID >= 70400 && $tokens->isTokenKindFound(T_FN)) {
-            return \true;
+            return true;
         }
-        return $tokens->isTokenKindFound(\T_FUNCTION);
+
+        return $tokens->isTokenKindFound(T_FUNCTION);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $functionsAnalyzer = new \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\FunctionsAnalyzer();
+        $functionsAnalyzer = new FunctionsAnalyzer();
+
         for ($index = $tokens->count() - 1; $index >= 0; --$index) {
             $token = $tokens[$index];
-            if (!$token->isGivenKind(\T_FUNCTION) && (\PHP_VERSION_ID < 70400 || !$token->isGivenKind(T_FN))) {
+
+            if (
+                !$token->isGivenKind(T_FUNCTION)
+                && (\PHP_VERSION_ID < 70400 || !$token->isGivenKind(T_FN))
+            ) {
                 continue;
             }
+
             $arguments = $functionsAnalyzer->getFunctionArguments($tokens, $index);
-            foreach (\array_reverse($arguments) as $argument) {
+
+            foreach (array_reverse($arguments) as $argument) {
                 $type = $argument->getTypeAnalysis();
-                if (!$type instanceof \MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis\TypeAnalysis) {
+
+                if (!$type instanceof TypeAnalysis) {
                     continue;
                 }
+
                 $tokens->ensureWhitespaceAtIndex($type->getEndIndex() + 1, 0, ' ');
             }
         }

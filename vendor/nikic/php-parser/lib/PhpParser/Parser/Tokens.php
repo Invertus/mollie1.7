@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\PhpParser\Parser;
+namespace PhpParser\Parser;
 
 /* GENERATED file based on grammar/tokens.y */
 final class Tokens

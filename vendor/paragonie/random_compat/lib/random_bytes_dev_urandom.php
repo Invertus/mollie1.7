@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Random_* Compatibility Library
  * for using the new PHP 7 random_* API in PHP 5 projects
@@ -28,10 +25,12 @@ namespace MolliePrefix;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-if (!\defined('RANDOM_COMPAT_READ_BUFFER')) {
-    \define('RANDOM_COMPAT_READ_BUFFER', 8);
+
+if (!defined('RANDOM_COMPAT_READ_BUFFER')) {
+    define('RANDOM_COMPAT_READ_BUFFER', 8);
 }
-if (!\is_callable('random_bytes')) {
+
+if (!is_callable('random_bytes')) {
     /**
      * Unless open_basedir is enabled, use /dev/urandom for
      * random numbers in accordance with best practices
@@ -50,6 +49,7 @@ if (!\is_callable('random_bytes')) {
     {
         /** @var resource $fp */
         static $fp = null;
+
         /**
          * This block should only be run once
          */
@@ -64,26 +64,30 @@ if (!\is_callable('random_bytes')) {
              * like operating system (which means the directory separator is set
              * to "/" not "\".
              */
-            if (\DIRECTORY_SEPARATOR === '/') {
-                if (!\is_readable('/dev/urandom')) {
-                    throw new \Exception('Environment misconfiguration: ' . '/dev/urandom cannot be read.');
+            if (DIRECTORY_SEPARATOR === '/') {
+                if (!is_readable('/dev/urandom')) {
+                    throw new Exception(
+                        'Environment misconfiguration: ' .
+                        '/dev/urandom cannot be read.'
+                    );
                 }
                 /**
                  * We use /dev/urandom if it is a char device.
                  * We never fall back to /dev/random
                  */
                 /** @var resource|bool $fp */
-                $fp = \fopen('/dev/urandom', 'rb');
-                if (\is_resource($fp)) {
+                $fp = fopen('/dev/urandom', 'rb');
+                if (is_resource($fp)) {
                     /** @var array<string, int> $st */
-                    $st = \fstat($fp);
+                    $st = fstat($fp);
                     if (($st['mode'] & 0170000) !== 020000) {
-                        \fclose($fp);
-                        $fp = \false;
+                        fclose($fp);
+                        $fp = false;
                     }
                 }
             }
-            if (\is_resource($fp)) {
+
+            if (is_resource($fp)) {
                 /**
                  * stream_set_read_buffer() does not exist in HHVM
                  *
@@ -92,23 +96,30 @@ if (!\is_callable('random_bytes')) {
                  *
                  * stream_set_read_buffer returns 0 on success
                  */
-                if (\is_callable('stream_set_read_buffer')) {
-                    \stream_set_read_buffer($fp, \RANDOM_COMPAT_READ_BUFFER);
+                if (is_callable('stream_set_read_buffer')) {
+                    stream_set_read_buffer($fp, RANDOM_COMPAT_READ_BUFFER);
                 }
-                if (\is_callable('stream_set_chunk_size')) {
-                    \stream_set_chunk_size($fp, \RANDOM_COMPAT_READ_BUFFER);
+                if (is_callable('stream_set_chunk_size')) {
+                    stream_set_chunk_size($fp, RANDOM_COMPAT_READ_BUFFER);
                 }
             }
         }
+
         try {
             /** @var int $bytes */
-            $bytes = \MolliePrefix\RandomCompat_intval($bytes);
-        } catch (\TypeError $ex) {
-            throw new \TypeError('random_bytes(): $bytes must be an integer');
+            $bytes = RandomCompat_intval($bytes);
+        } catch (TypeError $ex) {
+            throw new TypeError(
+                'random_bytes(): $bytes must be an integer'
+            );
         }
+
         if ($bytes < 1) {
-            throw new \Error('Length must be greater than 0');
+            throw new Error(
+                'Length must be greater than 0'
+            );
         }
+
         /**
          * This if() block only runs if we managed to open a file handle
          *
@@ -116,15 +127,17 @@ if (!\is_callable('random_bytes')) {
          * if (empty($fp)) line is logic that should only be run once per
          * page load.
          */
-        if (\is_resource($fp)) {
+        if (is_resource($fp)) {
             /**
              * @var int
              */
             $remaining = $bytes;
+
             /**
              * @var string|bool
              */
             $buf = '';
+
             /**
              * We use fread() in a loop to protect against partial reads
              */
@@ -132,32 +145,33 @@ if (!\is_callable('random_bytes')) {
                 /**
                  * @var string|bool
                  */
-                $read = \fread($fp, $remaining);
-                if (!\is_string($read)) {
+                $read = fread($fp, $remaining);
+                if (!is_string($read)) {
                     /**
                      * We cannot safely read from the file. Exit the
                      * do-while loop and trigger the exception condition
                      *
                      * @var string|bool
                      */
-                    $buf = \false;
+                    $buf = false;
                     break;
                 }
                 /**
                  * Decrease the number of bytes returned from remaining
                  */
-                $remaining -= \MolliePrefix\RandomCompat_strlen($read);
+                $remaining -= RandomCompat_strlen($read);
                 /**
                  * @var string $buf
                  */
                 $buf .= $read;
             } while ($remaining > 0);
+
             /**
              * Is our result valid?
              * @var string|bool $buf
              */
-            if (\is_string($buf)) {
-                if (\MolliePrefix\RandomCompat_strlen($buf) === $bytes) {
+            if (is_string($buf)) {
+                if (RandomCompat_strlen($buf) === $bytes) {
                     /**
                      * Return our random entropy buffer here:
                      */
@@ -165,9 +179,12 @@ if (!\is_callable('random_bytes')) {
                 }
             }
         }
+
         /**
          * If we reach here, PHP has failed us.
          */
-        throw new \Exception('Error reading from source device');
+        throw new Exception(
+            'Error reading from source device'
+        );
     }
 }

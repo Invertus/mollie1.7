@@ -1,6 +1,6 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Regex;
+namespace Dotenv\Regex;
 
 abstract class Result
 {
@@ -9,7 +9,8 @@ abstract class Result
      *
      * @return \PhpOption\Option
      */
-    public abstract function success();
+    abstract public function success();
+
     /**
      * Get the error value, if possible.
      *
@@ -19,6 +20,7 @@ abstract class Result
     {
         return $this->success()->get();
     }
+
     /**
      * Map over the success value.
      *
@@ -26,13 +28,15 @@ abstract class Result
      *
      * @return \Dotenv\Regex\Result
      */
-    public abstract function mapSuccess(callable $f);
+    abstract public function mapSuccess(callable $f);
+
     /**
      * Get the error option value.
      *
      * @return \PhpOption\Option
      */
-    public abstract function error();
+    abstract public function error();
+
     /**
      * Get the error value, if possible.
      *
@@ -42,6 +46,7 @@ abstract class Result
     {
         return $this->error()->get();
     }
+
     /**
      * Map over the error value.
      *
@@ -49,5 +54,5 @@ abstract class Result
      *
      * @return \Dotenv\Regex\Result
      */
-    public abstract function mapError(callable $f);
+    abstract public function mapError(callable $f);
 }

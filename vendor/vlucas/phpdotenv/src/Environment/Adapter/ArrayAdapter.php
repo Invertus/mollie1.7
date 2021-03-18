@@ -1,10 +1,11 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Environment\Adapter;
+namespace Dotenv\Environment\Adapter;
 
-use MolliePrefix\PhpOption\None;
-use MolliePrefix\PhpOption\Some;
-class ArrayAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterInterface
+use PhpOption\None;
+use PhpOption\Some;
+
+class ArrayAdapter implements AdapterInterface
 {
     /**
      * The variables and their values.
@@ -12,6 +13,7 @@ class ArrayAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterIn
      * @return array<string|null>
      */
     private $variables = [];
+
     /**
      * Determines if the adapter is supported.
      *
@@ -19,8 +21,9 @@ class ArrayAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterIn
      */
     public function isSupported()
     {
-        return \true;
+        return true;
     }
+
     /**
      * Get an environment variable, if it exists.
      *
@@ -30,11 +33,13 @@ class ArrayAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterIn
      */
     public function get($name)
     {
-        if (\array_key_exists($name, $this->variables)) {
-            return \MolliePrefix\PhpOption\Some::create($this->variables[$name]);
+        if (array_key_exists($name, $this->variables)) {
+            return Some::create($this->variables[$name]);
         }
-        return \MolliePrefix\PhpOption\None::create();
+
+        return None::create();
     }
+
     /**
      * Set an environment variable.
      *
@@ -47,6 +52,7 @@ class ArrayAdapter implements \MolliePrefix\Dotenv\Environment\Adapter\AdapterIn
     {
         $this->variables[$name] = $value;
     }
+
     /**
      * Clear an environment variable.
      *

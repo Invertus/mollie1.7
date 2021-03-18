@@ -1,23 +1,28 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use MolliePrefix\Symfony\Component\Console\Command\Command;
-use MolliePrefix\Symfony\Component\Console\Input\InputInterface;
-use MolliePrefix\Symfony\Component\Console\Output\OutputInterface;
-class TestCommand extends \MolliePrefix\Symfony\Component\Console\Command\Command
+class TestCommand extends Command
 {
     protected function configure()
     {
-        $this->setName('namespace:name')->setAliases(['name'])->setDescription('description')->setHelp('help');
+        $this
+            ->setName('namespace:name')
+            ->setAliases(['name'])
+            ->setDescription('description')
+            ->setHelp('help')
+        ;
     }
-    protected function execute(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('execute called');
     }
-    protected function interact(\MolliePrefix\Symfony\Component\Console\Input\InputInterface $input, \MolliePrefix\Symfony\Component\Console\Output\OutputInterface $output)
+
+    protected function interact(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('interact called');
     }
 }
-\class_alias('MolliePrefix\\TestCommand', 'TestCommand', \false);

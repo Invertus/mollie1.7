@@ -9,14 +9,13 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\FixerConfiguration;
+
+namespace PhpCsFixer\FixerConfiguration;
 
 /**
  * @author ntzm
  *
  * @internal
- *
- * @todo 3.0 Drop this class
  */
 final class AliasedFixerOptionBuilder
 {
@@ -24,15 +23,18 @@ final class AliasedFixerOptionBuilder
      * @var FixerOptionBuilder
      */
     private $optionBuilder;
+
     /**
      * @var string
      */
     private $alias;
-    public function __construct(\MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder $optionBuilder, $alias)
+
+    public function __construct(FixerOptionBuilder $optionBuilder, $alias)
     {
         $this->optionBuilder = $optionBuilder;
         $this->alias = $alias;
     }
+
     /**
      * @param mixed $default
      *
@@ -41,8 +43,10 @@ final class AliasedFixerOptionBuilder
     public function setDefault($default)
     {
         $this->optionBuilder->setDefault($default);
+
         return $this;
     }
+
     /**
      * @param string[] $allowedTypes
      *
@@ -51,29 +55,38 @@ final class AliasedFixerOptionBuilder
     public function setAllowedTypes(array $allowedTypes)
     {
         $this->optionBuilder->setAllowedTypes($allowedTypes);
+
         return $this;
     }
+
     /**
      * @return $this
      */
     public function setAllowedValues(array $allowedValues)
     {
         $this->optionBuilder->setAllowedValues($allowedValues);
+
         return $this;
     }
+
     /**
      * @return $this
      */
     public function setNormalizer(\Closure $normalizer)
     {
         $this->optionBuilder->setNormalizer($normalizer);
+
         return $this;
     }
+
     /**
      * @return AliasedFixerOption
      */
     public function getOption()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\AliasedFixerOption($this->optionBuilder->getOption(), $this->alias);
+        return new AliasedFixerOption(
+            $this->optionBuilder->getOption(),
+            $this->alias
+        );
     }
 }

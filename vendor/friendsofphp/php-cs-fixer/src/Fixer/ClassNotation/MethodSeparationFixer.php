@@ -9,26 +9,32 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\ClassNotation;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface;
-use MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
+namespace PhpCsFixer\Fixer\ClassNotation;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\Fixer\DeprecatedFixerInterface;
+use PhpCsFixer\Fixer\WhitespacesAwareFixerInterface;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+
 /**
  * @author SpacePossum
  *
  * @deprecated in 2.8, proxy to ClassAttributesSeparationFixer
  */
-final class MethodSeparationFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\DeprecatedFixerInterface, \MolliePrefix\PhpCsFixer\Fixer\WhitespacesAwareFixerInterface
+final class MethodSeparationFixer extends AbstractProxyFixer implements DeprecatedFixerInterface, WhitespacesAwareFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Methods must be separated with one blank line.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'Methods must be separated with one blank line.',
+            [
+                new CodeSample(
+                    '<?php
 final class Sample
 {
     protected function foo()
@@ -38,8 +44,12 @@ final class Sample
     {
     }
 }
-')]);
+'
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -50,6 +60,7 @@ final class Sample
     {
         return parent::getPriority();
     }
+
     /**
      * Returns names of fixers to use instead, if any.
      *
@@ -57,15 +68,17 @@ final class Sample
      */
     public function getSuccessorsNames()
     {
-        return \array_keys($this->proxyFixers);
+        return array_keys($this->proxyFixers);
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        $fixer = new \MolliePrefix\PhpCsFixer\Fixer\ClassNotation\ClassAttributesSeparationFixer();
-        $fixer->configure(['elements' => ['method' => \MolliePrefix\PhpCsFixer\Fixer\ClassNotation\ClassAttributesSeparationFixer::SPACING_ONE]]);
+        $fixer = new ClassAttributesSeparationFixer();
+        $fixer->configure(['elements' => ['method' => ClassAttributesSeparationFixer::SPACING_ONE]]);
+
         return [$fixer];
     }
 }

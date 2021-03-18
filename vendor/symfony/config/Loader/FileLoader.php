@@ -8,28 +8,34 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Loader;
 
-use MolliePrefix\Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
-use MolliePrefix\Symfony\Component\Config\Exception\FileLoaderLoadException;
-use MolliePrefix\Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
-use MolliePrefix\Symfony\Component\Config\FileLocatorInterface;
-use MolliePrefix\Symfony\Component\Config\Resource\FileExistenceResource;
-use MolliePrefix\Symfony\Component\Config\Resource\GlobResource;
+namespace Symfony\Component\Config\Loader;
+
+use Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
+use Symfony\Component\Config\Exception\FileLoaderLoadException;
+use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
+use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Config\Resource\FileExistenceResource;
+use Symfony\Component\Config\Resource\GlobResource;
+
 /**
  * FileLoader is the abstract class used by all built-in loaders that are file based.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class FileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\Loader
+abstract class FileLoader extends Loader
 {
     protected static $loading = [];
+
     protected $locator;
+
     private $currentDir;
-    public function __construct(\MolliePrefix\Symfony\Component\Config\FileLocatorInterface $locator)
+
+    public function __construct(FileLocatorInterface $locator)
     {
         $this->locator = $locator;
     }
+
     /**
      * Sets the current directory.
      *
@@ -39,6 +45,7 @@ abstract class FileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\
     {
         $this->currentDir = $dir;
     }
+
     /**
      * Returns the file locator used by this loader.
      *
@@ -48,6 +55,7 @@ abstract class FileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\
     {
         return $this->locator;
     }
+
     /**
      * Imports a resource.
      *
@@ -62,91 +70,105 @@ abstract class FileLoader extends \MolliePrefix\Symfony\Component\Config\Loader\
      * @throws FileLoaderImportCircularReferenceException
      * @throws FileLocatorFileNotFoundException
      */
-    public function import($resource, $type = null, $ignoreErrors = \false, $sourceResource = null)
+    public function import($resource, $type = null, $ignoreErrors = false, $sourceResource = null)
     {
-        if (\is_string($resource) && \strlen($resource) !== ($i = \strcspn($resource, '*?{['))) {
+        if (\is_string($resource) && \strlen($resource) !== $i = strcspn($resource, '*?{[')) {
             $ret = [];
-            $isSubpath = 0 !== $i && \false !== \strpos(\substr($resource, 0, $i), '/');
-            foreach ($this->glob($resource, \false, $_, $ignoreErrors || !$isSubpath) as $path => $info) {
-                if (null !== ($res = $this->doImport($path, 'glob' === $type ? null : $type, $ignoreErrors, $sourceResource))) {
+            $isSubpath = 0 !== $i && false !== strpos(substr($resource, 0, $i), '/');
+            foreach ($this->glob($resource, false, $_, $ignoreErrors || !$isSubpath) as $path => $info) {
+                if (null !== $res = $this->doImport($path, 'glob' === $type ? null : $type, $ignoreErrors, $sourceResource)) {
                     $ret[] = $res;
                 }
-                $isSubpath = \true;
+                $isSubpath = true;
             }
+
             if ($isSubpath) {
                 return isset($ret[1]) ? $ret : (isset($ret[0]) ? $ret[0] : null);
             }
         }
+
         return $this->doImport($resource, $type, $ignoreErrors, $sourceResource);
     }
+
     /**
      * @internal
      */
-    protected function glob($pattern, $recursive, &$resource = null, $ignoreErrors = \false)
+    protected function glob($pattern, $recursive, &$resource = null, $ignoreErrors = false)
     {
-        if (\strlen($pattern) === ($i = \strcspn($pattern, '*?{['))) {
+        if (\strlen($pattern) === $i = strcspn($pattern, '*?{[')) {
             $prefix = $pattern;
             $pattern = '';
-        } elseif (0 === $i || \false === \strpos(\substr($pattern, 0, $i), '/')) {
+        } elseif (0 === $i || false === strpos(substr($pattern, 0, $i), '/')) {
             $prefix = '.';
-            $pattern = '/' . $pattern;
+            $pattern = '/'.$pattern;
         } else {
-            $prefix = \dirname(\substr($pattern, 0, 1 + $i));
-            $pattern = \substr($pattern, \strlen($prefix));
+            $prefix = \dirname(substr($pattern, 0, 1 + $i));
+            $pattern = substr($pattern, \strlen($prefix));
         }
+
         try {
-            $prefix = $this->locator->locate($prefix, $this->currentDir, \true);
-        } catch (\MolliePrefix\Symfony\Component\Config\Exception\FileLocatorFileNotFoundException $e) {
+            $prefix = $this->locator->locate($prefix, $this->currentDir, true);
+        } catch (FileLocatorFileNotFoundException $e) {
             if (!$ignoreErrors) {
                 throw $e;
             }
+
             $resource = [];
             foreach ($e->getPaths() as $path) {
-                $resource[] = new \MolliePrefix\Symfony\Component\Config\Resource\FileExistenceResource($path);
+                $resource[] = new FileExistenceResource($path);
             }
+
             return;
         }
-        $resource = new \MolliePrefix\Symfony\Component\Config\Resource\GlobResource($prefix, $pattern, $recursive);
+        $resource = new GlobResource($prefix, $pattern, $recursive);
+
         foreach ($resource as $path => $info) {
-            (yield $path => $info);
+            yield $path => $info;
         }
     }
-    private function doImport($resource, $type = null, $ignoreErrors = \false, $sourceResource = null)
+
+    private function doImport($resource, $type = null, $ignoreErrors = false, $sourceResource = null)
     {
         try {
             $loader = $this->resolve($resource, $type);
+
             if ($loader instanceof self && null !== $this->currentDir) {
-                $resource = $loader->getLocator()->locate($resource, $this->currentDir, \false);
+                $resource = $loader->getLocator()->locate($resource, $this->currentDir, false);
             }
+
             $resources = \is_array($resource) ? $resource : [$resource];
-            for ($i = 0; $i < ($resourcesCount = \count($resources)); ++$i) {
+            for ($i = 0; $i < $resourcesCount = \count($resources); ++$i) {
                 if (isset(self::$loading[$resources[$i]])) {
                     if ($i == $resourcesCount - 1) {
-                        throw new \MolliePrefix\Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException(\array_keys(self::$loading));
+                        throw new FileLoaderImportCircularReferenceException(array_keys(self::$loading));
                     }
                 } else {
                     $resource = $resources[$i];
                     break;
                 }
             }
-            self::$loading[$resource] = \true;
+            self::$loading[$resource] = true;
+
             try {
                 $ret = $loader->load($resource, $type);
             } finally {
                 unset(self::$loading[$resource]);
             }
+
             return $ret;
-        } catch (\MolliePrefix\Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException $e) {
+        } catch (FileLoaderImportCircularReferenceException $e) {
             throw $e;
         } catch (\Exception $e) {
             if (!$ignoreErrors) {
                 // prevent embedded imports from nesting multiple exceptions
-                if ($e instanceof \MolliePrefix\Symfony\Component\Config\Exception\FileLoaderLoadException) {
+                if ($e instanceof FileLoaderLoadException) {
                     throw $e;
                 }
-                throw new \MolliePrefix\Symfony\Component\Config\Exception\FileLoaderLoadException($resource, $sourceResource, null, $e, $type);
+
+                throw new FileLoaderLoadException($resource, $sourceResource, null, $e, $type);
             }
         }
+
         return null;
     }
 }

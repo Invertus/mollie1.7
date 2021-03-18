@@ -8,28 +8,34 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\ExpressionLanguage\Tests\Node;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode;
-use MolliePrefix\Symfony\Component\ExpressionLanguage\Node\Node;
-class NodeTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\ExpressionLanguage\Tests\Node;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\ExpressionLanguage\Node\ConstantNode;
+use Symfony\Component\ExpressionLanguage\Node\Node;
+
+class NodeTest extends TestCase
 {
     public function testToString()
     {
-        $node = new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\Node([new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\ConstantNode('foo')]);
+        $node = new Node([new ConstantNode('foo')]);
+
         $this->assertEquals(<<<'EOF'
 Node(
     ConstantNode(value: 'foo')
 )
 EOF
-, (string) $node);
+        , (string) $node);
     }
+
     public function testSerialization()
     {
-        $node = new \MolliePrefix\Symfony\Component\ExpressionLanguage\Node\Node(['foo' => 'bar'], ['bar' => 'foo']);
-        $serializedNode = \serialize($node);
-        $unserializedNode = \unserialize($serializedNode);
+        $node = new Node(['foo' => 'bar'], ['bar' => 'foo']);
+
+        $serializedNode = serialize($node);
+        $unserializedNode = unserialize($serializedNode);
+
         $this->assertEquals($node, $unserializedNode);
     }
 }

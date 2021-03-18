@@ -1,7 +1,4 @@
 <?php
-
-namespace MolliePrefix;
-
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -20,10 +17,10 @@ namespace MolliePrefix;
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
  */
-if (!\defined('_PS_VERSION_')) {
+if (!defined('_PS_VERSION_')) {
     exit;
 }
-class Fakemodule extends \MolliePrefix\Module
+
+class Fakemodule extends Module
 {
 }
-\class_alias('MolliePrefix\\Fakemodule', 'Fakemodule', \false);

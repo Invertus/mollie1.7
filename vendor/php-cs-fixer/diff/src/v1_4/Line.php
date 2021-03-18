@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of sebastian/diff.
  *
@@ -8,30 +7,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\PhpCsFixer\Diff\v1_4;
+
+namespace PhpCsFixer\Diff\v1_4;
 
 class Line
 {
-    const ADDED = 1;
-    const REMOVED = 2;
+    const ADDED     = 1;
+    const REMOVED   = 2;
     const UNCHANGED = 3;
+
     /**
      * @var int
      */
     private $type;
+
     /**
      * @var string
      */
     private $content;
+
     /**
      * @param int    $type
      * @param string $content
      */
     public function __construct($type = self::UNCHANGED, $content = '')
     {
-        $this->type = $type;
+        $this->type    = $type;
         $this->content = $content;
     }
+
     /**
      * @return string
      */
@@ -39,6 +43,7 @@ class Line
     {
         return $this->content;
     }
+
     /**
      * @return int
      */

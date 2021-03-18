@@ -8,9 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Tests\Fixtures;
 
-@\trigger_error('deprecated', \E_USER_DEPRECATED);
+namespace Symfony\Component\DependencyInjection\Tests\Fixtures;
+
+@trigger_error('deprecated', E_USER_DEPRECATED);
+
 class DeprecatedClass
 {
 }

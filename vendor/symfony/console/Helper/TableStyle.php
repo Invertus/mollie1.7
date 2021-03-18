@@ -8,10 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Console\Helper;
 
-use MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException;
-use MolliePrefix\Symfony\Component\Console\Exception\LogicException;
+namespace Symfony\Component\Console\Helper;
+
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Exception\LogicException;
+
 /**
  * Defines the styles for a Table.
  *
@@ -29,6 +31,7 @@ class TableStyle
     private $cellRowContentFormat = ' %s ';
     private $borderFormat = '%s';
     private $padType = \STR_PAD_RIGHT;
+
     /**
      * Sets padding character, used for cell padding.
      *
@@ -39,11 +42,14 @@ class TableStyle
     public function setPaddingChar($paddingChar)
     {
         if (!$paddingChar) {
-            throw new \MolliePrefix\Symfony\Component\Console\Exception\LogicException('The padding char must not be empty.');
+            throw new LogicException('The padding char must not be empty.');
         }
+
         $this->paddingChar = $paddingChar;
+
         return $this;
     }
+
     /**
      * Gets padding character, used for cell padding.
      *
@@ -53,6 +59,7 @@ class TableStyle
     {
         return $this->paddingChar;
     }
+
     /**
      * Sets horizontal border character.
      *
@@ -63,8 +70,10 @@ class TableStyle
     public function setHorizontalBorderChar($horizontalBorderChar)
     {
         $this->horizontalBorderChar = $horizontalBorderChar;
+
         return $this;
     }
+
     /**
      * Gets horizontal border character.
      *
@@ -74,6 +83,7 @@ class TableStyle
     {
         return $this->horizontalBorderChar;
     }
+
     /**
      * Sets vertical border character.
      *
@@ -84,8 +94,10 @@ class TableStyle
     public function setVerticalBorderChar($verticalBorderChar)
     {
         $this->verticalBorderChar = $verticalBorderChar;
+
         return $this;
     }
+
     /**
      * Gets vertical border character.
      *
@@ -95,6 +107,7 @@ class TableStyle
     {
         return $this->verticalBorderChar;
     }
+
     /**
      * Sets crossing character.
      *
@@ -105,8 +118,10 @@ class TableStyle
     public function setCrossingChar($crossingChar)
     {
         $this->crossingChar = $crossingChar;
+
         return $this;
     }
+
     /**
      * Gets crossing character.
      *
@@ -116,6 +131,7 @@ class TableStyle
     {
         return $this->crossingChar;
     }
+
     /**
      * Sets header cell format.
      *
@@ -126,8 +142,10 @@ class TableStyle
     public function setCellHeaderFormat($cellHeaderFormat)
     {
         $this->cellHeaderFormat = $cellHeaderFormat;
+
         return $this;
     }
+
     /**
      * Gets header cell format.
      *
@@ -137,6 +155,7 @@ class TableStyle
     {
         return $this->cellHeaderFormat;
     }
+
     /**
      * Sets row cell format.
      *
@@ -147,8 +166,10 @@ class TableStyle
     public function setCellRowFormat($cellRowFormat)
     {
         $this->cellRowFormat = $cellRowFormat;
+
         return $this;
     }
+
     /**
      * Gets row cell format.
      *
@@ -158,6 +179,7 @@ class TableStyle
     {
         return $this->cellRowFormat;
     }
+
     /**
      * Sets row cell content format.
      *
@@ -168,8 +190,10 @@ class TableStyle
     public function setCellRowContentFormat($cellRowContentFormat)
     {
         $this->cellRowContentFormat = $cellRowContentFormat;
+
         return $this;
     }
+
     /**
      * Gets row cell content format.
      *
@@ -179,6 +203,7 @@ class TableStyle
     {
         return $this->cellRowContentFormat;
     }
+
     /**
      * Sets table border format.
      *
@@ -189,8 +214,10 @@ class TableStyle
     public function setBorderFormat($borderFormat)
     {
         $this->borderFormat = $borderFormat;
+
         return $this;
     }
+
     /**
      * Gets table border format.
      *
@@ -200,6 +227,7 @@ class TableStyle
     {
         return $this->borderFormat;
     }
+
     /**
      * Sets cell padding type.
      *
@@ -209,12 +237,15 @@ class TableStyle
      */
     public function setPadType($padType)
     {
-        if (!\in_array($padType, [\STR_PAD_LEFT, \STR_PAD_RIGHT, \STR_PAD_BOTH], \true)) {
-            throw new \MolliePrefix\Symfony\Component\Console\Exception\InvalidArgumentException('Invalid padding type. Expected one of (STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH).');
+        if (!\in_array($padType, [\STR_PAD_LEFT, \STR_PAD_RIGHT, \STR_PAD_BOTH], true)) {
+            throw new InvalidArgumentException('Invalid padding type. Expected one of (STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH).');
         }
+
         $this->padType = $padType;
+
         return $this;
     }
+
     /**
      * Gets cell padding type.
      *

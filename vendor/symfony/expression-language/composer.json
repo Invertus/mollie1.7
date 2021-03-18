@@ -1,9 +1,9 @@
 {
-    "name": "symfony\/expression-language",
+    "name": "symfony/expression-language",
     "type": "library",
     "description": "Symfony ExpressionLanguage Component",
     "keywords": [],
-    "homepage": "https:\/\/symfony.com",
+    "homepage": "https://symfony.com",
     "license": "MIT",
     "authors": [
         {
@@ -12,20 +12,18 @@
         },
         {
             "name": "Symfony Community",
-            "homepage": "https:\/\/symfony.com\/contributors"
+            "homepage": "https://symfony.com/contributors"
         }
     ],
     "require": {
         "php": "^5.5.9|>=7.0.8",
-        "symfony\/cache": "~3.1|~4.0",
-        "symfony\/polyfill-php70": "~1.6"
+        "symfony/cache": "~3.1|~4.0",
+        "symfony/polyfill-php70": "~1.6"
     },
     "autoload": {
-        "psr-4": {
-            "MolliePrefix\\Symfony\\Component\\ExpressionLanguage\\": ""
-        },
+        "psr-4": { "Symfony\\Component\\ExpressionLanguage\\": "" },
         "exclude-from-classmap": [
-            "\/Tests\/"
+            "/Tests/"
         ]
     },
     "minimum-stability": "dev"

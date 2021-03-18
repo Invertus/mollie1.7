@@ -8,25 +8,32 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Tests\Definition\Dumper;
 
-use MolliePrefix\PHPUnit\Framework\TestCase;
-use MolliePrefix\Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
-use MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration;
-class YamlReferenceDumperTest extends \MolliePrefix\PHPUnit\Framework\TestCase
+namespace Symfony\Component\Config\Tests\Definition\Dumper;
+
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper;
+use Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration;
+
+class YamlReferenceDumperTest extends TestCase
 {
     public function testDumper()
     {
-        $configuration = new \MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration();
-        $dumper = new \MolliePrefix\Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper();
+        $configuration = new ExampleConfiguration();
+
+        $dumper = new YamlReferenceDumper();
+
         $this->assertEquals($this->getConfigurationAsString(), $dumper->dump($configuration));
     }
+
     public function provideDumpAtPath()
     {
-        return ['Regular node' => ['scalar_true', <<<EOL
+        return [
+            'Regular node' => ['scalar_true', <<<EOL
 scalar_true:          true
 EOL
-], 'Array node' => ['array', <<<EOL
+            ],
+            'Array node' => ['array', <<<EOL
 # some info
 array:
     child1:               ~
@@ -37,10 +44,12 @@ array:
     # which should be indented
     child3:               ~ # Example: example setting
 EOL
-], 'Regular nested' => ['array.child2', <<<EOL
+            ],
+            'Regular nested' => ['array.child2', <<<EOL
 child2:               ~
 EOL
-], 'Prototype' => ['cms_pages.page', <<<EOL
+            ],
+            'Prototype' => ['cms_pages.page', <<<EOL
 # Prototype
 page:
 
@@ -49,23 +58,29 @@ page:
         title:                ~ # Required
         path:                 ~ # Required
 EOL
-], 'Nested prototype' => ['cms_pages.page.locale', <<<EOL
+            ],
+            'Nested prototype' => ['cms_pages.page.locale', <<<EOL
 # Prototype
 locale:
     title:                ~ # Required
     path:                 ~ # Required
 EOL
-]];
+            ],
+        ];
     }
+
     /**
      * @dataProvider provideDumpAtPath
      */
     public function testDumpAtPath($path, $expected)
     {
-        $configuration = new \MolliePrefix\Symfony\Component\Config\Tests\Fixtures\Configuration\ExampleConfiguration();
-        $dumper = new \MolliePrefix\Symfony\Component\Config\Definition\Dumper\YamlReferenceDumper();
-        $this->assertSame(\trim($expected), \trim($dumper->dumpAtPath($configuration, $path)));
+        $configuration = new ExampleConfiguration();
+
+        $dumper = new YamlReferenceDumper();
+
+        $this->assertSame(trim($expected), trim($dumper->dumpAtPath($configuration, $path)));
     }
+
     private function getConfigurationAsString()
     {
         return <<<'EOL'

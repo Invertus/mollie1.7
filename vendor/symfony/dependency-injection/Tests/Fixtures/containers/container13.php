@@ -1,11 +1,18 @@
 <?php
 
-namespace MolliePrefix;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder;
-use MolliePrefix\Symfony\Component\DependencyInjection\Reference;
-$container = new \MolliePrefix\Symfony\Component\DependencyInjection\ContainerBuilder();
-$container->register('foo', 'FooClass')->addArgument(new \MolliePrefix\Symfony\Component\DependencyInjection\Reference('bar'))->setPublic(\true);
-$container->register('bar', 'BarClass')->setPublic(\true);
+$container = new ContainerBuilder();
+$container->
+    register('foo', 'FooClass')->
+    addArgument(new Reference('bar'))
+    ->setPublic(true)
+;
+$container->
+    register('bar', 'BarClass')
+    ->setPublic(true)
+;
 $container->compile();
+
 return $container;

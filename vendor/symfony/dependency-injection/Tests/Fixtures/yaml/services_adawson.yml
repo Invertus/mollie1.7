@@ -1,28 +1,28 @@
 services:
-    MolliePrefix\App\Db:
+    App\Db:
         public: true
         properties:
-            schema: '@MolliePrefix\App\Schema'
+            schema: '@App\Schema'
 
-    MolliePrefix\App\Bus:
+    App\Bus:
         public: true
-        arguments: ['@MolliePrefix\App\Db']
+        arguments: ['@App\Db']
         properties:
-            handler1: '@MolliePrefix\App\Handler1'
-            handler2: '@MolliePrefix\App\Handler2'
+            handler1: '@App\Handler1'
+            handler2: '@App\Handler2'
 
-    MolliePrefix\App\Handler1:
-        ['@MolliePrefix\App\Db', '@MolliePrefix\App\Schema', '@MolliePrefix\App\Processor']
+    App\Handler1:
+        ['@App\Db', '@App\Schema', '@App\Processor']
 
-    MolliePrefix\App\Handler2:
-        ['@MolliePrefix\App\Db', '@MolliePrefix\App\Schema', '@MolliePrefix\App\Processor']
+    App\Handler2:
+        ['@App\Db', '@App\Schema', '@App\Processor']
 
-    MolliePrefix\App\Processor:
-        ['@MolliePrefix\App\Registry', '@MolliePrefix\App\Db']
+    App\Processor:
+        ['@App\Registry', '@App\Db']
 
-    MolliePrefix\App\Registry:
+    App\Registry:
         properties:
-            processor: ['@MolliePrefix\App\Db', '@MolliePrefix\App\Bus']
+            processor: ['@App\Db', '@App\Bus']
 
-    MolliePrefix\App\Schema:
-        arguments: ['@MolliePrefix\App\Db']
+    App\Schema:
+        arguments: ['@App\Db']

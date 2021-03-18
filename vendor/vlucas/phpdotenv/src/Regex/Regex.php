@@ -1,8 +1,9 @@
 <?php
 
-namespace MolliePrefix\Dotenv\Regex;
+namespace Dotenv\Regex;
 
-use MolliePrefix\PhpOption\Option;
+use PhpOption\Option;
+
 class Regex
 {
     /**
@@ -16,10 +17,11 @@ class Regex
      */
     public static function replace($pattern, $replacement, $subject)
     {
-        return self::pregAndWrap(function ($subject) use($pattern, $replacement) {
-            return \preg_replace($pattern, $replacement, $subject);
+        return self::pregAndWrap(function ($subject) use ($pattern, $replacement) {
+            return preg_replace($pattern, $replacement, $subject);
         }, $subject);
     }
+
     /**
      * Perform a preg replace callback, wrapping up the result.
      *
@@ -31,10 +33,11 @@ class Regex
      */
     public static function replaceCallback($pattern, callable $callback, $subject)
     {
-        return self::pregAndWrap(function ($subject) use($pattern, $callback) {
-            return \preg_replace_callback($pattern, $callback, $subject);
+        return self::pregAndWrap(function ($subject) use ($pattern, $callback) {
+            return preg_replace_callback($pattern, $callback, $subject);
         }, $subject);
     }
+
     /**
      * Perform a preg operation, wrapping up the result.
      *
@@ -46,11 +49,14 @@ class Regex
     private static function pregAndWrap(callable $operation, $subject)
     {
         $result = (string) @$operation($subject);
-        if (($e = \preg_last_error()) !== \PREG_NO_ERROR) {
-            return \MolliePrefix\Dotenv\Regex\Error::create(self::lookupError($e));
+
+        if (($e = preg_last_error()) !== PREG_NO_ERROR) {
+            return Error::create(self::lookupError($e));
         }
-        return \MolliePrefix\Dotenv\Regex\Success::create($result);
+
+        return Success::create($result);
     }
+
     /**
      * Lookup the preg error code.
      *
@@ -60,14 +66,20 @@ class Regex
      */
     private static function lookupError($code)
     {
-        return \MolliePrefix\PhpOption\Option::fromValue(\get_defined_constants(\true))->filter(function (array $consts) {
-            return isset($consts['pcre']) && \defined('ARRAY_FILTER_USE_KEY');
-        })->map(function (array $consts) {
-            return \array_filter($consts['pcre'], function ($msg) {
-                return \substr($msg, -6) === '_ERROR';
-            }, \ARRAY_FILTER_USE_KEY);
-        })->flatMap(function (array $errors) use($code) {
-            return \MolliePrefix\PhpOption\Option::fromValue(\array_search($code, $errors, \true));
-        })->getOrElse('PREG_ERROR');
+        return Option::fromValue(get_defined_constants(true))
+            ->filter(function (array $consts) {
+                return isset($consts['pcre']) && defined('ARRAY_FILTER_USE_KEY');
+            })
+            ->map(function (array $consts) {
+                return array_filter($consts['pcre'], function ($msg) {
+                    return substr($msg, -6) === '_ERROR';
+                }, ARRAY_FILTER_USE_KEY);
+            })
+            ->flatMap(function (array $errors) use ($code) {
+                return Option::fromValue(
+                    array_search($code, $errors, true)
+                );
+            })
+            ->getOrElse('PREG_ERROR');
     }
 }

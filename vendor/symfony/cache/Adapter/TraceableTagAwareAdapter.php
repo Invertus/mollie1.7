@@ -8,17 +8,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
+
+namespace Symfony\Component\Cache\Adapter;
 
 /**
  * @author Robin Chalas <robin.chalas@gmail.com>
  */
-class TraceableTagAwareAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\TraceableAdapter implements \MolliePrefix\Symfony\Component\Cache\Adapter\TagAwareAdapterInterface
+class TraceableTagAwareAdapter extends TraceableAdapter implements TagAwareAdapterInterface
 {
-    public function __construct(\MolliePrefix\Symfony\Component\Cache\Adapter\TagAwareAdapterInterface $pool)
+    public function __construct(TagAwareAdapterInterface $pool)
     {
         parent::__construct($pool);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -28,7 +30,7 @@ class TraceableTagAwareAdapter extends \MolliePrefix\Symfony\Component\Cache\Ada
         try {
             return $event->result = $this->pool->invalidateTags($tags);
         } finally {
-            $event->end = \microtime(\true);
+            $event->end = microtime(true);
         }
     }
 }

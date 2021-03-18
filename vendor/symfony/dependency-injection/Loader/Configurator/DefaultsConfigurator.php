@@ -8,21 +8,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  *
  * @method InstanceofConfigurator instanceof(string $fqcn)
  */
-class DefaultsConfigurator extends \MolliePrefix\Symfony\Component\DependencyInjection\Loader\Configurator\AbstractServiceConfigurator
+class DefaultsConfigurator extends AbstractServiceConfigurator
 {
     const FACTORY = 'defaults';
+
     use Traits\AutoconfigureTrait;
     use Traits\AutowireTrait;
     use Traits\BindTrait;
     use Traits\PublicTrait;
+
     /**
      * Adds a tag for this definition.
      *
@@ -33,19 +37,23 @@ class DefaultsConfigurator extends \MolliePrefix\Symfony\Component\DependencyInj
      *
      * @throws InvalidArgumentException when an invalid tag name or attribute is provided
      */
-    public final function tag($name, array $attributes = [])
+    final public function tag($name, array $attributes = [])
     {
         if (!\is_string($name) || '' === $name) {
-            throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException('The tag name in "_defaults" must be a non-empty string.');
+            throw new InvalidArgumentException('The tag name in "_defaults" must be a non-empty string.');
         }
+
         foreach ($attributes as $attribute => $value) {
-            if (!\is_scalar($value) && null !== $value) {
-                throw new \MolliePrefix\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException(\sprintf('Tag "%s", attribute "%s" in "_defaults" must be of a scalar-type.', $name, $attribute));
+            if (!is_scalar($value) && null !== $value) {
+                throw new InvalidArgumentException(sprintf('Tag "%s", attribute "%s" in "_defaults" must be of a scalar-type.', $name, $attribute));
             }
         }
+
         $this->definition->addTag($name, $attributes);
+
         return $this;
     }
+
     /**
      * Defines an instanceof-conditional to be applied to following service definitions.
      *
@@ -53,7 +61,7 @@ class DefaultsConfigurator extends \MolliePrefix\Symfony\Component\DependencyInj
      *
      * @return InstanceofConfigurator
      */
-    protected final function setInstanceof($fqcn)
+    final protected function setInstanceof($fqcn)
     {
         return $this->parent->instanceof($fqcn);
     }

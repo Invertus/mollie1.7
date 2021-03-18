@@ -8,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\DependencyInjection;
+
+namespace Symfony\Component\DependencyInjection;
 
 /**
  * ResettableContainerInterface defines additional resetting functionality
@@ -17,7 +18,7 @@ namespace MolliePrefix\Symfony\Component\DependencyInjection;
  *
  * @author Christophe Coevoet <stof@notk.org>
  */
-interface ResettableContainerInterface extends \MolliePrefix\Symfony\Component\DependencyInjection\ContainerInterface
+interface ResettableContainerInterface extends ContainerInterface
 {
     /**
      * Resets shared services from the container.

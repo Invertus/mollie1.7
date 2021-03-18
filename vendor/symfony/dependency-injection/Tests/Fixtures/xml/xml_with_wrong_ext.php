@@ -7,4 +7,3 @@
     <parameter key="with_wrong_ext">from xml</parameter>
   </parameters>
 </container>
-

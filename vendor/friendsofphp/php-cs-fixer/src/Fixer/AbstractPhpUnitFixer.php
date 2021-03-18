@@ -9,54 +9,62 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\Indicator\PhpUnitTestCaseIndicator;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @internal
  */
-abstract class AbstractPhpUnitFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer
+abstract class AbstractPhpUnitFixer extends AbstractFixer
 {
     /**
      * {@inheritdoc}
      */
-    public final function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    final public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isAllTokenKindsFound([\T_CLASS, \T_STRING]);
+        return $tokens->isAllTokenKindsFound([T_CLASS, T_STRING]);
     }
-    protected final function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+
+    final protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
-        $phpUnitTestCaseIndicator = new \MolliePrefix\PhpCsFixer\Indicator\PhpUnitTestCaseIndicator();
+        $phpUnitTestCaseIndicator = new PhpUnitTestCaseIndicator();
+
         foreach ($phpUnitTestCaseIndicator->findPhpUnitClasses($tokens) as $indices) {
             $this->applyPhpUnitClassFix($tokens, $indices[0], $indices[1]);
         }
     }
+
     /**
      * @param int $startIndex
      * @param int $endIndex
      */
-    protected abstract function applyPhpUnitClassFix(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $startIndex, $endIndex);
+    abstract protected function applyPhpUnitClassFix(Tokens $tokens, $startIndex, $endIndex);
+
     /**
      * @param int $index
      *
      * @return int
      */
-    protected final function getDocBlockIndex(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    final protected function getDocBlockIndex(Tokens $tokens, $index)
     {
         do {
             $index = $tokens->getPrevNonWhitespace($index);
-        } while ($tokens[$index]->isGivenKind([\T_PUBLIC, \T_PROTECTED, \T_PRIVATE, \T_FINAL, \T_ABSTRACT, \T_COMMENT]));
+        } while ($tokens[$index]->isGivenKind([T_PUBLIC, T_PROTECTED, T_PRIVATE, T_FINAL, T_ABSTRACT, T_COMMENT]));
+
         return $index;
     }
+
     /**
      * @param int $index
      *
      * @return bool
      */
-    protected final function isPHPDoc(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, $index)
+    final protected function isPHPDoc(Tokens $tokens, $index)
     {
-        return $tokens[$index]->isGivenKind(\T_DOC_COMMENT);
+        return $tokens[$index]->isGivenKind(T_DOC_COMMENT);
     }
 }

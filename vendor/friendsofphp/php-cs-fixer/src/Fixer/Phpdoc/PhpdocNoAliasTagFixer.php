@@ -9,17 +9,19 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Phpdoc;
 
-use MolliePrefix\PhpCsFixer\AbstractProxyFixer;
-use MolliePrefix\PhpCsFixer\ConfigurationException\InvalidConfigurationException;
-use MolliePrefix\PhpCsFixer\ConfigurationException\InvalidFixerConfigurationException;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Preg;
+namespace PhpCsFixer\Fixer\Phpdoc;
+
+use PhpCsFixer\AbstractProxyFixer;
+use PhpCsFixer\ConfigurationException\InvalidConfigurationException;
+use PhpCsFixer\ConfigurationException\InvalidFixerConfigurationException;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless;
+use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Preg;
+
 /**
  * Case sensitive tag replace fixer (does not process inline tags like {@inheritdoc}).
  *
@@ -27,14 +29,18 @@ use MolliePrefix\PhpCsFixer\Preg;
  * @author Dariusz Rumiński <dariusz.ruminski@gmail.com>
  * @author SpacePossum
  */
-final class PhpdocNoAliasTagFixer extends \MolliePrefix\PhpCsFixer\AbstractProxyFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class PhpdocNoAliasTagFixer extends AbstractProxyFixer implements ConfigurationDefinitionFixerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('No alias PHPDoc tags should be used.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'No alias PHPDoc tags should be used.',
+            [
+                new CodeSample(
+                    '<?php
 /**
  * @property string $foo
  * @property-read string $bar
@@ -44,7 +50,10 @@ final class PhpdocNoAliasTagFixer extends \MolliePrefix\PhpCsFixer\AbstractProxy
 final class Example
 {
 }
-'), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+'
+                ),
+                new CodeSample(
+                    '<?php
 /**
  * @property string $foo
  * @property-read string $bar
@@ -54,8 +63,13 @@ final class Example
 final class Example
 {
 }
-', ['replacements' => ['link' => 'website']])]);
+',
+                    ['replacements' => ['link' => 'website']]
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -66,29 +80,53 @@ final class Example
     {
         return parent::getPriority();
     }
+
     public function configure(array $configuration = null)
     {
         parent::configure($configuration);
+
         /** @var GeneralPhpdocTagRenameFixer $generalPhpdocTagRenameFixer */
         $generalPhpdocTagRenameFixer = $this->proxyFixers['general_phpdoc_tag_rename'];
+
         try {
-            $generalPhpdocTagRenameFixer->configure(['fix_annotation' => \true, 'fix_inline' => \false, 'replacements' => $this->configuration['replacements'], 'case_sensitive' => \true]);
-        } catch (\MolliePrefix\PhpCsFixer\ConfigurationException\InvalidConfigurationException $exception) {
-            throw new \MolliePrefix\PhpCsFixer\ConfigurationException\InvalidFixerConfigurationException($this->getName(), \MolliePrefix\PhpCsFixer\Preg::replace('/^\\[.+?\\] /', '', $exception->getMessage()), $exception);
+            $generalPhpdocTagRenameFixer->configure([
+                'fix_annotation' => true,
+                'fix_inline' => false,
+                'replacements' => $this->configuration['replacements'],
+                'case_sensitive' => true,
+            ]);
+        } catch (InvalidConfigurationException $exception) {
+            throw new InvalidFixerConfigurationException(
+                $this->getName(),
+                Preg::replace('/^\[.+?\] /', '', $exception->getMessage()),
+                $exception
+            );
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolverRootless('replacements', [(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('replacements', 'Mapping between replaced annotations with new ones.'))->setAllowedTypes(['array'])->setDefault(['property-read' => 'property', 'property-write' => 'property', 'type' => 'var', 'link' => 'see'])->getOption()], $this->getName());
+        return new FixerConfigurationResolverRootless('replacements', [
+            (new FixerOptionBuilder('replacements', 'Mapping between replaced annotations with new ones.'))
+                ->setAllowedTypes(['array'])
+                ->setDefault([
+                    'property-read' => 'property',
+                    'property-write' => 'property',
+                    'type' => 'var',
+                    'link' => 'see',
+                ])
+                ->getOption(),
+        ], $this->getName());
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createProxyFixers()
     {
-        return [new \MolliePrefix\PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocTagRenameFixer()];
+        return [new GeneralPhpdocTagRenameFixer()];
     }
 }

@@ -9,12 +9,14 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Transformer;
 
-use MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer;
-use MolliePrefix\PhpCsFixer\Tokenizer\CT;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Tokenizer\Transformer;
+
+use PhpCsFixer\Tokenizer\AbstractTransformer;
+use PhpCsFixer\Tokenizer\CT;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * Transform braced class instantiation braces in `(new Foo())` into CT::T_BRACE_CLASS_INSTANTIATION_OPEN
  * and CT::T_BRACE_CLASS_INSTANTIATION_CLOSE.
@@ -23,7 +25,7 @@ use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
  *
  * @internal
  */
-final class BraceClassInstantiationTransformer extends \MolliePrefix\PhpCsFixer\Tokenizer\AbstractTransformer
+final class BraceClassInstantiationTransformer extends AbstractTransformer
 {
     /**
      * {@inheritdoc}
@@ -33,6 +35,7 @@ final class BraceClassInstantiationTransformer extends \MolliePrefix\PhpCsFixer\
         // must run after CurlyBraceTransformer and SquareBraceTransformer
         return -2;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -40,26 +43,46 @@ final class BraceClassInstantiationTransformer extends \MolliePrefix\PhpCsFixer\
     {
         return 50000;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function process(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens, \MolliePrefix\PhpCsFixer\Tokenizer\Token $token, $index)
+    public function process(Tokens $tokens, Token $token, $index)
     {
-        if (!$tokens[$index]->equals('(') || !$tokens[$tokens->getNextMeaningfulToken($index)]->equals([\T_NEW])) {
+        if (!$tokens[$index]->equals('(') || !$tokens[$tokens->getNextMeaningfulToken($index)]->equals([T_NEW])) {
             return;
         }
-        if ($tokens[$tokens->getPrevMeaningfulToken($index)]->equalsAny([']', [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_INDEX_CURLY_BRACE_CLOSE], [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_ARRAY_SQUARE_BRACE_CLOSE], [\T_ARRAY], [\T_CLASS], [\T_ELSEIF], [\T_FOR], [\T_FOREACH], [\T_IF], [\T_STATIC], [\T_STRING], [\T_SWITCH], [\T_VARIABLE], [\T_WHILE]])) {
+
+        if ($tokens[$tokens->getPrevMeaningfulToken($index)]->equalsAny([
+            ']',
+            [CT::T_ARRAY_INDEX_CURLY_BRACE_CLOSE],
+            [CT::T_ARRAY_SQUARE_BRACE_CLOSE],
+            [T_ARRAY],
+            [T_CLASS],
+            [T_ELSEIF],
+            [T_FOR],
+            [T_FOREACH],
+            [T_IF],
+            [T_STATIC],
+            [T_STRING],
+            [T_SWITCH],
+            [T_VARIABLE],
+            [T_WHILE],
+        ])) {
             return;
         }
-        $closeIndex = $tokens->findBlockEnd(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $index);
-        $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_OPEN, '(']);
-        $tokens[$closeIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_CLOSE, ')']);
+
+        $closeIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $index);
+
+        $tokens[$index] = new Token([CT::T_BRACE_CLASS_INSTANTIATION_OPEN, '(']);
+        $tokens[$closeIndex] = new Token([CT::T_BRACE_CLASS_INSTANTIATION_CLOSE, ')']);
     }
+
     /**
      * {@inheritdoc}
      */
     protected function getDeprecatedCustomTokens()
     {
-        return [\MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_OPEN, \MolliePrefix\PhpCsFixer\Tokenizer\CT::T_BRACE_CLASS_INSTANTIATION_CLOSE];
+        return [CT::T_BRACE_CLASS_INSTANTIATION_OPEN, CT::T_BRACE_CLASS_INSTANTIATION_CLOSE];
     }
 }

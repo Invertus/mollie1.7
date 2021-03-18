@@ -9,46 +9,56 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Fixer\Comment;
 
-use MolliePrefix\PhpCsFixer\AbstractFixer;
-use MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
-use MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
-use MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample;
-use MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition;
-use MolliePrefix\PhpCsFixer\Preg;
-use MolliePrefix\PhpCsFixer\Tokenizer\Token;
-use MolliePrefix\PhpCsFixer\Tokenizer\Tokens;
+namespace PhpCsFixer\Fixer\Comment;
+
+use PhpCsFixer\AbstractFixer;
+use PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface;
+use PhpCsFixer\FixerConfiguration\AllowedValueSubset;
+use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
+use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
+use PhpCsFixer\FixerDefinition\CodeSample;
+use PhpCsFixer\FixerDefinition\FixerDefinition;
+use PhpCsFixer\Preg;
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
+
 /**
  * @author Filippo Tessarotto <zoeslam@gmail.com>
  */
-final class SingleLineCommentStyleFixer extends \MolliePrefix\PhpCsFixer\AbstractFixer implements \MolliePrefix\PhpCsFixer\Fixer\ConfigurationDefinitionFixerInterface
+final class SingleLineCommentStyleFixer extends AbstractFixer implements ConfigurationDefinitionFixerInterface
 {
     /**
      * @var bool
      */
     private $asteriskEnabled;
+
     /**
      * @var bool
      */
     private $hashEnabled;
+
     /**
      * {@inheritdoc}
      */
     public function configure(array $configuration = null)
     {
         parent::configure($configuration);
-        $this->asteriskEnabled = \in_array('asterisk', $this->configuration['comment_types'], \true);
-        $this->hashEnabled = \in_array('hash', $this->configuration['comment_types'], \true);
+
+        $this->asteriskEnabled = \in_array('asterisk', $this->configuration['comment_types'], true);
+        $this->hashEnabled = \in_array('hash', $this->configuration['comment_types'], true);
     }
+
     /**
      * {@inheritdoc}
      */
     public function getDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerDefinition\FixerDefinition('Single-line comments and multi-line comments with only one line of actual content should use the `//` syntax.', [new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+        return new FixerDefinition(
+            'Single-line comments and multi-line comments with only one line of actual content should use the `//` syntax.',
+            [
+                new CodeSample(
+                    '<?php
 /* asterisk comment */
 $a = 1;
 
@@ -60,7 +70,10 @@ $b = 2;
  * comment
  */
 $c = 3;
-'), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample('<?php
+'
+                ),
+                new CodeSample(
+                    '<?php
 /* first comment */
 $a = 1;
 
@@ -74,8 +87,17 @@ $b = 2;
  * comment
  */
 $c = 3;
-', ['comment_types' => ['asterisk']]), new \MolliePrefix\PhpCsFixer\FixerDefinition\CodeSample("<?php # comment\n", ['comment_types' => ['hash']])]);
+',
+                    ['comment_types' => ['asterisk']]
+                ),
+                new CodeSample(
+                    "<?php # comment\n",
+                    ['comment_types' => ['hash']]
+                ),
+            ]
+        );
     }
+
     /**
      * {@inheritdoc}
      *
@@ -85,55 +107,76 @@ $c = 3;
     {
         return -19;
     }
+
     /**
      * {@inheritdoc}
      */
-    public function isCandidate(\MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    public function isCandidate(Tokens $tokens)
     {
-        return $tokens->isTokenKindFound(\T_COMMENT);
+        return $tokens->isTokenKindFound(T_COMMENT);
     }
+
     /**
      * {@inheritdoc}
      */
-    protected function applyFix(\SplFileInfo $file, \MolliePrefix\PhpCsFixer\Tokenizer\Tokens $tokens)
+    protected function applyFix(\SplFileInfo $file, Tokens $tokens)
     {
         foreach ($tokens as $index => $token) {
-            if (!$token->isGivenKind(\T_COMMENT)) {
+            if (!$token->isGivenKind(T_COMMENT)) {
                 continue;
             }
+
             $content = $token->getContent();
-            $commentContent = \substr($content, 2, -2) ?: '';
+            $commentContent = substr($content, 2, -2) ?: '';
+
             if ($this->hashEnabled && '#' === $content[0]) {
                 if (isset($content[1]) && '[' === $content[1]) {
-                    continue;
-                    // This might be attribute on PHP8, do not change
+                    continue; // This might be attribute on PHP8, do not change
                 }
-                $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->getId(), '//' . \substr($content, 1)]);
+
+                $tokens[$index] = new Token([$token->getId(), '//'.substr($content, 1)]);
+
                 continue;
             }
-            if (!$this->asteriskEnabled || \false !== \strpos($commentContent, '?>') || '/*' !== \substr($content, 0, 2) || 1 === \MolliePrefix\PhpCsFixer\Preg::match('/[^\\s\\*].*\\R.*[^\\s\\*]/s', $commentContent)) {
+
+            if (
+                !$this->asteriskEnabled
+                || false !== strpos($commentContent, '?>')
+                || '/*' !== substr($content, 0, 2)
+                || 1 === Preg::match('/[^\s\*].*\R.*[^\s\*]/s', $commentContent)
+            ) {
                 continue;
             }
+
             $nextTokenIndex = $index + 1;
             if (isset($tokens[$nextTokenIndex])) {
                 $nextToken = $tokens[$nextTokenIndex];
-                if (!$nextToken->isWhitespace() || 1 !== \MolliePrefix\PhpCsFixer\Preg::match('/\\R/', $nextToken->getContent())) {
+                if (!$nextToken->isWhitespace() || 1 !== Preg::match('/\R/', $nextToken->getContent())) {
                     continue;
                 }
-                $tokens[$nextTokenIndex] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$nextToken->getId(), \ltrim($nextToken->getContent(), " \t")]);
+
+                $tokens[$nextTokenIndex] = new Token([$nextToken->getId(), ltrim($nextToken->getContent(), " \t")]);
             }
+
             $content = '//';
-            if (1 === \MolliePrefix\PhpCsFixer\Preg::match('/[^\\s\\*]/', $commentContent)) {
-                $content = '// ' . \MolliePrefix\PhpCsFixer\Preg::replace('/[\\s\\*]*([^\\s\\*](?:.+[^\\s\\*])?)[\\s\\*]*/', '\\1', $commentContent);
+            if (1 === Preg::match('/[^\s\*]/', $commentContent)) {
+                $content = '// '.Preg::replace('/[\s\*]*([^\s\*](?:.+[^\s\*])?)[\s\*]*/', '\1', $commentContent);
             }
-            $tokens[$index] = new \MolliePrefix\PhpCsFixer\Tokenizer\Token([$token->getId(), $content]);
+            $tokens[$index] = new Token([$token->getId(), $content]);
         }
     }
+
     /**
      * {@inheritdoc}
      */
     protected function createConfigurationDefinition()
     {
-        return new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerConfigurationResolver([(new \MolliePrefix\PhpCsFixer\FixerConfiguration\FixerOptionBuilder('comment_types', 'List of comment types to fix'))->setAllowedTypes(['array'])->setAllowedValues([new \MolliePrefix\PhpCsFixer\FixerConfiguration\AllowedValueSubset(['asterisk', 'hash'])])->setDefault(['asterisk', 'hash'])->getOption()]);
+        return new FixerConfigurationResolver([
+            (new FixerOptionBuilder('comment_types', 'List of comment types to fix'))
+                ->setAllowedTypes(['array'])
+                ->setAllowedValues([new AllowedValueSubset(['asterisk', 'hash'])])
+                ->setDefault(['asterisk', 'hash'])
+                ->getOption(),
+        ]);
     }
 }

@@ -8,28 +8,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Cache\Adapter;
 
-use MolliePrefix\Psr\SimpleCache\CacheInterface;
-use MolliePrefix\Symfony\Component\Cache\PruneableInterface;
-use MolliePrefix\Symfony\Component\Cache\Traits\ProxyTrait;
+namespace Symfony\Component\Cache\Adapter;
+
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\PruneableInterface;
+use Symfony\Component\Cache\Traits\ProxyTrait;
+
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class SimpleCacheAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\AbstractAdapter implements \MolliePrefix\Symfony\Component\Cache\PruneableInterface
+class SimpleCacheAdapter extends AbstractAdapter implements PruneableInterface
 {
     /**
      * @internal
      */
     const NS_SEPARATOR = '_';
+
     use ProxyTrait;
+
     private $miss;
-    public function __construct(\MolliePrefix\Psr\SimpleCache\CacheInterface $pool, $namespace = '', $defaultLifetime = 0)
+
+    public function __construct(CacheInterface $pool, $namespace = '', $defaultLifetime = 0)
     {
         parent::__construct($namespace, $defaultLifetime);
+
         $this->pool = $pool;
         $this->miss = new \stdClass();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -37,10 +44,11 @@ class SimpleCacheAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\A
     {
         foreach ($this->pool->getMultiple($ids, $this->miss) as $key => $value) {
             if ($this->miss !== $value) {
-                (yield $key => $value);
+                yield $key => $value;
             }
         }
     }
+
     /**
      * {@inheritdoc}
      */
@@ -48,6 +56,7 @@ class SimpleCacheAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\A
     {
         return $this->pool->has($id);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -55,6 +64,7 @@ class SimpleCacheAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\A
     {
         return $this->pool->clear();
     }
+
     /**
      * {@inheritdoc}
      */
@@ -62,6 +72,7 @@ class SimpleCacheAdapter extends \MolliePrefix\Symfony\Component\Cache\Adapter\A
     {
         return $this->pool->deleteMultiple($ids);
     }
+
     /**
      * {@inheritdoc}
      */

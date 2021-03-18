@@ -8,22 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace MolliePrefix\Symfony\Component\Config\Definition\Builder;
 
-use MolliePrefix\Symfony\Component\Config\Definition\NodeInterface;
+namespace Symfony\Component\Config\Definition\Builder;
+
+use Symfony\Component\Config\Definition\NodeInterface;
+
 /**
  * This is the entry class for building a config tree.
  *
  * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
-class TreeBuilder implements \MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeParentInterface
+class TreeBuilder implements NodeParentInterface
 {
     protected $tree;
     protected $root;
+
     /**
      * @deprecated since 3.4. To be removed in 4.0
      */
     protected $builder;
+
     /**
      * Creates the root node.
      *
@@ -35,11 +39,13 @@ class TreeBuilder implements \MolliePrefix\Symfony\Component\Config\Definition\B
      *
      * @throws \RuntimeException When the node type is not supported
      */
-    public function root($name, $type = 'array', \MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeBuilder $builder = null)
+    public function root($name, $type = 'array', NodeBuilder $builder = null)
     {
-        $builder = $builder ?: new \MolliePrefix\Symfony\Component\Config\Definition\Builder\NodeBuilder();
+        $builder = $builder ?: new NodeBuilder();
+
         return $this->root = $builder->node($name, $type)->setParent($this);
     }
+
     /**
      * Builds the tree.
      *
@@ -55,6 +61,7 @@ class TreeBuilder implements \MolliePrefix\Symfony\Component\Config\Definition\B
         if (null !== $this->tree) {
             return $this->tree;
         }
-        return $this->tree = $this->root->getNode(\true);
+
+        return $this->tree = $this->root->getNode(true);
     }
 }

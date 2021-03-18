@@ -1,33 +1,31 @@
 <?php
 
-namespace MolliePrefix;
-
-$file = __DIR__ . '/ProjectWithXsdExtensionInPhar.phar';
-if (\is_file($file)) {
-    @\unlink($file);
+$file = __DIR__.'/ProjectWithXsdExtensionInPhar.phar';
+if (is_file($file)) {
+    @unlink($file);
 }
-$phar = new \Phar($file, 0, 'ProjectWithXsdExtensionInPhar.phar');
+
+$phar = new Phar($file, 0, 'ProjectWithXsdExtensionInPhar.phar');
 $phar->addFromString('ProjectWithXsdExtensionInPhar.php', <<<'EOT'
 <?php
 
-namespace MolliePrefix;
-
-class ProjectWithXsdExtensionInPhar extends \MolliePrefix\ProjectExtension
+class ProjectWithXsdExtensionInPhar extends ProjectExtension
 {
     public function getXsdValidationBasePath()
     {
-        return __DIR__ . '/schema';
+        return __DIR__.'/schema';
     }
+
     public function getNamespace()
     {
         return 'http://www.example.com/schema/projectwithxsdinphar';
     }
+
     public function getAlias()
     {
         return 'projectwithxsdinphar';
     }
 }
-\class_alias('MolliePrefix\\ProjectWithXsdExtensionInPhar', 'ProjectWithXsdExtensionInPhar', \false);
 EOT
 );
 $phar->addFromString('schema/project-1.0.xsd', <<<'EOT'

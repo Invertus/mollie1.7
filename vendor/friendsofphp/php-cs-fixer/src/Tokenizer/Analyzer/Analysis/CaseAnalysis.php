@@ -9,7 +9,8 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\Tokenizer\Analyzer\Analysis;
+
+namespace PhpCsFixer\Tokenizer\Analyzer\Analysis;
 
 /**
  * @author Kuba Werłos <werlos@gmail.com>
@@ -22,6 +23,7 @@ final class CaseAnalysis
      * @var int
      */
     private $colonIndex;
+
     /**
      * @param int $colonIndex
      */
@@ -29,6 +31,7 @@ final class CaseAnalysis
     {
         $this->colonIndex = $colonIndex;
     }
+
     /**
      * @return int
      */

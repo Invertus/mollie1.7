@@ -9,18 +9,26 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace MolliePrefix\PhpCsFixer\RuleSet\Sets;
 
-use MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+namespace PhpCsFixer\RuleSet\Sets;
+
+use PhpCsFixer\RuleSet\AbstractRuleSetDescription;
+
 /**
  * @internal
  */
-final class PHPUnit60MigrationRiskySet extends \MolliePrefix\PhpCsFixer\RuleSet\AbstractRuleSetDescription
+final class PHPUnit60MigrationRiskySet extends AbstractRuleSetDescription
 {
     public function getRules()
     {
-        return ['@PHPUnit57Migration:risky' => \true, 'php_unit_namespaced' => ['target' => '6.0']];
+        return [
+            '@PHPUnit57Migration:risky' => true,
+            'php_unit_namespaced' => [
+                'target' => '6.0',
+            ],
+        ];
     }
+
     public function getDescription()
     {
         return 'Rules to improve tests code for PHPUnit 6.0 compatibility.';
