@@ -450,7 +450,7 @@
         "source": {
             "type": "git",
             "url": "https://github.com/sandervanhooft/mollie-api-php.git",
-            "reference": "5b57f1a6ebfbe42dbe7bbdb8b1a4697b53df6669"
+            "reference": "31344c0e272b5ea55c2fb8cfe51f016299632125"
         },
         "require": {
             "composer/ca-bundle": "^1.1",
@@ -468,7 +468,7 @@
         "suggest": {
             "mollie/oauth2-mollie-php": "Use OAuth to authenticate with the Mollie API. This is needed for some endpoints. Visit https://docs.mollie.com/ for more information."
         },
-        "time": "2021-03-16T14:47:19+00:00",
+        "time": "2021-03-16T15:28:12+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {

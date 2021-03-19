@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitdf072a444e4c08cf62f1540193775f9b
+class ComposerStaticInit3c8d65f1f1310deeb448f16ba9c851d7
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -298,9 +298,6 @@ class ComposerStaticInitdf072a444e4c08cf62f1540193775f9b
         'CommentedOutCodeAtStartOfClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CommentedOutCodeAtStartOfClassNoBlankLine' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/WhiteSpace/MemberVarSpacingUnitTest.inc',
         'CompletelyWrongClassName' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Classes/ClassFileNameUnitTest.inc',
-        'ComposerAutoloaderInitdf072a444e4c08cf62f1540193775f9b' => __DIR__ . '/..' . '/composer/autoload_real.php',
-        'Composer\\Autoload\\ClassLoader' => __DIR__ . '/..' . '/composer/ClassLoader.php',
-        'Composer\\Autoload\\ComposerStaticInitdf072a444e4c08cf62f1540193775f9b' => __DIR__ . '/..' . '/composer/autoload_static.php',
         'Composer\\CaBundle\\CaBundle' => __DIR__ . '/..' . '/composer/ca-bundle/src/CaBundle.php',
         'Composer\\Semver\\Comparator' => __DIR__ . '/..' . '/composer/semver/src/Comparator.php',
         'Composer\\Semver\\CompilingMatcher' => __DIR__ . '/..' . '/composer/semver/src/CompilingMatcher.php',
@@ -409,6 +406,7 @@ class ComposerStaticInitdf072a444e4c08cf62f1540193775f9b
         'FunctionCommentThrowTagUnitTest' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
         'GlobalNameSpaceClass' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/Commenting/FunctionCommentThrowTagUnitTest.inc',
         'Gsitemap' => __DIR__ . '/..' . '/prestashop/header-stamp/tests/integration/expected/gsitemap/gsitemap.php',
+        'Guzzle5MollieHttpAdapter' => __DIR__ . '/../..' . '/src/Adapter/Guzzle5MollieHttpAdapter.php',
         'HttpStatus' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/Squiz/Tests/PHP/NonExecutableCodeUnitTest.2.inc',
         'I1' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
         'I2' => __DIR__ . '/..' . '/squizlabs/php_codesniffer/src/Standards/PSR2/Tests/Classes/ClassDeclarationUnitTest.inc',
@@ -2887,10 +2885,10 @@ class ComposerStaticInitdf072a444e4c08cf62f1540193775f9b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitdf072a444e4c08cf62f1540193775f9b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitdf072a444e4c08cf62f1540193775f9b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitdf072a444e4c08cf62f1540193775f9b::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitdf072a444e4c08cf62f1540193775f9b::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3c8d65f1f1310deeb448f16ba9c851d7::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3c8d65f1f1310deeb448f16ba9c851d7::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit3c8d65f1f1310deeb448f16ba9c851d7::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit3c8d65f1f1310deeb448f16ba9c851d7::$classMap;
 
         }, null, ClassLoader::class);
     }
