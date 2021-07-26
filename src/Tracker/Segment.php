@@ -39,6 +39,7 @@ namespace Mollie\Tracker;
 use Context;
 use Module;
 use Mollie\Config\Config;
+use Mollie\Config\Env;
 
 class Segment implements TrackerInterface
 {
@@ -58,14 +59,20 @@ class Segment implements TrackerInterface
     private $context;
 
     /**
+     * @var Env
+     */
+    private $env;
+
+    /**
      * Segment constructor.
      *
      * @param Context $context
      */
-    public function __construct(Context $context)
+    public function __construct(Context $context, Env $env)
     {
         $this->context = $context;
         $this->init();
+        $this->env = $env;
     }
 
     /**
@@ -123,6 +130,7 @@ class Segment implements TrackerInterface
             'properties' => array_merge([
                 'module' => 'mollie',
                 'version' => $module->version,
+                'env' => $this->env->get('SENTRY_ENV')
             ], $this->options),
         ]);
 
