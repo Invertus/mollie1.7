@@ -10,11 +10,6 @@
 
 <div class="mollie-iframe-container">
     <input type="hidden" value="{$methodId|escape:'html':'UTF-8'}" name="method-id">
-    <div class="container">
-        <article class="alert alert-danger" role="alert" data-alert="danger" style="display: none">
-            <li class="js-mollie-alert"></li>
-        </article>
-    </div>
     <label class="mollie-information-label">{l s='Enter your card information' mod='mollie'}</label>
     <div class="form-group form-group-card-holder {$methodId|escape:'html':'UTF-8'}">
         <label class="mollie-label" for="card-holder-{$methodId|escape:'html':'UTF-8'}">{l s='Name on card' mod='mollie'}</label>

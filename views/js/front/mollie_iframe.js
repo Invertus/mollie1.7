@@ -144,9 +144,6 @@ $(document).ready(function () {
             event.preventDefault();
             mollie.createToken().then(function (token) {
                 if (token.error) {
-                    var $mollieAlert = $('.js-mollie-alert');
-                    $mollieAlert.closest('article').show();
-                    $mollieAlert.text(token.error.message);
                     return;
                 }
 
