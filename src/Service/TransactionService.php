@@ -259,11 +259,9 @@ class TransactionService
      */
     public function updateTransaction($orderId, $transaction)
     {
-        /** @var TransactionService $transactionService */
-        $transactionService = $this->module->getMollieContainer(TransactionService::class);
         $order = new Order($orderId);
         if (!$order->getOrderPayments()) {
-            $transactionService->updateOrderTransaction($transaction->id, $order->reference);
+            $this->updateOrderTransaction($transaction->id, $order->reference);
         } else {
             /** @var OrderPayment $orderPayment */
             foreach ($order->getOrderPayments() as $orderPayment) {
