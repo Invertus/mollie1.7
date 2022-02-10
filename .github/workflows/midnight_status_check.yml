@@ -53,7 +53,8 @@ jobs:
       - name: Run Cypress tests [PS16 | PS17 | PS177 (WIP)]
         run: npx cypress run --config videoUploadOnPasses=false --env demousername=${{ secrets.DEMO_USER }},demopassword=${{ secrets.DEMO_PASS }},FO_username=${{ secrets.MOLLIE_FO_USR }},FO_password=${{ secrets.MOLLIE_FO_PSW }},mollie_test_api_key=${{ secrets.MOLLIE_TEST_API_KEY }},mollie_test_profile_id=${{ secrets.MOLLIE_TEST_PROFILE_ID }}
         #--parallel --record --key fe20a60a-0ac6-4956-a6e8-911aad86cb03
-        
+
+
       - name: Archive videos and screenshots
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
