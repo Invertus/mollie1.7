@@ -1,5 +1,5 @@
 name: Regular midnight test runs
-on:
+on: [ push ]
   push:
     #shedule:
     # - cron:  '0 0 * * 5'
