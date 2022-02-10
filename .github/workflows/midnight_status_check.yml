@@ -1,8 +1,6 @@
 name: Regular midnight test runs
 on: [ push ]
-  push:
-    #shedule:
-    # - cron:  '0 0 * * 5'
+
 jobs:
   cypress-e2e:
     runs-on: ubuntu-latest
