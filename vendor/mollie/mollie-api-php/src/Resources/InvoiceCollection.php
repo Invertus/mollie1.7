@@ -1,8 +1,8 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
-class InvoiceCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\CursorCollection
+class InvoiceCollection extends CursorCollection
 {
     /**
      * @return string
@@ -11,11 +11,12 @@ class InvoiceCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Cu
     {
         return "invoices";
     }
+
     /**
      * @return BaseResource
      */
     protected function createResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Invoice($this->client);
+        return new Invoice($this->client);
     }
 }

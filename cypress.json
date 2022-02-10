@@ -1,0 +1,10 @@
+{
+ "chromeWebSecurity": false,
+ "experimentalSourceRewriting": true,
+ "numTestsKeptInMemory": 50,
+ "defaultCommandTimeout": 80000,
+ "pageLoadTimeout": 80000,
+ "projectId": "xb89dr",
+ "retries": 2,
+ "baseUrl": "https://localhost:8080"
+}

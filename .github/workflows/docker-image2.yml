@@ -1,0 +1,27 @@
+name: Docker Image CI 2
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+defaults:
+  run:
+    working-directory: hello-world-cypress
+    
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          docker build --tag sentimentalyzer .
+          docker run
+          --interactive \
+          --tty \
+          --env PORT=8123 \
+          --publish 8123:8123 \
+            sentimentalyzer
+          docker-compose -f docker-compose.yml -f cy-open.yml up --exit-code-from cypress
+          

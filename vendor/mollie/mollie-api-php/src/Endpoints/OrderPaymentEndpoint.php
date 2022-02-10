@@ -1,17 +1,20 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Endpoints;
+namespace Mollie\Api\Endpoints;
 
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Order;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\PaymentCollection;
-class OrderPaymentEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\CollectionEndpointAbstract
+use Mollie\Api\Resources\Order;
+use Mollie\Api\Resources\Payment;
+use Mollie\Api\Resources\PaymentCollection;
+
+class OrderPaymentEndpoint extends CollectionEndpointAbstract
 {
     protected $resourcePath = "orders_payments";
+
     /**
      * @var string
      */
     const RESOURCE_ID_PREFIX = 'tr_';
+
     /**
      * Get the object that is used by this API endpoint. Every API endpoint uses one
      * type of object.
@@ -20,8 +23,9 @@ class OrderPaymentEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints
      */
     protected function getResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Payment($this->client);
+        return new Payment($this->client);
     }
+
     /**
      * Get the collection object that is used by this API endpoint. Every API
      * endpoint uses one type of collection object.
@@ -33,8 +37,9 @@ class OrderPaymentEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints
      */
     protected function getResourceCollectionObject($count, $_links)
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\PaymentCollection($this->client, $count, $_links);
+        return new PaymentCollection($this->client, $count, $_links);
     }
+
     /**
      * Creates a payment in Mollie for a specific order.
      *
@@ -45,10 +50,11 @@ class OrderPaymentEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints
      * @return \Mollie\Api\Resources\BaseResource|\Mollie\Api\Resources\Payment
      * @throws \Mollie\Api\Exceptions\ApiException
      */
-    public function createFor(\_PhpScoper5eddef0da618a\Mollie\Api\Resources\Order $order, array $data, array $filters = [])
+    public function createFor(Order $order, array $data, array $filters = [])
     {
         return $this->createForId($order->id, $data, $filters);
     }
+
     /**
      * Creates a payment in Mollie for a specific order ID.
      *
@@ -62,6 +68,7 @@ class OrderPaymentEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints
     public function createForId($orderId, array $data, array $filters = [])
     {
         $this->parentId = $orderId;
+
         return $this->rest_create($data, $filters);
     }
 }

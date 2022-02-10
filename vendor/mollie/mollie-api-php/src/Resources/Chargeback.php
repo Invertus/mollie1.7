@@ -1,6 +1,6 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
 /**
  * @method Refund[]|RefundCollection all($from = null, $limit = 50, array $filters = [])
@@ -8,7 +8,7 @@ namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
  * @method Refund create(array $data = [], array $filters = [])
  * @method Refund delete($refundId)
  */
-class Chargeback extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\BaseResource
+class Chargeback extends BaseResource
 {
     /**
      * Id of the payment method.
@@ -16,12 +16,14 @@ class Chargeback extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\BaseResou
      * @var string
      */
     public $id;
+
     /**
      * The $amount that was refunded.
      *
      * @var \stdClass
      */
     public $amount;
+
     /**
      * UTC datetime the payment was created in ISO-8601 format.
      *
@@ -29,18 +31,21 @@ class Chargeback extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\BaseResou
      * @var string|null
      */
     public $createdAt;
+
     /**
      * The payment id that was refunded.
      *
      * @var string
      */
     public $paymentId;
+
     /**
      * The settlement amount
      *
      * @var \stdClass
      */
     public $settlementAmount;
+
     /**
      * @var \stdClass
      */

@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  cypress:
+    # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
+    image: "cypress/included:9.3.1"
+    environment:
+      # pass base url to test pointing at the web application
+      - CYPRESS_baseUrl=http://localhost:8080
+    # share the current folder as volume to avoid copying
+    working_dir: /
+    volumes:
+      - ./:/e2e
+    networks:
+      - prestashop-net
+networks:
+  prestashop-net:
+    external:
+      name: 'prestashop-net'

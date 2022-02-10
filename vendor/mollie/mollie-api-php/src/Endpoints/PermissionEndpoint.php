@@ -1,13 +1,15 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Endpoints;
+namespace Mollie\Api\Endpoints;
 
-use _PhpScoper5eddef0da618a\Mollie\Api\Exceptions\ApiException;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Permission;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\PermissionCollection;
-class PermissionEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\CollectionEndpointAbstract
+use Mollie\Api\Exceptions\ApiException;
+use Mollie\Api\Resources\Permission;
+use Mollie\Api\Resources\PermissionCollection;
+
+class PermissionEndpoint extends CollectionEndpointAbstract
 {
     protected $resourcePath = "permissions";
+
     /**
      * Get the object that is used by this API endpoint. Every API endpoint uses one
      * type of object.
@@ -16,8 +18,9 @@ class PermissionEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\C
      */
     protected function getResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Permission($this->client);
+        return new Permission($this->client);
     }
+
     /**
      * Get the collection object that is used by this API endpoint. Every API
      * endpoint uses one type of collection object.
@@ -29,8 +32,9 @@ class PermissionEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\C
      */
     protected function getResourceCollectionObject($count, $_links)
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\PermissionCollection($count, $_links);
+        return new PermissionCollection($count, $_links);
     }
+
     /**
      * Retrieve a single Permission from Mollie.
      *
@@ -45,6 +49,7 @@ class PermissionEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\C
     {
         return $this->rest_read($permissionId, $parameters);
     }
+
     /**
      * Retrieve all permissions.
      *

@@ -1,8 +1,8 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
-class SettlementCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\CursorCollection
+class SettlementCollection extends CursorCollection
 {
     /**
      * @return string
@@ -11,11 +11,12 @@ class SettlementCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources
     {
         return "settlements";
     }
+
     /**
      * @return BaseResource
      */
     protected function createResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Settlement($this->client);
+        return new Settlement($this->client);
     }
 }

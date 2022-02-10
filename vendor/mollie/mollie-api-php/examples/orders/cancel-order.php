@@ -1,15 +1,14 @@
 <?php
-
-namespace _PhpScoper5eddef0da618a;
-
 /*
  * Cancel an order using the Mollie API.
  */
+
 try {
     /*
      * Initialize the Mollie API library with your API key or OAuth access token.
      */
     require "../initialize.php";
+
     /*
      * Cancel the order with ID "ord_pbjz8x"
      *
@@ -22,6 +21,6 @@ try {
     } else {
         echo "Unable to cancel your order " . $order->id . ".";
     }
-} catch (\_PhpScoper5eddef0da618a\Mollie\Api\Exceptions\ApiException $e) {
-    echo "API call failed: " . \htmlspecialchars($e->getMessage());
+} catch (\Mollie\Api\Exceptions\ApiException $e) {
+    echo "API call failed: " . htmlspecialchars($e->getMessage());
 }

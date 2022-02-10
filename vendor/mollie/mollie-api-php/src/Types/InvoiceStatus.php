@@ -1,6 +1,6 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Types;
+namespace Mollie\Api\Types;
 
 class InvoiceStatus
 {
@@ -8,10 +8,12 @@ class InvoiceStatus
      * The invoice is not paid yet.
      */
     const STATUS_OPEN = "open";
+
     /**
      * The invoice is paid.
      */
     const STATUS_PAID = "paid";
+
     /**
      * Payment of the invoice is overdue.
      */

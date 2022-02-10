@@ -1,8 +1,8 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
-class OrganizationCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\CursorCollection
+class OrganizationCollection extends CursorCollection
 {
     /**
      * @return string
@@ -11,11 +11,12 @@ class OrganizationCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resourc
     {
         return "organizations";
     }
+
     /**
      * @return BaseResource
      */
     protected function createResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Organization($this->client);
+        return new Organization($this->client);
     }
 }

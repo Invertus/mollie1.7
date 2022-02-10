@@ -1,21 +1,24 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Endpoints;
+namespace Mollie\Api\Endpoints;
 
-use _PhpScoper5eddef0da618a\Mollie\Api\Exceptions\ApiException;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Method;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\MethodCollection;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\ResourceFactory;
-class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\CollectionEndpointAbstract
+use Mollie\Api\Exceptions\ApiException;
+use Mollie\Api\Resources\Method;
+use Mollie\Api\Resources\MethodCollection;
+use Mollie\Api\Resources\ResourceFactory;
+
+class MethodEndpoint extends CollectionEndpointAbstract
 {
     protected $resourcePath = "methods";
+
     /**
      * @return Method
      */
     protected function getResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Method($this->client);
+        return new Method($this->client);
     }
+
     /**
      * Retrieve all active methods. In test mode, this includes pending methods. The results are not paginated.
      *
@@ -29,6 +32,7 @@ class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\Colle
     {
         return $this->allActive($parameters);
     }
+
     /**
      * Retrieve all active methods for the organization. In test mode, this includes pending methods.
      * The results are not paginated.
@@ -42,6 +46,7 @@ class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\Colle
     {
         return parent::rest_list(null, null, $parameters);
     }
+
     /**
      * Retrieve all available methods for the organization, including activated and not yet activated methods. The
      * results are not paginated. Make sure to include the profileId parameter if using an OAuth Access Token.
@@ -53,9 +58,17 @@ class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\Colle
     public function allAvailable(array $parameters = [])
     {
         $url = 'methods/all' . $this->buildQueryString($parameters);
+
         $result = $this->client->performHttpCall('GET', $url);
-        return \_PhpScoper5eddef0da618a\Mollie\Api\Resources\ResourceFactory::createBaseResourceCollection($this->client, \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Method::class, $result->_embedded->methods, $result->_links);
+
+        return ResourceFactory::createBaseResourceCollection(
+            $this->client,
+            Method::class,
+            $result->_embedded->methods,
+            $result->_links
+        );
     }
+
     /**
      * Get the collection object that is used by this API endpoint. Every API endpoint uses one type of collection object.
      *
@@ -66,8 +79,9 @@ class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\Colle
      */
     protected function getResourceCollectionObject($count, $_links)
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\MethodCollection($count, $_links);
+        return new MethodCollection($count, $_links);
     }
+
     /**
      * Retrieve a payment method from Mollie.
      *
@@ -81,8 +95,9 @@ class MethodEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\Colle
     public function get($methodId, array $parameters = [])
     {
         if (empty($methodId)) {
-            throw new \_PhpScoper5eddef0da618a\Mollie\Api\Exceptions\ApiException("Method ID is empty.");
+            throw new ApiException("Method ID is empty.");
         }
+
         return parent::rest_read($methodId, $parameters);
     }
 }

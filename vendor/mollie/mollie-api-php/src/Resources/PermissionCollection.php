@@ -1,8 +1,8 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
-class PermissionCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\BaseCollection
+class PermissionCollection extends BaseCollection
 {
     /**
      * @return string

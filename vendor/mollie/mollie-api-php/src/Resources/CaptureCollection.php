@@ -1,8 +1,8 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Resources;
+namespace Mollie\Api\Resources;
 
-class CaptureCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\CursorCollection
+class CaptureCollection extends CursorCollection
 {
     /**
      * @return string
@@ -11,11 +11,12 @@ class CaptureCollection extends \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Cu
     {
         return "captures";
     }
+
     /**
      * @return BaseResource
      */
     protected function createResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Capture($this->client);
+        return new Capture($this->client);
     }
 }

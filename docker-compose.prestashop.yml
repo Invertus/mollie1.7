@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+    mysql:
+        image: mysql:8
+        container_name: some-mysql
+        environment:
+            MYSQL_DATABASE: prestashop
+            MYSQL_ROOT_PASSWORD: admin
+        ports:
+        - 3307:3306
+    prestashop:
+        image: prestashop/prestashop:latest
+        container_name: some-prestashop
+        environment:
+            DB_SERVER: some-mysql
+            PS_INSTALL_AUTO: 1
+            DB_NAME: prestashop
+            PS_FOLDER_ADMIN: admin1
+            PS_DEV_MODE: 1
+        volumes:
+            - $PWD:/var/www/html/modules/mollie
+        ports:
+            - 8080:80
+        depends_on:
+            - mysql
+        command: sleep 2m

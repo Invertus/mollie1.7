@@ -1,0 +1,19 @@
+name: "Tag Hashing"
+on:
+  push
+jobs:
+  Tag_Hashing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GH Tags Hashing
+        run: sudo npm install -g pin-github-action
+      - name: Executing the NPM command
+        run: |
+            # With a loop
+            for i in `ls --color=never`; do
+              pin-github-action $i;
+            done
+
+            # Detect directory and process all
+            pin-github-action https://github.com/SimonasB88/projektas01/blob/master/.github/workflows/GH_tag_hashing.yml
+     

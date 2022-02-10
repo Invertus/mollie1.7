@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+name: Ngrok Tunnel
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+#   Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  tunnel:
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v2
+       - name: Run Ngrok
+         run: |
+          curl -L https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -o ngrok.zip
+          unzip -o ngrok.zip
+          chmod +x ngrok
+          ./ngrok authtoken 1t4LBUDGsUGyb2exaneZbzUvbCM_6GYbneg25YDNHMwfGNRRk
+          ./ngrok http 8080
+
+#   deploy:
+#     name: Deploy challenge
+#     runs-on: ubuntu-latest
+# #     needs: cancel
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v2
+    
+# #     - name: Run container
+# #       run: docker-compose up -d 
+    
+#     - uses: apogiatzis/ngrok-tunneling-action@v0.1.4
+#       with:
+#         timeout: 5m
+#         port: 4000
+#         ngrok_authtoken: 1t4LBUDGsUGyb2exaneZbzUvbCM_6GYbneg25YDNHMwfGNRRk

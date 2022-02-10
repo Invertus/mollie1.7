@@ -1,13 +1,15 @@
 <?php
 
-namespace _PhpScoper5eddef0da618a\Mollie\Api\Endpoints;
+namespace Mollie\Api\Endpoints;
 
-use _PhpScoper5eddef0da618a\Mollie\Api\Exceptions\ApiException;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\Chargeback;
-use _PhpScoper5eddef0da618a\Mollie\Api\Resources\ChargebackCollection;
-class ChargebackEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\CollectionEndpointAbstract
+use Mollie\Api\Exceptions\ApiException;
+use Mollie\Api\Resources\Chargeback;
+use Mollie\Api\Resources\ChargebackCollection;
+
+class ChargebackEndpoint extends CollectionEndpointAbstract
 {
     protected $resourcePath = "chargebacks";
+
     /**
      * Get the object that is used by this API endpoint. Every API endpoint uses one type of object.
      *
@@ -15,8 +17,9 @@ class ChargebackEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\C
      */
     protected function getResourceObject()
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\Chargeback($this->client);
+        return new Chargeback($this->client);
     }
+
     /**
      * Get the collection object that is used by this API endpoint. Every API endpoint uses one type of collection object.
      *
@@ -27,8 +30,9 @@ class ChargebackEndpoint extends \_PhpScoper5eddef0da618a\Mollie\Api\Endpoints\C
      */
     protected function getResourceCollectionObject($count, $_links)
     {
-        return new \_PhpScoper5eddef0da618a\Mollie\Api\Resources\ChargebackCollection($this->client, $count, $_links);
+        return new ChargebackCollection($this->client, $count, $_links);
     }
+
     /**
      * Retrieves a collection of Chargebacks from Mollie.
      *
