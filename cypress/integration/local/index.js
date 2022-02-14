@@ -1,6 +1,6 @@
 it('Should check if home page is loaded', () => {
     cy.request({
-        url: '/',
+        url: '/en',
     }).then((resp) => {
         expect(resp.status).to.eq(200)
     })
