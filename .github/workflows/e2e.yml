@@ -1,10 +1,10 @@
-name: Regular midnight test runs
-on:
-  schedule:
-    - cron:  '0 0 * * 5'
+name: Cypress test run
+on: [ push ]
 jobs:
   Cypress-E2E:
     runs-on: ubuntu-latest
+    env:
+      NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
 #     strategy:
 #       fail-fast: false
 #       matrix:
@@ -16,15 +16,24 @@ jobs:
 #         # When you run 2 parallel jobs then first job will have index 0, the second job will have index 1 etc
 #         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2.0.0
+      - run: wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+        shell: bash
+      - run: unzip -qq ngrok-stable-linux-amd64.zip
+        shell: bash
+      - run: ./ngrok authtoken ${{ secrets.NGROK_TOKEN }}
+        shell: bash
+      - run: ./ngrok http -region=eu -subdomain=demoshop 8001 > ngrok.log &
+        shell: bash
+      - name: install composer
+        run: composer i
 
-      - name: NPM install
-        run: npm ci
+      - name: install package
+        run: npm i & npx browserslist@latest --update-db
 
-      - name: Run Cypress on PS16, PS17, PS177
-        run: npx cypress run --env demousername=${{ secrets.DEMO_USER }},demopassword=${{ secrets.DEMO_PASS }},FO_username=${{ secrets.MOLLIE_FO_USR }},FO_password=${{ secrets.MOLLIE_FO_PSW }},mollie_test_api_key=${{ secrets.MOLLIE_TEST_API_KEY }},mollie_test_profile_id=${{ secrets.MOLLIE_TEST_PROFILE_ID }}
+      - name: PS install / Module Install / Run tests on Cypress
+        run: make e2eh
         #--parallel --record --key fe20a60a-0ac6-4956-a6e8-911aad86cb03
   
       - name: Archive videos and screenshots
