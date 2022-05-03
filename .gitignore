@@ -1,0 +1,17 @@
+*mollie*.zip
+yarn.lock
+yarn-error.log
+.idea/
+build/
+.codecept.phar
+/translations/
+var/
+config.xml
+mails/
+views/img/customLogo/*.jpg
+cypress/videos
+cypress/screenshots
+.php_cs.cache
+.env
+vendor
+node_modules

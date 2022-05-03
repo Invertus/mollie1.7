@@ -1,0 +1,129 @@
+
+.mollie-iframe-container, .mollie-single-click-container {
+    max-width: 600px;
+    margin: 0;
+}
+
+label.mollie-input-error {
+    color: red;
+    padding-top: 10px;
+}
+
+/*
+  In order to make elements focusable on page render fields must not be hidden - display:none or visibility:hidden
+  @see https://stackoverflow.com/questions/25324079/tab-throug-input-fields-when-displaynone
+ */
+.mollie-credit-card-container__hide {
+  opacity: 0;
+  height: 0;
+  position: absolute;
+}
+
+.mollie-credit-card-container__show {
+  opacity: 1;
+  height: inherit;
+  position: relative;
+}
+
+.mollie-iframe-container .mollie-label, .mollie-single-click-container .mollie-label {
+    position: absolute;
+    left: 15px;
+    color: #999;
+    margin: 0;
+}
+
+.mollie-input {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: inset 0px 0px 0px 0px transparent,
+    0px 1px 1px 0px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+    0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+    transition: all 0.05s ease;
+    height: 45px;
+}
+
+.mollie-input.card-number{
+    border-radius: 10px 10px 0 0;
+}
+
+.mollie-input.expiry-date {
+    border-radius: 0 0 0 10px;
+}
+
+.mollie-input.verification-code {
+    border-radius: 0 0 10px 0;
+}
+
+.mollie-input.has-focus {
+    box-shadow: inset 0px 0px 0px 2px #07f, 0px 1px 1px 0px rgba(0, 0, 0, 0.1),
+    0px 2px 6px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+}
+
+.mollie-input.is-invalid {
+    box-shadow: 0px 0px 0px 1px #f33, 0px 1px 1px 0px rgba(0, 0, 0, 0.1),
+    0px 2px 6px 0px rgba(0, 0, 0, 0.1), 0px 0px 0px 1px rgba(0, 0, 0, 0.05);
+    background-color: #fff0f0;
+}
+
+
+.form-group-expiry-date,
+.form-group-verification-code {
+    width: 50%;
+    flex: 0 1 auto;
+}
+
+.form-group-card-number {
+    width: 100%;
+    flex: 0 1 auto;
+}
+.inline-form-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 15px 0 0;
+}
+.mollie-iframe-container .form-group , .mollie-single-click-container .form-group{
+    position: relative;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.inline-form-group {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 15px 0 0;
+}
+
+.mollie-information-label {
+    font-size: 15px;
+    padding-bottom: 10px;
+}
+
+.is-focused label.mollie-label,
+.is-dirty label.mollie-label {
+    display: none !important;
+}
+
+@media (max-width: 412px) {
+    body#checkout .additional-information.mollie-addition-info {
+        margin-left: 0;
+    }
+}
+
+#mollie-notifications {
+    margin-bottom: 0;
+}
+
+.mollie-expiry-date-label {
+  font-size: 12px;
+}
+
+.mollie-iframe-container-16 .mollie-iframe-container .form-group-save-card {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.mollie-iframe-container-16 .mollie-iframe-container .form-group-save-card .mollie-save-card-label{
+  margin-left: 5px;
+}
