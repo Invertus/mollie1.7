@@ -1,0 +1,193 @@
+/****Mollie config****/
+.mollie_hidden {
+    display: none;
+}
+
+.mollie_methods p.payment_module a {
+    padding-left: 1px;
+    padding-right: 40px;
+    background: #FBFBFB;
+}
+
+.mollie_image {
+    margin-left: 26px;
+    padding-right: 20px;
+}
+
+.mollie_image_big {
+    margin-left: 26px;
+    padding-right: 20px;
+    height: 48px;
+}
+
+.mollie_margin {
+    display: block;
+    float: left;
+    width: 96px;
+}
+
+.mollie_p {
+    color: #747474;
+}
+
+/****Mollie issuers****/
+.mollie_issuer {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+}
+
+.mollie_issuer_page {
+    box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    background: #fff;
+    padding: 1.25rem 1.875rem;
+}
+
+.mollie_issuers {
+    font-size: 16px;
+    margin-top: 1.25rem;
+}
+
+.mollie_issuers select, .mollie_issuers input {
+    border: 1px solid #D6D4D4;
+    border-radius: 4px;
+    background: #FBFBFB;
+    height: 20px;
+}
+
+.sortable-helper {
+    border-width: 2px!important;
+    -webkit-box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+}
+
+.form-group.form-separator {
+    margin-left: 0;
+}
+
+#module_form .mollie-input-error {
+    border: 1px solid #f13340;
+}
+
+.js-mollie-payment-error .error-text {
+    margin: 0;
+}
+
+.mollie-signature {
+    padding-top: 20px;
+}
+
+.mollie_button {
+    width: 100%;
+}
+.payment-method a.text {
+    color: #0a0a0a;
+}
+.payment-method a.text.collapsed svg {
+    color: #0a0a0a;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+.payment-method {
+    padding: 10px;
+    border-color: #999798;
+    border-bottom: 1px solid;
+}
+
+svg.mollie-svg {
+    width: 1em;
+    height: 1em;
+    display: inline;
+}
+
+.payment-method .payment-check-link {
+  vertical-align: middle;
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .mm-block-mollie .icon1 {
+        background: url(../../views/img/icon/icons@x2.png) no-repeat scroll 0px -7px;
+        background-size: 55px;
+    }
+
+    .mm-block-mollie .icon2 {
+        background: url(../../views/img/icon/icons@x2.png) no-repeat scroll -4px -32px;
+        background-size: 45px;
+    }
+
+    .mm-block-mollie .icon3 {
+        background: url(../../views/img/icon/icons@x2.png) no-repeat scroll 0px -75px;
+        background-size: 52px;
+    }
+
+    .mm-block-mollie .helpbutton {
+        background: url(../../views/img/icon/icons@x2.png) no-repeat scroll 0px -260px #F8F8F8;
+        background-size: 130px;
+    }
+}
+
+.mm-block-mollie .helpbutton {
+    padding: 10px 15px;
+    width: 100px;
+    height: 44px;
+    float: right;
+    background: url(../../views/img/icon/icons.png) no-repeat scroll 0px -175px #F8F8F8;
+}
+
+.mm-block-mollie .icon1 {
+    background: url(../../views/img/icon/icons.png) no-repeat scroll -20px -14px;
+    width: 45px;
+    height: 25px;
+    float: left;
+}
+
+.mm-block-mollie .icon2 {
+    background: url(../../views/img/icon/icons.png) no-repeat scroll -30px -70px;
+    width: 36px;
+    height: 25px;
+    float: left;
+}
+
+.mm-block-mollie .icon3 {
+    background: url(../../views/img/icon/icons.png) no-repeat scroll -20px -129px;
+    width: 47px;
+    height: 25px;
+    float: left;
+}
+
+.mm-block-mollie {
+    background: #F8F8F8 no-repeat 8px;
+    border: 1px solid #E5E5E5;
+    border-left: 2px solid #EA4C00;
+    font-size: 12px;
+    color: #303030;
+    margin-bottom: 15px;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    background-size: 55px;
+}
+
+.mm-block-mollie table {
+    width: 520px !important;
+}
+
+.mm-block-mollie strong {
+    font-weight: 600;
+    color: #514943;
+}
+
+.mm-block-mollie p {
+    font-size: 12px;
+    padding: 0 0 0.3em;
+}
+
+.mm-block-mollie tr a {
+    color: #6D6761;
+    margin-top: 3px;
+    display: block;
+}

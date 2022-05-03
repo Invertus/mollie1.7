@@ -1,0 +1,62 @@
+.text-center {
+  text-align: center;
+}
+
+.mollie_methods p.payment_module a {
+  padding-left: 1px;
+  padding-right: 40px;
+  background: #FBFBFB;
+}
+
+.mollie_image {
+  margin-left: 26px;
+  padding-right: 20px;
+}
+
+.mollie_image_big {
+  margin-left: 6px;
+}
+
+.mollie_margin {
+  display: block;
+  float: left;
+  width: 96px;
+}
+
+.mollie_p {
+  color: #747474;
+}
+
+/****Mollie issuers****/
+.mollie_issuer {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 400px;
+}
+
+.mollie_issuer_page {
+  box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  background: #fff;
+  padding: 1.25rem 1.875rem;
+}
+
+.mollie_issuers {
+  font-size: 16px;
+  margin-top: 1.25rem;
+}
+
+.mollie_issuers select, .mollie_issuers input {
+  border: 1px solid #D6D4D4;
+  border-radius: 4px;
+  background: #FBFBFB;
+  height: 20px;
+}
+
+.sortable-helper {
+  border-width: 2px!important;
+  -webkit-box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+  -moz-box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+  box-shadow: 2px 2px 16px -2px rgba(0,0,0,0.75);
+}
