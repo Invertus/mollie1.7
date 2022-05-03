@@ -1,0 +1,7 @@
+services:
+  Mollie\Handler\Certificate\CertificateHandlerInterface: '@Mollie\Handler\Certificate\ApplePayDirectCertificateHandler'
+
+  Mollie\Handler\Certificate\ApplePayDirectCertificateHandler:
+    class: Mollie\Handler\Certificate\ApplePayDirectCertificateHandler
+    arguments:
+      - '@mollie'
