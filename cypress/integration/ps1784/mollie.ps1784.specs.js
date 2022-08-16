@@ -106,7 +106,7 @@ it.only('04 Bancontact Checkouting [Orders API]', () => {
         cy.url().then(url => {
         currentURL = url
         });
-        cy.get('.button--link').click()
+        cy.visit('https://mollie.com').click()
         cy.wait(10000)
         cy.get('.text-sm-center > .btn').click()
         cy.then(() => cy.visit(currentURL))
