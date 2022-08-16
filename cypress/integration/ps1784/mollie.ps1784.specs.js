@@ -76,7 +76,7 @@ it('03 Enabling All payments in Module BO [Orders API]', () => {
       cy.get('[type="submit"]').first().click()
       cy.get('[class="alert alert-success"]').should('be.visible')
 })
-it('04 Bancontact Checkouting [Orders API]', () => {
+it.only('04 Bancontact Checkouting [Orders API]', () => {
       cy.visit('/SHOP2/de/index.php?controller=history')
       cy.get('a').click()
       cy.contains('Reorder').click()
@@ -89,20 +89,34 @@ it('04 Bancontact Checkouting [Orders API]', () => {
       cy.get('.condition-label > .js-terms').click({force:true})
       prepareCookie();
       cy.get('.ps-shown-by-js > .btn').click()
-      cy.setCookie(
-        'SESSIONID',
-        "cypress-dummy-value",
-        {
-            domain: '.www.mollie.com',
-            sameSite: 'None',
-            secure: true,
-            httpOnly: true
-        }
-      );    // reload current page to activate cookie
-      cy.reload();
-      cy.get('[value="paid"]').click()
-      cy.get('[class="button form__button"]').click()
-      cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
+
+      cy.origin('https://mollie.com', () => {
+        cy.setCookie(
+          'SESSIONID',
+          "cypress-dummy-value",
+          {
+              domain: '.www.mollie.com',
+              sameSite: 'None',
+              secure: true,
+              httpOnly: true
+          }
+        );    // reload current page to activate cookie
+        cy.reload();
+        let currentURL
+        cy.url().then(url => {
+        currentURL = url
+        });
+        cy.get('.button--link').click()
+        cy.wait(10000)
+        cy.get('.text-sm-center > .btn').click()
+        cy.then(() => cy.visit(currentURL))
+        //cy.get('[value="paid"]').click()
+        //cy.get('[class="button form__button"]').click()
+        //cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
+      //cy.then(() => cy.visit(currentURL))
+})
+
+
 })
 it('05 Bancontact Order BO Shiping, Refunding [Orders API]', () => {
       cy.visit('/admin1/index.php?controller=AdminOrders')
