@@ -380,6 +380,27 @@ class FormBuilder
         );
 
         $input[] = [
+            'type' => 'switch',
+            'label' => $this->module->l('Use taxes for payment fees', self::FILE_NAME),
+            'tab' => $generalSettings,
+            'name' => Config::MOLLIE_USE_TAXES_FOR_FEES,
+            'desc' => $this->module->l('When enabled, mollie will add taxes for payment fee', self::FILE_NAME),
+            'is_bool' => true,
+            'values' => [
+                [
+                    'id' => 'active_on',
+                    'value' => true,
+                    'label' => $this->module->l('Enabled', self::FILE_NAME),
+                ],
+                [
+                    'id' => 'active_off',
+                    'value' => false,
+                    'label' => $this->module->l('Disabled', self::FILE_NAME),
+                ],
+            ],
+        ];
+
+        $input[] = [
             'type' => 'mollie-h2',
             'tab' => $generalSettings,
             'name' => '',

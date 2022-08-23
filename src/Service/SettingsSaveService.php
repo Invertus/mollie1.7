@@ -210,6 +210,7 @@ class SettingsSaveService
         $showResentPayment = Tools::getValue(Config::MOLLIE_SHOW_RESEND_PAYMENT_LINK);
         $mollieIssuers = Tools::getValue(Config::MOLLIE_ISSUERS);
         $mollieCss = Tools::getValue(Config::MOLLIE_CSS);
+        $mollieTaxesForFees = Tools::getValue(Config::MOLLIE_USE_TAXES_FOR_FEES);
         if (!isset($mollieCss)) {
             $mollieCss = '';
         }
@@ -276,6 +277,7 @@ class SettingsSaveService
             Configuration::updateValue(Config::MOLLIE_DEBUG_LOG, (int) $mollieLogger);
             Configuration::updateValue(Config::MOLLIE_API, $mollieApi);
             Configuration::updateValue(Config::MOLLIE_VOUCHER_CATEGORY, $voucherCategory);
+            Configuration::updateValue(Config::MOLLIE_USE_TAXES_FOR_FEES, $mollieTaxesForFees);
             Configuration::updateValue(
                 Config::MOLLIE_AUTO_SHIP_STATUSES,
                 json_encode($this->getStatusesValue(Config::MOLLIE_AUTO_SHIP_STATUSES))

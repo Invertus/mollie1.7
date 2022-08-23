@@ -98,6 +98,7 @@ class Uninstall implements UninstallerInterface
             Config::METHODS_CONFIG,
             Config::MOLLIE_MAIL_WHEN_COMPLETED,
             Config::MOLLIE_API_KEY_TEST,
+            Config::MOLLIE_USE_TAXES_FOR_FEES,
         ];
 
         $this->deleteConfigurations($configurations);

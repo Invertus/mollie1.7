@@ -91,6 +91,7 @@ class ConfigFieldService
             Config::MOLLIE_STATUS_SHIPPING => Configuration::get(Config::MOLLIE_STATUS_SHIPPING),
             Config::MOLLIE_MAIL_WHEN_SHIPPING => Configuration::get(Config::MOLLIE_MAIL_WHEN_SHIPPING),
             Config::MOLLIE_KLARNA_INVOICE_ON => Configuration::get(Config::MOLLIE_KLARNA_INVOICE_ON),
+            Config::MOLLIE_USE_TAXES_FOR_FEES => Configuration::get(Config::MOLLIE_USE_TAXES_FOR_FEES),
         ];
 
         if (Mollie\Utility\EnvironmentUtility::getApiKey() && $this->module->api !== null) {
