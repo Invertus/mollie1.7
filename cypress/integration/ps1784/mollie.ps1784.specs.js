@@ -90,7 +90,7 @@ it.only('04 Bancontact Checkouting [Orders API]', () => {
       prepareCookie();
       cy.get('.ps-shown-by-js > .btn').click()
 
-      cy.origin('https://mollie.com', () => {
+
         cy.setCookie(
           'SESSIONID',
           "cypress-dummy-value",
@@ -106,15 +106,18 @@ it.only('04 Bancontact Checkouting [Orders API]', () => {
         cy.url().then(url => {
         currentURL = url
         });
-        cy.visit('https://mollie.com').click()
-        cy.wait(10000)
-        cy.get('.text-sm-center > .btn').click()
+        cy.go("back").wait(2000)
+        cy.contains('Bancontact').click({force:true})
+        cy.get('.condition-label > .js-terms').click({force:true}).click({force:true})
+        cy.get('.ps-shown-by-js > .btn').click().wait(5000)
         cy.then(() => cy.visit(currentURL))
-        //cy.get('[value="paid"]').click()
+        // cy.get('[value="expired"]').click()
+        // cy.get('.button').click()
+
         //cy.get('[class="button form__button"]').click()
         //cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
       //cy.then(() => cy.visit(currentURL))
-})
+
 
 
 })
