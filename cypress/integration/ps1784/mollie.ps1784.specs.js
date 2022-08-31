@@ -727,9 +727,14 @@ it.only('28 Verifying if Orders are not duplicated with the 2 transactions [Copy
     cy.url().then(url => {
     currentURL = url
     });
+    cy.go('back')
 
+    //cy.then(() => cy.visit(currentURL))
+    cy.origin('https://mollie.com', () => {
+  cy.visit(currentURL)
 })
-it.only('29 Verifying if Orders are not duplicated with the 2 transactions [Using transaction]', () => {
+})
+it('29 Verifying if Orders are not duplicated with the 2 transactions [Using transaction]', () => {
     cy.then(() => cy.visit(currentURL))
 })
 })
