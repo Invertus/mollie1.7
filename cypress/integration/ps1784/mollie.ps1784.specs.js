@@ -89,37 +89,20 @@ it('04 Bancontact Checkouting [Orders API]', () => {
       cy.get('.condition-label > .js-terms').click({force:true})
       prepareCookie();
       cy.get('.ps-shown-by-js > .btn').click()
-
-
-        cy.setCookie(
-          'SESSIONID',
-          "cypress-dummy-value",
-          {
-              domain: '.www.mollie.com',
-              sameSite: 'None',
-              secure: true,
-              httpOnly: true
-          }
-        );    // reload current page to activate cookie
-        cy.reload();
-        let currentURL
-        cy.url().then(url => {
-        currentURL = url
-        });
-        cy.go("back").wait(2000)
-        cy.contains('Bancontact').click({force:true})
-        cy.get('.condition-label > .js-terms').click({force:true}).click({force:true})
-        cy.get('.ps-shown-by-js > .btn').click().wait(5000)
-        cy.then(() => cy.visit(currentURL))
-        // cy.get('[value="expired"]').click()
-        // cy.get('.button').click()
-
-        //cy.get('[class="button form__button"]').click()
-        //cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
-      //cy.then(() => cy.visit(currentURL))
-
-
-
+      cy.setCookie(
+        'SESSIONID',
+        "cypress-dummy-value",
+        {
+            domain: '.www.mollie.com',
+            sameSite: 'None',
+            secure: true,
+            httpOnly: true
+        }
+      );    // reload current page to activate cookie
+      cy.reload();
+      cy.get('[value="paid"]').click()
+      cy.get('[class="button form__button"]').click()
+      cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
 })
 it('05 Bancontact Order BO Shiping, Refunding [Orders API]', () => {
       cy.visit('/admin1/index.php?controller=AdminOrders')
