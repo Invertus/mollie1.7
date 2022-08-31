@@ -76,7 +76,7 @@ it('03 Enabling All payments in Module BO [Orders API]', () => {
       cy.get('[type="submit"]').first().click()
       cy.get('[class="alert alert-success"]').should('be.visible')
 })
-it.only('04 Bancontact Checkouting [Orders API]', () => {
+it('04 Bancontact Checkouting [Orders API]', () => {
       cy.visit('/SHOP2/de/index.php?controller=history')
       cy.get('a').click()
       cy.contains('Reorder').click()
@@ -714,5 +714,50 @@ it('27 Credit Card Guest Checkouting [Payments API]', () => {
       cy.get('[value="paid"]').click()
       cy.get('[class="button form__button"]').click()
       cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
+})
+it.only('28 Verifying if Orders are not duplicated with the 2 transactions', () => {
+  cy.visit('/SHOP2/de/index.php?controller=history')
+  cy.get('a').click()
+  cy.contains('Reorder').click()
+  cy.contains('LT').click()
+  //Billing country LT, DE etc.
+  cy.get('.clearfix > .btn').click()
+  cy.get('#js-delivery > .continue').click()
+  //Payment method choosing
+  cy.contains('Bancontact').click({force:true})
+  cy.get('.condition-label > .js-terms').click({force:true})
+  prepareCookie();
+  cy.get('.ps-shown-by-js > .btn').click()
+
+
+    cy.setCookie(
+      'SESSIONID',
+      "cypress-dummy-value",
+      {
+          domain: '.www.mollie.com',
+          sameSite: 'None',
+          secure: true,
+          httpOnly: true
+      }
+    );    // reload current page to activate cookie
+    cy.reload();
+    let currentURL
+    cy.url().then(url => {
+    currentURL = url
+    });
+    cy.go("back").wait(2000)
+    cy.contains('Bancontact').click({force:true})
+    cy.get('.condition-label > .js-terms').click({force:true}).click({force:true})
+    cy.get('.ps-shown-by-js > .btn').click().wait(5000)
+    cy.then(() => cy.visit(currentURL))
+    // cy.get('[value="expired"]').click()
+    // cy.get('.button').click()
+
+    //cy.get('[class="button form__button"]').click()
+    //cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
+  //cy.then(() => cy.visit(currentURL))
+
+
+
 })
 })
