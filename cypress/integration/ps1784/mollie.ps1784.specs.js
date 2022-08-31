@@ -726,15 +726,20 @@ it.only('28 Verifying if Orders are not duplicated with the 2 transactions [Copy
     let currentURL
     cy.url().then(url => {
     currentURL = url
+    cy.writeFile('cypress/fixtures/test1.txt', `${currentURL}`)
     });
     cy.go('back')
 
     //cy.then(() => cy.visit(currentURL))
-    cy.origin('https://mollie.com', () => {
-  cy.visit(currentURL)
+  //   cy.origin('https://mollie.com', () => {
+  // cy.visit(currentURL)
+//})
 })
-})
-it('29 Verifying if Orders are not duplicated with the 2 transactions [Using transaction]', () => {
-    cy.then(() => cy.visit(currentURL))
+it.only('29 Verifying if Orders are not duplicated with the 2 transactions [Using transaction]', () => {
+  cy.readFile('cypress/fixtures/test1.txt').then(readFile => {
+    cy.visit(readFile)
+    cy.get('[value="expired"]').click()
+    cy.get('.button').click()
+  })
 })
 })
