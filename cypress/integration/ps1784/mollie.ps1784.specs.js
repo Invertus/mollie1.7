@@ -699,7 +699,7 @@ it('27 Credit Card Guest Checkouting [Payments API]', () => {
       cy.get('[class="button form__button"]').click()
       cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
 })
-it.only('28 Verifying if Orders are not duplicated with the 2 transactions [Copying transaction]', () => {
+it('28 Verifying if Orders are not duplicated with the 2 transactions [Making first transaction and copying its URL, going back to PS Checkout, making second transaction Paid]', () => {
   cy.visit('/SHOP2/de/index.php?controller=history')
   cy.get('a').click()
   cy.contains('Reorder').click()
@@ -726,20 +726,27 @@ it.only('28 Verifying if Orders are not duplicated with the 2 transactions [Copy
     let currentURL
     cy.url().then(url => {
     currentURL = url
-    cy.writeFile('cypress/fixtures/test1.txt', `${currentURL}`)
+    cy.writeFile('cypress/fixtures/firstTransaction.txt', `${currentURL}`)
     });
     cy.go('back')
-
-    //cy.then(() => cy.visit(currentURL))
-  //   cy.origin('https://mollie.com', () => {
-  // cy.visit(currentURL)
-//})
+    //doing another transaction attempt
+    cy.contains('Bancontact').click({force:true})
+    cy.get('.condition-label > .js-terms').click({force:true}).click({force:true})
+    cy.get('.ps-shown-by-js > .btn').click()
+    cy.get('[value="paid"]').click()
+    cy.get('.button').click()
+    cy.get('#content-hook_order_confirmation > .card-block').should('be.visible')
 })
-it.only('29 Verifying if Orders are not duplicated with the 2 transactions [Using transaction]', () => {
-  cy.readFile('cypress/fixtures/test1.txt').then(readFile => {
+it('29 Verifying if Orders are not duplicated with the 2 transactions [First transaction as Expired]', () => {
+  cy.readFile('cypress/fixtures/firstTransaction.txt').then(readFile => {
     cy.visit(readFile)
     cy.get('[value="expired"]').click()
     cy.get('.button').click()
+    cy.wait(2000)
   })
+})
+it('30 Verifying if Orders are not duplicated with the 2 transactions [Make=ing sure the order is still Paid and not changed to Expired]', () => {
+  cy.visit('/admin1/index.php?controller=AdminOrders')
+  cy.get(':nth-child(1) > .choice-type').should('include.text','Payment accepted')
 })
 })
