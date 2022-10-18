@@ -2,7 +2,7 @@ name: Deploy
 
 on:
     pull_request:
-        types: [closed]
+        types: [opened, reopened]
 
 jobs:
     deploy:
@@ -16,7 +16,6 @@ jobs:
                   composer install --no-dev --optimize-autoloader --classmap-authoritative
                   composer dump-autoload --no-dev --optimize --classmap-authoritative
                   npm install --quiet --no-progress
-                  npm run build
                   rm -rf node_modules
                   cp .github/.htaccess vendor/.htaccess
                   rm -rf .git
