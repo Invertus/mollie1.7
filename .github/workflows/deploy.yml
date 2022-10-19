@@ -17,7 +17,6 @@ jobs:
                   composer dump-autoload --no-dev --optimize --classmap-authoritative
                   npm install --quiet --no-progress
                   rm -rf node_modules
-                  cp .github/.htaccess vendor/.htaccess
                   rm -rf .git
                   rm -rf .github
                   rm -rf tests
