@@ -40,9 +40,6 @@ jobs:
     demo:
         name: Demo deployment
         runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                presta-instance: [ 'latest' ]
         steps:
             -   name: executing remote ssh commands using password
                 uses: appleboy/ssh-action@master
@@ -50,4 +47,4 @@ jobs:
                     host: ${{ secrets.HOST }}
                     username: ${{ secrets.USERNAME }}
                     key: ${{ secrets.KEY }}
-                    script: cd ${{ secrets.PATH }} && sh deploy.sh ${{ matrix.presta-instance }}
+                    script: cd ${{ secrets.PATH }} && sh deploy.sh
