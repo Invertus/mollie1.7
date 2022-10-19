@@ -47,4 +47,4 @@ jobs:
                     host: ${{ secrets.HOST }}
                     username: ${{ secrets.USERNAME }}
                     key: ${{ secrets.KEY }}
-                    script: cd ${{ secrets.PATH }} && sh deploy.sh
+                    script: cd /var/sites/mollie175test.invertusdemo.com/ && sh deploy.sh
