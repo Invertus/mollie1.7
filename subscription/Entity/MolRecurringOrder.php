@@ -15,15 +15,6 @@ class MolRecurringOrder extends ObjectModel
     public $status;
 
     /** @var string */
-    public $quantity;
-
-    /** @var string */
-    public $amount;
-
-    /** @var string */
-    public $currency_iso;
-
-    /** @var string */
     public $next_payment;
 
     /** @var string */
@@ -37,6 +28,12 @@ class MolRecurringOrder extends ObjectModel
 
     /** @var string */
     public $mollie_customer_id;
+
+    /** @var string */
+    public $payment_method;
+
+    /** @var int */
+    public $id_mol_recurring_orders_product;
 
     /** @var string */
     public $date_add;
@@ -55,14 +52,13 @@ class MolRecurringOrder extends ObjectModel
             'id_cart' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
             'description' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
             'status' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
-            'quantity' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
-            'amount' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
-            'currency_iso' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
             'next_payment' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'reminder_at' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'cancelled_at' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'mollie_subscription_id' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
             'mollie_customer_id' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
+            'payment_method' => ['type' => self::TYPE_STRING, 'validate' => 'isString'],
+            'id_mol_recurring_orders_product' => ['type' => self::TYPE_INT, 'validate' => 'isInt'],
             'date_add' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
             'date_update' => ['type' => self::TYPE_DATE, 'validate' => 'isDate'],
         ],

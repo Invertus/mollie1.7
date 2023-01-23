@@ -12,6 +12,10 @@ use Mollie\Subscription\Factory\CancelSubscriptionDataFactory;
 use Mollie\Subscription\Factory\GetSubscriptionDataFactory;
 use Mollie\Subscription\Filters\SubscriptionFilters;
 use Mollie\Subscription\Handler\SubscriptionCancellationHandler;
+use Mollie\Subscription\RecurringOrder\Query\GetRecurringOrderForViewing;
+use PrestaShop\PrestaShop\Core\Domain\Customer\Exception\CustomerNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Customer\QueryResult\ViewableCustomer;
+use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\Password;
 use PrestaShop\PrestaShop\Core\Grid\GridFactoryInterface;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,6 +45,45 @@ class SubscriptionController extends AbstractSymfonyController
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
         ]);
     }
+
+    /**
+     * Show customer edit form & handle processing of it.
+     *
+     * @AdminSecurity("is_granted(['update'], request.get('_legacy_controller'))")
+     *
+     * @param int $subscriptionId
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function editAction(int $subscriptionId, Request $request)
+    {
+        try {
+            /** @var ViewableCustomer $customerInformation */
+            $recurringOrderInformation = $this->getQueryBus()->handle(new GetRecurringOrderForViewing((int) $subscriptionId));
+            $recurringOrderForm = $this->get('recurring_order_form_builder')
+                ->getFormFor((int) $subscriptionId);
+            $recurringOrderForm->handleRequest($request);
+            $RecurringOrderFormHandler = $this->get('recurring_order_form_handler');
+            $result = $RecurringOrderFormHandler->handleFor((int) $subscriptionId, $recurringOrderForm);
+            if ($result->isSubmitted() && $result->isValid()) {
+                $this->addFlash('success', $this->trans('Successful update.', 'Admin.Notifications.Success'));
+
+                return $this->redirectToRoute('admin_customers_index');
+            }
+        } catch (Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+            if ($e instanceof CustomerNotFoundException) {
+                return $this->redirectToRoute('admin_customers_index');
+            }
+        }
+
+        return $this->render('@Modules/mollie/views/templates/admin/Subscription/edit.html.twig', [
+            'recurringOrderForm' => $recurringOrderForm->createView(),
+            'recurringOrderInformation' => $recurringOrderInformation,
+        ]);
+    }
+
 
     /**
      * @AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", redirectRoute="admin_subscription_index")

@@ -84,6 +84,14 @@ final class BaseServiceProvider
 
         $this->addService($container, UninstallerInterface::class, Mollie\Install\DatabaseTableUninstaller::class);
 
+        $this->addService($container, \Mollie\Subscription\Install\UninstallerInterface::class, Mollie\Subscription\Install\Uninstaller::class)
+            ->withArguments(
+                [
+                    $container->get(Mollie\Subscription\Install\DatabaseTableUninstaller::class),
+                    $container->get(Mollie\Subscription\Install\AttributeUninstaller::class),
+                ]
+            );
+
         $this->addService($container, OrderTotalProviderInterface::class, $container->get(OrderTotalProvider::class));
         $this->addService($container, PaymentFeeProviderInterface::class, $container->get(PaymentFeeProvider::class));
         $this->addService($container, EnvironmentVersionProviderInterface::class, $container->get(EnvironmentVersionProvider::class));

@@ -22,6 +22,7 @@ use Mollie\Subscription\Install\AttributeInstaller;
 use Mollie\Subscription\Install\DatabaseTableInstaller;
 use Mollie\Subscription\Install\HookInstaller;
 use Mollie\Subscription\Install\Installer;
+use Mollie\Subscription\Install\Uninstaller;
 use Mollie\Subscription\Logger\NullLogger;
 use Mollie\Subscription\Repository\LanguageRepository as LanguageAdapter;
 use Mollie\Subscription\Validator\CanProductBeAddedToCartValidator;
@@ -182,6 +183,13 @@ class Mollie extends PaymentModule
         $uninstall = $this->getService(\Mollie\Install\Uninstall::class);
         if (!$uninstall->uninstall()) {
             $this->_errors[] = $uninstall->getErrors();
+
+            return false;
+        }
+
+        $subscriptionUninstaller = $this->getService(Uninstaller::class);
+        if (!$subscriptionUninstaller->uninstall()) {
+            $this->_errors[] = $subscriptionUninstaller->getErrors();
 
             return false;
         }

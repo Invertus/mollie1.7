@@ -6,6 +6,7 @@ namespace Mollie\Subscription\Grid;
 
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\AccessibilityChecker\AccessibilityCheckerInterface;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollection;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\LinkRowAction;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\SubmitRowAction;
 use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
@@ -109,10 +110,10 @@ class SubscriptionGridDefinitionFactory extends AbstractGridDefinitionFactory
                     'sortable' => true,
                 ])
             )
-            ->add((new DataColumn('currency_iso'))
+            ->add((new DataColumn('iso_code'))
                 ->setName($this->module->l('Currency', self::FILE_NAME))
                 ->setOptions([
-                    'field' => 'currency_iso',
+                    'field' => 'iso_code',
                     'sortable' => true,
                 ])
             )
@@ -149,6 +150,16 @@ class SubscriptionGridDefinitionFactory extends AbstractGridDefinitionFactory
                     ->setName($this->trans('Actions', [], 'Admin.Global'))
                     ->setOptions([
                         'actions' => (new RowActionCollection())
+                            ->add(
+                                (new LinkRowAction('edit'))
+                                    ->setName($this->module->l('Edit', self::FILE_NAME))
+                                    ->setIcon('edit')
+                                    ->setOptions([
+                                        'route' => 'admin_subscription_edit',
+                                        'route_param_name' => 'subscriptionId',
+                                        'route_param_field' => 'id_mol_recurring_order'
+                                    ])
+                            )
                             ->add(
                                 (new SubmitRowAction('cancel'))
                                     ->setName($this->module->l('Cancel', self::FILE_NAME))
@@ -234,14 +245,14 @@ class SubscriptionGridDefinitionFactory extends AbstractGridDefinitionFactory
                 ])
                 ->setAssociatedColumn('amount')
             )
-            ->add((new Filter('currency_iso', TextType::class))
+            ->add((new Filter('iso_code', TextType::class))
                 ->setTypeOptions([
                     'required' => false,
                     'attr' => [
                         'placeholder' => $this->trans('Currency', [], 'Admin.International.Feature'),
                     ],
                 ])
-                ->setAssociatedColumn('currency_iso')
+                ->setAssociatedColumn('iso_code')
             )
             ->add((new Filter('date_add', DateRangeType::class))
                 ->setAssociatedColumn('date_add')

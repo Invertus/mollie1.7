@@ -10,6 +10,7 @@ use Mollie\Service\MollieOrderCreationService;
 use Mollie\Subscription\Api\SubscriptionApi;
 use Mollie\Subscription\Factory\GetSubscriptionDataFactory;
 use Mollie\Subscription\Repository\RecurringOrderRepositoryInterface;
+use MolRecurringOrdersProduct;
 use Order;
 
 class RecurringOrderCreationHandler
@@ -53,7 +54,16 @@ class RecurringOrderCreationHandler
             return;
         }
 
+        /** @var Cart $newCart */
         $newCart = $newCart['cart'];
+
+        foreach ($newCart->getProducts() as $product) {
+            $newCart->deleteProduct($product['id_product']);
+        }
+
+        $recurringOrdersProduct = new MolRecurringOrdersProduct($recurringOrder->id_mol_recurring_orders_product);
+        $newCart->updateQty($recurringOrdersProduct->quantity, $recurringOrdersProduct->id_product, $recurringOrdersProduct->id_product_attribute);
+
         $this->mollie->validateOrder(
             (int) $newCart->id,
             Config::getStatuses()[PaymentStatus::STATUS_PAID],
